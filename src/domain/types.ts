@@ -1,4 +1,5 @@
 export type IsoDate = `${number}-${number}-${number}`;
+export type HomeLayoutMode = "simple" | "linear" | "circular";
 
 export interface CycleSummary {
   cycleDay: number | null;
@@ -15,6 +16,9 @@ export interface CycleSummary {
 export interface AppSettings {
   reminderWindowDays: number;
   snoozedUntil: IsoDate | null;
+  homeLayoutMode: HomeLayoutMode;
+  showPhaseChip: boolean;
+  showFertilityChip: boolean;
 }
 
 export interface AppState {

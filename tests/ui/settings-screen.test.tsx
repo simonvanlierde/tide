@@ -2,6 +2,15 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
+import { loadAppState } from "../../src/data/storage";
+
+const defaultSettings = {
+  reminderWindowDays: 4,
+  snoozedUntil: null,
+  homeLayoutMode: "circular",
+  showPhaseChip: true,
+  showFertilityChip: true
+};
 
 describe("SettingsScreen", () => {
   afterEach(() => {
@@ -39,7 +48,7 @@ describe("SettingsScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-02", "2026-04-03"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
+      settings: defaultSettings
       })
     );
 
@@ -54,7 +63,7 @@ describe("SettingsScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-02", "2026-04-03"],
-        settings: { reminderWindowDays: 4, snoozedUntil: "2026-04-22" }
+        settings: { ...defaultSettings, snoozedUntil: "2026-04-22" }
       })
     );
 
@@ -68,11 +77,35 @@ describe("SettingsScreen", () => {
     expect(screen.queryByText(/snoozed until 2026-04-22/i)).not.toBeInTheDocument();
   });
 
+  it("allows home layout and chip visibility preferences to be updated and persisted", () => {
+    render(<SettingsScreen />);
+
+    fireEvent.click(screen.getByRole("button", { name: /simple info \/ chips/i }));
+    fireEvent.click(screen.getByRole("button", { name: /hide phase chip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /hide fertility chip/i }));
+
+    expect(loadAppState().settings).toMatchObject({
+      homeLayoutMode: "simple",
+      showPhaseChip: false,
+      showFertilityChip: false
+    });
+  });
+
+  it("orders settings sections as reminder status, backup, install guide, privacy notice", () => {
+    render(<SettingsScreen />);
+
+    const titles = screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent);
+    expect(titles).toEqual(["Reminder status", "Backup", "Install guide", "Privacy notice"]);
+  });
+
   it("shows an inline error if import fails", async () => {
     render(<SettingsScreen />);
 
     const fileInput = screen.getByLabelText(/import backup file/i) as HTMLInputElement;
     const badFile = new File(["\uFEFFnot-json"], "bad.json", { type: "application/json" });
+    Object.defineProperty(badFile, "text", {
+      value: async () => "\uFEFFnot-json"
+    });
 
     fireEvent.change(fileInput, { target: { files: [badFile] } });
 

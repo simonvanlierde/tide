@@ -3,6 +3,14 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
 
+const defaultSettings = {
+  reminderWindowDays: 4,
+  snoozedUntil: null,
+  homeLayoutMode: "circular",
+  showPhaseChip: true,
+  showFertilityChip: true
+};
+
 describe("TodayScreen", () => {
   afterEach(() => {
     cleanup();
@@ -14,26 +22,26 @@ describe("TodayScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
+        settings: defaultSettings
       })
     );
   });
 
-  it("shows the cycle day hero with a cycle visualization and one summary line", () => {
+  it("defaults to the circular cycle layout with phase and fertility chips", () => {
     render(<TodayScreen today="2026-04-18" />);
 
-    expect(screen.getByText(/day 17/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/cycle view/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /day 17/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/circular cycle view/i)).toBeInTheDocument();
+    expect(screen.getByText(/phase: luteal/i)).toBeInTheDocument();
+    expect(screen.getByText(/fertility: lower chance of pregnancy/i)).toBeInTheDocument();
     expect(screen.getByText(/next period in 12 days/i)).toBeInTheDocument();
-    expect(screen.queryByText(/^Phase$/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/^Cycle status$/)).not.toBeInTheDocument();
   });
 
-  it("avoids overlapping ovulation labels on the main screen", () => {
+  it("shows the ovulation phase at a glance without duplicate phase cards", () => {
     render(<TodayScreen today="2026-04-15" />);
 
-    expect(screen.getByText(/ovulation likely now/i)).toBeInTheDocument();
-    expect(screen.queryByText(/^Phase$/)).not.toBeInTheDocument();
+    expect(screen.getByText(/phase: ovulation/i)).toBeInTheDocument();
+    expect(screen.getByText(/fertility: ovulation likely now/i)).toBeInTheDocument();
     expect(screen.queryByText(/^Cycle status$/)).not.toBeInTheDocument();
   });
 
@@ -41,7 +49,7 @@ describe("TodayScreen", () => {
     render(<TodayScreen today="2026-04-18" />);
 
     fireEvent.click(screen.getByRole("button", { name: /log period today/i }));
-    expect(screen.getByText(/logged for today/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /remove period log for today/i })).toBeInTheDocument();
   });
 
   it("shows an early estimate note when fallback predictions are in use", () => {
@@ -49,7 +57,7 @@ describe("TodayScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-19", "2026-04-20"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
+        settings: defaultSettings
       })
     );
 
@@ -62,7 +70,7 @@ describe("TodayScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-02", "2026-04-03"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
+        settings: defaultSettings
       })
     );
 
@@ -76,7 +84,7 @@ describe("TodayScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-19", "2026-04-20"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
+        settings: defaultSettings
       })
     );
 
@@ -89,7 +97,7 @@ describe("TodayScreen", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-02", "2026-04-03"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
+        settings: defaultSettings
       })
     );
 
@@ -100,5 +108,55 @@ describe("TodayScreen", () => {
 
     rerender(<TodayScreen today="2026-05-01" />);
     expect(screen.getByRole("button", { name: /snooze 3 days/i })).toBeInTheDocument();
+  });
+
+  it("respects chip visibility preferences independently", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
+        settings: {
+          ...defaultSettings,
+          showPhaseChip: false,
+          showFertilityChip: true
+        }
+      })
+    );
+
+    render(<TodayScreen today="2026-04-18" />);
+    expect(screen.queryByText(/phase:/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/fertility:/i)).toBeInTheDocument();
+  });
+
+  it("renders the simple and linear layouts when selected", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
+        settings: {
+          ...defaultSettings,
+          homeLayoutMode: "simple"
+        }
+      })
+    );
+
+    render(<TodayScreen today="2026-04-18" />);
+    expect(screen.getByLabelText(/simple home view/i)).toBeInTheDocument();
+
+    cleanup();
+
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
+        settings: {
+          ...defaultSettings,
+          homeLayoutMode: "linear"
+        }
+      })
+    );
+
+    render(<TodayScreen today="2026-04-18" />);
+    expect(screen.getByLabelText(/linear cycle view/i)).toBeInTheDocument();
   });
 });

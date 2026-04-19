@@ -1,4 +1,5 @@
 import type { AppState } from "../domain/types";
+import { normalizeSettings } from "./storage";
 
 export function exportBackup(state: AppState) {
   return JSON.stringify(state, null, 2);
@@ -18,5 +19,8 @@ export function importBackup(payload: string): AppState {
     throw new Error("Invalid backup file");
   }
 
-  return parsed as AppState;
+  return {
+    periodDays: parsed.periodDays,
+    settings: normalizeSettings(parsed.settings)
+  };
 }

@@ -4,7 +4,9 @@ import { getTodayIsoDate } from "../../utils/date";
 import { LogAction } from "../log/LogAction";
 import { ReminderBanner } from "../reminders/ReminderBanner";
 import { useAppState } from "../../hooks/useAppState";
-import { CycleView } from "./CycleView";
+import { CircularCycleView } from "./CircularCycleView";
+import { getFertilityStatusLabel, LinearCycleView } from "./CycleView";
+import { SimpleHomeView } from "./SimpleHomeView";
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -28,11 +30,26 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       : summary.nextPeriod.daysUntil < 0
         ? `Next period ${Math.abs(summary.nextPeriod.daysUntil)} day${Math.abs(summary.nextPeriod.daysUntil) === 1 ? "" : "s"} late`
         : `Next period in ${summary.nextPeriod.daysUntil} day${summary.nextPeriod.daysUntil === 1 ? "" : "s"}`;
+  const fertilityLabel = getFertilityStatusLabel(summary);
 
   return (
     <section className="today-screen">
       <h1 className="today-screen__day">Day {summary.cycleDay ?? "--"}</h1>
-      <CycleView summary={summary} periodDays={state.periodDays} today={today} />
+      <div className="today-screen__chips" aria-label="Today summary chips">
+        {state.settings.showPhaseChip ? (
+          <span className="status-chip">Phase: {summary.phaseLabel}</span>
+        ) : null}
+        {state.settings.showFertilityChip ? (
+          <span className="status-chip">Fertility: {fertilityLabel}</span>
+        ) : null}
+      </div>
+      {state.settings.homeLayoutMode === "simple" ? (
+        <SimpleHomeView />
+      ) : state.settings.homeLayoutMode === "linear" ? (
+        <LinearCycleView summary={summary} periodDays={state.periodDays} today={today} />
+      ) : (
+        <CircularCycleView summary={summary} periodDays={state.periodDays} today={today} />
+      )}
       <p className="today-screen__summary">{nextPeriodSummary}</p>
       {summary.phaseLabel === "unknown" ? (
         <p className="supporting-note">Learning your cycle rhythm</p>

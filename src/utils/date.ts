@@ -22,6 +22,12 @@ export function addDays(value: IsoDate, amount: number): IsoDate {
   return formatIsoDate(date);
 }
 
+export function addMonths(value: IsoDate, amount: number): IsoDate {
+  const date = parseIsoDate(value);
+  date.setUTCMonth(date.getUTCMonth() + amount, 1);
+  return formatIsoDate(date);
+}
+
 export function differenceInDays(left: IsoDate, right: IsoDate): number {
   return Math.round((parseIsoDate(left).getTime() - parseIsoDate(right).getTime()) / DAY_IN_MS);
 }
