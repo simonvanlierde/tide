@@ -52,11 +52,15 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
   );
 
   function toggleTodayPeriodDay() {
+    togglePeriodDay(today);
+  }
+
+  function togglePeriodDay(day: IsoDate) {
     setState((currentState) => {
-      const hasTodayLogged = currentState.periodDays.includes(today);
-      const periodDays = hasTodayLogged
-        ? currentState.periodDays.filter((value) => value !== today)
-        : sortPeriodDays([...currentState.periodDays, today]);
+      const hasLoggedDay = currentState.periodDays.includes(day);
+      const periodDays = hasLoggedDay
+        ? currentState.periodDays.filter((value) => value !== day)
+        : sortPeriodDays([...currentState.periodDays, day]);
 
       return {
         ...currentState,
@@ -107,6 +111,7 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     state,
     summary,
     toggleTodayPeriodDay,
+    togglePeriodDay,
     snoozeReminders,
     setReminderWindowDays,
     removePeriodDay,

@@ -26,6 +26,7 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       : summary.fertile
         ? "Fertile window"
         : "Not fertile";
+  const snoozeOptions = [1, 3, 7] as const;
 
   return (
     <section className="today-screen">
@@ -61,16 +62,24 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
           <div className="metric-card__value">{summary.phaseLabel}</div>
         </article>
         <article className="metric-card">
-          <div className="metric-card__label">Status</div>
+          <div className="metric-card__label">Cycle status</div>
           <div className="metric-card__value">{fertilityStatus}</div>
         </article>
       </div>
 
       <LogAction isLogged={isTodayLogged} onToggle={toggleTodayPeriodDay} />
       {state.settings.snoozedUntil ? null : reminderState.shouldNudge ? (
-        <button className="secondary-action" onClick={() => snoozeReminders(3)}>
-          Snooze reminders for 3 days
-        </button>
+        <div className="snooze-actions" role="group" aria-label="Snooze reminders">
+          {snoozeOptions.map((days) => (
+            <button
+              key={days}
+              className="secondary-action secondary-action--chip"
+              onClick={() => snoozeReminders(days)}
+            >
+              Snooze {days} {days === 1 ? "day" : "days"}
+            </button>
+          ))}
+        </div>
       ) : null}
       <ReminderBanner
         today={today}

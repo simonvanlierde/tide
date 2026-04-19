@@ -30,6 +30,21 @@ describe("SettingsScreen", () => {
     expect(screen.getByText(/reminder window: 7 days/i)).toBeInTheDocument();
   });
 
+  it("shows install guidance and a next reminder summary", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { reminderWindowDays: 4, snoozedUntil: null }
+      })
+    );
+
+    render(<SettingsScreen />);
+
+    expect(screen.getByText(/next reminder/i)).toBeInTheDocument();
+    expect(screen.getByText(/add to home screen/i)).toBeInTheDocument();
+  });
+
   it("shows an inline error if import fails", async () => {
     render(<SettingsScreen />);
 

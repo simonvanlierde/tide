@@ -25,7 +25,7 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/day 17/i)).toBeInTheDocument();
     expect(screen.getByText(/next period/i)).toBeInTheDocument();
     expect(screen.getByText(/^Phase$/)).toBeInTheDocument();
-    expect(screen.getByText(/^Status$/)).toBeInTheDocument();
+    expect(screen.getByText(/^Cycle status$/)).toBeInTheDocument();
     expect(screen.queryByText(/^Ovulation$/)).not.toBeInTheDocument();
   });
 
@@ -79,9 +79,11 @@ describe("TodayScreen", () => {
     );
 
     const { rerender } = render(<TodayScreen today="2026-04-30" />);
-    expect(screen.getByRole("button", { name: /snooze reminders/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /snooze 1 day/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /snooze 3 days/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /snooze 7 days/i })).toBeInTheDocument();
 
     rerender(<TodayScreen today="2026-05-01" />);
-    expect(screen.getByRole("button", { name: /snooze reminders/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /snooze 3 days/i })).toBeInTheDocument();
   });
 });

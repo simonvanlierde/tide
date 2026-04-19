@@ -30,4 +30,15 @@ describe("HistoryScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: /remove 2026-04-02/i }));
     expect(screen.queryByText(/2026-04-02/i)).not.toBeInTheDocument();
   });
+
+  it("allows retroactive logging for a past day", () => {
+    render(<HistoryScreen />);
+
+    fireEvent.change(screen.getByLabelText(/period day/i), {
+      target: { value: "2026-04-05" }
+    });
+    fireEvent.click(screen.getByRole("button", { name: /save period day/i }));
+
+    expect(screen.getByText("2026-04-05")).toBeInTheDocument();
+  });
 });
