@@ -10,3 +10,13 @@ export interface CycleSummary {
     daysUntil: number | null;
   };
 }
+
+export interface AppSettings {
+  reminderWindowDays: number;
+  snoozedUntil: IsoDate | null;
+}
+
+export interface AppState {
+  periodDays: IsoDate[];
+  settings: AppSettings;
+}
