@@ -5,13 +5,14 @@ import { describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
 
 describe("App shell", () => {
-  it("renders the Today heading by default", () => {
+  it("renders utility navigation links for history and settings", () => {
     render(
       <MemoryRouter initialEntries={["/"]}>
         <App />
       </MemoryRouter>
     );
 
-    expect(screen.getByRole("heading", { name: /today/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/history/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/settings/i)).toBeInTheDocument();
   });
 });

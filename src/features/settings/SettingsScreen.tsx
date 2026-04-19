@@ -19,30 +19,44 @@ export function SettingsScreen() {
   }
 
   return (
-    <section>
-      <h1>Settings</h1>
-      <p>Your cycle data stays on this device unless you export it yourself.</p>
-      <p>Reminder window: {state.settings.reminderWindowDays} days before the expected period.</p>
-      <button onClick={handleExport}>Export backup</button>
-      <label>
-        Import backup file
-        <input
-          type="file"
-          aria-label="Import backup file"
-          accept="application/json"
-          onChange={async (event) => {
-            const file = event.target.files?.[0];
+    <section className="utility-screen">
+      <h1 className="utility-screen__title">Settings</h1>
 
-            if (!file) {
-              return;
-            }
+      <article className="utility-card">
+        <h2 className="section-title">Privacy</h2>
+        <p>Your cycle data stays on this device unless you export it yourself.</p>
+      </article>
 
-            await importState(file);
-            setStatusMessage("Backup imported");
-          }}
-        />
-      </label>
-      {statusMessage ? <p>{statusMessage}</p> : null}
+      <article className="utility-card">
+        <h2 className="section-title">Reminders</h2>
+        <p>Reminder window: {state.settings.reminderWindowDays} days before the expected period.</p>
+      </article>
+
+      <article className="utility-card">
+        <h2 className="section-title">Backup</h2>
+        <button className="primary-action" onClick={handleExport}>
+          Export backup
+        </button>
+        <label className="file-input">
+          <span>Import backup file</span>
+          <input
+            type="file"
+            aria-label="Import backup file"
+            accept="application/json"
+            onChange={async (event) => {
+              const file = event.target.files?.[0];
+
+              if (!file) {
+                return;
+              }
+
+              await importState(file);
+              setStatusMessage("Backup imported");
+            }}
+          />
+        </label>
+        {statusMessage ? <p className="supporting-note">{statusMessage}</p> : null}
+      </article>
     </section>
   );
 }

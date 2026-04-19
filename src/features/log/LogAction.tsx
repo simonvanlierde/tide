@@ -5,11 +5,11 @@ interface LogActionProps {
 
 export function LogAction({ isLogged, onToggle }: LogActionProps) {
   return (
-    <div>
-      <button onClick={onToggle}>
+    <div className="log-action">
+      <button className="primary-action" onClick={onToggle}>
         {isLogged ? "Remove period log for today" : "Log period today"}
       </button>
-      {isLogged ? <p>Logged for today</p> : null}
+      {isLogged ? <p className="supporting-note">Logged for today</p> : null}
     </div>
   );
 }

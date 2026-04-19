@@ -12,8 +12,9 @@ describe("SettingsScreen", () => {
     window.localStorage.clear();
   });
 
-  it("shows plain-language privacy copy", () => {
+  it("shows the privacy notice inside a grouped settings card", () => {
     render(<SettingsScreen />);
+    expect(screen.getByText(/privacy/i)).toBeInTheDocument();
     expect(screen.getByText(/your cycle data stays on this device/i)).toBeInTheDocument();
   });
 

@@ -22,12 +22,12 @@ export function ReminderBanner({
   });
 
   if (settings.snoozedUntil) {
-    return <p>Reminders snoozed until {settings.snoozedUntil}</p>;
+    return <p className="supporting-note">Reminders snoozed until {settings.snoozedUntil}</p>;
   }
 
   if (!reminderState.shouldNudge || reminderState.mode !== "banner") {
     return null;
   }
 
-  return <p>Period reminder window is active</p>;
+  return <p className="supporting-note">Period reminder window is active</p>;
 }

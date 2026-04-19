@@ -19,11 +19,12 @@ describe("TodayScreen", () => {
     );
   });
 
-  it("shows cycle day as the primary information", () => {
+  it("shows the cycle day hero and secondary metric cards", () => {
     render(<TodayScreen today="2026-04-18" />);
 
     expect(screen.getByText(/day 17/i)).toBeInTheDocument();
-    expect(screen.getByText(/fertile window/i)).toBeInTheDocument();
+    expect(screen.getByText(/next period/i)).toBeInTheDocument();
+    expect(screen.getByText(/^Ovulation$/)).toBeInTheDocument();
   });
 
   it("logs a period day from the primary action", () => {

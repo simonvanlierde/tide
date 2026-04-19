@@ -19,8 +19,9 @@ describe("HistoryScreen", () => {
     );
   });
 
-  it("renders logged period days", () => {
+  it("renders history entries as grouped utility cards", () => {
     render(<HistoryScreen />);
+    expect(screen.getByRole("heading", { name: /history/i })).toBeInTheDocument();
     expect(screen.getByText("2026-04-02")).toBeInTheDocument();
   });
 
