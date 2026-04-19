@@ -1,6 +1,15 @@
+import { HistoryScreen } from "../features/history/HistoryScreen";
+import { TodayScreen } from "../features/today/TodayScreen";
+
 export const routes = [
   {
     path: "/",
-    title: "Today"
+    label: "Today",
+    element: <TodayScreen />
+  },
+  {
+    path: "/history",
+    label: "History",
+    element: <HistoryScreen />
   }
 ];

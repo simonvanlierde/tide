@@ -2,13 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
 import type { AppState, IsoDate } from "../domain/types";
 import { loadAppState, saveAppState } from "../data/storage";
-import { addDays } from "../utils/date";
+import { addDays, getTodayIsoDate } from "../utils/date";
 
 function sortPeriodDays(periodDays: IsoDate[]) {
   return [...periodDays].sort();
 }
 
-export function useAppState(today: IsoDate) {
+export function useAppState(today: IsoDate = getTodayIsoDate()) {
   const [state, setState] = useState<AppState>(() => loadAppState());
 
   useEffect(() => {
@@ -49,10 +49,18 @@ export function useAppState(today: IsoDate) {
     }));
   }
 
+  function removePeriodDay(day: IsoDate) {
+    setState((currentState) => ({
+      ...currentState,
+      periodDays: currentState.periodDays.filter((value) => value !== day)
+    }));
+  }
+
   return {
     state,
     summary,
     toggleTodayPeriodDay,
-    snoozeReminders
+    snoozeReminders,
+    removePeriodDay
   };
 }
