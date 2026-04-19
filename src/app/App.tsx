@@ -1,7 +1,5 @@
+import { TodayScreen } from "../features/today/TodayScreen";
+
 export function App() {
-  return (
-    <main>
-      <h1>Today</h1>
-    </main>
-  );
+  return <TodayScreen />;
 }

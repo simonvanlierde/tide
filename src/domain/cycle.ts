@@ -23,6 +23,16 @@ function getCycleStarts(periodDays: IsoDate[]) {
   });
 }
 
+export function getCompletedCycleLengths(periodDays: IsoDate[]) {
+  const cycleStarts = getCycleStarts(periodDays);
+
+  if (cycleStarts.length < 2) {
+    return [];
+  }
+
+  return cycleStarts.slice(1).map((cycleStart, index) => differenceInDays(cycleStart, cycleStarts[index]));
+}
+
 function getPhaseLabel(today: IsoDate, periodDays: IsoDate[], ovulationDate: IsoDate, cycleDay: number) {
   if (periodDays.includes(today)) {
     return "period" as const;
