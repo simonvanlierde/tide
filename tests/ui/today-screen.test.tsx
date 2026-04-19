@@ -19,21 +19,22 @@ describe("TodayScreen", () => {
     );
   });
 
-  it("shows the cycle day hero and secondary metric cards", () => {
+  it("shows the cycle day hero with a cycle visualization and one summary line", () => {
     render(<TodayScreen today="2026-04-18" />);
 
     expect(screen.getByText(/day 17/i)).toBeInTheDocument();
-    expect(screen.getByText(/next period/i)).toBeInTheDocument();
-    expect(screen.getByText(/^Phase$/)).toBeInTheDocument();
-    expect(screen.getByText(/^Cycle status$/)).toBeInTheDocument();
-    expect(screen.queryByText(/^Ovulation$/)).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/cycle view/i)).toBeInTheDocument();
+    expect(screen.getByText(/next period in 12 days/i)).toBeInTheDocument();
+    expect(screen.queryByText(/^Phase$/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Cycle status$/)).not.toBeInTheDocument();
   });
 
-  it("folds ovulation into the fertility status instead of a separate card", () => {
+  it("avoids overlapping ovulation labels on the main screen", () => {
     render(<TodayScreen today="2026-04-15" />);
 
-    expect(screen.getByText(/^Ovulation likely$/)).toBeInTheDocument();
-    expect(screen.queryByText(/estimated ovulation/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/ovulation likely now/i)).toBeInTheDocument();
+    expect(screen.queryByText(/^Phase$/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^Cycle status$/)).not.toBeInTheDocument();
   });
 
   it("logs a period day from the primary action", () => {
@@ -54,6 +55,20 @@ describe("TodayScreen", () => {
 
     render(<TodayScreen today="2026-04-21" />);
     expect(screen.getByText(/early estimate/i)).toBeInTheDocument();
+  });
+
+  it("shows a calm late label instead of a negative next-period number", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { reminderWindowDays: 4, snoozedUntil: null }
+      })
+    );
+
+    render(<TodayScreen today="2026-05-01" />);
+    expect(screen.getByText(/next period 1 day late/i)).toBeInTheDocument();
+    expect(screen.queryByText(/-1 day/i)).not.toBeInTheDocument();
   });
 
   it("hides the snooze action when reminders are not currently relevant", () => {

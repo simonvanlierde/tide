@@ -89,6 +89,16 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     }));
   }
 
+  function clearReminderSnooze() {
+    setState((currentState) => ({
+      ...currentState,
+      settings: {
+        ...currentState.settings,
+        snoozedUntil: null
+      }
+    }));
+  }
+
   function removePeriodDay(day: IsoDate) {
     setState((currentState) => ({
       ...currentState,
@@ -113,6 +123,7 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     toggleTodayPeriodDay,
     togglePeriodDay,
     snoozeReminders,
+    clearReminderSnooze,
     setReminderWindowDays,
     removePeriodDay,
     exportState,

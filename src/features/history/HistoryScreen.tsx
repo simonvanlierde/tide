@@ -1,40 +1,105 @@
-import { useState } from "react";
 import type { IsoDate } from "../../domain/types";
-import { getTodayIsoDate } from "../../utils/date";
+import { getTodayIsoDate, parseIsoDate } from "../../utils/date";
 import { useAppState } from "../../hooks/useAppState";
 
-export function HistoryScreen() {
-  const { state, togglePeriodDay, removePeriodDay } = useAppState();
-  const [selectedDay, setSelectedDay] = useState<IsoDate>(getTodayIsoDate());
+interface HistoryScreenProps {
+  today?: IsoDate;
+}
+
+function formatMonthLabel(value: IsoDate) {
+  return parseIsoDate(value).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC"
+  });
+}
+
+function formatDayButtonLabel(value: IsoDate) {
+  return `Toggle ${parseIsoDate(value).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  })}`;
+}
+
+function getMonthDays(today: IsoDate) {
+  const current = parseIsoDate(today);
+  const year = current.getUTCFullYear();
+  const monthIndex = current.getUTCMonth();
+  const first = new Date(Date.UTC(year, monthIndex, 1));
+  const last = new Date(Date.UTC(year, monthIndex + 1, 0));
+  const firstWeekday = (first.getUTCDay() + 6) % 7;
+  const daysInMonth = last.getUTCDate();
+  const days: Array<IsoDate | null> = [];
+
+  for (let index = 0; index < firstWeekday; index += 1) {
+    days.push(null);
+  }
+
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const value = new Date(Date.UTC(year, monthIndex, day)).toISOString().slice(0, 10) as IsoDate;
+    days.push(value);
+  }
+
+  while (days.length % 7 !== 0) {
+    days.push(null);
+  }
+
+  return days;
+}
+
+export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps) {
+  const { state, togglePeriodDay, removePeriodDay } = useAppState(today);
+  const monthDays = getMonthDays(today);
+  const loggedDays = new Set(state.periodDays);
+  const latestLogs = [...state.periodDays].sort((left, right) => right.localeCompare(left));
 
   return (
     <section className="utility-screen">
       <h1 className="utility-screen__title">History</h1>
+
       <article className="utility-card">
-        <h2 className="section-title">Log a past day</h2>
-        <label className="file-input">
-          <span>Period day</span>
-          <input
-            type="date"
-            aria-label="Period day"
-            value={selectedDay}
-            max={getTodayIsoDate()}
-            onChange={(event) => setSelectedDay(event.target.value as IsoDate)}
-          />
-        </label>
-        <button className="primary-action" onClick={() => togglePeriodDay(selectedDay)}>
-          Save period day
-        </button>
+        <h2 className="section-title">{formatMonthLabel(today)}</h2>
+        <div className="calendar-grid" aria-label="History calendar">
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+            <div key={day} className="calendar-grid__weekday">
+              {day}
+            </div>
+          ))}
+          {monthDays.map((value, index) =>
+            value ? (
+              <button
+                key={value}
+                type="button"
+                className={loggedDays.has(value) ? "calendar-grid__day is-logged" : "calendar-grid__day"}
+                aria-label={formatDayButtonLabel(value)}
+                onClick={() => togglePeriodDay(value)}
+              >
+                {parseIsoDate(value).getUTCDate()}
+              </button>
+            ) : (
+              <div key={`empty-${index}`} className="calendar-grid__blank" aria-hidden="true" />
+            )
+          )}
+        </div>
       </article>
+
       <div className="utility-stack">
-        {state.periodDays.map((day) => (
-          <article key={day} className="utility-card utility-card--row">
-            <span>{day}</span>
-            <button className="text-action" onClick={() => removePeriodDay(day)}>
-              Remove {day}
-            </button>
+        {latestLogs.length === 0 ? (
+          <article className="utility-card">
+            <p>No period days logged yet.</p>
           </article>
-        ))}
+        ) : (
+          latestLogs.map((day) => (
+            <article key={day} className="utility-card utility-card--row">
+              <span>{day}</span>
+              <button className="text-action" onClick={() => removePeriodDay(day)}>
+                Remove {day}
+              </button>
+            </article>
+          ))
+        )}
       </div>
     </section>
   );

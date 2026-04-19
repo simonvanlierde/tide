@@ -4,6 +4,7 @@ import { getTodayIsoDate } from "../../utils/date";
 import { LogAction } from "../log/LogAction";
 import { ReminderBanner } from "../reminders/ReminderBanner";
 import { useAppState } from "../../hooks/useAppState";
+import { CycleView } from "./CycleView";
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -20,52 +21,27 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
     notificationPermission:
       typeof Notification === "undefined" ? "default" : Notification.permission
   });
-  const fertilityStatus =
-    summary.phaseLabel === "ovulation"
-      ? "Ovulation likely"
-      : summary.fertile
-        ? "Fertile window"
-        : "Not fertile";
   const snoozeOptions = [1, 3, 7] as const;
+  const nextPeriodSummary =
+    summary.nextPeriod.daysUntil === null
+      ? "Next period estimate not available yet"
+      : summary.nextPeriod.daysUntil < 0
+        ? `Next period ${Math.abs(summary.nextPeriod.daysUntil)} day${Math.abs(summary.nextPeriod.daysUntil) === 1 ? "" : "s"} late`
+        : `Next period in ${summary.nextPeriod.daysUntil} day${summary.nextPeriod.daysUntil === 1 ? "" : "s"}`;
 
   return (
     <section className="today-screen">
-      <div className="status-eyebrow">
-        {summary.phaseLabel === "ovulation"
-          ? "Ovulation likely now"
-          : summary.phaseLabel === "menstrual"
-            ? "Period in progress"
-            : summary.fertile
-              ? "Fertile window active"
-              : "Lower fertility likelihood"}
-      </div>
-
       <h1 className="today-screen__day">Day {summary.cycleDay ?? "--"}</h1>
+      <CycleView summary={summary} periodDays={state.periodDays} today={today} />
+      <p className="today-screen__summary">{nextPeriodSummary}</p>
       {summary.phaseLabel === "unknown" ? (
-        <p className="today-screen__summary">Learning your cycle rhythm</p>
+        <p className="supporting-note">Learning your cycle rhythm</p>
       ) : null}
       {summary.estimateMode === "fallback" ? (
         <p className="supporting-note supporting-note--subtle">
           Early estimate based on a typical 28-day cycle.
         </p>
       ) : null}
-
-      <div className="metric-grid metric-grid--three">
-        <article className="metric-card">
-          <div className="metric-card__label">Next period</div>
-          <div className="metric-card__value">
-            {summary.nextPeriod.daysUntil === null ? "--" : `${summary.nextPeriod.daysUntil} days`}
-          </div>
-        </article>
-        <article className="metric-card">
-          <div className="metric-card__label">Phase</div>
-          <div className="metric-card__value">{summary.phaseLabel}</div>
-        </article>
-        <article className="metric-card">
-          <div className="metric-card__label">Cycle status</div>
-          <div className="metric-card__value">{fertilityStatus}</div>
-        </article>
-      </div>
 
       <LogAction isLogged={isTodayLogged} onToggle={toggleTodayPeriodDay} />
       {state.settings.snoozedUntil ? null : reminderState.shouldNudge ? (

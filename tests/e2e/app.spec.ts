@@ -4,10 +4,19 @@ test("home screen shows the polished Today layout", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("heading", { name: /day/i })).toBeVisible();
+  await expect(page.getByLabel(/cycle view/i)).toBeVisible();
   await expect(page.getByLabel(/today/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /log period today/i })).toBeVisible();
   await expect(page.getByLabel(/history/i)).toBeVisible();
   await expect(page.getByLabel(/settings/i)).toBeVisible();
+});
+
+test("history and settings show the new utility controls", async ({ page }) => {
+  await page.goto("/history");
+  await expect(page.getByLabel(/history calendar/i)).toBeVisible();
+
+  await page.goto("/settings");
+  await expect(page.getByText(/next reminder/i)).toBeVisible();
 });
 
 test("favicon is served from the app root", async ({ page }) => {

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { IsoDate } from "../../domain/types";
 import { useAppState } from "../../hooks/useAppState";
 import { differenceInDays, getTodayIsoDate } from "../../utils/date";
 
@@ -20,16 +21,22 @@ function getReminderSummary(daysUntilPeriod: number | null, reminderWindowDays: 
   return "Reminder window has passed for this cycle.";
 }
 
-export function SettingsScreen() {
-  const { state, summary, exportState, importState, setReminderWindowDays } = useAppState();
+interface SettingsScreenProps {
+  today?: IsoDate;
+}
+
+export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProps) {
+  const { state, summary, exportState, importState, setReminderWindowDays, snoozeReminders, clearReminderSnooze } = useAppState(today);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const reminderWindowOptions = [3, 4, 5, 7];
-  const today = getTodayIsoDate();
+  const snoozeOptions = [1, 3, 7] as const;
   const snoozeSummary =
     state.settings.snoozedUntil &&
     differenceInDays(state.settings.snoozedUntil, today) >= 0
       ? `Snoozed until ${state.settings.snoozedUntil}.`
       : null;
+
+  const reminderActionsLabel = snoozeSummary ? "Adjust snooze" : "Quick snooze";
 
   function handleExport() {
     const backup = exportState();
@@ -60,6 +67,33 @@ export function SettingsScreen() {
           Next reminder: {getReminderSummary(summary.nextPeriod.daysUntil, state.settings.reminderWindowDays)}
         </p>
         {snoozeSummary ? <p className="supporting-note">{snoozeSummary}</p> : null}
+        <div className="chip-row" role="group" aria-label={reminderActionsLabel}>
+          {snoozeOptions.map((days) => (
+            <button
+              key={days}
+              type="button"
+              className="chip-button"
+              onClick={() => {
+                snoozeReminders(days);
+                setStatusMessage(`Reminders snoozed for ${days} day${days === 1 ? "" : "s"}`);
+              }}
+            >
+              Snooze {days} {days === 1 ? "day" : "days"}
+            </button>
+          ))}
+        </div>
+        {snoozeSummary ? (
+          <button
+            type="button"
+            className="text-action"
+            onClick={() => {
+              clearReminderSnooze();
+              setStatusMessage("Reminders turned back on");
+            }}
+          >
+            Turn reminders back on now
+          </button>
+        ) : null}
         <div className="chip-row" role="group" aria-label="Reminder window">
           {reminderWindowOptions.map((days) => (
             <button
