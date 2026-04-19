@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
 import type { AppState, IsoDate } from "../domain/types";
+import { importBackup } from "../data/exportImport";
 import { loadAppState, saveAppState } from "../data/storage";
 import { addDays, getTodayIsoDate } from "../utils/date";
 
@@ -56,11 +57,24 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     }));
   }
 
+  function exportState() {
+    return JSON.stringify(state, null, 2);
+  }
+
+  async function importState(file: File) {
+    const payload = await file.text();
+    const nextState = importBackup(payload);
+    setState(nextState);
+    return nextState;
+  }
+
   return {
     state,
     summary,
     toggleTodayPeriodDay,
     snoozeReminders,
-    removePeriodDay
+    removePeriodDay,
+    exportState,
+    importState
   };
 }
