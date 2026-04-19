@@ -1,6 +1,9 @@
 import type { CycleSummary, IsoDate } from "./types";
 import { addDays, differenceInDays } from "../utils/date";
 
+const DEFAULT_CYCLE_LENGTH = 28;
+const DEFAULT_LUTEAL_LENGTH = 14;
+
 interface BuildCycleSummaryInput {
   today: IsoDate;
   periodDays: IsoDate[];
@@ -35,13 +38,13 @@ export function getCompletedCycleLengths(periodDays: IsoDate[]) {
 
 function getPhaseLabel(today: IsoDate, periodDays: IsoDate[], ovulationDate: IsoDate, cycleDay: number) {
   if (periodDays.includes(today)) {
-    return "period" as const;
+    return "menstrual" as const;
   }
 
   const ovulationOffset = differenceInDays(today, ovulationDate);
 
   if (Math.abs(ovulationOffset) <= 1) {
-    return "ovulatory" as const;
+    return "ovulation" as const;
   }
 
   if (cycleDay > 0 && ovulationOffset > 1) {
@@ -57,19 +60,6 @@ function isWithinFertileWindow(today: IsoDate, ovulationDate: IsoDate) {
 }
 
 export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
-  if (input.completedCycleLengths.length === 0) {
-    return {
-      cycleDay: null,
-      phaseLabel: "unknown",
-      fertile: false,
-      ovulationDate: null,
-      nextPeriod: {
-        date: null,
-        daysUntil: null
-      }
-    };
-  }
-
   const cycleStarts = getCycleStarts(input.periodDays);
   const lastCycleStart = cycleStarts.at(-1);
 
@@ -82,17 +72,21 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
       nextPeriod: {
         date: null,
         daysUntil: null
-      }
+      },
+      estimateMode: "insufficient"
     };
   }
 
-  const averageCycleLength = Math.round(
-    input.completedCycleLengths.reduce((sum, value) => sum + value, 0) /
-      input.completedCycleLengths.length
-  );
-  const cycleDay = differenceInDays(input.today, lastCycleStart) + 1;
-  const nextPeriodDate = addDays(lastCycleStart, averageCycleLength);
-  const ovulationDate = addDays(nextPeriodDate, -14);
+  const cycleLength =
+    input.completedCycleLengths.length > 0
+      ? Math.round(
+          input.completedCycleLengths.reduce((sum, value) => sum + value, 0) /
+            input.completedCycleLengths.length
+        )
+      : DEFAULT_CYCLE_LENGTH;
+  const cycleDay = Math.max(1, differenceInDays(input.today, lastCycleStart) + 1);
+  const nextPeriodDate = addDays(lastCycleStart, cycleLength);
+  const ovulationDate = addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH);
 
   return {
     cycleDay,
@@ -102,6 +96,7 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
     nextPeriod: {
       date: nextPeriodDate,
       daysUntil: differenceInDays(nextPeriodDate, input.today)
-    }
+    },
+    estimateMode: input.completedCycleLengths.length > 0 ? "learned" : "fallback"
   };
 }

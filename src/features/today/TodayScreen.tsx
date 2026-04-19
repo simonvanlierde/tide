@@ -1,3 +1,4 @@
+import { getReminderState } from "../../domain/reminders";
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
 import { LogAction } from "../log/LogAction";
@@ -11,6 +12,14 @@ interface TodayScreenProps {
 export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
   const { state, summary, toggleTodayPeriodDay, snoozeReminders } = useAppState(today);
   const isTodayLogged = state.periodDays.includes(today);
+  const reminderState = getReminderState({
+    today,
+    nextPeriodDate: summary.nextPeriod.date,
+    reminderWindowDays: state.settings.reminderWindowDays,
+    snoozedUntil: state.settings.snoozedUntil,
+    notificationPermission:
+      typeof Notification === "undefined" ? "default" : Notification.permission
+  });
 
   return (
     <section className="today-screen">
@@ -23,6 +32,9 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
         {summary.phaseLabel === "unknown" ? "Learning your cycle rhythm" : `${summary.phaseLabel} phase`}
         {summary.ovulationDate ? " • ovulation estimated soon" : ""}
       </p>
+      {summary.estimateMode === "fallback" ? (
+        <p className="supporting-note">Early estimate based on a typical 28-day cycle.</p>
+      ) : null}
 
       <div className="metric-grid">
         <article className="metric-card">
@@ -46,9 +58,11 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       </div>
 
       <LogAction isLogged={isTodayLogged} onToggle={toggleTodayPeriodDay} />
-      <button className="secondary-action" onClick={() => snoozeReminders(3)}>
-        Snooze reminders for 3 days
-      </button>
+      {state.settings.snoozedUntil ? null : reminderState.shouldNudge ? (
+        <button className="secondary-action" onClick={() => snoozeReminders(3)}>
+          Snooze reminders for 3 days
+        </button>
+      ) : null}
       <ReminderBanner
         today={today}
         nextPeriodDate={summary.nextPeriod.date}

@@ -1,6 +1,12 @@
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { routes } from "./routes";
 
+const utilityRoutes = [
+  { path: "/", label: "Today", icon: "◉" },
+  { path: "/history", label: "History", icon: "◷" },
+  { path: "/settings", label: "Settings", icon: "⚙" }
+] as const;
+
 function UtilityNav() {
   const location = useLocation();
 
@@ -11,18 +17,16 @@ function UtilityNav() {
       </div>
 
       <nav aria-label="Utility navigation" className="utility-nav">
-        {routes
-          .filter((route) => route.path !== "/")
-          .map((route) => (
-            <Link
-              key={route.path}
-              to={route.path}
-              aria-label={route.label}
-              className={location.pathname === route.path ? "icon-button is-active" : "icon-button"}
-            >
-              <span aria-hidden="true">{route.path === "/history" ? "◷" : "⚙"}</span>
-            </Link>
-          ))}
+        {utilityRoutes.map((route) => (
+          <Link
+            key={route.path}
+            to={route.path}
+            aria-label={route.label}
+            className={location.pathname === route.path ? "icon-button is-active" : "icon-button"}
+          >
+            <span aria-hidden="true">{route.icon}</span>
+          </Link>
+        ))}
       </nav>
     </header>
   );

@@ -4,6 +4,7 @@ test("home screen shows the polished Today layout", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByRole("heading", { name: /day/i })).toBeVisible();
+  await expect(page.getByLabel(/today/i)).toBeVisible();
   await expect(page.getByRole("button", { name: /log period today/i })).toBeVisible();
   await expect(page.getByLabel(/history/i)).toBeVisible();
   await expect(page.getByLabel(/settings/i)).toBeVisible();

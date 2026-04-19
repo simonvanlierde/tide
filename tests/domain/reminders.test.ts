@@ -26,4 +26,16 @@ describe("getReminderState", () => {
 
     expect(state.shouldNudge).toBe(false);
   });
+
+  it("hides reminder relevance outside the reminder window", () => {
+    const state = getReminderState({
+      today: "2026-04-10",
+      nextPeriodDate: "2026-04-30",
+      reminderWindowDays: 4,
+      snoozedUntil: null,
+      notificationPermission: "default"
+    });
+
+    expect(state.shouldNudge).toBe(false);
+  });
 });

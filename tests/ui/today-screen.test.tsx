@@ -33,4 +33,30 @@ describe("TodayScreen", () => {
     fireEvent.click(screen.getByRole("button", { name: /log period today/i }));
     expect(screen.getByText(/logged for today/i)).toBeInTheDocument();
   });
+
+  it("shows an early estimate note when fallback predictions are in use", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-19", "2026-04-20"],
+        settings: { reminderWindowDays: 4, snoozedUntil: null }
+      })
+    );
+
+    render(<TodayScreen today="2026-04-21" />);
+    expect(screen.getByText(/early estimate/i)).toBeInTheDocument();
+  });
+
+  it("hides the snooze action when reminders are not currently relevant", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-19", "2026-04-20"],
+        settings: { reminderWindowDays: 4, snoozedUntil: null }
+      })
+    );
+
+    render(<TodayScreen today="2026-04-21" />);
+    expect(screen.queryByRole("button", { name: /snooze reminders/i })).not.toBeInTheDocument();
+  });
 });
