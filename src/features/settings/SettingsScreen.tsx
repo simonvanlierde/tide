@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppState } from "../../hooks/useAppState";
 
 export function SettingsScreen() {
-  const { exportState, importState } = useAppState();
+  const { state, exportState, importState } = useAppState();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   function handleExport() {
@@ -22,6 +22,7 @@ export function SettingsScreen() {
     <section>
       <h1>Settings</h1>
       <p>Your cycle data stays on this device unless you export it yourself.</p>
+      <p>Reminder window: {state.settings.reminderWindowDays} days before the expected period.</p>
       <button onClick={handleExport}>Export backup</button>
       <label>
         Import backup file

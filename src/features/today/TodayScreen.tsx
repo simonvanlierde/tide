@@ -23,7 +23,11 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       </p>
       <LogAction isLogged={isTodayLogged} onToggle={toggleTodayPeriodDay} />
       <button onClick={() => snoozeReminders(3)}>Snooze reminders for 3 days</button>
-      <ReminderBanner snoozedUntil={state.settings.snoozedUntil} />
+      <ReminderBanner
+        today={today}
+        nextPeriodDate={summary.nextPeriod.date}
+        settings={state.settings}
+      />
     </section>
   );
 }

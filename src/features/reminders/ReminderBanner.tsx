@@ -1,13 +1,33 @@
-import type { IsoDate } from "../../domain/types";
+import { getReminderState } from "../../domain/reminders";
+import type { AppSettings, IsoDate } from "../../domain/types";
 
 interface ReminderBannerProps {
-  snoozedUntil: IsoDate | null;
+  today: IsoDate;
+  nextPeriodDate: IsoDate | null;
+  settings: AppSettings;
 }
 
-export function ReminderBanner({ snoozedUntil }: ReminderBannerProps) {
-  if (!snoozedUntil) {
+export function ReminderBanner({
+  today,
+  nextPeriodDate,
+  settings
+}: ReminderBannerProps) {
+  const reminderState = getReminderState({
+    today,
+    nextPeriodDate,
+    reminderWindowDays: settings.reminderWindowDays,
+    snoozedUntil: settings.snoozedUntil,
+    notificationPermission:
+      typeof Notification === "undefined" ? "default" : Notification.permission
+  });
+
+  if (settings.snoozedUntil) {
+    return <p>Reminders snoozed until {settings.snoozedUntil}</p>;
+  }
+
+  if (!reminderState.shouldNudge || reminderState.mode !== "banner") {
     return null;
   }
 
-  return <p>Reminders snoozed until {snoozedUntil}</p>;
+  return <p>Period reminder window is active</p>;
 }
