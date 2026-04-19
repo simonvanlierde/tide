@@ -9,6 +9,31 @@ function sortPeriodDays(periodDays: IsoDate[]) {
   return [...periodDays].sort();
 }
 
+async function readBackupFile(file: File) {
+  if (typeof file.text === "function") {
+    return file.text();
+  }
+
+  return await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+        return;
+      }
+
+      reject(new Error("Could not read backup file"));
+    };
+
+    reader.onerror = () => {
+      reject(new Error("Could not read backup file"));
+    };
+
+    reader.readAsText(file);
+  });
+}
+
 export function useAppState(today: IsoDate = getTodayIsoDate()) {
   const [state, setState] = useState<AppState>(() => loadAppState());
 
@@ -50,6 +75,16 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     }));
   }
 
+  function setReminderWindowDays(days: number) {
+    setState((currentState) => ({
+      ...currentState,
+      settings: {
+        ...currentState.settings,
+        reminderWindowDays: days
+      }
+    }));
+  }
+
   function removePeriodDay(day: IsoDate) {
     setState((currentState) => ({
       ...currentState,
@@ -62,7 +97,7 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
   }
 
   async function importState(file: File) {
-    const payload = await file.text();
+    const payload = await readBackupFile(file);
     const nextState = importBackup(payload);
     setState(nextState);
     return nextState;
@@ -73,6 +108,7 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     summary,
     toggleTodayPeriodDay,
     snoozeReminders,
+    setReminderWindowDays,
     removePeriodDay,
     exportState,
     importState

@@ -11,22 +11,34 @@ interface ReminderStateInput {
 
 export function getReminderState(input: ReminderStateInput) {
   if (!input.nextPeriodDate) {
-    return { shouldNudge: false, mode: "banner" as const };
+    return {
+      shouldNudge: false,
+      mode: "banner" as const,
+      isInReminderWindow: false,
+      isSnoozed: false
+    };
   }
 
   const daysUntilPeriod = differenceInDays(input.nextPeriodDate, input.today);
   const inReminderWindow =
-    daysUntilPeriod >= 0 && daysUntilPeriod <= input.reminderWindowDays;
+    daysUntilPeriod >= -1 && daysUntilPeriod <= input.reminderWindowDays;
   const isSnoozed =
     input.snoozedUntil !== null &&
     differenceInDays(input.snoozedUntil, input.today) >= 0;
 
   if (!inReminderWindow || isSnoozed) {
-    return { shouldNudge: false, mode: "banner" as const };
+    return {
+      shouldNudge: false,
+      mode: "banner" as const,
+      isInReminderWindow: inReminderWindow,
+      isSnoozed
+    };
   }
 
   return {
     shouldNudge: true,
+    isInReminderWindow: true,
+    isSnoozed: false,
     mode:
       input.notificationPermission === "granted"
         ? ("notification" as const)

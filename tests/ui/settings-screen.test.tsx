@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 
@@ -22,5 +22,24 @@ describe("SettingsScreen", () => {
     render(<SettingsScreen />);
     expect(screen.getByRole("button", { name: /export backup/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/import backup file/i)).toBeInTheDocument();
+  });
+
+  it("allows the reminder window to be adjusted with preset chips", () => {
+    render(<SettingsScreen />);
+    fireEvent.click(screen.getByRole("button", { name: /7 days/i }));
+    expect(screen.getByText(/reminder window: 7 days/i)).toBeInTheDocument();
+  });
+
+  it("shows an inline error if import fails", async () => {
+    render(<SettingsScreen />);
+
+    const fileInput = screen.getByLabelText(/import backup file/i) as HTMLInputElement;
+    const badFile = new File(["\uFEFFnot-json"], "bad.json", { type: "application/json" });
+
+    fireEvent.change(fileInput, { target: { files: [badFile] } });
+
+    await waitFor(() => {
+      expect(screen.getByText(/unexpected backup file format/i)).toBeInTheDocument();
+    });
   });
 });

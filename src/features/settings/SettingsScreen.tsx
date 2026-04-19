@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useAppState } from "../../hooks/useAppState";
 
 export function SettingsScreen() {
-  const { state, exportState, importState } = useAppState();
+  const { state, exportState, importState, setReminderWindowDays } = useAppState();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const reminderWindowOptions = [3, 4, 5, 7];
 
   function handleExport() {
     const backup = exportState();
@@ -30,6 +31,21 @@ export function SettingsScreen() {
       <article className="utility-card">
         <h2 className="section-title">Reminders</h2>
         <p>Reminder window: {state.settings.reminderWindowDays} days before the expected period.</p>
+        <div className="chip-row" role="group" aria-label="Reminder window">
+          {reminderWindowOptions.map((days) => (
+            <button
+              key={days}
+              type="button"
+              className={days === state.settings.reminderWindowDays ? "chip-button is-active" : "chip-button"}
+              onClick={() => {
+                setReminderWindowDays(days);
+                setStatusMessage(`Reminder window set to ${days} days`);
+              }}
+            >
+              {days} days
+            </button>
+          ))}
+        </div>
       </article>
 
       <article className="utility-card">
@@ -50,8 +66,14 @@ export function SettingsScreen() {
                 return;
               }
 
-              await importState(file);
-              setStatusMessage("Backup imported");
+              try {
+                await importState(file);
+                setStatusMessage("Backup imported");
+              } catch (error) {
+                setStatusMessage(
+                  error instanceof Error ? error.message : "Import failed"
+                );
+              }
             }}
           />
         </label>

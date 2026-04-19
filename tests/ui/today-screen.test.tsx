@@ -24,7 +24,16 @@ describe("TodayScreen", () => {
 
     expect(screen.getByText(/day 17/i)).toBeInTheDocument();
     expect(screen.getByText(/next period/i)).toBeInTheDocument();
-    expect(screen.getByText(/^Ovulation$/)).toBeInTheDocument();
+    expect(screen.getByText(/^Phase$/)).toBeInTheDocument();
+    expect(screen.getByText(/^Status$/)).toBeInTheDocument();
+    expect(screen.queryByText(/^Ovulation$/)).not.toBeInTheDocument();
+  });
+
+  it("folds ovulation into the fertility status instead of a separate card", () => {
+    render(<TodayScreen today="2026-04-15" />);
+
+    expect(screen.getByText(/^Ovulation likely$/)).toBeInTheDocument();
+    expect(screen.queryByText(/estimated ovulation/i)).not.toBeInTheDocument();
   });
 
   it("logs a period day from the primary action", () => {
@@ -58,5 +67,21 @@ describe("TodayScreen", () => {
 
     render(<TodayScreen today="2026-04-21" />);
     expect(screen.queryByRole("button", { name: /snooze reminders/i })).not.toBeInTheDocument();
+  });
+
+  it("shows the snooze action on the predicted start day and one day late", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { reminderWindowDays: 4, snoozedUntil: null }
+      })
+    );
+
+    const { rerender } = render(<TodayScreen today="2026-04-30" />);
+    expect(screen.getByRole("button", { name: /snooze reminders/i })).toBeInTheDocument();
+
+    rerender(<TodayScreen today="2026-05-01" />);
+    expect(screen.getByRole("button", { name: /snooze reminders/i })).toBeInTheDocument();
   });
 });

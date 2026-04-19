@@ -29,5 +29,5 @@ export function ReminderBanner({
     return null;
   }
 
-  return <p className="supporting-note">Period reminder window is active</p>;
+  return <p className="supporting-note">Period reminder active</p>;
 }

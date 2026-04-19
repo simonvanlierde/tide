@@ -20,23 +20,36 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
     notificationPermission:
       typeof Notification === "undefined" ? "default" : Notification.permission
   });
+  const fertilityStatus =
+    summary.phaseLabel === "ovulation"
+      ? "Ovulation likely"
+      : summary.fertile
+        ? "Fertile window"
+        : "Not fertile";
 
   return (
     <section className="today-screen">
       <div className="status-eyebrow">
-        {summary.fertile ? "Fertile window active" : "Lower fertility likelihood"}
+        {summary.phaseLabel === "ovulation"
+          ? "Ovulation likely now"
+          : summary.phaseLabel === "menstrual"
+            ? "Period in progress"
+            : summary.fertile
+              ? "Fertile window active"
+              : "Lower fertility likelihood"}
       </div>
 
       <h1 className="today-screen__day">Day {summary.cycleDay ?? "--"}</h1>
-      <p className="today-screen__summary">
-        {summary.phaseLabel === "unknown" ? "Learning your cycle rhythm" : `${summary.phaseLabel} phase`}
-        {summary.ovulationDate ? " • ovulation estimated soon" : ""}
-      </p>
+      {summary.phaseLabel === "unknown" ? (
+        <p className="today-screen__summary">Learning your cycle rhythm</p>
+      ) : null}
       {summary.estimateMode === "fallback" ? (
-        <p className="supporting-note">Early estimate based on a typical 28-day cycle.</p>
+        <p className="supporting-note supporting-note--subtle">
+          Early estimate based on a typical 28-day cycle.
+        </p>
       ) : null}
 
-      <div className="metric-grid">
+      <div className="metric-grid metric-grid--three">
         <article className="metric-card">
           <div className="metric-card__label">Next period</div>
           <div className="metric-card__value">
@@ -44,16 +57,12 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
           </div>
         </article>
         <article className="metric-card">
-          <div className="metric-card__label">Ovulation</div>
-          <div className="metric-card__value">{summary.ovulationDate ? "Estimated" : "--"}</div>
-        </article>
-        <article className="metric-card">
           <div className="metric-card__label">Phase</div>
           <div className="metric-card__value">{summary.phaseLabel}</div>
         </article>
         <article className="metric-card">
           <div className="metric-card__label">Status</div>
-          <div className="metric-card__value">{summary.fertile ? "Fertile" : "Not fertile"}</div>
+          <div className="metric-card__value">{fertilityStatus}</div>
         </article>
       </div>
 

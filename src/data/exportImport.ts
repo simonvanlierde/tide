@@ -6,9 +6,10 @@ export function exportBackup(state: AppState) {
 
 export function importBackup(payload: string): AppState {
   let parsed: Partial<AppState>;
+  const normalizedPayload = payload.trim().replace(/^\uFEFF/, "");
 
   try {
-    parsed = JSON.parse(payload) as Partial<AppState>;
+    parsed = JSON.parse(normalizedPayload) as Partial<AppState>;
   } catch {
     throw new Error("Unexpected backup file format");
   }
