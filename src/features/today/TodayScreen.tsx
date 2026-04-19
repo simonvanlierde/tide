@@ -21,6 +21,7 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       <p>
         Next period {summary.nextPeriod.daysUntil === null ? "not available yet" : `in ${summary.nextPeriod.daysUntil} days`}
       </p>
+      <p>Your cycle data stays on this device.</p>
       <LogAction isLogged={isTodayLogged} onToggle={toggleTodayPeriodDay} />
       <button onClick={() => snoozeReminders(3)}>Snooze reminders for 3 days</button>
       <ReminderBanner
