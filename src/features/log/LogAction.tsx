@@ -15,9 +15,9 @@ export function LogAction({ isLogged, onToggle }: LogActionProps) {
         </span>
       </button>
       {isLogged ? (
-        <p className="supporting-note note-inline">
+        <p className="status-chip note-inline">
           <AppIcon icon={BadgeCheck} className="note-icon" />
-          <span>Marked as a bleeding day</span>
+          <span>Bleeding logged for today</span>
         </p>
       ) : null}
     </div>

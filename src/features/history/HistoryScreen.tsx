@@ -1,8 +1,13 @@
 import type { IsoDate } from "../../domain/types";
-import { useState } from "react";
-import { addMonths, getTodayIsoDate, parseIsoDate } from "../../utils/date";
+import { useMemo, useRef, useState } from "react";
+import {
+  formatMonthInputValue,
+  getTodayIsoDate,
+  parseMonthInputValue,
+  parseIsoDate,
+  setIsoDateMonth,
+} from "../../utils/date";
 import { useAppState } from "../../state/appState";
-import { AppIcon, ChevronLeft, ChevronRight } from "../../ui/icons";
 
 interface HistoryScreenProps {
   today?: IsoDate;
@@ -23,6 +28,19 @@ function formatDayButtonLabel(value: IsoDate) {
     year: "numeric",
     timeZone: "UTC",
   })}`;
+}
+
+function getMonthName(monthIndex: number) {
+  return new Date(Date.UTC(2026, monthIndex, 1)).toLocaleDateString("en-US", {
+    month: "long",
+    timeZone: "UTC",
+  });
+}
+
+function supportsMonthInput() {
+  const input = document.createElement("input");
+  input.setAttribute("type", "month");
+  return input.type === "month";
 }
 
 function getMonthDays(today: IsoDate) {
@@ -64,8 +82,11 @@ export function HistoryScreen({
 }: HistoryScreenProps) {
   const { state, togglePeriodDay } = useAppState(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const monthInputRef = useRef<HTMLInputElement | null>(null);
   const monthDays = getMonthDays(visibleMonth);
   const loggedDays = new Set(state.periodDays);
+  const hasNativeMonthInput = useMemo(() => supportsMonthInput(), []);
   const yearOptions = Array.from(
     new Set(
       [
@@ -74,51 +95,114 @@ export function HistoryScreen({
       ].sort(),
     ),
   );
+  const currentYear = parseIsoDate(visibleMonth).getUTCFullYear();
+  const currentMonthIndex = parseIsoDate(visibleMonth).getUTCMonth();
+
+  function openPicker() {
+    setIsPickerOpen(true);
+
+    if (!hasNativeMonthInput) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      const input = monthInputRef.current;
+
+      if (!input) {
+        return;
+      }
+
+      if ("showPicker" in input && typeof input.showPicker === "function") {
+        input.showPicker();
+        return;
+      }
+
+      input.focus();
+      input.click();
+    }, 0);
+  }
 
   return (
     <section className="utility-screen">
       <article className="utility-card">
-        <div className="calendar-toolbar">
+        <div className="calendar-toolbar calendar-toolbar--compact">
           <button
             type="button"
-            className="text-action"
-            onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}
+            className="calendar-picker-button"
+            aria-expanded={isPickerOpen}
+            aria-controls="history-month-picker"
+            onClick={openPicker}
           >
-            <span className="button-label">
-              <AppIcon icon={ChevronLeft} className="button-icon" />
-              <span>Previous month</span>
-            </span>
-          </button>
-          <h2 className="section-title">{formatMonthLabel(visibleMonth)}</h2>
-          <button
-            type="button"
-            className="text-action"
-            onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}
-          >
-            <span className="button-label">
-              <span>Next month</span>
-              <AppIcon icon={ChevronRight} className="button-icon" />
-            </span>
+            {formatMonthLabel(visibleMonth)}
           </button>
         </div>
-        <label className="calendar-year-jump">
-          <span>Jump to year</span>
-          <select
-            aria-label="Jump to year"
-            value={parseIsoDate(visibleMonth).getUTCFullYear()}
-            onChange={(event) => {
-              const next = parseIsoDate(visibleMonth);
-              next.setUTCFullYear(Number(event.target.value));
-              setVisibleMonth(next.toISOString().slice(0, 10) as IsoDate);
-            }}
-          >
-            {yearOptions.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-        </label>
+        {isPickerOpen ? (
+          <div id="history-month-picker" className="calendar-picker-panel">
+            {hasNativeMonthInput ? (
+              <label className="calendar-picker-field">
+                <span className="settings-label">Month and year</span>
+                <input
+                  ref={monthInputRef}
+                  type="month"
+                  aria-label="Select month and year"
+                  value={formatMonthInputValue(visibleMonth)}
+                  onChange={(event) => {
+                    if (!event.target.value) {
+                      return;
+                    }
+
+                    setVisibleMonth(parseMonthInputValue(event.target.value));
+                    setIsPickerOpen(false);
+                  }}
+                />
+              </label>
+            ) : (
+              <div className="calendar-picker-fallback">
+                <label className="calendar-picker-field">
+                  <span className="settings-label">Month</span>
+                  <select
+                    aria-label="Select month"
+                    value={currentMonthIndex}
+                    onChange={(event) => {
+                      setVisibleMonth(
+                        setIsoDateMonth(visibleMonth, Number(event.target.value)),
+                      );
+                    }}
+                  >
+                    {Array.from({ length: 12 }, (_, monthIndex) => (
+                      <option
+                        key={getMonthName(monthIndex)}
+                        value={monthIndex}
+                      >
+                        {getMonthName(monthIndex)}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="calendar-picker-field">
+                  <span className="settings-label">Year</span>
+                  <select
+                    aria-label="Select year"
+                    value={currentYear}
+                    onChange={(event) => {
+                      setVisibleMonth(
+                        parseMonthInputValue(
+                          `${event.target.value}-${String(currentMonthIndex + 1).padStart(2, "0")}`,
+                        ),
+                      );
+                    }}
+                  >
+                    {yearOptions.map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            )}
+          </div>
+        ) : null}
         <p className="supporting-note">
           Tap any day you had menstrual bleeding.
         </p>

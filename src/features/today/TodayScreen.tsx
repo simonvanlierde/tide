@@ -4,10 +4,13 @@ import { useAppState } from "../../state/appState";
 import { getTodayIsoDate } from "../../utils/date";
 import { LogAction } from "../log/LogAction";
 import { ReminderBanner } from "../reminders/ReminderBanner";
+import { AppIcon, Info } from "../../ui/icons";
+import { INFORMATION_COPY, SNOOZE_OPTIONS } from "../settings/config";
 import { CircularCycleView } from "./CircularCycleView";
 import { LinearCycleView } from "./CycleView";
 import {
   getFertilityEstimate,
+  getLearningNote,
   getNextPeriodSummary,
   getPhaseSentence,
 } from "./viewModel";
@@ -28,84 +31,76 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
     notificationPermission:
       typeof Notification === "undefined" ? "default" : Notification.permission,
   });
-  const snoozeOptions = [1, 3, 7] as const;
   const nextPeriodSummary = getNextPeriodSummary(summary.nextPeriod.daysUntil);
   const phaseSentence = getPhaseSentence(summary.phaseLabel);
   const fertilityEstimate = getFertilityEstimate(
     summary.phaseLabel,
     summary.fertile,
   );
+  const learningNote = getLearningNote(summary.estimateMode);
 
   return (
     <section className="today-screen">
-      <h1 className="today-screen__day">Day {summary.cycleDay ?? "--"}</h1>
-      <p className="today-screen__lede">{phaseSentence}</p>
+      <header className="today-hero">
+        <p className="today-hero__eyebrow">Cycle today</p>
+        <h1 className="today-screen__day">Day {summary.cycleDay ?? "--"}</h1>
+        <p className="today-screen__lede">{phaseSentence}</p>
+        {learningNote ? <p className="today-hero__aside">{learningNote}</p> : null}
+      </header>
 
-      {state.settings.homeDisplayMode === "summary" ? (
-        <section className="today-summary" aria-label="Cycle summary">
-          {state.settings.homeCards.showNextPeriodCard ? (
-            <article className="summary-card summary-card--primary">
-              <p className="summary-card__label">Next period</p>
-              <p className="summary-card__value">{nextPeriodSummary}</p>
-            </article>
-          ) : null}
-
-          {state.settings.homeCards.showPhaseCard ? (
-            <article className="summary-card">
-              <p className="summary-card__label">Current phase</p>
-              <p className="summary-card__value">
-                {summary.phaseLabel === "unknown"
-                  ? "Learning"
-                  : summary.phaseLabel}
-              </p>
-            </article>
-          ) : null}
-
-          {state.settings.homeCards.showFertilityCard ? (
-            <article className="summary-card">
-              <p className="summary-card__label">Fertility</p>
-              <p className="summary-card__value">{fertilityEstimate}</p>
-              <p className="summary-card__note">
-                Informational only and not birth control.
-              </p>
-            </article>
-          ) : null}
-        </section>
-      ) : state.settings.homeDisplayMode === "linear" ? (
+      {state.settings.homeDisplayMode === "linear" ? (
         <LinearCycleView
           summary={summary}
           periodDays={state.periodDays}
           today={today}
         />
-      ) : (
+      ) : state.settings.homeDisplayMode === "circular" ? (
         <CircularCycleView
           summary={summary}
           periodDays={state.periodDays}
           today={today}
         />
-      )}
+      ) : (
+        <section className="today-summary" aria-label="Cycle summary">
+          <article className="summary-card summary-card--primary">
+            <p className="summary-card__label">Next period</p>
+            <p className="summary-card__value">{nextPeriodSummary}</p>
+          </article>
 
-      {summary.estimateMode === "fallback" ? (
-        <p className="supporting-note">
-          Still learning your cycle from recent logs.
-        </p>
-      ) : null}
-      {summary.estimateMode === "fallback" ? (
-        <p className="supporting-note supporting-note--subtle">
-          Current estimate uses a typical 28-day cycle as a starting point.
-        </p>
-      ) : null}
-      {summary.estimateMode === "insufficient" ? (
-        <p className="supporting-note">
-          Log bleeding days to start building a cycle estimate.
-        </p>
-      ) : null}
+          <div className="summary-chip-row">
+            <article className="summary-chip">
+              <p className="summary-chip__label">Phase</p>
+              <p className="summary-chip__value">
+                {summary.phaseLabel === "unknown" ? "Learning" : summary.phaseLabel}
+              </p>
+            </article>
+
+            <article className="summary-chip summary-chip--with-action">
+              <div>
+                <p className="summary-chip__label">Fertility</p>
+                <p className="summary-chip__value">{fertilityEstimate}</p>
+              </div>
+              <details className="info-popover">
+                <summary
+                  className="info-popover__trigger"
+                  aria-label="Show fertility disclaimer"
+                >
+                  <AppIcon icon={Info} className="info-popover__icon" />
+                </summary>
+                <div className="info-popover__content" role="note">
+                  {INFORMATION_COPY.fertility}
+                </div>
+              </details>
+            </article>
+          </div>
+        </section>
+      )}
 
       <LogAction isLogged={isTodayLogged} onToggle={toggleTodayPeriodDay} />
       {state.settings.snoozedUntil ? null : reminderState.shouldNudge ? (
         <fieldset className="snooze-actions chip-fieldset">
           <legend className="settings-label">Snooze reminders</legend>
-          {snoozeOptions.map((days) => (
+          {SNOOZE_OPTIONS.map((days) => (
             <button
               key={days}
               type="button"
@@ -117,11 +112,13 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
           ))}
         </fieldset>
       ) : null}
-      <ReminderBanner
-        today={today}
-        nextPeriodDate={summary.nextPeriod.date}
-        settings={state.settings}
-      />
+      <div className="status-row">
+        <ReminderBanner
+          today={today}
+          nextPeriodDate={summary.nextPeriod.date}
+          settings={state.settings}
+        />
+      </div>
     </section>
   );
 }

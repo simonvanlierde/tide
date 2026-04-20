@@ -9,6 +9,7 @@ import {
   Download,
   Droplets,
   House,
+  Info,
   Settings2,
   Upload,
 } from "lucide-react";
@@ -39,6 +40,7 @@ export {
   Download,
   Droplets,
   House,
+  Info,
   Settings2,
   Upload,
 };

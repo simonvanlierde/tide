@@ -1,3 +1,4 @@
+import { CalendarDays, House, Settings2 } from "../ui/icons";
 import { HistoryScreen } from "../features/history/HistoryScreen";
 import { SettingsScreen } from "../features/settings/SettingsScreen";
 import { TodayScreen } from "../features/today/TodayScreen";
@@ -5,17 +6,23 @@ import { TodayScreen } from "../features/today/TodayScreen";
 export const routes = [
   {
     path: "/",
-    label: "Today",
+    title: "Today",
+    navLabel: "Today",
+    icon: House,
     element: <TodayScreen />,
   },
   {
     path: "/history",
-    label: "History",
+    title: "History",
+    navLabel: "History",
+    icon: CalendarDays,
     element: <HistoryScreen />,
   },
   {
     path: "/settings",
-    label: "Settings",
+    title: "Settings",
+    navLabel: "Settings",
+    icon: Settings2,
     element: <SettingsScreen />,
   },
-];
+] as const;

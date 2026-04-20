@@ -1,53 +1,31 @@
-import { Link, Route, Routes, useLocation } from "react-router-dom";
+import { NavLink, Route, Routes, useLocation } from "react-router-dom";
 import { routes } from "./routes";
-import { AppIcon, CalendarDays, House, Settings2 } from "../ui/icons";
+import { AppIcon } from "../ui/icons";
 import { AppStateProvider } from "../state/appState";
-
-const utilityRoutes = [
-  {
-    path: "/",
-    label: "Today",
-    icon: <AppIcon icon={House} />,
-  },
-  {
-    path: "/history",
-    label: "History",
-    icon: <AppIcon icon={CalendarDays} />,
-  },
-  {
-    path: "/settings",
-    label: "Settings",
-    icon: <AppIcon icon={Settings2} />,
-  },
-] as const;
 
 function UtilityNav() {
   const location = useLocation();
+  const activeRoute =
+    routes.find((route) => route.path === location.pathname) ?? routes[0];
 
   return (
     <header className="app-header">
-      <div className="app-header__title">
-        {location.pathname === "/"
-          ? "Today"
-          : location.pathname === "/history"
-            ? "History"
-            : "Settings"}
-      </div>
+      <div className="app-header__title">{activeRoute.title}</div>
 
-      <nav aria-label="Utility navigation" className="utility-nav">
-        {utilityRoutes.map((route) => (
-          <Link
+      <nav aria-label="Primary navigation" className="utility-nav">
+        {routes.map((route) => (
+          <NavLink
             key={route.path}
             to={route.path}
-            aria-label={route.label}
-            className={
-              location.pathname === route.path
-                ? "icon-button is-active"
-                : "icon-button"
+            aria-label={route.navLabel}
+            className={({ isActive }) =>
+              isActive ? "icon-button is-active" : "icon-button"
             }
           >
-            <span aria-hidden="true">{route.icon}</span>
-          </Link>
+            <span aria-hidden="true">
+              <AppIcon icon={route.icon} />
+            </span>
+          </NavLink>
         ))}
       </nav>
     </header>

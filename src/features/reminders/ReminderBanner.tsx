@@ -24,9 +24,9 @@ export function ReminderBanner({
 
   if (settings.snoozedUntil) {
     return (
-      <p className="supporting-note note-inline">
+      <p className="status-chip status-chip--muted note-inline">
         <AppIcon icon={BellOff} className="note-icon" />
-        <span>Reminders snoozed until {settings.snoozedUntil}</span>
+        <span>Snoozed until {settings.snoozedUntil}</span>
       </p>
     );
   }
@@ -36,9 +36,9 @@ export function ReminderBanner({
   }
 
   return (
-    <p className="supporting-note note-inline">
+    <p className="status-chip note-inline">
       <AppIcon icon={BellRing} className="note-icon" />
-      <span>Period reminder active</span>
+      <span>Reminder active</span>
     </p>
   );
 }

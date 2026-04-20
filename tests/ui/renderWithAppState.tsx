@@ -1,11 +1,11 @@
 import { render } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { defaultAppState } from "../../src/data/storage";
-import type { AppState } from "../../src/domain/types";
+import { saveAppState } from "../../src/data/storage";
 import { AppStateProvider } from "../../src/state/appState";
+import { createAppState } from "../support/appState";
 
 interface RenderWithAppStateOptions {
-  state?: AppState;
+  state?: ReturnType<typeof createAppState>;
 }
 
 export function renderWithAppState(
@@ -13,10 +13,7 @@ export function renderWithAppState(
   options: RenderWithAppStateOptions = {},
 ) {
   window.localStorage.clear();
-  window.localStorage.setItem(
-    "tide.period-tracker.state",
-    JSON.stringify(options.state ?? defaultAppState),
-  );
+  saveAppState(options.state ?? createAppState());
 
   return render(<AppStateProvider>{ui}</AppStateProvider>);
 }

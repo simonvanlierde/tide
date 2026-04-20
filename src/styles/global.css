@@ -1,6 +1,7 @@
 :root {
   --bg-top: #fffaf6;
   --bg-bottom: #f5ede5;
+  --bg-highlight: rgba(255, 255, 255, 0.72);
   --surface: rgba(255, 255, 255, 0.82);
   --surface-strong: rgba(255, 255, 255, 0.94);
   --surface-border: rgba(98, 70, 56, 0.1);
@@ -10,7 +11,9 @@
   --accent: #cf705d;
   --accent-strong: #ba5f4d;
   --accent-soft: #f7dfd4;
+  --accent-tint: rgba(207, 112, 93, 0.12);
   --shadow-soft: 0 18px 50px rgba(53, 33, 25, 0.1);
+  --shadow-card: 0 14px 30px rgba(70, 46, 35, 0.08);
   color: var(--ink);
   font-family: "Iowan Old Style", "Palatino Linotype", serif;
   background:
@@ -29,6 +32,7 @@
 body {
   margin: 0;
   min-height: 100vh;
+  color: var(--ink);
   background:
     radial-gradient(
       circle at top left,
@@ -56,14 +60,14 @@ button {
   min-height: 100vh;
   max-width: 480px;
   margin: 0 auto;
-  padding: 18px 18px 40px;
+  padding: 18px 18px 44px;
 }
 
 .app-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .app-header__title {
@@ -75,21 +79,25 @@ button {
 
 .utility-nav {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
 }
 
 .icon-button {
-  width: 54px;
-  height: 54px;
+  width: 48px;
+  height: 48px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-strong);
+  border: 1px solid transparent;
+  background: transparent;
   color: var(--ink-soft);
   text-decoration: none;
-  box-shadow: 0 10px 24px rgba(94, 65, 53, 0.08);
   transition:
     background-color 180ms ease,
     border-color 180ms ease,
@@ -99,16 +107,17 @@ button {
 
 .icon-button:hover,
 .icon-button:focus-visible {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.84);
   border-color: rgba(98, 70, 56, 0.18);
   outline: none;
   transform: translateY(-1px);
 }
 
 .icon-button.is-active {
-  background: #f1e3d9;
+  background: #f3e4d9;
   color: var(--ink);
-  border-color: rgba(186, 95, 77, 0.18);
+  border-color: rgba(186, 95, 77, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .icon-glyph {
@@ -144,7 +153,7 @@ button {
 .today-screen,
 .utility-screen {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .metric-card__label,
@@ -162,6 +171,26 @@ button {
   margin: 0;
   font-size: clamp(3.2rem, 12vw, 5rem);
   line-height: 0.92;
+}
+
+.today-hero {
+  display: grid;
+  gap: 8px;
+}
+
+.today-hero__eyebrow {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.today-hero__aside {
+  margin: 2px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.45;
 }
 
 .today-screen__lede,
@@ -183,6 +212,12 @@ button {
 .today-summary,
 .utility-stack {
   display: grid;
+  gap: 12px;
+}
+
+.summary-chip-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -190,11 +225,11 @@ button {
 .utility-card {
   display: grid;
   gap: 8px;
-  padding: 16px;
+  padding: 18px;
   border-radius: 22px;
   background: var(--surface);
   border: 1px solid var(--surface-border);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-card);
 }
 
 .summary-card--primary {
@@ -208,15 +243,96 @@ button {
 .summary-card__value {
   margin: 0;
   color: var(--ink);
-  font-size: 1.18rem;
+  font-size: 1.28rem;
   line-height: 1.2;
 }
 
 .summary-card__note {
   margin: 0;
   color: var(--ink-muted);
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   line-height: 1.35;
+}
+
+.summary-chip {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-card);
+}
+
+.summary-chip--with-action {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.summary-chip__label {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.summary-chip__value {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.02rem;
+  line-height: 1.25;
+}
+
+.info-popover {
+  position: relative;
+}
+
+.info-popover__trigger {
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.82);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.info-popover__trigger::-webkit-details-marker {
+  display: none;
+}
+
+.info-popover__trigger:hover,
+.info-popover__trigger:focus-visible {
+  outline: none;
+  border-color: rgba(98, 70, 56, 0.18);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.info-popover__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.info-popover__content {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  z-index: 2;
+  width: min(220px, 70vw);
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 250, 246, 0.98);
+  box-shadow: var(--shadow-card);
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  line-height: 1.4;
 }
 
 .cycle-view,
@@ -353,6 +469,33 @@ button {
   gap: 8px;
 }
 
+.status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.status-chip {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(186, 95, 77, 0.16);
+  background: var(--accent-tint);
+  color: var(--ink);
+  font-size: 0.94rem;
+  line-height: 1.2;
+}
+
+.status-chip--muted {
+  border-color: var(--surface-border);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink-soft);
+}
+
 .primary-action,
 .secondary-action,
 .text-action,
@@ -372,6 +515,7 @@ button {
   width: 100%;
   padding: 16px 18px;
   border-radius: 18px;
+  box-shadow: var(--shadow-card);
 }
 
 .primary-action {
@@ -414,6 +558,7 @@ button {
   padding: 0;
   background: transparent;
   color: #985844;
+  text-align: left;
 }
 
 .chip-row,
@@ -440,6 +585,7 @@ button {
   color: var(--ink-soft);
   border-radius: 999px;
   padding: 10px 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
 }
 
 .chip-button.is-active {
@@ -457,15 +603,25 @@ button {
   gap: 8px;
 }
 
-.settings-group + .settings-group {
-  padding-top: 16px;
-  border-top: 1px solid var(--surface-border);
-}
-
 .settings-row {
   display: grid;
   gap: 8px;
-  padding-bottom: 6px;
+  padding-bottom: 2px;
+}
+
+.settings-row--accent {
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(98, 70, 56, 0.08);
+}
+
+.settings-value {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.06rem;
+  line-height: 1.4;
 }
 
 .settings-label {
@@ -530,6 +686,19 @@ button {
   gap: 8px;
 }
 
+.file-input > .button-label {
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.76);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
+.file-input input[type="file"] {
+  color: var(--ink-soft);
+}
+
 .file-input input[type="file"]::file-selector-button {
   margin-right: 12px;
   border: 1px solid var(--surface-border);
@@ -544,6 +713,52 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+}
+
+.calendar-toolbar--compact {
+  justify-content: flex-start;
+}
+
+.calendar-picker-button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.calendar-picker-button:hover,
+.calendar-picker-button:focus-visible {
+  outline: none;
+  color: #985844;
+}
+
+.calendar-picker-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.calendar-picker-fallback {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(110px, 140px);
+  gap: 10px;
+}
+
+.calendar-picker-field {
+  display: grid;
+  gap: 8px;
+}
+
+.calendar-picker-field input,
+.calendar-picker-field select {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--ink);
 }
 
 .calendar-year-jump {
@@ -594,8 +809,8 @@ button {
   }
 
   .icon-button {
-    width: 52px;
-    height: 52px;
+    width: 46px;
+    height: 46px;
   }
 
   .calendar-grid {
@@ -604,5 +819,10 @@ button {
 
   .calendar-grid__weekday {
     font-size: 0.7rem;
+  }
+
+  .summary-chip-row,
+  .calendar-picker-fallback {
+    grid-template-columns: 1fr;
   }
 }

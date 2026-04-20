@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-test("app shell loads and utility navigation works", async ({ page }) => {
+test("app shell loads and primary navigation works", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: /day/i })).toBeVisible();
+  await expect(page.getByText(/^today$/i).first()).toBeVisible();
   await expect(page.getByLabel(/today/i)).toBeVisible();
   await expect(page.getByLabel(/history/i)).toBeVisible();
   await expect(page.getByLabel(/settings/i)).toBeVisible();
@@ -20,19 +20,50 @@ test("app shell loads and utility navigation works", async ({ page }) => {
 test("logging today persists across reload", async ({ page }) => {
   await page.goto("/");
 
-  const logButton = page.getByRole("button", { name: /log bleeding today/i });
-  await expect(logButton).toBeVisible();
-  await logButton.click();
+  const actionButton = page.getByRole("button", {
+    name: /log bleeding today|remove bleeding log/i,
+  });
+  await expect(actionButton).toBeVisible();
+
+  const startedLogged = await page
+    .getByRole("button", { name: /remove bleeding log/i })
+    .isVisible()
+    .catch(() => false);
+  await actionButton.click();
+
+  const expectedActionLabel = startedLogged
+    ? /log bleeding today/i
+    : /remove bleeding log/i;
 
   await expect(
-    page.getByRole("button", { name: /remove bleeding log/i }),
+    page.getByRole("button", { name: expectedActionLabel }),
   ).toBeVisible();
 
   await page.reload();
 
   await expect(
-    page.getByRole("button", { name: /remove bleeding log/i }),
+    page.getByRole("button", { name: expectedActionLabel }),
   ).toBeVisible();
+});
+
+test("versioned backup export and import work", async ({ page }) => {
+  await page.goto("/settings");
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: /export backup/i }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe("tide-backup.json");
+
+  await page
+    .getByLabel(/import backup file/i)
+    .setInputFiles("tests/e2e/fixtures/backup-import.json");
+
+  await expect(page.getByText(/backup imported/i)).toBeVisible();
+  await expect
+    .poll(async () =>
+      page.evaluate(() => window.localStorage.getItem("tide.period-tracker.state")),
+    )
+    .toContain('"version":1');
 });
 
 test("manifest and install assets are served", async ({ page }) => {

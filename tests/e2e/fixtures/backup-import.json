@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "state": {
+    "periodDays": ["2026-04-18"],
+    "settings": {
+      "reminderWindowDays": 4,
+      "snoozedUntil": null,
+      "homeDisplayMode": "summary"
+    }
+  }
+}

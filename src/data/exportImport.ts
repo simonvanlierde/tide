@@ -1,30 +1,16 @@
 import type { AppState } from "../domain/types";
-import { normalizeSettings } from "./storage";
+import { normalizePersistedState, toBackupPayload } from "./schema";
 
 export function exportBackup(state: AppState) {
-  return JSON.stringify(state, null, 2);
+  return JSON.stringify(toBackupPayload(state), null, 2);
 }
 
 export function importBackup(payload: string): AppState {
-  let parsed: Partial<AppState>;
   const normalizedPayload = payload.trim().replace(/^\uFEFF/, "");
 
   try {
-    parsed = JSON.parse(normalizedPayload) as Partial<AppState>;
+    return normalizePersistedState(JSON.parse(normalizedPayload));
   } catch {
     throw new Error("Unexpected backup file format");
   }
-
-  if (
-    !Array.isArray(parsed.periodDays) ||
-    !parsed.settings ||
-    typeof parsed.settings !== "object"
-  ) {
-    throw new Error("Invalid backup file");
-  }
-
-  return {
-    periodDays: parsed.periodDays,
-    settings: normalizeSettings(parsed.settings),
-  };
 }
