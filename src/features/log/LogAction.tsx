@@ -8,7 +8,7 @@ interface LogActionProps {
 export function LogAction({ isLogged, onToggle }: LogActionProps) {
   return (
     <div className="log-action">
-      <button className="primary-action" onClick={onToggle}>
+      <button type="button" className="primary-action" onClick={onToggle}>
         <span className="button-label">
           <AppIcon icon={Droplets} className="button-icon" />
           <span>{isLogged ? "Remove bleeding log" : "Log bleeding today"}</span>

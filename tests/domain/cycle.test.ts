@@ -6,7 +6,7 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-19",
       periodDays: ["2026-04-19", "2026-04-20"],
-      completedCycleLengths: []
+      completedCycleLengths: [],
     });
 
     expect(summary.cycleDay).toBe(1);
@@ -20,7 +20,7 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
       periodDays: ["2026-03-20", "2026-03-21", "2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28, 29, 27]
+      completedCycleLengths: [28, 29, 27],
     });
 
     expect(summary.cycleDay).toBe(17);
@@ -30,7 +30,7 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
       periodDays: ["2026-03-20", "2026-03-21", "2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28, 29, 27]
+      completedCycleLengths: [28, 29, 27],
     });
 
     expect(summary.nextPeriod.date).toBe("2026-04-30");
@@ -41,7 +41,7 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
       periodDays: [],
-      completedCycleLengths: []
+      completedCycleLengths: [],
     });
 
     expect(summary.phaseLabel).toBe("unknown");
@@ -53,9 +53,11 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
       periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28]
+      completedCycleLengths: [28],
     });
 
-    expect(["menstrual", "follicular", "ovulation", "luteal"]).toContain(summary.phaseLabel);
+    expect(["menstrual", "follicular", "ovulation", "luteal"]).toContain(
+      summary.phaseLabel,
+    );
   });
 });

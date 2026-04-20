@@ -29,7 +29,9 @@ export function addMonths(value: IsoDate, amount: number): IsoDate {
 }
 
 export function differenceInDays(left: IsoDate, right: IsoDate): number {
-  return Math.round((parseIsoDate(left).getTime() - parseIsoDate(right).getTime()) / DAY_IN_MS);
+  return Math.round(
+    (parseIsoDate(left).getTime() - parseIsoDate(right).getTime()) / DAY_IN_MS,
+  );
 }
 
 export function getTodayIsoDate(): IsoDate {

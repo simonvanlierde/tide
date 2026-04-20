@@ -24,28 +24,42 @@ function getCircleStyle(segments: ReturnType<typeof buildCycleSegments>) {
   });
 
   return {
-    background: `conic-gradient(${stops.join(", ")})`
+    background: `conic-gradient(${stops.join(", ")})`,
   };
 }
 
-export function CircularCycleView({ summary, periodDays, today }: CircularCycleViewProps) {
+export function CircularCycleView({
+  summary,
+  periodDays,
+  today,
+}: CircularCycleViewProps) {
   const segments = buildCycleSegments(summary, periodDays, today);
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
-  const rotation = currentIndex >= 0 ? ((currentIndex + 0.5) / segments.length) * 360 : 0;
+  const rotation =
+    currentIndex >= 0 ? ((currentIndex + 0.5) / segments.length) * 360 : 0;
 
   return (
     <section aria-label="Circular cycle view" className="cycle-circle">
       <div className="cycle-circle__legend">
         <span className="cycle-view__legend-item">
-          <span className="cycle-view__dot cycle-view__dot--period" aria-hidden="true" />
+          <span
+            className="cycle-view__dot cycle-view__dot--period"
+            aria-hidden="true"
+          />
           Period
         </span>
         <span className="cycle-view__legend-item">
-          <span className="cycle-view__dot cycle-view__dot--fertile" aria-hidden="true" />
+          <span
+            className="cycle-view__dot cycle-view__dot--fertile"
+            aria-hidden="true"
+          />
           Fertile window
         </span>
         <span className="cycle-view__legend-item">
-          <span className="cycle-view__dot cycle-view__dot--ovulation" aria-hidden="true" />
+          <span
+            className="cycle-view__dot cycle-view__dot--ovulation"
+            aria-hidden="true"
+          />
           Ovulation
         </span>
       </div>
@@ -58,6 +72,7 @@ export function CircularCycleView({ summary, periodDays, today }: CircularCycleV
           </div>
         </div>
         <div
+          role="img"
           className="cycle-circle__marker"
           aria-label={`Cycle day ${summary.cycleDay ?? "--"}, today`}
           style={{ transform: `translateX(-50%) rotate(${rotation}deg)` }}

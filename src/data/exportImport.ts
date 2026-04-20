@@ -15,12 +15,16 @@ export function importBackup(payload: string): AppState {
     throw new Error("Unexpected backup file format");
   }
 
-  if (!Array.isArray(parsed.periodDays) || !parsed.settings || typeof parsed.settings !== "object") {
+  if (
+    !Array.isArray(parsed.periodDays) ||
+    !parsed.settings ||
+    typeof parsed.settings !== "object"
+  ) {
     throw new Error("Invalid backup file");
   }
 
   return {
     periodDays: parsed.periodDays,
-    settings: normalizeSettings(parsed.settings)
+    settings: normalizeSettings(parsed.settings),
   };
 }

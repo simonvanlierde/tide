@@ -1,4 +1,9 @@
-import type { AppSettings, AppState, HomeCardsSettings, HomeDisplayMode } from "../domain/types";
+import type {
+  AppSettings,
+  AppState,
+  HomeCardsSettings,
+  HomeDisplayMode,
+} from "../domain/types";
 
 const STORAGE_KEY = "tide.period-tracker.state";
 
@@ -11,16 +16,18 @@ export const defaultAppState: AppState = {
     homeCards: {
       showNextPeriodCard: true,
       showPhaseCard: true,
-      showFertilityCard: true
-    }
-  }
+      showFertilityCard: true,
+    },
+  },
 };
 
 const HOME_DISPLAY_MODES: HomeDisplayMode[] = ["summary", "linear", "circular"];
 
 function normalizeHomeCards(homeCards: unknown): HomeCardsSettings {
   const candidate =
-    homeCards && typeof homeCards === "object" ? (homeCards as Partial<HomeCardsSettings>) : {};
+    homeCards && typeof homeCards === "object"
+      ? (homeCards as Partial<HomeCardsSettings>)
+      : {};
 
   return {
     showNextPeriodCard:
@@ -34,12 +41,15 @@ function normalizeHomeCards(homeCards: unknown): HomeCardsSettings {
     showFertilityCard:
       typeof candidate.showFertilityCard === "boolean"
         ? candidate.showFertilityCard
-        : defaultAppState.settings.homeCards.showFertilityCard
+        : defaultAppState.settings.homeCards.showFertilityCard,
   };
 }
 
 export function normalizeSettings(settings: unknown): AppSettings {
-  const candidate = settings && typeof settings === "object" ? (settings as Partial<AppSettings>) : {};
+  const candidate =
+    settings && typeof settings === "object"
+      ? (settings as Partial<AppSettings>)
+      : {};
 
   return {
     reminderWindowDays:
@@ -47,13 +57,16 @@ export function normalizeSettings(settings: unknown): AppSettings {
         ? candidate.reminderWindowDays
         : defaultAppState.settings.reminderWindowDays,
     snoozedUntil:
-      typeof candidate.snoozedUntil === "string" || candidate.snoozedUntil === null
+      typeof candidate.snoozedUntil === "string" ||
+      candidate.snoozedUntil === null
         ? candidate.snoozedUntil
         : defaultAppState.settings.snoozedUntil,
-    homeDisplayMode: HOME_DISPLAY_MODES.includes(candidate.homeDisplayMode as HomeDisplayMode)
+    homeDisplayMode: HOME_DISPLAY_MODES.includes(
+      candidate.homeDisplayMode as HomeDisplayMode,
+    )
       ? (candidate.homeDisplayMode as HomeDisplayMode)
       : defaultAppState.settings.homeDisplayMode,
-    homeCards: normalizeHomeCards(candidate.homeCards)
+    homeCards: normalizeHomeCards(candidate.homeCards),
   };
 }
 
@@ -67,8 +80,10 @@ export function loadAppState(): AppState {
   const parsed = JSON.parse(raw) as Partial<AppState>;
 
   return {
-    periodDays: Array.isArray(parsed.periodDays) ? parsed.periodDays : defaultAppState.periodDays,
-    settings: normalizeSettings(parsed.settings)
+    periodDays: Array.isArray(parsed.periodDays)
+      ? parsed.periodDays
+      : defaultAppState.periodDays,
+    settings: normalizeSettings(parsed.settings),
   };
 }
 

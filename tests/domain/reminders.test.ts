@@ -8,7 +8,7 @@ describe("getReminderState", () => {
       nextPeriodDate: "2026-04-30",
       reminderWindowDays: 4,
       snoozedUntil: null,
-      notificationPermission: "granted"
+      notificationPermission: "granted",
     });
 
     expect(state.shouldNudge).toBe(true);
@@ -21,7 +21,7 @@ describe("getReminderState", () => {
       nextPeriodDate: "2026-04-30",
       reminderWindowDays: 4,
       snoozedUntil: "2026-05-01",
-      notificationPermission: "granted"
+      notificationPermission: "granted",
     });
 
     expect(state.shouldNudge).toBe(false);
@@ -33,7 +33,7 @@ describe("getReminderState", () => {
       nextPeriodDate: "2026-04-30",
       reminderWindowDays: 4,
       snoozedUntil: null,
-      notificationPermission: "default"
+      notificationPermission: "default",
     });
 
     expect(state.shouldNudge).toBe(false);
@@ -45,21 +45,21 @@ describe("getReminderState", () => {
       nextPeriodDate: "2026-04-30",
       reminderWindowDays: 4,
       snoozedUntil: null,
-      notificationPermission: "default"
+      notificationPermission: "default",
     });
     const oneDayLate = getReminderState({
       today: "2026-05-01",
       nextPeriodDate: "2026-04-30",
       reminderWindowDays: 4,
       snoozedUntil: null,
-      notificationPermission: "default"
+      notificationPermission: "default",
     });
     const twoDaysLate = getReminderState({
       today: "2026-05-02",
       nextPeriodDate: "2026-04-30",
       reminderWindowDays: 4,
       snoozedUntil: null,
-      notificationPermission: "default"
+      notificationPermission: "default",
     });
 
     expect(dueDay.shouldNudge).toBe(true);

@@ -1,7 +1,7 @@
 import type { IsoDate } from "../../domain/types";
 import { useState } from "react";
 import { addMonths, getTodayIsoDate, parseIsoDate } from "../../utils/date";
-import { useAppState } from "../../hooks/useAppState";
+import { useAppState } from "../../state/appState";
 import { AppIcon, ChevronLeft, ChevronRight } from "../../ui/icons";
 
 interface HistoryScreenProps {
@@ -12,7 +12,7 @@ function formatMonthLabel(value: IsoDate) {
   return parseIsoDate(value).toLocaleDateString("en-US", {
     month: "long",
     year: "numeric",
-    timeZone: "UTC"
+    timeZone: "UTC",
   });
 }
 
@@ -21,7 +21,7 @@ function formatDayButtonLabel(value: IsoDate) {
     month: "long",
     day: "numeric",
     year: "numeric",
-    timeZone: "UTC"
+    timeZone: "UTC",
   })}`;
 }
 
@@ -33,47 +33,68 @@ function getMonthDays(today: IsoDate) {
   const last = new Date(Date.UTC(year, monthIndex + 1, 0));
   const firstWeekday = (first.getUTCDay() + 6) % 7;
   const daysInMonth = last.getUTCDate();
-  const days: Array<IsoDate | null> = [];
+  const days: Array<{ key: string; value: IsoDate | null }> = [];
 
   for (let index = 0; index < firstWeekday; index += 1) {
-    days.push(null);
+    days.push({
+      key: `blank-${year}-${monthIndex + 1}-${index + 1}`,
+      value: null,
+    });
   }
 
   for (let day = 1; day <= daysInMonth; day += 1) {
-    const value = new Date(Date.UTC(year, monthIndex, day)).toISOString().slice(0, 10) as IsoDate;
-    days.push(value);
+    const value = new Date(Date.UTC(year, monthIndex, day))
+      .toISOString()
+      .slice(0, 10) as IsoDate;
+    days.push({ key: value, value });
   }
 
   while (days.length % 7 !== 0) {
-    days.push(null);
+    days.push({
+      key: `blank-${year}-${monthIndex + 1}-tail-${days.length + 1}`,
+      value: null,
+    });
   }
 
   return days;
 }
 
-export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps) {
+export function HistoryScreen({
+  today = getTodayIsoDate(),
+}: HistoryScreenProps) {
   const { state, togglePeriodDay } = useAppState(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const monthDays = getMonthDays(visibleMonth);
   const loggedDays = new Set(state.periodDays);
   const yearOptions = Array.from(
     new Set(
-      [parseIsoDate(today).getUTCFullYear(), ...state.periodDays.map((day) => parseIsoDate(day).getUTCFullYear())].sort()
-    )
+      [
+        parseIsoDate(today).getUTCFullYear(),
+        ...state.periodDays.map((day) => parseIsoDate(day).getUTCFullYear()),
+      ].sort(),
+    ),
   );
 
   return (
     <section className="utility-screen">
       <article className="utility-card">
         <div className="calendar-toolbar">
-          <button type="button" className="text-action" onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}>
+          <button
+            type="button"
+            className="text-action"
+            onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}
+          >
             <span className="button-label">
               <AppIcon icon={ChevronLeft} className="button-icon" />
               <span>Previous month</span>
             </span>
           </button>
           <h2 className="section-title">{formatMonthLabel(visibleMonth)}</h2>
-          <button type="button" className="text-action" onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}>
+          <button
+            type="button"
+            className="text-action"
+            onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}
+          >
             <span className="button-label">
               <span>Next month</span>
               <AppIcon icon={ChevronRight} className="button-icon" />
@@ -98,29 +119,45 @@ export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps)
             ))}
           </select>
         </label>
-        <p className="supporting-note">Tap any day you had menstrual bleeding.</p>
-        <div className="calendar-grid" aria-label="History calendar">
+        <p className="supporting-note">
+          Tap any day you had menstrual bleeding.
+        </p>
+        <section className="calendar-grid" aria-label="History calendar">
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
             <div key={day} className="calendar-grid__weekday">
               {day}
             </div>
           ))}
-          {monthDays.map((value, index) =>
-            value ? (
+          {monthDays.map((day) => {
+            if (day.value === null) {
+              return (
+                <div
+                  key={day.key}
+                  className="calendar-grid__blank"
+                  aria-hidden="true"
+                />
+              );
+            }
+
+            const value = day.value;
+
+            return (
               <button
-                key={value}
+                key={day.key}
                 type="button"
-                className={loggedDays.has(value) ? "calendar-grid__day is-logged" : "calendar-grid__day"}
+                className={
+                  loggedDays.has(value)
+                    ? "calendar-grid__day is-logged"
+                    : "calendar-grid__day"
+                }
                 aria-label={formatDayButtonLabel(value)}
                 onClick={() => togglePeriodDay(value)}
               >
                 {parseIsoDate(value).getUTCDate()}
               </button>
-            ) : (
-              <div key={`empty-${index}`} className="calendar-grid__blank" aria-hidden="true" />
-            )
-          )}
-        </div>
+            );
+          })}
+        </section>
       </article>
       {state.periodDays.length === 0 ? (
         <article className="utility-card">

@@ -4,6 +4,6 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
-    exclude: ["tests/e2e/**"]
-  }
+    exclude: ["tests/e2e/**"],
+  },
 });

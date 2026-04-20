@@ -18,9 +18,9 @@ describe("local storage", () => {
         homeCards: {
           showNextPeriodCard: true,
           showPhaseCard: true,
-          showFertilityCard: true
-        }
-      }
+          showFertilityCard: true,
+        },
+      },
     };
 
     saveAppState(state);
@@ -37,9 +37,9 @@ describe("local storage", () => {
         homeCards: {
           showNextPeriodCard: true,
           showPhaseCard: true,
-          showFertilityCard: true
-        }
-      }
+          showFertilityCard: true,
+        },
+      },
     };
 
     const backup = exportBackup(state);
@@ -56,9 +56,9 @@ describe("local storage", () => {
         homeCards: {
           showNextPeriodCard: true,
           showPhaseCard: true,
-          showFertilityCard: true
-        }
-      }
+          showFertilityCard: true,
+        },
+      },
     };
 
     const backup = `\uFEFF${exportBackup(state)}`;
@@ -74,8 +74,8 @@ describe("local storage", () => {
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-02"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null }
-      })
+        settings: { reminderWindowDays: 4, snoozedUntil: null },
+      }),
     );
 
     expect(loadAppState()).toEqual({
@@ -87,9 +87,9 @@ describe("local storage", () => {
         homeCards: {
           showNextPeriodCard: true,
           showPhaseCard: true,
-          showFertilityCard: true
-        }
-      }
+          showFertilityCard: true,
+        },
+      },
     });
   });
 });

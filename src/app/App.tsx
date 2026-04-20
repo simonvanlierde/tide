@@ -1,23 +1,24 @@
 import { Link, Route, Routes, useLocation } from "react-router-dom";
 import { routes } from "./routes";
 import { AppIcon, CalendarDays, House, Settings2 } from "../ui/icons";
+import { AppStateProvider } from "../state/appState";
 
 const utilityRoutes = [
   {
     path: "/",
     label: "Today",
-    icon: <AppIcon icon={House} />
+    icon: <AppIcon icon={House} />,
   },
   {
     path: "/history",
     label: "History",
-    icon: <AppIcon icon={CalendarDays} />
+    icon: <AppIcon icon={CalendarDays} />,
   },
   {
     path: "/settings",
     label: "Settings",
-    icon: <AppIcon icon={Settings2} />
-  }
+    icon: <AppIcon icon={Settings2} />,
+  },
 ] as const;
 
 function UtilityNav() {
@@ -26,7 +27,11 @@ function UtilityNav() {
   return (
     <header className="app-header">
       <div className="app-header__title">
-        {location.pathname === "/" ? "Today" : location.pathname === "/history" ? "History" : "Settings"}
+        {location.pathname === "/"
+          ? "Today"
+          : location.pathname === "/history"
+            ? "History"
+            : "Settings"}
       </div>
 
       <nav aria-label="Utility navigation" className="utility-nav">
@@ -35,7 +40,11 @@ function UtilityNav() {
             key={route.path}
             to={route.path}
             aria-label={route.label}
-            className={location.pathname === route.path ? "icon-button is-active" : "icon-button"}
+            className={
+              location.pathname === route.path
+                ? "icon-button is-active"
+                : "icon-button"
+            }
           >
             <span aria-hidden="true">{route.icon}</span>
           </Link>
@@ -47,13 +56,15 @@ function UtilityNav() {
 
 export function App() {
   return (
-    <main className="app-shell">
-      <UtilityNav />
-      <Routes>
-        {routes.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))}
-      </Routes>
-    </main>
+    <AppStateProvider>
+      <main className="app-shell">
+        <UtilityNav />
+        <Routes>
+          {routes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Routes>
+      </main>
+    </AppStateProvider>
   );
 }

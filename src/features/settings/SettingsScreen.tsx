@@ -1,26 +1,9 @@
 import { useState } from "react";
 import type { IsoDate } from "../../domain/types";
-import { useAppState } from "../../hooks/useAppState";
+import { useAppState } from "../../state/appState";
 import { differenceInDays, getTodayIsoDate } from "../../utils/date";
 import { AppIcon, Download, Upload } from "../../ui/icons";
-
-function getReminderSummary(daysUntilPeriod: number | null, reminderWindowDays: number) {
-  if (daysUntilPeriod === null) {
-    return "Next reminder will appear once your next cycle estimate is ready.";
-  }
-
-  const daysUntilReminder = daysUntilPeriod - reminderWindowDays;
-
-  if (daysUntilReminder > 0) {
-    return `Next reminder in ${daysUntilReminder} days.`;
-  }
-
-  if (daysUntilPeriod >= -1) {
-    return "Reminder window is active now.";
-  }
-
-  return "Reminder window has passed for this cycle.";
-}
+import { getReminderSummary } from "./viewModel";
 
 interface SettingsScreenProps {
   today?: IsoDate;
@@ -29,7 +12,9 @@ interface SettingsScreenProps {
 const reminderWindowOptions = [3, 4, 5, 7] as const;
 const snoozeOptions = [1, 3, 7] as const;
 
-export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProps) {
+export function SettingsScreen({
+  today = getTodayIsoDate(),
+}: SettingsScreenProps) {
   const {
     state,
     summary,
@@ -39,7 +24,7 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
     setHomeDisplayMode,
     setHomeCardVisibility,
     snoozeReminders,
-    clearReminderSnooze
+    clearReminderSnooze,
   } = useAppState(today);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const snoozeSummary =
@@ -68,12 +53,17 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
         <div className="settings-group settings-group--compact">
           <div className="settings-row">
             <span className="settings-label">Display</span>
-            <div className="chip-row chip-row--dense" role="group" aria-label="Home display mode">
+            <fieldset className="chip-row chip-row--dense chip-fieldset">
+              <legend className="settings-label">Home display mode</legend>
               {(["summary", "linear", "circular"] as const).map((mode) => (
                 <button
                   key={mode}
                   type="button"
-                  className={state.settings.homeDisplayMode === mode ? "chip-button is-active" : "chip-button"}
+                  className={
+                    state.settings.homeDisplayMode === mode
+                      ? "chip-button is-active"
+                      : "chip-button"
+                  }
                   onClick={() => {
                     setHomeDisplayMode(mode);
                     setStatusMessage(`Home display set to ${mode}`);
@@ -82,15 +72,18 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
                   {mode[0].toUpperCase() + mode.slice(1)}
                 </button>
               ))}
-            </div>
+            </fieldset>
           </div>
 
-          <div className="settings-toggle-list" aria-label="Home cards">
-            {([
-              ["showNextPeriodCard", "Next period"],
-              ["showPhaseCard", "Phase"],
-              ["showFertilityCard", "Fertility"]
-            ] as const).map(([key, label]) => {
+          <fieldset className="settings-toggle-list">
+            <legend className="settings-label">Home cards</legend>
+            {(
+              [
+                ["showNextPeriodCard", "Next period"],
+                ["showPhaseCard", "Phase"],
+                ["showFertilityCard", "Fertility"],
+              ] as const
+            ).map(([key, label]) => {
               const isVisible = state.settings.homeCards[key];
 
               return (
@@ -102,26 +95,40 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
                   onClick={() => setHomeCardVisibility(key, !isVisible)}
                 >
                   <span>{label}</span>
-                  <span className={isVisible ? "settings-toggle__switch is-on" : "settings-toggle__switch"}>
+                  <span
+                    className={
+                      isVisible
+                        ? "settings-toggle__switch is-on"
+                        : "settings-toggle__switch"
+                    }
+                  >
                     <span className="settings-toggle__thumb" />
                   </span>
                 </button>
               );
             })}
-          </div>
+          </fieldset>
         </div>
       </article>
 
       <article className="utility-card">
         <h2 className="section-title">Reminders</h2>
         <div className="settings-group settings-group--compact">
-          <p>Window: {state.settings.reminderWindowDays} days before the expected period.</p>
-          <div className="chip-row chip-row--dense" role="group" aria-label="Reminder window">
+          <p>
+            Window: {state.settings.reminderWindowDays} days before the expected
+            period.
+          </p>
+          <fieldset className="chip-row chip-row--dense chip-fieldset">
+            <legend className="settings-label">Reminder window</legend>
             {reminderWindowOptions.map((days) => (
               <button
                 key={days}
                 type="button"
-                className={days === state.settings.reminderWindowDays ? "chip-button is-active" : "chip-button"}
+                className={
+                  days === state.settings.reminderWindowDays
+                    ? "chip-button is-active"
+                    : "chip-button"
+                }
                 onClick={() => {
                   setReminderWindowDays(days);
                   setStatusMessage(`Reminder window set to ${days} days`);
@@ -130,11 +137,16 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
                 {days} days
               </button>
             ))}
-          </div>
+          </fieldset>
           <p className="supporting-note">
-            {snoozeSummary ?? "Active."} Next reminder: {getReminderSummary(summary.nextPeriod.daysUntil, state.settings.reminderWindowDays)}
+            {snoozeSummary ?? "Active."} Next reminder:{" "}
+            {getReminderSummary(
+              summary.nextPeriod.daysUntil,
+              state.settings.reminderWindowDays,
+            )}
           </p>
-          <div className="chip-row chip-row--dense" role="group" aria-label="Quick snooze">
+          <fieldset className="chip-row chip-row--dense chip-fieldset">
+            <legend className="settings-label">Quick snooze</legend>
             {snoozeOptions.map((days) => (
               <button
                 key={days}
@@ -142,13 +154,15 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
                 className="chip-button"
                 onClick={() => {
                   snoozeReminders(days);
-                  setStatusMessage(`Reminders snoozed for ${days} day${days === 1 ? "" : "s"}`);
+                  setStatusMessage(
+                    `Reminders snoozed for ${days} day${days === 1 ? "" : "s"}`,
+                  );
                 }}
               >
                 Snooze {days} {days === 1 ? "day" : "days"}
               </button>
             ))}
-          </div>
+          </fieldset>
           {snoozeSummary ? (
             <button
               type="button"
@@ -167,7 +181,11 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
       <article className="utility-card">
         <h2 className="section-title">Data</h2>
         <div className="settings-group settings-group--compact">
-          <button className="primary-action" onClick={handleExport}>
+          <button
+            type="button"
+            className="primary-action"
+            onClick={handleExport}
+          >
             <span className="button-label">
               <AppIcon icon={Download} className="button-icon" />
               <span>Export backup</span>
@@ -194,22 +212,30 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
                   setStatusMessage("Backup imported");
                 } catch (error) {
                   setStatusMessage(
-                    error instanceof Error ? error.message : "Import failed"
+                    error instanceof Error ? error.message : "Import failed",
                   );
                 }
               }}
             />
           </label>
         </div>
-        {statusMessage ? <p className="supporting-note">{statusMessage}</p> : null}
+        {statusMessage ? (
+          <p className="supporting-note">{statusMessage}</p>
+        ) : null}
       </article>
 
       <article className="utility-card">
         <h2 className="section-title">Privacy</h2>
         <p>Logged bleeding day means menstrual bleeding on that date.</p>
-        <p className="supporting-note">Spotting stays separate and does not start a new cycle.</p>
-        <p className="supporting-note">Fertility estimates are informational only.</p>
-        <p className="supporting-note">Data stays on this device unless you export it.</p>
+        <p className="supporting-note">
+          Spotting stays separate and does not start a new cycle.
+        </p>
+        <p className="supporting-note">
+          Fertility estimates are informational only.
+        </p>
+        <p className="supporting-note">
+          Data stays on this device unless you export it.
+        </p>
       </article>
     </section>
   );

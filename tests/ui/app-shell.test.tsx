@@ -9,12 +9,14 @@ describe("App shell", () => {
     const { container } = render(
       <MemoryRouter initialEntries={["/settings"]}>
         <App />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByLabelText(/today/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/history/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/settings/i)).toBeInTheDocument();
-    expect(container.querySelectorAll(".utility-nav svg.lucide")).toHaveLength(3);
+    expect(container.querySelectorAll(".utility-nav svg.lucide")).toHaveLength(
+      3,
+    );
   });
 });

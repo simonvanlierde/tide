@@ -33,10 +33,19 @@ export function getCompletedCycleLengths(periodDays: IsoDate[]) {
     return [];
   }
 
-  return cycleStarts.slice(1).map((cycleStart, index) => differenceInDays(cycleStart, cycleStarts[index]));
+  return cycleStarts
+    .slice(1)
+    .map((cycleStart, index) =>
+      differenceInDays(cycleStart, cycleStarts[index]),
+    );
 }
 
-function getPhaseLabel(today: IsoDate, periodDays: IsoDate[], ovulationDate: IsoDate, cycleDay: number) {
+function getPhaseLabel(
+  today: IsoDate,
+  periodDays: IsoDate[],
+  ovulationDate: IsoDate,
+  cycleDay: number,
+) {
   if (periodDays.includes(today)) {
     return "menstrual" as const;
   }
@@ -71,9 +80,9 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
       ovulationDate: null,
       nextPeriod: {
         date: null,
-        daysUntil: null
+        daysUntil: null,
       },
-      estimateMode: "insufficient"
+      estimateMode: "insufficient",
     };
   }
 
@@ -81,22 +90,31 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
     input.completedCycleLengths.length > 0
       ? Math.round(
           input.completedCycleLengths.reduce((sum, value) => sum + value, 0) /
-            input.completedCycleLengths.length
+            input.completedCycleLengths.length,
         )
       : DEFAULT_CYCLE_LENGTH;
-  const cycleDay = Math.max(1, differenceInDays(input.today, lastCycleStart) + 1);
+  const cycleDay = Math.max(
+    1,
+    differenceInDays(input.today, lastCycleStart) + 1,
+  );
   const nextPeriodDate = addDays(lastCycleStart, cycleLength);
   const ovulationDate = addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH);
 
   return {
     cycleDay,
-    phaseLabel: getPhaseLabel(input.today, input.periodDays, ovulationDate, cycleDay),
+    phaseLabel: getPhaseLabel(
+      input.today,
+      input.periodDays,
+      ovulationDate,
+      cycleDay,
+    ),
     fertile: isWithinFertileWindow(input.today, ovulationDate),
     ovulationDate,
     nextPeriod: {
       date: nextPeriodDate,
-      daysUntil: differenceInDays(nextPeriodDate, input.today)
+      daysUntil: differenceInDays(nextPeriodDate, input.today),
     },
-    estimateMode: input.completedCycleLengths.length > 0 ? "learned" : "fallback"
+    estimateMode:
+      input.completedCycleLengths.length > 0 ? "learned" : "fallback",
   };
 }

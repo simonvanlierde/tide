@@ -11,7 +11,7 @@ interface ReminderBannerProps {
 export function ReminderBanner({
   today,
   nextPeriodDate,
-  settings
+  settings,
 }: ReminderBannerProps) {
   const reminderState = getReminderState({
     today,
@@ -19,7 +19,7 @@ export function ReminderBanner({
     reminderWindowDays: settings.reminderWindowDays,
     snoozedUntil: settings.snoozedUntil,
     notificationPermission:
-      typeof Notification === "undefined" ? "default" : Notification.permission
+      typeof Notification === "undefined" ? "default" : Notification.permission,
   });
 
   if (settings.snoozedUntil) {

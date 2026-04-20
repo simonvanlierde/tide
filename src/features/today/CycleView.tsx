@@ -15,14 +15,25 @@ interface CycleViewProps {
   today: IsoDate;
 }
 
-export function buildCycleSegments(summary: CycleSummary, periodDays: IsoDate[], today: IsoDate) {
+export function buildCycleSegments(
+  summary: CycleSummary,
+  periodDays: IsoDate[],
+  today: IsoDate,
+) {
   const totalDays =
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
-      ? Math.max(summary.cycleDay + summary.nextPeriod.daysUntil, summary.cycleDay, 28)
+      ? Math.max(
+          summary.cycleDay + summary.nextPeriod.daysUntil,
+          summary.cycleDay,
+          28,
+        )
       : 28;
   const cycleStartDate =
     summary.cycleDay !== null
-      ? new Date(Date.parse(`${today}T00:00:00Z`) - (summary.cycleDay - 1) * 24 * 60 * 60 * 1000)
+      ? new Date(
+          Date.parse(`${today}T00:00:00Z`) -
+            (summary.cycleDay - 1) * 24 * 60 * 60 * 1000,
+        )
       : null;
   const fertileStart =
     summary.cycleDay !== null && summary.ovulationDate
@@ -36,14 +47,21 @@ export function buildCycleSegments(summary: CycleSummary, periodDays: IsoDate[],
   const loggedDays =
     cycleStartDate === null
       ? new Set<string>()
-      : new Set(periodDays.filter((day) => day >= cycleStartDate.toISOString().slice(0, 10) && day <= today));
+      : new Set(
+          periodDays.filter(
+            (day) =>
+              day >= cycleStartDate.toISOString().slice(0, 10) && day <= today,
+          ),
+        );
 
   return Array.from({ length: totalDays }, (_, index) => {
     const dayNumber = index + 1;
     const dateValue =
       cycleStartDate === null
         ? null
-        : new Date(cycleStartDate.getTime() + index * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        : new Date(cycleStartDate.getTime() + index * 24 * 60 * 60 * 1000)
+            .toISOString()
+            .slice(0, 10);
 
     return {
       dayNumber,
@@ -54,27 +72,40 @@ export function buildCycleSegments(summary: CycleSummary, periodDays: IsoDate[],
         ovulationDay !== null &&
         dayNumber >= fertileStart &&
         dayNumber <= ovulationDay + 1,
-      isOvulation: ovulationDay === dayNumber
+      isOvulation: ovulationDay === dayNumber,
     } satisfies CycleSegment;
   });
 }
 
-export function LinearCycleView({ summary, periodDays, today }: CycleViewProps) {
+export function LinearCycleView({
+  summary,
+  periodDays,
+  today,
+}: CycleViewProps) {
   const segments = buildCycleSegments(summary, periodDays, today);
 
   return (
     <section aria-label="Linear cycle view" className="cycle-view">
       <div className="cycle-view__legend">
         <span className="cycle-view__legend-item">
-          <span className="cycle-view__dot cycle-view__dot--period" aria-hidden="true" />
+          <span
+            className="cycle-view__dot cycle-view__dot--period"
+            aria-hidden="true"
+          />
           Period
         </span>
         <span className="cycle-view__legend-item">
-          <span className="cycle-view__dot cycle-view__dot--fertile" aria-hidden="true" />
+          <span
+            className="cycle-view__dot cycle-view__dot--fertile"
+            aria-hidden="true"
+          />
           Fertile window
         </span>
         <span className="cycle-view__legend-item">
-          <span className="cycle-view__dot cycle-view__dot--ovulation" aria-hidden="true" />
+          <span
+            className="cycle-view__dot cycle-view__dot--ovulation"
+            aria-hidden="true"
+          />
           Ovulation
         </span>
       </div>
@@ -86,7 +117,7 @@ export function LinearCycleView({ summary, periodDays, today }: CycleViewProps) 
             segment.isPeriod ? "is-period" : "",
             segment.isFertile ? "is-fertile" : "",
             segment.isOvulation ? "is-ovulation" : "",
-            segment.isCurrent ? "is-current" : ""
+            segment.isCurrent ? "is-current" : "",
           ]
             .filter(Boolean)
             .join(" ");
@@ -94,6 +125,7 @@ export function LinearCycleView({ summary, periodDays, today }: CycleViewProps) 
           return (
             <div
               key={segment.dayNumber}
+              role="img"
               className={className}
               aria-label={`Cycle day ${segment.dayNumber}${segment.isCurrent ? ", today" : ""}`}
               title={`Cycle day ${segment.dayNumber}`}

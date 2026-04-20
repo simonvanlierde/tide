@@ -15,7 +15,7 @@ export function getReminderState(input: ReminderStateInput) {
       shouldNudge: false,
       mode: "banner" as const,
       isInReminderWindow: false,
-      isSnoozed: false
+      isSnoozed: false,
     };
   }
 
@@ -31,7 +31,7 @@ export function getReminderState(input: ReminderStateInput) {
       shouldNudge: false,
       mode: "banner" as const,
       isInReminderWindow: inReminderWindow,
-      isSnoozed
+      isSnoozed,
     };
   }
 
@@ -42,6 +42,6 @@ export function getReminderState(input: ReminderStateInput) {
     mode:
       input.notificationPermission === "granted"
         ? ("notification" as const)
-        : ("banner" as const)
+        : ("banner" as const),
   };
 }

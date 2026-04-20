@@ -6,16 +6,16 @@ export const routes = [
   {
     path: "/",
     label: "Today",
-    element: <TodayScreen />
+    element: <TodayScreen />,
   },
   {
     path: "/history",
     label: "History",
-    element: <HistoryScreen />
+    element: <HistoryScreen />,
   },
   {
     path: "/settings",
     label: "Settings",
-    element: <SettingsScreen />
-  }
+    element: <SettingsScreen />,
+  },
 ];
