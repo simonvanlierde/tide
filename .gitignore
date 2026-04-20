@@ -22,6 +22,7 @@ node_modules/
 
 ### Build output
 dist/
+tsconfig.tsbuildinfo
 
 ### Test artifacts
 coverage/
