@@ -22,34 +22,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
+      - name: Set up toolchain
+        uses: ./.github/actions/setup-node-pnpm
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+      - name: Run pnpm check
+        run: pnpm check
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Lint
-        run: pnpm lint:ci
-
-      - name: Test
-        run: pnpm test
-
-      - name: Build
-        run: pnpm build
-
-  extended-validation:
+  smoke-e2e:
     if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     needs: quality
     runs-on: ubuntu-latest
@@ -57,26 +36,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Set up toolchain
+        uses: ./.github/actions/setup-node-pnpm
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Playwright smoke tests
+      - name: Run Playwright smoke tests
         run: pnpm test:e2e
-
-      - name: Docker production image build
-        run: docker build --target prod .

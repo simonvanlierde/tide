@@ -1,6 +1,8 @@
 # Tide Data Model
 
-## In-Memory App State
+Tide persists the current `AppState` JSON shape directly in `localStorage` under `tide.period-tracker.state`.
+
+## App State
 
 ```ts
 interface AppState {
@@ -13,28 +15,6 @@ interface AppState {
 }
 ```
 
-## Persisted Storage Shape
-
-Tide stores a versioned record in `localStorage`:
-
-```ts
-interface PersistedAppStateV1 {
-  version: 1;
-  state: AppState;
-}
-```
-
-## Backup Shape
-
-Backups intentionally use the same versioned shape as local storage:
-
-```ts
-interface BackupPayloadV1 {
-  version: 1;
-  state: AppState;
-}
-```
-
 ## Normalization Rules
 
 - `periodDays` must be valid ISO dates
@@ -42,4 +22,11 @@ interface BackupPayloadV1 {
 - duplicates are removed
 - dates are sorted ascending
 - unsupported settings fall back to defaults
-- legacy unversioned payloads are still accepted and normalized during load/import
+- malformed JSON falls back to the default app state
+- removed legacy envelopes such as `{ version, state }` are treated as invalid
+
+## Runtime Boundaries
+
+- `src/data/schema.ts` owns defaults plus normalization
+- `src/data/storage.ts` owns the `localStorage` read/write boundary
+- `src/state/index.tsx` consumes normalized `AppState`

@@ -18,8 +18,6 @@ export function ReminderBanner({
     nextPeriodDate,
     reminderWindowDays: settings.reminderWindowDays,
     snoozedUntil: settings.snoozedUntil,
-    notificationPermission:
-      typeof Notification === "undefined" ? "default" : Notification.permission,
   });
 
   if (settings.snoozedUntil) {
@@ -31,7 +29,7 @@ export function ReminderBanner({
     );
   }
 
-  if (!reminderState.shouldNudge || reminderState.mode !== "banner") {
+  if (!reminderState.shouldNudge) {
     return null;
   }
 

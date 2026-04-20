@@ -1,0 +1,190 @@
+@layer features {
+  .today-screen,
+  .utility-screen {
+    display: grid;
+    gap: 14px;
+  }
+
+  .today-screen__day {
+    margin: 0;
+    font-size: clamp(3.2rem, 12vw, 5rem);
+    line-height: 0.92;
+  }
+
+  .today-hero {
+    display: grid;
+    gap: 8px;
+  }
+
+  .today-hero__eyebrow {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .today-hero__aside {
+    margin: 2px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .today-screen__lede,
+  .today-screen__summary {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .today-summary,
+  .utility-stack,
+  .metric-grid,
+  .log-action {
+    display: grid;
+    gap: 12px;
+  }
+
+  .cycle-view,
+  .cycle-circle {
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 22px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .cycle-view__legend,
+  .cycle-circle__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .cycle-view__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.2;
+  }
+
+  .cycle-view__dot {
+    width: 10px;
+    height: 10px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: rgba(114, 92, 80, 0.2);
+  }
+
+  .cycle-view__dot--period {
+    background: #cf705d;
+  }
+
+  .cycle-view__dot--fertile {
+    background: #f0cc99;
+  }
+
+  .cycle-view__dot--ovulation {
+    background: #d99a56;
+  }
+
+  .cycle-view__track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+    gap: 6px;
+  }
+
+  .cycle-view__segment {
+    height: 22px;
+    border-radius: 999px;
+    background: rgba(114, 92, 80, 0.12);
+  }
+
+  .cycle-view__segment.is-period {
+    background: #cf705d;
+  }
+
+  .cycle-view__segment.is-fertile {
+    background: #f0cc99;
+  }
+
+  .cycle-view__segment.is-ovulation {
+    background: #d99a56;
+  }
+
+  .cycle-view__segment.is-current {
+    outline: 2px solid #4f372d;
+    outline-offset: 2px;
+  }
+
+  .cycle-view__labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+  }
+
+  .cycle-circle__frame {
+    position: relative;
+    width: min(300px, 78vw);
+    aspect-ratio: 1;
+    margin-inline: auto;
+  }
+
+  .cycle-circle__ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    padding: 22px;
+    box-sizing: border-box;
+  }
+
+  .cycle-circle__inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 250, 246, 0.94);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: var(--ink);
+  }
+
+  .cycle-circle__label {
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+  }
+
+  .cycle-circle__marker {
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 2px;
+    height: calc(50% - 10px);
+    background: #4f372d;
+    transform-origin: bottom center;
+  }
+
+  @container (max-width: 26rem) {
+    .summary-chip-row,
+    .calendar-picker-fallback {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .calendar-grid {
+      gap: 8px;
+    }
+
+    .calendar-grid__weekday {
+      font-size: 0.7rem;
+    }
+  }
+}

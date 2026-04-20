@@ -1,19 +1,9 @@
-import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { fireEvent, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { HistoryScreen } from "../../src/features/history/HistoryScreen";
-import { createAppState } from "../support/appState";
-import { renderWithAppState } from "./renderWithAppState";
+import { createAppState, renderWithAppState } from "../support/app";
 
 describe("HistoryScreen", () => {
-  afterEach(() => {
-    cleanup();
-  });
-
-  beforeEach(() => {
-    window.localStorage.clear();
-  });
-
   it("renders a month calendar with bleeding-day guidance", () => {
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({

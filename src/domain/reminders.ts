@@ -6,17 +6,21 @@ interface ReminderStateInput {
   nextPeriodDate: IsoDate | null;
   reminderWindowDays: number;
   snoozedUntil: IsoDate | null;
-  notificationPermission: NotificationPermission;
+}
+
+export interface ReminderState {
+  shouldNudge: boolean;
+  isInReminderWindow: boolean;
+  isSnoozed: boolean;
 }
 
 export function getReminderState(input: ReminderStateInput) {
   if (!input.nextPeriodDate) {
     return {
       shouldNudge: false,
-      mode: "banner" as const,
       isInReminderWindow: false,
       isSnoozed: false,
-    };
+    } satisfies ReminderState;
   }
 
   const daysUntilPeriod = differenceInDays(input.nextPeriodDate, input.today);
@@ -29,19 +33,14 @@ export function getReminderState(input: ReminderStateInput) {
   if (!inReminderWindow || isSnoozed) {
     return {
       shouldNudge: false,
-      mode: "banner" as const,
       isInReminderWindow: inReminderWindow,
       isSnoozed,
-    };
+    } satisfies ReminderState;
   }
 
   return {
     shouldNudge: true,
     isInReminderWindow: true,
     isSnoozed: false,
-    mode:
-      input.notificationPermission === "granted"
-        ? ("notification" as const)
-        : ("banner" as const),
-  };
+  } satisfies ReminderState;
 }

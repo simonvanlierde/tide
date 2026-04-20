@@ -1,31 +1,77 @@
-import { NavLink, Route, Routes, useLocation } from "react-router-dom";
-import { routes } from "./routes";
+import { startTransition, useEffect, useState, type MouseEvent } from "react";
 import { AppIcon } from "../ui/icons";
-import { AppStateProvider } from "../state/appState";
+import {
+  appScreens,
+  getAppScreen,
+  shouldHandleAppNavigation,
+} from "./navigation";
 
-function UtilityNav() {
-  const location = useLocation();
-  const activeRoute =
-    routes.find((route) => route.path === location.pathname) ?? routes[0];
+function usePathname() {
+  const [pathname, setPathname] = useState(() => window.location.pathname);
+
+  useEffect(() => {
+    function handlePopState() {
+      setPathname(window.location.pathname);
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  function navigate(nextPath: string) {
+    if (nextPath === window.location.pathname) {
+      return;
+    }
+
+    window.history.pushState(null, "", nextPath);
+    startTransition(() => {
+      setPathname(nextPath);
+    });
+  }
+
+  return { pathname, navigate };
+}
+
+interface UtilityNavProps {
+  activePath: string;
+  onNavigate: (nextPath: string) => void;
+}
+
+function UtilityNav({ activePath, onNavigate }: UtilityNavProps) {
+  const activeScreen = getAppScreen(activePath);
+
+  function handleClick(
+    event: MouseEvent<HTMLAnchorElement>,
+    nextPath: string,
+  ) {
+    if (!shouldHandleAppNavigation(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    onNavigate(nextPath);
+  }
 
   return (
     <header className="app-header">
-      <div className="app-header__title">{activeRoute.title}</div>
+      <div className="app-header__title">{activeScreen.title}</div>
 
       <nav aria-label="Primary navigation" className="utility-nav">
-        {routes.map((route) => (
-          <NavLink
-            key={route.path}
-            to={route.path}
-            aria-label={route.navLabel}
-            className={({ isActive }) =>
-              isActive ? "icon-button is-active" : "icon-button"
+        {appScreens.map((screen) => (
+          <a
+            key={screen.path}
+            href={screen.path}
+            aria-current={screen.path === activePath ? "page" : undefined}
+            className={
+              screen.path === activePath ? "icon-button is-active" : "icon-button"
             }
+            onClick={(event) => handleClick(event, screen.path)}
           >
+            <span className="visually-hidden">{screen.navLabel}</span>
             <span aria-hidden="true">
-              <AppIcon icon={route.icon} />
+              <AppIcon icon={screen.icon} />
             </span>
-          </NavLink>
+          </a>
         ))}
       </nav>
     </header>
@@ -33,16 +79,13 @@ function UtilityNav() {
 }
 
 export function App() {
+  const { pathname, navigate } = usePathname();
+  const activeScreen = getAppScreen(pathname);
+
   return (
-    <AppStateProvider>
-      <main className="app-shell">
-        <UtilityNav />
-        <Routes>
-          {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
-          ))}
-        </Routes>
-      </main>
-    </AppStateProvider>
+    <main className="app-shell">
+      <UtilityNav activePath={activeScreen.path} onNavigate={navigate} />
+      {activeScreen.render()}
+    </main>
   );
 }

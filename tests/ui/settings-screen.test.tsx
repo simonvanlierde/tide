@@ -1,28 +1,11 @@
-import "@testing-library/jest-dom/vitest";
-import {
-  act,
-  cleanup,
-  fireEvent,
-  screen,
-  waitFor,
-  within,
-} from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, fireEvent, screen, within } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
 import { loadAppState } from "../../src/data/storage";
 import { REMINDER_STATUS_TIMEOUT_MS } from "../../src/features/settings/config";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
-import { createAppState } from "../support/appState";
-import { renderWithAppState } from "./renderWithAppState";
+import { createAppState, renderWithAppState } from "../support/app";
 
 describe("SettingsScreen", () => {
-  afterEach(() => {
-    cleanup();
-  });
-
-  beforeEach(() => {
-    window.localStorage.clear();
-  });
-
   it("shows the privacy notice inside a grouped settings card", () => {
     renderWithAppState(<SettingsScreen />);
     expect(
@@ -31,12 +14,14 @@ describe("SettingsScreen", () => {
     expect(screen.getByText(/everything stays on this device/i)).toBeInTheDocument();
   });
 
-  it("shows export and import actions", () => {
+  it("does not show backup controls in the MVP settings screen", () => {
     renderWithAppState(<SettingsScreen />);
     expect(
-      screen.getByRole("button", { name: /export backup/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByLabelText(/import backup file/i)).toBeInTheDocument();
+      screen.queryByRole("button", { name: /export backup/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(/import backup file/i),
+    ).not.toBeInTheDocument();
   });
 
   it("allows the reminder window to be adjusted with preset chips", () => {
@@ -114,13 +99,13 @@ describe("SettingsScreen", () => {
     });
   });
 
-  it("orders settings sections as home, reminders, data, information", () => {
+  it("orders settings sections as home, reminders, information", () => {
     renderWithAppState(<SettingsScreen />);
 
     const titles = screen
       .getAllByRole("heading", { level: 2 })
       .map((heading) => heading.textContent);
-    expect(titles).toEqual(["Home", "Reminders", "Data", "Information"]);
+    expect(titles).toEqual(["Home", "Reminders", "Information"]);
   });
 
   it("shows concise information guidance", () => {
@@ -134,25 +119,11 @@ describe("SettingsScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows an inline error if import fails", async () => {
+  it("does not render the removed data section", () => {
     renderWithAppState(<SettingsScreen />);
 
-    const fileInput = screen.getByLabelText(
-      /import backup file/i,
-    ) as HTMLInputElement;
-    const badFile = new File(["\uFEFFnot-json"], "bad.json", {
-      type: "application/json",
-    });
-    Object.defineProperty(badFile, "text", {
-      value: async () => "\uFEFFnot-json",
-    });
-
-    fireEvent.change(fileInput, { target: { files: [badFile] } });
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/unexpected backup file format/i),
-      ).toBeInTheDocument();
-    });
+    expect(
+      screen.queryByRole("heading", { level: 2, name: /data/i }),
+    ).not.toBeInTheDocument();
   });
 });

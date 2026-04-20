@@ -1,23 +1,13 @@
-import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, screen } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { fireEvent, screen } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
-import { createAppState } from "../support/appState";
-import { renderWithAppState } from "./renderWithAppState";
+import { createAppState, renderWithAppState } from "../support/app";
 
 const defaultState = createAppState({
   periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
 });
 
 describe("TodayScreen", () => {
-  afterEach(() => {
-    cleanup();
-  });
-
-  beforeEach(() => {
-    window.localStorage.clear();
-  });
-
   it("renders the summary home with the core cycle cards", () => {
     renderWithAppState(<TodayScreen today="2026-04-18" />, {
       state: defaultState,

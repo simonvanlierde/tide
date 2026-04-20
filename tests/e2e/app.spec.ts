@@ -4,15 +4,15 @@ test("app shell loads and primary navigation works", async ({ page }) => {
   await page.goto("/");
 
   await expect(page.getByText(/^today$/i).first()).toBeVisible();
-  await expect(page.getByLabel(/today/i)).toBeVisible();
-  await expect(page.getByLabel(/history/i)).toBeVisible();
-  await expect(page.getByLabel(/settings/i)).toBeVisible();
+  await expect(page.getByRole("link", { name: /^today$/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^history$/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^settings$/i })).toBeVisible();
 
-  await page.getByLabel(/settings/i).click();
+  await page.getByRole("link", { name: /^settings$/i }).click();
   await expect(page).toHaveURL(/\/settings$/);
-  await expect(page.getByRole("heading", { name: /data/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /information/i })).toBeVisible();
 
-  await page.getByLabel(/history/i).click();
+  await page.getByRole("link", { name: /^history$/i }).click();
   await expect(page).toHaveURL(/\/history$/);
   await expect(page.getByLabel(/history calendar/i)).toBeVisible();
 });
@@ -46,24 +46,18 @@ test("logging today persists across reload", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("versioned backup export and import work", async ({ page }) => {
+test("deep links reload correctly for the static app paths", async ({
+  page,
+}) => {
+  await page.goto("/history");
+  await expect(page.getByLabel(/history calendar/i)).toBeVisible();
+  await page.reload();
+  await expect(page.getByRole("button", { name: /april 2026/i })).toBeVisible();
+
   await page.goto("/settings");
-
-  const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: /export backup/i }).click();
-  const download = await downloadPromise;
-  expect(download.suggestedFilename()).toBe("tide-backup.json");
-
-  await page
-    .getByLabel(/import backup file/i)
-    .setInputFiles("tests/e2e/fixtures/backup-import.json");
-
-  await expect(page.getByText(/backup imported/i)).toBeVisible();
-  await expect
-    .poll(async () =>
-      page.evaluate(() => window.localStorage.getItem("tide.period-tracker.state")),
-    )
-    .toContain('"version":1');
+  await expect(page.getByRole("heading", { name: /information/i })).toBeVisible();
+  await page.reload();
+  await expect(page.getByText(/everything stays on this device/i)).toBeVisible();
 });
 
 test("manifest and install assets are served", async ({ page }) => {
@@ -88,4 +82,19 @@ test("manifest and install assets are served", async ({ page }) => {
 
   const iconResponse = await page.request.get("/icons/icon-192.png");
   expect(iconResponse.ok()).toBe(true);
+
+  const serviceWorkerRegisterResponse = await page.request.get("/registerSW.js");
+  expect(serviceWorkerRegisterResponse.ok()).toBe(true);
+
+  await page.goto("/");
+  await expect(
+    page.locator('meta[name="apple-mobile-web-app-capable"]'),
+  ).toHaveAttribute("content", "yes");
+  await expect(
+    page.locator('meta[name="apple-mobile-web-app-status-bar-style"]'),
+  ).toHaveAttribute("content", "default");
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+    "href",
+    "/icons/icon-192.png",
+  );
 });

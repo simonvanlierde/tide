@@ -4,25 +4,21 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm bundle:check",
     "dev": "vite",
     "typecheck": "tsc -b --pretty false",
     "build": "vite build",
+    "bundle:check": "node scripts/checkBundleBudget.mjs",
     "lint": "biome lint .",
-    "lint:ci": "biome lint . --reporter=github",
     "format": "biome format --write .",
     "preview": "vite preview",
     "test": "vitest --run",
-    "test:watch": "vitest",
-    "test:ci": "pnpm test",
-    "test:e2e": "playwright test",
-    "test:ui": "pnpm test:e2e"
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "lucide-react": "^1.8.0",
     "react": "^19.2.5",
-    "react-dom": "^19.2.5",
-    "react-router-dom": "^7.14.1"
+    "react-dom": "^19.2.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",

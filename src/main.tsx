@@ -1,8 +1,8 @@
 import "@vitejs/plugin-react/preamble";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import { App } from "./app/App";
+import { AppStateProvider } from "./state";
 import "./styles/global.css";
 
 const container = document.getElementById("root");
@@ -13,8 +13,8 @@ if (!container) {
 
 createRoot(container).render(
   <StrictMode>
-    <BrowserRouter>
+    <AppStateProvider>
       <App />
-    </BrowserRouter>
+    </AppStateProvider>
   </StrictMode>,
 );

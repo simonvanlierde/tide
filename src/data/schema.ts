@@ -1,14 +1,6 @@
-import type {
-  AppSettings,
-  AppState,
-  BackupPayloadV1,
-  HomeDisplayMode,
-  IsoDate,
-  PersistedAppStateV1,
-} from "../domain/types";
+import type { AppSettings, AppState, HomeDisplayMode, IsoDate } from "../domain/types";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
-export const PERSISTED_STATE_VERSION = 1;
 
 export const HOME_DISPLAY_MODES: HomeDisplayMode[] = [
   "summary",
@@ -65,38 +57,14 @@ export function normalizeSettings(settings: unknown): AppSettings {
 }
 
 export function normalizeAppState(state: unknown): AppState {
-  const candidate =
-    state && typeof state === "object" ? (state as Partial<AppState>) : {};
+  if (!state || typeof state !== "object" || "version" in state || "state" in state) {
+    return defaultAppState;
+  }
+
+  const candidate = state as Partial<AppState>;
 
   return {
     periodDays: normalizePeriodDays(candidate.periodDays),
     settings: normalizeSettings(candidate.settings),
   };
-}
-
-export function toPersistedAppState(state: AppState): PersistedAppStateV1 {
-  return {
-    version: PERSISTED_STATE_VERSION,
-    state,
-  };
-}
-
-export function toBackupPayload(state: AppState): BackupPayloadV1 {
-  return {
-    version: PERSISTED_STATE_VERSION,
-    state,
-  };
-}
-
-export function normalizePersistedState(payload: unknown): AppState {
-  const candidate =
-    payload && typeof payload === "object"
-      ? (payload as Partial<PersistedAppStateV1> & Partial<AppState>)
-      : {};
-
-  if (candidate.version === PERSISTED_STATE_VERSION && "state" in candidate) {
-    return normalizeAppState(candidate.state);
-  }
-
-  return normalizeAppState(candidate);
 }

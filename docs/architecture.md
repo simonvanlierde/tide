@@ -1,21 +1,24 @@
 # Tide Architecture
 
-Tide is deliberately small and local-first. The app is organized so each layer has one job:
+Tide is organized around a few small runtime boundaries:
 
 - `src/domain`
-  Pure logic for cycle calculations and reminder timing. No React, storage, or DOM access.
+  Pure cycle and reminder logic. No React, storage, or browser APIs.
 
 - `src/data`
-  Runtime normalization for persisted state, versioned storage records, and backup import/export.
+  Defaults plus normalization at the `localStorage` boundary.
 
 - `src/state`
-  The reducer, provider, and app-state hook. This layer connects React to the domain and data layers.
+  The single app-state surface: reducer, provider, actions, and derived cycle summary hook.
+
+- `src/app`
+  The app shell and pathname-based route selection for `/`, `/history`, and `/settings`.
 
 - `src/features`
-  Screen-level components and small presentation-specific helpers for Today, History, Settings, reminders, and logging flows.
+  Screen components and focused presentation helpers.
 
 - `src/ui`
-  Shared UI helpers and icons that are reused across screens.
+  Reusable UI primitives shared across screens.
 
 Design principles:
 
@@ -23,4 +26,5 @@ Design principles:
 - Keep product scope aligned with local-first privacy
 - Put validation at the data boundary
 - Keep derived cycle logic in pure functions
-- Treat deployment as optional infrastructure, not part of core app complexity
+- Keep React state wiring in one obvious place
+- Treat deployment as static hosting on Cloudflare Pages, not part of core app complexity

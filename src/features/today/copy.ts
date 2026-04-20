@@ -1,4 +1,4 @@
-import type { CycleSummary } from "../../domain/types";
+import type { CycleEstimateMode, CyclePhase } from "../../domain/types";
 
 export function getNextPeriodSummary(daysUntil: number | null) {
   if (daysUntil === null) {
@@ -13,7 +13,7 @@ export function getNextPeriodSummary(daysUntil: number | null) {
   return `Period expected in ${daysUntil} day${daysUntil === 1 ? "" : "s"}`;
 }
 
-export function getPhaseSentence(phaseLabel: string) {
+export function getPhaseSentence(phaseLabel: CyclePhase) {
   switch (phaseLabel) {
     case "menstrual":
       return "You are currently in the menstrual phase.";
@@ -28,7 +28,10 @@ export function getPhaseSentence(phaseLabel: string) {
   }
 }
 
-export function getFertilityEstimate(phaseLabel: string, fertile: boolean) {
+export function getFertilityEstimate(
+  phaseLabel: CyclePhase,
+  fertile: boolean,
+) {
   if (phaseLabel === "ovulation" || fertile) {
     return "Higher chance today";
   }
@@ -36,7 +39,7 @@ export function getFertilityEstimate(phaseLabel: string, fertile: boolean) {
   return "Lower chance today";
 }
 
-export function getLearningNote(estimateMode: CycleSummary["estimateMode"]) {
+export function getLearningNote(estimateMode: CycleEstimateMode) {
   if (estimateMode === "fallback") {
     return "Learning from recent logs. Using a typical 28-day cycle for now.";
   }

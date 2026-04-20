@@ -16,5 +16,5 @@ export const REMINDER_STATUS_TIMEOUT_MS = 3500;
 export const INFORMATION_COPY = {
   logging: "Log a day only when you had menstrual bleeding on that date.",
   fertility: "Estimates are informational only and not birth control.",
-  privacy: "Everything stays on this device unless you export a backup.",
+  privacy: "Everything stays on this device.",
 } as const;
