@@ -51,11 +51,10 @@ function getMonthDays(today: IsoDate) {
 }
 
 export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps) {
-  const { state, togglePeriodDay, removePeriodDay } = useAppState(today);
+  const { state, togglePeriodDay } = useAppState(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const monthDays = getMonthDays(visibleMonth);
   const loggedDays = new Set(state.periodDays);
-  const latestLogs = [...state.periodDays].sort((left, right) => right.localeCompare(left));
   const yearOptions = Array.from(
     new Set(
       [parseIsoDate(today).getUTCFullYear(), ...state.periodDays.map((day) => parseIsoDate(day).getUTCFullYear())].sort()
@@ -64,8 +63,6 @@ export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps)
 
   return (
     <section className="utility-screen">
-      <h1 className="utility-screen__title">History</h1>
-
       <article className="utility-card">
         <div className="calendar-toolbar">
           <button type="button" className="text-action" onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}>
@@ -94,6 +91,7 @@ export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps)
             ))}
           </select>
         </label>
+        <p className="supporting-note">Tap any day you had menstrual bleeding.</p>
         <div className="calendar-grid" aria-label="History calendar">
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
             <div key={day} className="calendar-grid__weekday">
@@ -117,23 +115,11 @@ export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps)
           )}
         </div>
       </article>
-
-      <div className="utility-stack">
-        {latestLogs.length === 0 ? (
-          <article className="utility-card">
-            <p>No period days logged yet.</p>
-          </article>
-        ) : (
-          latestLogs.map((day) => (
-            <article key={day} className="utility-card utility-card--row">
-              <span>{day}</span>
-              <button className="text-action" onClick={() => removePeriodDay(day)}>
-                Remove {day}
-              </button>
-            </article>
-          ))
-        )}
-      </div>
+      {state.periodDays.length === 0 ? (
+        <article className="utility-card">
+          <p>No bleeding days logged yet.</p>
+        </article>
+      ) : null}
     </section>
   );
 }

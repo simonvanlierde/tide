@@ -8,19 +8,17 @@ interface CircularCycleViewProps {
 }
 
 function getCircleStyle(segments: ReturnType<typeof buildCycleSegments>) {
-  const size = segments.length;
+  const segmentSize = 100 / segments.length;
   const stops = segments.map((segment, index) => {
-    const start = (index / size) * 100;
-    const end = ((index + 1) / size) * 100;
-    let color = "rgba(114, 92, 80, 0.14)";
-
-    if (segment.isPeriod) {
-      color = "#cf705d";
-    } else if (segment.isOvulation) {
-      color = "#d99a56";
-    } else if (segment.isFertile) {
-      color = "#f0cc99";
-    }
+    const start = index * segmentSize;
+    const end = start + segmentSize;
+    const color = segment.isPeriod
+      ? "#cf705d"
+      : segment.isOvulation
+        ? "#d99a56"
+        : segment.isFertile
+          ? "#f0cc99"
+          : "rgba(114, 92, 80, 0.14)";
 
     return `${color} ${start}% ${end}%`;
   });
@@ -32,8 +30,8 @@ function getCircleStyle(segments: ReturnType<typeof buildCycleSegments>) {
 
 export function CircularCycleView({ summary, periodDays, today }: CircularCycleViewProps) {
   const segments = buildCycleSegments(summary, periodDays, today);
-  const currentSegment = segments.find((segment) => segment.isCurrent) ?? segments[0];
-  const rotation = ((currentSegment.dayNumber - 1) / segments.length) * 360;
+  const currentIndex = segments.findIndex((segment) => segment.isCurrent);
+  const rotation = currentIndex >= 0 ? ((currentIndex + 0.5) / segments.length) * 360 : 0;
 
   return (
     <section aria-label="Circular cycle view" className="cycle-circle">
@@ -61,8 +59,8 @@ export function CircularCycleView({ summary, periodDays, today }: CircularCycleV
         </div>
         <div
           className="cycle-circle__marker"
+          aria-label={`Cycle day ${summary.cycleDay ?? "--"}, today`}
           style={{ transform: `translateX(-50%) rotate(${rotation}deg)` }}
-          aria-label={`Cycle day ${currentSegment.dayNumber}, today`}
         />
       </div>
     </section>

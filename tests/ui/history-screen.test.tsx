@@ -5,10 +5,7 @@ import { HistoryScreen } from "../../src/features/history/HistoryScreen";
 
 const defaultSettings = {
   reminderWindowDays: 4,
-  snoozedUntil: null,
-  homeLayoutMode: "circular",
-  showPhaseChip: true,
-  showFertilityChip: true
+  snoozedUntil: null
 };
 
 describe("HistoryScreen", () => {
@@ -27,26 +24,25 @@ describe("HistoryScreen", () => {
     );
   });
 
-  it("renders a month calendar and latest logs newest first", () => {
+  it("renders a month calendar with bleeding-day guidance", () => {
     render(<HistoryScreen today="2026-04-18" />);
-    expect(screen.getByRole("heading", { name: /history/i })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /^history$/i })).not.toBeInTheDocument();
     expect(screen.getByLabelText(/history calendar/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/2026-04-/i)[0]).toHaveTextContent("2026-04-20");
+    expect(screen.getByText(/tap any day you had menstrual bleeding/i)).toBeInTheDocument();
   });
 
-  it("allows retroactive removal of a logged day", () => {
+  it("uses the calendar as the main editor for logged days", () => {
     render(<HistoryScreen today="2026-04-18" />);
-    fireEvent.click(screen.getByRole("button", { name: /remove 2026-04-02/i }));
-    expect(screen.queryByRole("button", { name: /remove 2026-04-02/i })).not.toBeInTheDocument();
+    expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
   it("allows toggling a day from the calendar", () => {
     render(<HistoryScreen today="2026-04-18" />);
     fireEvent.click(screen.getByRole("button", { name: /toggle april 5, 2026/i }));
-    expect(screen.getByText("2026-04-05")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /toggle april 5, 2026/i })).toHaveClass("is-logged");
   });
 
-  it("navigates months and jumps year while keeping logs newest first", { timeout: 10000 }, () => {
+  it("navigates months and jumps year", { timeout: 10000 }, () => {
     window.localStorage.setItem(
       "tide.period-tracker.state",
       JSON.stringify({
@@ -61,7 +57,6 @@ describe("HistoryScreen", () => {
 
     fireEvent.change(screen.getByLabelText(/jump to year/i), { target: { value: "2025" } });
     expect(screen.getByText(/march 2025/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/202[456]-/i)[0]).toHaveTextContent("2026-04-20");
   });
 
   it("shows a quiet empty state when no logs exist", () => {
@@ -74,6 +69,6 @@ describe("HistoryScreen", () => {
     );
 
     render(<HistoryScreen today="2026-04-18" />);
-    expect(screen.getByText(/no period days logged yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/no bleeding days logged yet/i)).toBeInTheDocument();
   });
 });

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { HomeLayoutMode, IsoDate } from "../../domain/types";
+import type { IsoDate } from "../../domain/types";
 import { useAppState } from "../../hooks/useAppState";
 import { differenceInDays, getTodayIsoDate } from "../../utils/date";
 
@@ -27,11 +27,6 @@ interface SettingsScreenProps {
 
 const reminderWindowOptions = [3, 4, 5, 7] as const;
 const snoozeOptions = [1, 3, 7] as const;
-const layoutOptions: Array<{ value: HomeLayoutMode; label: string }> = [
-  { value: "simple", label: "Simple info / chips" },
-  { value: "linear", label: "Linear cycle" },
-  { value: "circular", label: "Circular cycle" }
-];
 
 export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProps) {
   const {
@@ -40,11 +35,10 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
     exportState,
     importState,
     setReminderWindowDays,
+    setHomeDisplayMode,
+    setHomeCardVisibility,
     snoozeReminders,
-    clearReminderSnooze,
-    setHomeLayoutMode,
-    setPhaseChipVisibility,
-    setFertilityChipVisibility
+    clearReminderSnooze
   } = useAppState(today);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const snoozeSummary =
@@ -68,14 +62,60 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
 
   return (
     <section className="utility-screen">
-      <h1 className="utility-screen__title">Settings</h1>
+      <article className="utility-card">
+        <h2 className="section-title">Home</h2>
+        <div className="settings-group settings-group--compact">
+          <div className="settings-row">
+            <span className="settings-label">Display</span>
+            <div className="chip-row chip-row--dense" role="group" aria-label="Home display mode">
+              {(["summary", "linear", "circular"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={state.settings.homeDisplayMode === mode ? "chip-button is-active" : "chip-button"}
+                  onClick={() => {
+                    setHomeDisplayMode(mode);
+                    setStatusMessage(`Home display set to ${mode}`);
+                  }}
+                >
+                  {mode[0].toUpperCase() + mode.slice(1)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="settings-toggle-list" aria-label="Home cards">
+            {([
+              ["showNextPeriodCard", "Next period"],
+              ["showPhaseCard", "Phase"],
+              ["showFertilityCard", "Fertility"]
+            ] as const).map(([key, label]) => {
+              const isVisible = state.settings.homeCards[key];
+
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className="settings-toggle"
+                  aria-pressed={isVisible}
+                  onClick={() => setHomeCardVisibility(key, !isVisible)}
+                >
+                  <span>{label}</span>
+                  <span className={isVisible ? "settings-toggle__switch is-on" : "settings-toggle__switch"}>
+                    <span className="settings-toggle__thumb" />
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </article>
 
       <article className="utility-card">
-        <h2 className="section-title">Reminder status</h2>
-        <div className="settings-group">
-          <h3 className="settings-subtitle">Reminder window</h3>
-          <p>Reminder window: {state.settings.reminderWindowDays} days before the expected period.</p>
-          <div className="chip-row" role="group" aria-label="Reminder window">
+        <h2 className="section-title">Reminders</h2>
+        <div className="settings-group settings-group--compact">
+          <p>Window: {state.settings.reminderWindowDays} days before the expected period.</p>
+          <div className="chip-row chip-row--dense" role="group" aria-label="Reminder window">
             {reminderWindowOptions.map((days) => (
               <button
                 key={days}
@@ -90,21 +130,10 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
               </button>
             ))}
           </div>
-        </div>
-
-        <div className="settings-group">
-          <h3 className="settings-subtitle">Snooze status</h3>
           <p className="supporting-note">
-            {snoozeSummary ?? "Reminders are currently active."}
+            {snoozeSummary ?? "Active."} Next reminder: {getReminderSummary(summary.nextPeriod.daysUntil, state.settings.reminderWindowDays)}
           </p>
-          <p className="supporting-note">
-            Next reminder: {getReminderSummary(summary.nextPeriod.daysUntil, state.settings.reminderWindowDays)}
-          </p>
-        </div>
-
-        <div className="settings-group">
-          <h3 className="settings-subtitle">Quick snooze actions</h3>
-          <div className="chip-row" role="group" aria-label="Quick snooze">
+          <div className="chip-row chip-row--dense" role="group" aria-label="Quick snooze">
             {snoozeOptions.map((days) => (
               <button
                 key={days}
@@ -135,52 +164,8 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
       </article>
 
       <article className="utility-card">
-        <h2 className="section-title">Backup</h2>
-        <div className="settings-group">
-          <h3 className="settings-subtitle">Home layout</h3>
-          <div className="chip-row" role="group" aria-label="Home layout">
-            {layoutOptions.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                className={state.settings.homeLayoutMode === option.value ? "chip-button is-active" : "chip-button"}
-                onClick={() => {
-                  setHomeLayoutMode(option.value);
-                  setStatusMessage(`Home layout set to ${option.label}`);
-                }}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-          <div className="settings-toggle-row">
-            <button
-              type="button"
-              className={state.settings.showPhaseChip ? "chip-button is-active" : "chip-button"}
-              onClick={() => {
-                setPhaseChipVisibility(!state.settings.showPhaseChip);
-                setStatusMessage(state.settings.showPhaseChip ? "Phase chip hidden" : "Phase chip shown");
-              }}
-            >
-              {state.settings.showPhaseChip ? "Hide phase chip" : "Show phase chip"}
-            </button>
-            <button
-              type="button"
-              className={state.settings.showFertilityChip ? "chip-button is-active" : "chip-button"}
-              onClick={() => {
-                setFertilityChipVisibility(!state.settings.showFertilityChip);
-                setStatusMessage(
-                  state.settings.showFertilityChip ? "Fertility chip hidden" : "Fertility chip shown"
-                );
-              }}
-            >
-              {state.settings.showFertilityChip ? "Hide fertility chip" : "Show fertility chip"}
-            </button>
-          </div>
-        </div>
-
-        <div className="settings-group">
-          <h3 className="settings-subtitle">Manual backup</h3>
+        <h2 className="section-title">Data</h2>
+        <div className="settings-group settings-group--compact">
           <button className="primary-action" onClick={handleExport}>
             Export backup
           </button>
@@ -213,14 +198,11 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
       </article>
 
       <article className="utility-card">
-        <h2 className="section-title">Install guide</h2>
-        <p>Install Tide from Safari to use it like an app on iPhone.</p>
-        <p className="supporting-note">Open Share, then choose Add to Home Screen.</p>
-      </article>
-
-      <article className="utility-card">
-        <h2 className="section-title">Privacy notice</h2>
-        <p>Your cycle data stays on this device unless you export it yourself.</p>
+        <h2 className="section-title">Privacy</h2>
+        <p>Logged bleeding day means menstrual bleeding on that date.</p>
+        <p className="supporting-note">Spotting stays separate and does not start a new cycle.</p>
+        <p className="supporting-note">Fertility estimates are informational only.</p>
+        <p className="supporting-note">Data stays on this device unless you export it.</p>
       </article>
     </section>
   );

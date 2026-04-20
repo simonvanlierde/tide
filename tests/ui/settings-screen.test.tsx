@@ -7,9 +7,12 @@ import { loadAppState } from "../../src/data/storage";
 const defaultSettings = {
   reminderWindowDays: 4,
   snoozedUntil: null,
-  homeLayoutMode: "circular",
-  showPhaseChip: true,
-  showFertilityChip: true
+  homeDisplayMode: "summary",
+  homeCards: {
+    showNextPeriodCard: true,
+    showPhaseCard: true,
+    showFertilityCard: true
+  }
 };
 
 describe("SettingsScreen", () => {
@@ -24,7 +27,7 @@ describe("SettingsScreen", () => {
   it("shows the privacy notice inside a grouped settings card", () => {
     render(<SettingsScreen />);
     expect(screen.getByText(/privacy/i)).toBeInTheDocument();
-    expect(screen.getByText(/your cycle data stays on this device/i)).toBeInTheDocument();
+    expect(screen.getByText(/data stays on this device unless you export it/i)).toBeInTheDocument();
   });
 
   it("shows export and import actions", () => {
@@ -40,22 +43,21 @@ describe("SettingsScreen", () => {
         name: /^7 days$/i
       })
     );
-    expect(screen.getByText(/reminder window: 7 days/i)).toBeInTheDocument();
+    expect(screen.getByText(/window:\s*7\s*days/i)).toBeInTheDocument();
   });
 
-  it("shows install guidance and a next reminder summary", () => {
+  it("shows a compact reminder summary", () => {
     window.localStorage.setItem(
       "tide.period-tracker.state",
       JSON.stringify({
         periodDays: ["2026-04-02", "2026-04-03"],
-      settings: defaultSettings
+        settings: defaultSettings
       })
     );
 
     render(<SettingsScreen today="2026-04-19" />);
 
     expect(screen.getByText(/next reminder/i)).toBeInTheDocument();
-    expect(screen.getByText(/add to home screen/i)).toBeInTheDocument();
   });
 
   it("shows snooze controls and can turn reminders back on now", () => {
@@ -77,25 +79,34 @@ describe("SettingsScreen", () => {
     expect(screen.queryByText(/snoozed until 2026-04-22/i)).not.toBeInTheDocument();
   });
 
-  it("allows home layout and chip visibility preferences to be updated and persisted", () => {
+  it("shows compact home controls and persists them", () => {
     render(<SettingsScreen />);
 
-    fireEvent.click(screen.getByRole("button", { name: /simple info \/ chips/i }));
-    fireEvent.click(screen.getByRole("button", { name: /hide phase chip/i }));
-    fireEvent.click(screen.getByRole("button", { name: /hide fertility chip/i }));
+    fireEvent.click(screen.getByRole("button", { name: /linear/i }));
+    fireEvent.click(screen.getByRole("button", { name: /^fertility$/i }));
 
     expect(loadAppState().settings).toMatchObject({
-      homeLayoutMode: "simple",
-      showPhaseChip: false,
-      showFertilityChip: false
+      reminderWindowDays: 4,
+      snoozedUntil: null,
+      homeDisplayMode: "linear",
+      homeCards: {
+        showFertilityCard: false
+      }
     });
   });
 
-  it("orders settings sections as reminder status, backup, install guide, privacy notice", () => {
+  it("orders settings sections as home, reminders, data, privacy", () => {
     render(<SettingsScreen />);
 
     const titles = screen.getAllByRole("heading", { level: 2 }).map((heading) => heading.textContent);
-    expect(titles).toEqual(["Reminder status", "Backup", "Install guide", "Privacy notice"]);
+    expect(titles).toEqual(["Home", "Reminders", "Data", "Privacy"]);
+  });
+
+  it("shows concise privacy guidance", () => {
+    render(<SettingsScreen />);
+
+    expect(screen.getByText(/logged bleeding day means menstrual bleeding on that date/i)).toBeInTheDocument();
+    expect(screen.getByText(/data stays on this device unless you export it/i)).toBeInTheDocument();
   });
 
   it("shows an inline error if import fails", async () => {

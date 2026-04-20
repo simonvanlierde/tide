@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
-import type { AppState, HomeLayoutMode, IsoDate } from "../domain/types";
+import type { AppState, HomeCardsSettings, HomeDisplayMode, IsoDate } from "../domain/types";
 import { importBackup } from "../data/exportImport";
 import { loadAppState, saveAppState } from "../data/storage";
 import { addDays, getTodayIsoDate } from "../utils/date";
@@ -89,42 +89,35 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     }));
   }
 
-  function setHomeLayoutMode(mode: HomeLayoutMode) {
-    setState((currentState) => ({
-      ...currentState,
-      settings: {
-        ...currentState.settings,
-        homeLayoutMode: mode
-      }
-    }));
-  }
-
-  function setPhaseChipVisibility(visible: boolean) {
-    setState((currentState) => ({
-      ...currentState,
-      settings: {
-        ...currentState.settings,
-        showPhaseChip: visible
-      }
-    }));
-  }
-
-  function setFertilityChipVisibility(visible: boolean) {
-    setState((currentState) => ({
-      ...currentState,
-      settings: {
-        ...currentState.settings,
-        showFertilityChip: visible
-      }
-    }));
-  }
-
   function clearReminderSnooze() {
     setState((currentState) => ({
       ...currentState,
       settings: {
         ...currentState.settings,
         snoozedUntil: null
+      }
+    }));
+  }
+
+  function setHomeDisplayMode(mode: HomeDisplayMode) {
+    setState((currentState) => ({
+      ...currentState,
+      settings: {
+        ...currentState.settings,
+        homeDisplayMode: mode
+      }
+    }));
+  }
+
+  function setHomeCardVisibility(card: keyof HomeCardsSettings, visible: boolean) {
+    setState((currentState) => ({
+      ...currentState,
+      settings: {
+        ...currentState.settings,
+        homeCards: {
+          ...currentState.settings.homeCards,
+          [card]: visible
+        }
       }
     }));
   }
@@ -155,9 +148,8 @@ export function useAppState(today: IsoDate = getTodayIsoDate()) {
     snoozeReminders,
     clearReminderSnooze,
     setReminderWindowDays,
-    setHomeLayoutMode,
-    setPhaseChipVisibility,
-    setFertilityChipVisibility,
+    setHomeDisplayMode,
+    setHomeCardVisibility,
     removePeriodDay,
     exportState,
     importState

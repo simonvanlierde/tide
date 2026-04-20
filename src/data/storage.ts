@@ -1,4 +1,4 @@
-import type { AppSettings, AppState, HomeLayoutMode } from "../domain/types";
+import type { AppSettings, AppState, HomeCardsSettings, HomeDisplayMode } from "../domain/types";
 
 const STORAGE_KEY = "tide.period-tracker.state";
 
@@ -7,13 +7,36 @@ export const defaultAppState: AppState = {
   settings: {
     reminderWindowDays: 4,
     snoozedUntil: null,
-    homeLayoutMode: "circular",
-    showPhaseChip: true,
-    showFertilityChip: true
+    homeDisplayMode: "summary",
+    homeCards: {
+      showNextPeriodCard: true,
+      showPhaseCard: true,
+      showFertilityCard: true
+    }
   }
 };
 
-const HOME_LAYOUT_MODES: HomeLayoutMode[] = ["simple", "linear", "circular"];
+const HOME_DISPLAY_MODES: HomeDisplayMode[] = ["summary", "linear", "circular"];
+
+function normalizeHomeCards(homeCards: unknown): HomeCardsSettings {
+  const candidate =
+    homeCards && typeof homeCards === "object" ? (homeCards as Partial<HomeCardsSettings>) : {};
+
+  return {
+    showNextPeriodCard:
+      typeof candidate.showNextPeriodCard === "boolean"
+        ? candidate.showNextPeriodCard
+        : defaultAppState.settings.homeCards.showNextPeriodCard,
+    showPhaseCard:
+      typeof candidate.showPhaseCard === "boolean"
+        ? candidate.showPhaseCard
+        : defaultAppState.settings.homeCards.showPhaseCard,
+    showFertilityCard:
+      typeof candidate.showFertilityCard === "boolean"
+        ? candidate.showFertilityCard
+        : defaultAppState.settings.homeCards.showFertilityCard
+  };
+}
 
 export function normalizeSettings(settings: unknown): AppSettings {
   const candidate = settings && typeof settings === "object" ? (settings as Partial<AppSettings>) : {};
@@ -27,17 +50,10 @@ export function normalizeSettings(settings: unknown): AppSettings {
       typeof candidate.snoozedUntil === "string" || candidate.snoozedUntil === null
         ? candidate.snoozedUntil
         : defaultAppState.settings.snoozedUntil,
-    homeLayoutMode: HOME_LAYOUT_MODES.includes(candidate.homeLayoutMode as HomeLayoutMode)
-      ? (candidate.homeLayoutMode as HomeLayoutMode)
-      : defaultAppState.settings.homeLayoutMode,
-    showPhaseChip:
-      typeof candidate.showPhaseChip === "boolean"
-        ? candidate.showPhaseChip
-        : defaultAppState.settings.showPhaseChip,
-    showFertilityChip:
-      typeof candidate.showFertilityChip === "boolean"
-        ? candidate.showFertilityChip
-        : defaultAppState.settings.showFertilityChip
+    homeDisplayMode: HOME_DISPLAY_MODES.includes(candidate.homeDisplayMode as HomeDisplayMode)
+      ? (candidate.homeDisplayMode as HomeDisplayMode)
+      : defaultAppState.settings.homeDisplayMode,
+    homeCards: normalizeHomeCards(candidate.homeCards)
   };
 }
 

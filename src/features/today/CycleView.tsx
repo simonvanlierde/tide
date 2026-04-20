@@ -15,18 +15,6 @@ interface CycleViewProps {
   today: IsoDate;
 }
 
-export function getFertilityStatusLabel(summary: CycleSummary) {
-  if (summary.phaseLabel === "ovulation") {
-    return "Ovulation likely now";
-  }
-
-  if (summary.fertile) {
-    return "Fertile window";
-  }
-
-  return "Lower chance of pregnancy";
-}
-
 export function buildCycleSegments(summary: CycleSummary, periodDays: IsoDate[], today: IsoDate) {
   const totalDays =
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
