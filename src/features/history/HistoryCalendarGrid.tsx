@@ -1,9 +1,13 @@
 import type { IsoDate } from "../../domain/types";
 import { parseIsoDate } from "../../utils/date";
-import { formatDayButtonLabel, HISTORY_WEEKDAY_LABELS } from "./calendar";
+import {
+  type CalendarDay,
+  formatDayButtonLabel,
+  HISTORY_WEEKDAY_LABELS,
+} from "./calendar";
 
 interface HistoryCalendarGridProps {
-  monthDays: Array<{ key: string; value: IsoDate | null }>;
+  monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
   onToggleDay: (day: IsoDate) => void;
 }
@@ -15,40 +19,44 @@ export function HistoryCalendarGrid({
 }: HistoryCalendarGridProps) {
   return (
     <section className="calendar-grid" aria-label="History calendar">
-      {HISTORY_WEEKDAY_LABELS.map((day) => (
-        <div key={day} className="calendar-grid__weekday">
-          {day}
-        </div>
-      ))}
-      {monthDays.map((day) => {
-        if (day.value === null) {
+      <div className="calendar-grid__header">
+        {HISTORY_WEEKDAY_LABELS.map((day) => (
+          <div key={day} className="calendar-grid__weekday">
+            {day}
+          </div>
+        ))}
+      </div>
+      <div className="calendar-grid__week">
+        {monthDays.map((day) => {
+          const value = day.value;
+          const className = [
+            "calendar-grid__day",
+            loggedDays.has(value) ? "is-logged" : "",
+            day.isToday ? "is-today" : "",
+            day.isOutsideMonth ? "is-outside-month" : "",
+            day.isFuture ? "is-future" : "",
+          ]
+            .filter(Boolean)
+            .join(" ");
+
           return (
-            <div
+            <button
               key={day.key}
-              className="calendar-grid__blank"
-              aria-hidden="true"
-            />
+              type="button"
+              className={className}
+              disabled={day.isFuture}
+              aria-label={
+                day.isFuture
+                  ? `${formatDayButtonLabel(value)} unavailable`
+                  : formatDayButtonLabel(value)
+              }
+              onClick={() => onToggleDay(value)}
+            >
+              {parseIsoDate(value).getUTCDate()}
+            </button>
           );
-        }
-
-        const value = day.value;
-
-        return (
-          <button
-            key={day.key}
-            type="button"
-            className={
-              loggedDays.has(value)
-                ? "calendar-grid__day is-logged"
-                : "calendar-grid__day"
-            }
-            aria-label={formatDayButtonLabel(value)}
-            onClick={() => onToggleDay(value)}
-          >
-            {parseIsoDate(value).getUTCDate()}
-          </button>
-        );
-      })}
+        })}
+      </div>
     </section>
   );
 }
