@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { IsoDate } from "../../domain/types";
 import { useAppState } from "../../hooks/useAppState";
 import { differenceInDays, getTodayIsoDate } from "../../utils/date";
+import { AppIcon, Download, Upload } from "../../ui/icons";
 
 function getReminderSummary(daysUntilPeriod: number | null, reminderWindowDays: number) {
   if (daysUntilPeriod === null) {
@@ -167,10 +168,16 @@ export function SettingsScreen({ today = getTodayIsoDate() }: SettingsScreenProp
         <h2 className="section-title">Data</h2>
         <div className="settings-group settings-group--compact">
           <button className="primary-action" onClick={handleExport}>
-            Export backup
+            <span className="button-label">
+              <AppIcon icon={Download} className="button-icon" />
+              <span>Export backup</span>
+            </span>
           </button>
           <label className="file-input">
-            <span>Import backup file</span>
+            <span className="button-label">
+              <AppIcon icon={Upload} className="button-icon" />
+              <span>Import backup file</span>
+            </span>
             <input
               type="file"
               aria-label="Import backup file"

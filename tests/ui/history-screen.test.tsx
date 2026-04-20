@@ -51,7 +51,10 @@ describe("HistoryScreen", () => {
       })
     );
 
-    render(<HistoryScreen today="2026-04-18" />);
+    const { container } = render(<HistoryScreen today="2026-04-18" />);
+    expect(container.querySelector(".calendar-toolbar svg.lucide-chevron-left")).not.toBeNull();
+    expect(container.querySelector(".calendar-toolbar svg.lucide-chevron-right")).not.toBeNull();
+
     fireEvent.click(screen.getByRole("button", { name: /previous month/i }));
     expect(screen.getByText(/march 2026/i)).toBeInTheDocument();
 

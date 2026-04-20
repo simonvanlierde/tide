@@ -31,9 +31,11 @@ describe("SettingsScreen", () => {
   });
 
   it("shows export and import actions", () => {
-    render(<SettingsScreen />);
+    const { container } = render(<SettingsScreen />);
     expect(screen.getByRole("button", { name: /export backup/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/import backup file/i)).toBeInTheDocument();
+    expect(container.querySelector(".primary-action svg.lucide-download")).not.toBeNull();
+    expect(container.querySelector(".file-input svg.lucide-upload")).not.toBeNull();
   });
 
   it("allows the reminder window to be adjusted with preset chips", () => {

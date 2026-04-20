@@ -2,6 +2,7 @@ import type { IsoDate } from "../../domain/types";
 import { useState } from "react";
 import { addMonths, getTodayIsoDate, parseIsoDate } from "../../utils/date";
 import { useAppState } from "../../hooks/useAppState";
+import { AppIcon, ChevronLeft, ChevronRight } from "../../ui/icons";
 
 interface HistoryScreenProps {
   today?: IsoDate;
@@ -66,11 +67,17 @@ export function HistoryScreen({ today = getTodayIsoDate() }: HistoryScreenProps)
       <article className="utility-card">
         <div className="calendar-toolbar">
           <button type="button" className="text-action" onClick={() => setVisibleMonth(addMonths(visibleMonth, -1))}>
-            Previous month
+            <span className="button-label">
+              <AppIcon icon={ChevronLeft} className="button-icon" />
+              <span>Previous month</span>
+            </span>
           </button>
           <h2 className="section-title">{formatMonthLabel(visibleMonth)}</h2>
           <button type="button" className="text-action" onClick={() => setVisibleMonth(addMonths(visibleMonth, 1))}>
-            Next month
+            <span className="button-label">
+              <span>Next month</span>
+              <AppIcon icon={ChevronRight} className="button-icon" />
+            </span>
           </button>
         </div>
         <label className="calendar-year-jump">

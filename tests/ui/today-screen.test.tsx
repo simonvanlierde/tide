@@ -106,11 +106,14 @@ describe("TodayScreen", () => {
   });
 
   it("logs a bleeding day from the primary action", () => {
-    render(<TodayScreen today="2026-04-18" />);
+    const { container } = render(<TodayScreen today="2026-04-18" />);
+
+    expect(container.querySelector(".log-action .primary-action svg.lucide-droplets")).not.toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: /log bleeding today/i }));
     expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
     expect(screen.getByText(/marked as a bleeding day/i)).toBeInTheDocument();
+    expect(container.querySelector(".log-action .supporting-note svg.lucide-badge-check")).not.toBeNull();
   });
 
   it("shows a learning-state note when fallback predictions are in use", () => {
@@ -169,6 +172,33 @@ describe("TodayScreen", () => {
 
     rerender(<TodayScreen today="2026-05-01" />);
     expect(screen.getByRole("button", { name: /snooze 3 days/i })).toBeInTheDocument();
+  });
+
+  it("shows shared reminder status icons in the today flow", () => {
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: defaultSettings
+      })
+    );
+
+    const { container, unmount } = render(<TodayScreen today="2026-04-30" />);
+    expect(screen.getByText(/period reminder active/i)).toBeInTheDocument();
+    expect(container.querySelector(".supporting-note svg.lucide-bell-ring")).not.toBeNull();
+
+    window.localStorage.setItem(
+      "tide.period-tracker.state",
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { ...defaultSettings, snoozedUntil: "2026-05-03" }
+      })
+    );
+
+    unmount();
+    const snoozedRender = render(<TodayScreen today="2026-04-30" />);
+    expect(screen.getByText(/reminders snoozed until 2026-05-03/i)).toBeInTheDocument();
+    expect(snoozedRender.container.querySelector(".supporting-note svg.lucide-bell-off")).not.toBeNull();
   });
 
 });

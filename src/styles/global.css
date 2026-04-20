@@ -102,6 +102,31 @@ button {
 .icon-glyph {
   width: 21px;
   height: 21px;
+  flex: none;
+}
+
+.button-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.note-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.note-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
 }
 
 .today-screen,

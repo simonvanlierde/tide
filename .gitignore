@@ -1,0 +1,36 @@
+### Environment
+.env
+.env.*
+!.env.example
+
+### OS
+.DS_Store
+Thumbs.db
+
+### Temp / cache
+.tmp/
+.cache/
+.cspellcache
+
+# Coverage reports
+.coverage
+htmlcov/
+
+### Node
+node_modules/
+.pnpm-store/
+
+### Build output
+dist/
+
+### Test artifacts
+coverage/
+playwright-report/
+test-results/
+
+### LLMs
+AGENTS.md
+.claude
+.codex
+.superpowers
+docs/superpowers
