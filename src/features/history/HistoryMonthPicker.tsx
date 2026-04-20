@@ -31,14 +31,20 @@ export function HistoryMonthPicker({
   }
 
   return (
-    <div id="history-month-picker" className="calendar-picker-panel">
+    <div
+      id="history-month-picker"
+      className="calendar-picker-panel history-calendar__picker"
+    >
       {hasNativeMonthInput ? (
         <label className="calendar-picker-field">
-          <span className="settings-label">Month and year</span>
+          <span className="settings-label history-calendar__picker-label">
+            Jump to month
+          </span>
           <input
             ref={monthInputRef}
             type="month"
             aria-label="Select month and year"
+            className="history-calendar__picker-input"
             value={monthInputValue}
             onChange={(event) => {
               onNativeMonthChange(event.target.value);
@@ -48,9 +54,12 @@ export function HistoryMonthPicker({
       ) : (
         <div className="calendar-picker-fallback">
           <label className="calendar-picker-field">
-            <span className="settings-label">Month</span>
+            <span className="settings-label history-calendar__picker-label">
+              Month
+            </span>
             <select
               aria-label="Select month"
+              className="history-calendar__picker-select"
               value={currentMonthIndex}
               onChange={(event) => {
                 onFallbackMonthChange(Number(event.target.value));
@@ -64,9 +73,12 @@ export function HistoryMonthPicker({
             </select>
           </label>
           <label className="calendar-picker-field">
-            <span className="settings-label">Year</span>
+            <span className="settings-label history-calendar__picker-label">
+              Year
+            </span>
             <select
               aria-label="Select year"
+              className="history-calendar__picker-select"
               value={currentYear}
               onChange={(event) => {
                 onFallbackYearChange(Number(event.target.value));

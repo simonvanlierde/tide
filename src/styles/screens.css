@@ -47,6 +47,69 @@
     gap: 12px;
   }
 
+  .history-calendar {
+    display: grid;
+    gap: 14px;
+  }
+
+  .history-calendar__header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .history-calendar__month-button {
+    width: 100%;
+  }
+
+  .history-calendar__help {
+    margin: 0;
+    text-align: center;
+  }
+
+  .history-calendar__today {
+    width: fit-content;
+    max-width: 100%;
+    justify-self: center;
+  }
+
+  .history-calendar__picker {
+    display: grid;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 20px;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(250, 244, 239, 0.9)
+    );
+    border: 1px solid rgba(98, 70, 56, 0.08);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  .history-calendar__picker-label {
+    margin-bottom: 6px;
+  }
+
+  .history-calendar__picker-input,
+  .history-calendar__picker-select {
+    width: 100%;
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(98, 70, 56, 0.14);
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--ink);
+    box-shadow: 0 6px 16px rgba(98, 70, 56, 0.06);
+  }
+
+  .history-calendar__picker-input:focus-visible,
+  .history-calendar__picker-select:focus-visible {
+    outline: 2px solid rgba(186, 95, 77, 0.28);
+    outline-offset: 2px;
+  }
+
   .cycle-view,
   .cycle-circle {
     display: grid;
@@ -185,6 +248,10 @@
 
     .calendar-grid__weekday {
       font-size: 0.7rem;
+    }
+
+    .history-calendar__header {
+      gap: 8px;
     }
   }
 }

@@ -3,7 +3,10 @@ import { parseIsoDate } from "../../utils/date";
 
 export interface CalendarDay {
   key: string;
-  value: IsoDate | null;
+  value: IsoDate;
+  isOutsideMonth: boolean;
+  isFuture: boolean;
+  isToday: boolean;
 }
 
 export const HISTORY_WEEKDAY_LABELS = [
@@ -40,50 +43,42 @@ export function getMonthName(monthIndex: number) {
   });
 }
 
-export function buildMonthDays(visibleMonth: IsoDate): CalendarDay[] {
+export function buildMonthDays(
+  visibleMonth: IsoDate,
+  today: IsoDate,
+): CalendarDay[] {
   const current = parseIsoDate(visibleMonth);
   const year = current.getUTCFullYear();
   const monthIndex = current.getUTCMonth();
   const first = new Date(Date.UTC(year, monthIndex, 1));
-  const last = new Date(Date.UTC(year, monthIndex + 1, 0));
   const firstWeekday = (first.getUTCDay() + 6) % 7;
-  const daysInMonth = last.getUTCDate();
-  const days: CalendarDay[] = [];
+  const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
+  const totalCells = firstWeekday + daysInMonth <= 35 ? 35 : 42;
+  const start = new Date(Date.UTC(year, monthIndex, 1 - firstWeekday));
 
-  for (let index = 0; index < firstWeekday; index += 1) {
-    days.push({
-      key: `blank-${year}-${monthIndex + 1}-${index + 1}`,
-      value: null,
-    });
-  }
+  return Array.from({ length: totalCells }, (_, index) => {
+    const date = new Date(start);
+    date.setUTCDate(start.getUTCDate() + index);
+    const value = date.toISOString().slice(0, 10) as IsoDate;
 
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const value = new Date(Date.UTC(year, monthIndex, day))
-      .toISOString()
-      .slice(0, 10) as IsoDate;
-    days.push({ key: value, value });
-  }
-
-  while (days.length % 7 !== 0) {
-    days.push({
-      key: `blank-${year}-${monthIndex + 1}-tail-${days.length + 1}`,
-      value: null,
-    });
-  }
-
-  return days;
+    return {
+      key: value,
+      value,
+      isOutsideMonth: date.getUTCMonth() !== monthIndex,
+      isFuture: value > today,
+      isToday: value === today,
+    };
+  });
 }
 
 export function getHistoryYearOptions(
   today: IsoDate,
-  periodDays: IsoDate[],
+  _periodDays: IsoDate[],
 ) {
+  const currentYear = parseIsoDate(today).getUTCFullYear();
+
   return Array.from(
-    new Set(
-      [
-        parseIsoDate(today).getUTCFullYear(),
-        ...periodDays.map((day) => parseIsoDate(day).getUTCFullYear()),
-      ].sort(),
-    ),
+    { length: currentYear - 2020 + 1 },
+    (_, index) => 2020 + index,
   );
 }
