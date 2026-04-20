@@ -1,14 +1,12 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { saveAppState } from "../../src/data/storage";
-import {
-  useAppState,
-  useAppStateActions,
-} from "../../src/state";
+import { useAppState, useAppStateActions } from "../../src/state/provider";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
 import {
   createAppState,
+  createLearnedCycleState,
   renderWithAppStateProvider,
 } from "../support/app";
 
@@ -32,9 +30,7 @@ function Probe() {
 
 describe("app state", () => {
   it("hydrates from local storage when no explicit initial state is provided", () => {
-    const storedState = createAppState({
-      periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-    });
+    const storedState = createLearnedCycleState();
     saveAppState(storedState);
 
     renderWithAppStateProvider(<Probe />);
@@ -50,9 +46,7 @@ describe("app state", () => {
         <SettingsScreen today="2026-04-18" />
         <TodayScreen today="2026-04-18" />
       </>,
-      createAppState({
-        periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-      }),
+      createLearnedCycleState(),
     );
 
     fireEvent.click(screen.getByRole("button", { name: /linear/i }));

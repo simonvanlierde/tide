@@ -1,4 +1,4 @@
-@layer features {
+@layer screens {
   .today-screen,
   .utility-screen {
     display: grid;

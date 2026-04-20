@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { appStateReducer, selectCycleSummary } from "../../src/state";
-import { createAppState } from "../support/app";
+import { appStateReducer, selectCycleSummary } from "../../src/state/core";
+import { createAppState, createLearnedCycleState } from "../support/app";
 
 describe("app state core selectors", () => {
   it("reduces a toggled bleeding day into sorted period days", () => {
@@ -60,9 +60,7 @@ describe("app state core selectors", () => {
   });
 
   it("derives the cycle summary from plain app state", () => {
-    const state = createAppState({
-      periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-    });
+    const state = createLearnedCycleState();
 
     expect(selectCycleSummary(state, "2026-04-18")).toMatchObject({
       cycleDay: 17,

@@ -25,8 +25,9 @@ interface AppState {
 - malformed JSON falls back to the default app state
 - removed legacy envelopes such as `{ version, state }` are treated as invalid
 
-## Runtime Boundaries
+## Ownership
 
 - `src/data/schema.ts` owns defaults plus normalization
 - `src/data/storage.ts` owns the `localStorage` read/write boundary
-- `src/state/index.tsx` consumes normalized `AppState`
+- `src/state/core.ts` consumes normalized `AppState` for reducer and selector logic
+- `src/state/provider.tsx` owns hydration and persistence wiring for React

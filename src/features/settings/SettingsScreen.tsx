@@ -10,7 +10,6 @@ import {
   REMINDER_WINDOW_OPTIONS,
   SNOOZE_OPTIONS,
 } from "./config";
-import { getReminderSummary } from "./copy";
 
 interface SettingsScreenProps {
   today?: IsoDate;
@@ -64,40 +63,38 @@ export function SettingsScreen({
     differenceInDays(state.settings.snoozedUntil, today) >= 0
       ? `Snoozed until ${state.settings.snoozedUntil}.`
       : null;
+  const reminderSummary = getReminderSummary(
+    summary.nextPeriod.daysUntil,
+    state.settings.reminderWindowDays,
+  );
 
-  const model = {
-    state,
-    statusMessage,
-    snoozeSummary,
-    reminderSummary: getReminderSummary(
-      summary.nextPeriod.daysUntil,
-      state.settings.reminderWindowDays,
-    ),
-    setHomeDisplayMode(mode: typeof state.settings.homeDisplayMode) {
-      actions.setHomeDisplayMode(mode);
-    },
-    setReminderWindowDays(days: number) {
-      actions.setReminderWindowDays(days);
-      setStatusMessage({
-        scope: "reminders",
-        text: `Reminder window set to ${days} days`,
-      });
-    },
-    snoozeReminders(days: number) {
-      actions.snoozeReminders(today, days);
-      setStatusMessage({
-        scope: "reminders",
-        text: `Snoozed for ${days} day${days === 1 ? "" : "s"}`,
-      });
-    },
-    clearReminderSnooze() {
-      actions.clearReminderSnooze();
-      setStatusMessage({
-        scope: "reminders",
-        text: "Reminders turned back on",
-      });
-    },
-  };
+  function setReminderStatus(text: string) {
+    setStatusMessage({
+      scope: "reminders",
+      text,
+    });
+  }
+
+  function handleHomeDisplayModeChange(
+    mode: typeof state.settings.homeDisplayMode,
+  ) {
+    actions.setHomeDisplayMode(mode);
+  }
+
+  function handleReminderWindowChange(days: number) {
+    actions.setReminderWindowDays(days);
+    setReminderStatus(`Reminder window set to ${days} days`);
+  }
+
+  function handleReminderSnooze(days: number) {
+    actions.snoozeReminders(today, days);
+    setReminderStatus(`Snoozed for ${days} day${days === 1 ? "" : "s"}`);
+  }
+
+  function handleClearReminderSnooze() {
+    actions.clearReminderSnooze();
+    setReminderStatus("Reminders turned back on");
+  }
 
   return (
     <section className="utility-screen">
@@ -113,14 +110,12 @@ export function SettingsScreen({
                 key={mode.value}
                 type="button"
                 className={
-                  model.state.settings.homeDisplayMode === mode.value
+                  state.settings.homeDisplayMode === mode.value
                     ? "chip-button is-active"
                     : "chip-button"
                 }
-                aria-pressed={
-                  model.state.settings.homeDisplayMode === mode.value
-                }
-                onClick={() => model.setHomeDisplayMode(mode.value)}
+                aria-pressed={state.settings.homeDisplayMode === mode.value}
+                onClick={() => handleHomeDisplayModeChange(mode.value)}
               >
                 {mode.label}
               </button>
@@ -137,8 +132,8 @@ export function SettingsScreen({
         <div className="settings-group settings-group--compact">
           <div className="settings-row">
             <p className="settings-value">
-              {model.state.settings.reminderWindowDays} days before your
-              expected period.
+              {state.settings.reminderWindowDays} days before your expected
+              period.
             </p>
             <fieldset
               className="chip-row chip-row--dense chip-fieldset"
@@ -149,14 +144,12 @@ export function SettingsScreen({
                   key={days}
                   type="button"
                   className={
-                    days === model.state.settings.reminderWindowDays
+                    days === state.settings.reminderWindowDays
                       ? "chip-button is-active"
                       : "chip-button"
                   }
-                  aria-pressed={
-                    days === model.state.settings.reminderWindowDays
-                  }
-                  onClick={() => model.setReminderWindowDays(days)}
+                  aria-pressed={days === state.settings.reminderWindowDays}
+                  onClick={() => handleReminderWindowChange(days)}
                 >
                   {days} days
                 </button>
@@ -166,8 +159,7 @@ export function SettingsScreen({
 
           <div className="settings-row settings-row--accent">
             <p className="supporting-note">
-              {model.snoozeSummary ?? "Active."} Next reminder:{" "}
-              {model.reminderSummary}
+              {snoozeSummary ?? "Active."} Next reminder: {reminderSummary}
             </p>
             <fieldset
               className="chip-row chip-row--dense chip-fieldset"
@@ -178,23 +170,23 @@ export function SettingsScreen({
                   key={days}
                   type="button"
                   className="chip-button"
-                  onClick={() => model.snoozeReminders(days)}
+                  onClick={() => handleReminderSnooze(days)}
                 >
                   Snooze {days} {days === 1 ? "day" : "days"}
                 </button>
               ))}
             </fieldset>
-            {model.snoozeSummary ? (
+            {snoozeSummary ? (
               <button
                 type="button"
                 className="text-action"
-                onClick={model.clearReminderSnooze}
+                onClick={handleClearReminderSnooze}
               >
                 Turn reminders back on
               </button>
             ) : null}
-            {model.statusMessage?.scope === "reminders" ? (
-              <StatusMessage>{model.statusMessage.text}</StatusMessage>
+            {statusMessage?.scope === "reminders" ? (
+              <StatusMessage>{statusMessage.text}</StatusMessage>
             ) : null}
           </div>
         </div>
@@ -210,4 +202,25 @@ export function SettingsScreen({
       </article>
     </section>
   );
+}
+
+function getReminderSummary(
+  daysUntilPeriod: number | null,
+  reminderWindowDays: number,
+) {
+  if (daysUntilPeriod === null) {
+    return "Next reminder will appear once your next cycle estimate is ready.";
+  }
+
+  const daysUntilReminder = daysUntilPeriod - reminderWindowDays;
+
+  if (daysUntilReminder > 0) {
+    return `Next reminder in ${daysUntilReminder} days.`;
+  }
+
+  if (daysUntilPeriod >= -1) {
+    return "Reminder window is active now.";
+  }
+
+  return "Reminder window has passed for this cycle.";
 }

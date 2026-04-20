@@ -4,6 +4,18 @@ import { defaultAppState } from "../../src/data/schema";
 import type { AppState } from "../../src/domain/types";
 import { AppStateProvider } from "../../src/state";
 
+export function createLearnedCycleState() {
+  return createAppState({
+    periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
+  });
+}
+
+export function createLearningCycleState() {
+  return createAppState({
+    periodDays: ["2026-04-19", "2026-04-20"],
+  });
+}
+
 export function createAppState(overrides: Partial<AppState> = {}): AppState {
   return {
     ...defaultAppState,
