@@ -12,6 +12,9 @@ update:
 dev:
     pnpm dev
 
+check:
+    pnpm check
+
 build:
     pnpm build
 
