@@ -49,6 +49,10 @@ test("logging today persists across reload", async ({ page }) => {
 test("deep links reload correctly for the static app paths", async ({
   page,
 }) => {
+  // Pin "today" so the history calendar opens on a known month regardless of
+  // the real date the suite runs on.
+  await page.clock.setFixedTime(new Date("2026-04-15T12:00:00Z"));
+
   await page.goto("/history");
   await expect(page.getByLabel(/history calendar/i)).toBeVisible();
   await page.reload();
