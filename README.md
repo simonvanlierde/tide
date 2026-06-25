@@ -4,7 +4,19 @@
 
 Tide is a privacy-first period tracker — a small, local-first React PWA that keeps all cycle data in your browser.
 
-> **Status:** work in progress. Core tracking is implemented and tested; not yet publicly deployed.
+> **Status:** work in progress. Core tracking is implemented, tested, and live.
+
+## Install
+
+Tide runs in the browser and installs as an app — no app store needed.
+
+1. Open **[tide.duinlab.nl](https://tide.duinlab.nl)**.
+2. Add it to your home screen:
+   - **iOS (Safari):** Share → *Add to Home Screen*
+   - **Android (Chrome):** menu (⋮) → *Install app*
+   - **Desktop (Chrome/Edge):** install icon in the address bar
+
+Once installed it works offline, and all data stays on your device.
 
 ## Features
 
@@ -55,23 +67,6 @@ Cycle logic is kept pure and isolated from React and the browser, so it can be t
 
 Tests mirror this layering, with a thin Playwright e2e layer covering routing, persistence across reloads, and PWA smoke.
 
-## Data model
-
-App state is a single JSON object in `localStorage` under `tide.period-tracker.state`; `src/data/schema.ts` is the source of truth:
-
-```ts
-interface AppState {
-  periodDays: IsoDate[];
-  settings: {
-    reminderWindowDays: number;
-    snoozedUntil: IsoDate | null;
-    homeDisplayMode: "summary" | "linear" | "circular";
-  };
-}
-```
-
-State is normalized on read, so malformed or legacy data can't crash the app: dates are validated, deduplicated, and sorted; unknown settings fall back to defaults; invalid JSON falls back to the default state.
-
 ## Deployment
 
-Tide builds to static files (`pnpm build` → `dist/`) hosted on Cloudflare Pages: connect the repo, set the build command to `pnpm build` and the output directory to `dist`, then push to `main` to deploy. `public/_redirects` keeps direct visits to `/history` and `/settings` working.
+`pnpm build` outputs a static site to `dist/`, deployable to any static host.
