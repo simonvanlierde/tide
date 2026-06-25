@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm bundle:check",
+    "check": "pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm build && pnpm bundle:check",
     "dev": "vite",
     "typecheck": "tsc -b --pretty false",
     "build": "vite build",
@@ -13,6 +13,7 @@
     "format": "biome check --write .",
     "preview": "vite preview",
     "test": "vitest --run",
+    "test:coverage": "vitest --run --coverage",
     "test:e2e": "playwright test"
   },
   "dependencies": {
