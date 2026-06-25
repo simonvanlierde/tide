@@ -1,5 +1,5 @@
-import { addDays, differenceInDays } from "../../utils/date";
 import type { CycleSummary, IsoDate } from "../../domain/types";
+import { addDays, differenceInDays } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
 
 export interface CycleSegment {
@@ -31,14 +31,11 @@ export function buildCycleSegments(
       : 28;
   const cycleStartDate =
     summary.cycleDay !== null ? addDays(today, -(summary.cycleDay - 1)) : null;
-  const fertileStart =
-    summary.cycleDay !== null && summary.ovulationDate
-      ? summary.cycleDay + differenceInDays(summary.ovulationDate, today) - 5
-      : null;
   const ovulationDay =
     summary.cycleDay !== null && summary.ovulationDate
       ? summary.cycleDay + differenceInDays(summary.ovulationDate, today)
       : null;
+  const fertileStart = ovulationDay !== null ? ovulationDay - 5 : null;
 
   const loggedDays =
     cycleStartDate === null
