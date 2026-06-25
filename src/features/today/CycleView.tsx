@@ -1,5 +1,6 @@
-import { differenceInDays } from "../../utils/date";
 import type { CycleSummary, IsoDate } from "../../domain/types";
+import { addDays, differenceInDays } from "../../utils/date";
+import { CycleLegend } from "./CycleLegend";
 
 export interface CycleSegment {
   dayNumber: number;
@@ -29,39 +30,24 @@ export function buildCycleSegments(
         )
       : 28;
   const cycleStartDate =
-    summary.cycleDay !== null
-      ? new Date(
-          Date.parse(`${today}T00:00:00Z`) -
-            (summary.cycleDay - 1) * 24 * 60 * 60 * 1000,
-        )
-      : null;
-  const fertileStart =
-    summary.cycleDay !== null && summary.ovulationDate
-      ? summary.cycleDay + differenceInDays(summary.ovulationDate, today) - 5
-      : null;
+    summary.cycleDay !== null ? addDays(today, -(summary.cycleDay - 1)) : null;
   const ovulationDay =
     summary.cycleDay !== null && summary.ovulationDate
       ? summary.cycleDay + differenceInDays(summary.ovulationDate, today)
       : null;
+  const fertileStart = ovulationDay !== null ? ovulationDay - 5 : null;
 
   const loggedDays =
     cycleStartDate === null
       ? new Set<string>()
       : new Set(
-          periodDays.filter(
-            (day) =>
-              day >= cycleStartDate.toISOString().slice(0, 10) && day <= today,
-          ),
+          periodDays.filter((day) => day >= cycleStartDate && day <= today),
         );
 
   return Array.from({ length: totalDays }, (_, index) => {
     const dayNumber = index + 1;
     const dateValue =
-      cycleStartDate === null
-        ? null
-        : new Date(cycleStartDate.getTime() + index * 24 * 60 * 60 * 1000)
-            .toISOString()
-            .slice(0, 10);
+      cycleStartDate === null ? null : addDays(cycleStartDate, index);
 
     return {
       dayNumber,
@@ -86,29 +72,7 @@ export function LinearCycleView({
 
   return (
     <section aria-label="Linear cycle view" className="cycle-view">
-      <div className="cycle-view__legend">
-        <span className="cycle-view__legend-item">
-          <span
-            className="cycle-view__dot cycle-view__dot--period"
-            aria-hidden="true"
-          />
-          Period
-        </span>
-        <span className="cycle-view__legend-item">
-          <span
-            className="cycle-view__dot cycle-view__dot--fertile"
-            aria-hidden="true"
-          />
-          Fertile window
-        </span>
-        <span className="cycle-view__legend-item">
-          <span
-            className="cycle-view__dot cycle-view__dot--ovulation"
-            aria-hidden="true"
-          />
-          Ovulation
-        </span>
-      </div>
+      <CycleLegend className="cycle-view__legend" />
 
       <div className="cycle-view__track">
         {segments.map((segment) => {

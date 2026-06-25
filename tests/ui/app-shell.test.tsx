@@ -1,4 +1,5 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
 import { renderWithAppState } from "../support/app";
@@ -22,17 +23,20 @@ describe("App shell", () => {
       screen.getByRole("navigation", { name: /primary navigation/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^today$/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /^history$/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /^history$/i }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute(
       "aria-current",
       "page",
     );
   });
 
-  it("navigates between screens through the app shell links", () => {
+  it("navigates between screens through the app shell links", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<App />);
 
-    fireEvent.click(screen.getByRole("link", { name: /^history$/i }));
+    await user.click(screen.getByRole("link", { name: /^history$/i }));
 
     expect(
       screen.getByText(/^history$/i, { selector: ".app-header__title" }),

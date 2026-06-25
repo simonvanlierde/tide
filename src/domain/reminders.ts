@@ -1,5 +1,5 @@
-import type { IsoDate } from "./types";
 import { differenceInDays } from "../utils/date";
+import type { IsoDate } from "./types";
 
 interface ReminderStateInput {
   today: IsoDate;

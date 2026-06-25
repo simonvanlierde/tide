@@ -71,10 +71,7 @@ export function buildMonthDays(
   });
 }
 
-export function getHistoryYearOptions(
-  today: IsoDate,
-  _periodDays: IsoDate[],
-) {
+export function getHistoryYearOptions(today: IsoDate) {
   const currentYear = parseIsoDate(today).getUTCFullYear();
 
   return Array.from(

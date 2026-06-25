@@ -146,15 +146,15 @@
   }
 
   .cycle-view__dot--period {
-    background: #cf705d;
+    background: var(--cycle-period);
   }
 
   .cycle-view__dot--fertile {
-    background: #f0cc99;
+    background: var(--cycle-fertile);
   }
 
   .cycle-view__dot--ovulation {
-    background: #d99a56;
+    background: var(--cycle-ovulation);
   }
 
   .cycle-view__track {
@@ -170,15 +170,15 @@
   }
 
   .cycle-view__segment.is-period {
-    background: #cf705d;
+    background: var(--cycle-period);
   }
 
   .cycle-view__segment.is-fertile {
-    background: #f0cc99;
+    background: var(--cycle-fertile);
   }
 
   .cycle-view__segment.is-ovulation {
-    background: #d99a56;
+    background: var(--cycle-ovulation);
   }
 
   .cycle-view__segment.is-current {

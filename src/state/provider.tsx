@@ -1,16 +1,20 @@
 import {
   createContext,
+  type Dispatch,
+  type ReactNode,
   useContext,
   useLayoutEffect,
   useMemo,
   useReducer,
-  type Dispatch,
-  type ReactNode,
 } from "react";
 import { loadAppState, saveAppState } from "../data/storage";
 import type { AppState, HomeDisplayMode, IsoDate } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
-import { appStateReducer, selectCycleSummary, type AppStateAction } from "./core";
+import {
+  type AppStateAction,
+  appStateReducer,
+  selectCycleSummary,
+} from "./core";
 
 const AppStateContext = createContext<AppState | null>(null);
 const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(

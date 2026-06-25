@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useState, type MouseEvent } from "react";
+import { type MouseEvent, startTransition, useEffect, useState } from "react";
 import { AppIcon } from "../ui/icons";
 import {
   appScreens,
@@ -40,10 +40,7 @@ interface UtilityNavProps {
 function UtilityNav({ activePath, onNavigate }: UtilityNavProps) {
   const activeScreen = getAppScreen(activePath);
 
-  function handleClick(
-    event: MouseEvent<HTMLAnchorElement>,
-    nextPath: string,
-  ) {
+  function handleClick(event: MouseEvent<HTMLAnchorElement>, nextPath: string) {
     if (!shouldHandleAppNavigation(event)) {
       return;
     }
@@ -63,7 +60,9 @@ function UtilityNav({ activePath, onNavigate }: UtilityNavProps) {
             href={screen.path}
             aria-current={screen.path === activePath ? "page" : undefined}
             className={
-              screen.path === activePath ? "icon-button is-active" : "icon-button"
+              screen.path === activePath
+                ? "icon-button is-active"
+                : "icon-button"
             }
             onClick={(event) => handleClick(event, screen.path)}
           >

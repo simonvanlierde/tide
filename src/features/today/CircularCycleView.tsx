@@ -1,4 +1,5 @@
 import type { CycleSummary, IsoDate } from "../../domain/types";
+import { CycleLegend } from "./CycleLegend";
 import { buildCycleSegments } from "./CycleView";
 
 interface CircularCycleViewProps {
@@ -13,12 +14,12 @@ function getCircleStyle(segments: ReturnType<typeof buildCycleSegments>) {
     const start = index * segmentSize;
     const end = start + segmentSize;
     const color = segment.isPeriod
-      ? "#cf705d"
+      ? "var(--cycle-period)"
       : segment.isOvulation
-        ? "#d99a56"
+        ? "var(--cycle-ovulation)"
         : segment.isFertile
-          ? "#f0cc99"
-          : "rgba(114, 92, 80, 0.14)";
+          ? "var(--cycle-fertile)"
+          : "var(--cycle-idle)";
 
     return `${color} ${start}% ${end}%`;
   });
@@ -40,29 +41,7 @@ export function CircularCycleView({
 
   return (
     <section aria-label="Circular cycle view" className="cycle-circle">
-      <div className="cycle-circle__legend">
-        <span className="cycle-view__legend-item">
-          <span
-            className="cycle-view__dot cycle-view__dot--period"
-            aria-hidden="true"
-          />
-          Period
-        </span>
-        <span className="cycle-view__legend-item">
-          <span
-            className="cycle-view__dot cycle-view__dot--fertile"
-            aria-hidden="true"
-          />
-          Fertile window
-        </span>
-        <span className="cycle-view__legend-item">
-          <span
-            className="cycle-view__dot cycle-view__dot--ovulation"
-            aria-hidden="true"
-          />
-          Ovulation
-        </span>
-      </div>
+      <CycleLegend className="cycle-circle__legend" />
 
       <div className="cycle-circle__frame">
         <div className="cycle-circle__ring" style={getCircleStyle(segments)}>

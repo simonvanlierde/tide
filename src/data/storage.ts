@@ -1,5 +1,6 @@
 import type { AppState } from "../domain/types";
 import { defaultAppState, normalizeAppState, STORAGE_KEY } from "./schema";
+
 export { STORAGE_KEY } from "./schema";
 
 export function loadAppState(): AppState {

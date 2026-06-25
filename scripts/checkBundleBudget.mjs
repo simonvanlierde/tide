@@ -1,6 +1,6 @@
-import { gzipSync } from "node:zlib";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { gzipSync } from "node:zlib";
 
 const DIST_ASSETS_DIR = join(process.cwd(), "dist", "assets");
 const MAX_GZIP_BYTES = 95 * 1024;

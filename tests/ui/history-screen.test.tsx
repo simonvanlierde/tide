@@ -1,4 +1,5 @@
 import { fireEvent, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { HistoryScreen } from "../../src/features/history/HistoryScreen";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -12,7 +13,9 @@ describe("HistoryScreen", () => {
     });
 
     expect(screen.getByLabelText(/history calendar/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /april 2026/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
   });
 
   it("uses the calendar as the main editor for logged days", () => {
@@ -25,14 +28,15 @@ describe("HistoryScreen", () => {
     expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
-  it("allows toggling a day from the calendar", () => {
+  it("allows toggling a day from the calendar", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
         periodDays: ["2026-04-02", "2026-04-12", "2026-04-20"],
       }),
     });
 
-    fireEvent.click(
+    await user.click(
       screen.getByRole("button", { name: /toggle april 5, 2026/i }),
     );
     expect(
@@ -40,14 +44,17 @@ describe("HistoryScreen", () => {
     ).toHaveClass("is-logged");
   });
 
-  it("changes the visible month from the month-year picker", () => {
+  it("changes the visible month from the month-year picker", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
         periodDays: ["2025-03-10", "2026-04-20", "2024-12-03"],
       }),
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /april 2026/i }));
+    await user.click(screen.getByRole("button", { name: /april 2026/i }));
+    // Native <input type="month"> — set directly with fireEvent; userEvent
+    // cannot reliably type into date/month inputs in jsdom.
     fireEvent.change(screen.getByLabelText(/select month and year/i), {
       target: { value: "2025-03" },
     });
@@ -55,27 +62,31 @@ describe("HistoryScreen", () => {
     expect(screen.getByText(/march 2025/i)).toBeInTheDocument();
   });
 
-  it("navigates months with previous, next, and today actions", () => {
+  it("navigates months with previous, next, and today actions", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-21" />, {
       state: createAppState({
         periodDays: ["2026-03-10", "2026-04-02"],
       }),
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /previous month/i }));
+    await user.click(screen.getByRole("button", { name: /previous month/i }));
     expect(
       screen.getByRole("button", { name: /march 2026/i }),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /next month/i }));
-    fireEvent.click(screen.getByRole("button", { name: /go to current month/i }));
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+    await user.click(
+      screen.getByRole("button", { name: /go to current month/i }),
+    );
 
     expect(
       screen.getByRole("button", { name: /april 2026/i }),
     ).toBeInTheDocument();
   });
 
-  it("disables future days and does not toggle them", () => {
+  it("disables future days and does not toggle them", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-21" />, {
       state: createAppState({
         periodDays: ["2026-04-02"],
@@ -87,7 +98,7 @@ describe("HistoryScreen", () => {
     });
 
     expect(futureDay).toBeDisabled();
-    fireEvent.click(futureDay);
+    await user.click(futureDay);
 
     expect(futureDay).not.toHaveClass("is-logged");
   });

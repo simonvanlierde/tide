@@ -1,13 +1,13 @@
-import type { CycleEstimateMode, CyclePhase, IsoDate } from "../../domain/types";
 import { getReminderState } from "../../domain/reminders";
+import type {
+  CycleEstimateMode,
+  CyclePhase,
+  IsoDate,
+} from "../../domain/types";
+import { useAppState, useAppStateActions, useCycleSummary } from "../../state";
 import { getTodayIsoDate } from "../../utils/date";
-import {
-  useAppState,
-  useAppStateActions,
-  useCycleSummary,
-} from "../../state";
-import { INFORMATION_COPY, SNOOZE_OPTIONS } from "../settings/config";
 import { ReminderBanner } from "../reminders/ReminderBanner";
+import { INFORMATION_COPY, SNOOZE_OPTIONS } from "../settings/config";
 import { TodayHero } from "./TodayHero";
 import { TodayHomeContent } from "./TodayHomeContent";
 import { TodayReminderActions } from "./TodayReminderActions";
@@ -44,7 +44,10 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
         periodDays={state.periodDays}
         today={today}
         nextPeriodSummary={getNextPeriodSummary(summary.nextPeriod.daysUntil)}
-        fertilityEstimate={getFertilityEstimate(summary.phaseLabel, summary.fertile)}
+        fertilityEstimate={getFertilityEstimate(
+          summary.phaseLabel,
+          summary.fertile,
+        )}
         fertilityDisclaimer={INFORMATION_COPY.fertility}
       />
 

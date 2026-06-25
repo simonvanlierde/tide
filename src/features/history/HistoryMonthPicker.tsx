@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 import { getMonthName } from "./calendar";
 
-interface HistoryMonthPickerProps {
+export interface HistoryMonthPickerProps {
   isPickerOpen: boolean;
   hasNativeMonthInput: boolean;
   currentMonthIndex: number;

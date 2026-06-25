@@ -13,6 +13,10 @@
     --accent-strong: #ba5f4d;
     --accent-soft: #f7dfd4;
     --accent-tint: rgba(207, 112, 93, 0.12);
+    --cycle-period: var(--accent);
+    --cycle-ovulation: #d99a56;
+    --cycle-fertile: #f0cc99;
+    --cycle-idle: rgba(114, 92, 80, 0.14);
     --shadow-soft: 0 18px 50px rgba(53, 33, 25, 0.1);
     --shadow-card: 0 14px 30px rgba(70, 46, 35, 0.08);
     color: var(--ink);

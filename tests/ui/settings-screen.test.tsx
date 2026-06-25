@@ -1,13 +1,11 @@
 import { act, fireEvent, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { loadAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { REMINDER_STATUS_TIMEOUT_MS } from "../../src/features/settings/config";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
-import {
-  createAppState,
-  renderWithAppState,
-} from "../support/app";
+import { createAppState, renderWithAppState } from "../support/app";
 
 function renderSettings(
   today: IsoDate = "2026-04-19",
@@ -22,12 +20,15 @@ describe("SettingsScreen", () => {
     expect(
       screen.getByRole("heading", { level: 2, name: /information/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/everything stays on this device/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/everything stays on this device/i),
+    ).toBeInTheDocument();
   });
 
-  it("allows the reminder window to be adjusted with preset chips", () => {
+  it("allows the reminder window to be adjusted with preset chips", async () => {
+    const user = userEvent.setup();
     renderSettings();
-    fireEvent.click(
+    await user.click(
       within(screen.getByRole("group", { name: /reminder window/i })).getByRole(
         "button",
         {
@@ -40,6 +41,8 @@ describe("SettingsScreen", () => {
     ).toBeInTheDocument();
   });
 
+  // fireEvent (not userEvent) here: userEvent's internal delays fight Vitest
+  // fake timers, which this test needs to assert the status message auto-clears.
   it("shows snooze controls and can turn reminders back on now", () => {
     vi.useFakeTimers();
     renderSettings(
@@ -76,10 +79,10 @@ describe("SettingsScreen", () => {
     expect(
       screen.queryByText(/reminders turned back on/i),
     ).not.toBeInTheDocument();
-    vi.useRealTimers();
   });
 
-  it("shows reminder timing and persists home controls", () => {
+  it("shows reminder timing and persists home controls", async () => {
+    const user = userEvent.setup();
     renderSettings(
       "2026-04-19",
       createAppState({
@@ -89,7 +92,7 @@ describe("SettingsScreen", () => {
 
     expect(screen.getByText(/next reminder/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: /circular/i }));
+    await user.click(screen.getByRole("button", { name: /circular/i }));
 
     expect(loadAppState().settings).toMatchObject({
       reminderWindowDays: 4,

@@ -1,4 +1,5 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import type { IsoDate } from "../../src/domain/types";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
@@ -6,13 +7,11 @@ import {
   createAppState,
   createLearnedCycleState,
   createLearningCycleState,
+  LEARNED_PERIOD_DAYS,
   renderWithAppState,
 } from "../support/app";
 
-function renderToday(
-  today: IsoDate,
-  state = createLearnedCycleState(),
-) {
+function renderToday(today: IsoDate, state = createLearnedCycleState()) {
   renderWithAppState(<TodayScreen today={today} />, { state });
 }
 
@@ -38,11 +37,8 @@ describe("TodayScreen", () => {
     renderToday(
       "2026-04-18",
       createAppState({
-        periodDays: createLearnedCycleState().periodDays,
-        settings: {
-          ...createLearnedCycleState().settings,
-          homeDisplayMode: "linear",
-        },
+        periodDays: LEARNED_PERIOD_DAYS,
+        settings: { homeDisplayMode: "linear" },
       }),
     );
 
@@ -54,11 +50,8 @@ describe("TodayScreen", () => {
     renderToday(
       "2026-04-18",
       createAppState({
-        periodDays: createLearnedCycleState().periodDays,
-        settings: {
-          ...createLearnedCycleState().settings,
-          homeDisplayMode: "circular",
-        },
+        periodDays: LEARNED_PERIOD_DAYS,
+        settings: { homeDisplayMode: "circular" },
       }),
     );
 
@@ -75,20 +68,22 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/higher chance today/i)).toBeInTheDocument();
   });
 
-  it("shows the fertility disclaimer in an info popover", () => {
+  it("shows the fertility disclaimer in an info popover", async () => {
+    const user = userEvent.setup();
     renderToday("2026-04-18");
 
-    fireEvent.click(screen.getByLabelText(/show fertility disclaimer/i));
+    await user.click(screen.getByLabelText(/show fertility disclaimer/i));
 
     expect(
       screen.getByText(/informational only and not birth control/i),
     ).toBeInTheDocument();
   });
 
-  it("logs a bleeding day from the primary action", () => {
+  it("logs a bleeding day from the primary action", async () => {
+    const user = userEvent.setup();
     renderToday("2026-04-18");
 
-    fireEvent.click(
+    await user.click(
       screen.getByRole("button", { name: /log bleeding today/i }),
     );
     expect(
@@ -100,9 +95,7 @@ describe("TodayScreen", () => {
   it("shows a learning-state note when fallback predictions are in use", () => {
     renderToday("2026-04-21", createLearningCycleState());
 
-    expect(
-      screen.getByText(/learning from recent logs/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/learning from recent logs/i)).toBeInTheDocument();
   });
 
   it("shows a calm late label and reminder state around the prediction window", () => {
@@ -115,14 +108,15 @@ describe("TodayScreen", () => {
 
     expect(screen.getByText(/period expected 1 day ago/i)).toBeInTheDocument();
     expect(screen.queryByText(/-1 day/i)).not.toBeInTheDocument();
-    expect(screen.getByText(/window has passed for this cycle|reminder muted|period expected/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /window has passed for this cycle|reminder muted|period expected/i,
+      ),
+    ).toBeInTheDocument();
   });
 
   it("shows reminder actions only while the reminder window is active", () => {
-    renderToday(
-      "2026-04-21",
-      createLearningCycleState(),
-    );
+    renderToday("2026-04-21", createLearningCycleState());
 
     expect(
       screen.queryByRole("button", { name: /snooze 1 day/i }),
