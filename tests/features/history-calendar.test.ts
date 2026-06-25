@@ -40,7 +40,7 @@ describe("history calendar helpers", () => {
   });
 
   it("returns a full year range from 2020 through the current year", () => {
-    expect(getHistoryYearOptions("2026-04-18", [])).toEqual([
+    expect(getHistoryYearOptions("2026-04-18")).toEqual([
       2020, 2021, 2022, 2023, 2024, 2025, 2026,
     ]);
   });

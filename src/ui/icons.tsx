@@ -6,12 +6,10 @@ import {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
-  Download,
   Droplets,
   House,
   Info,
   Settings2,
-  Upload,
 } from "lucide-react";
 
 interface AppIconProps {
@@ -37,10 +35,8 @@ export {
   CalendarDays,
   ChevronLeft,
   ChevronRight,
-  Download,
   Droplets,
   House,
   Info,
   Settings2,
-  Upload,
 };
