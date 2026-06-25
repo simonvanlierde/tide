@@ -10,7 +10,9 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await page.getByRole("link", { name: /^settings$/i }).click();
   await expect(page).toHaveURL(/\/settings$/);
-  await expect(page.getByRole("heading", { name: /information/i })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /information/i }),
+  ).toBeVisible();
 
   await page.getByRole("link", { name: /^history$/i }).click();
   await expect(page).toHaveURL(/\/history$/);
@@ -59,9 +61,13 @@ test("deep links reload correctly for the static app paths", async ({
   await expect(page.getByRole("button", { name: /april 2026/i })).toBeVisible();
 
   await page.goto("/settings");
-  await expect(page.getByRole("heading", { name: /information/i })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /information/i }),
+  ).toBeVisible();
   await page.reload();
-  await expect(page.getByText(/everything stays on this device/i)).toBeVisible();
+  await expect(
+    page.getByText(/everything stays on this device/i),
+  ).toBeVisible();
 });
 
 test("manifest and install assets are served", async ({ page }) => {
@@ -87,7 +93,8 @@ test("manifest and install assets are served", async ({ page }) => {
   const iconResponse = await page.request.get("/icons/icon-192.png");
   expect(iconResponse.ok()).toBe(true);
 
-  const serviceWorkerRegisterResponse = await page.request.get("/registerSW.js");
+  const serviceWorkerRegisterResponse =
+    await page.request.get("/registerSW.js");
   expect(serviceWorkerRegisterResponse.ok()).toBe(true);
 
   await page.goto("/");

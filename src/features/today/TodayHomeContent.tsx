@@ -1,4 +1,8 @@
-import type { CycleSummary, HomeDisplayMode, IsoDate } from "../../domain/types";
+import type {
+  CycleSummary,
+  HomeDisplayMode,
+  IsoDate,
+} from "../../domain/types";
 import { AppIcon, Info } from "../../ui/icons";
 import { CircularCycleView } from "./CircularCycleView";
 import { LinearCycleView } from "./CycleView";
@@ -24,13 +28,21 @@ export function TodayHomeContent({
 }: TodayHomeContentProps) {
   if (displayMode === "linear") {
     return (
-      <LinearCycleView summary={summary} periodDays={periodDays} today={today} />
+      <LinearCycleView
+        summary={summary}
+        periodDays={periodDays}
+        today={today}
+      />
     );
   }
 
   if (displayMode === "circular") {
     return (
-      <CircularCycleView summary={summary} periodDays={periodDays} today={today} />
+      <CircularCycleView
+        summary={summary}
+        periodDays={periodDays}
+        today={today}
+      />
     );
   }
 

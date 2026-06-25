@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   loadAppState,
-  saveAppState,
   STORAGE_KEY,
+  saveAppState,
 } from "../../src/data/storage";
 import { createAppState } from "../support/app";
 
@@ -56,13 +56,7 @@ describe("local storage", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        periodDays: [
-          "2026-04-02",
-          "bad-date",
-          "2026-04-02",
-          "2026-03-20",
-          123,
-        ],
+        periodDays: ["2026-04-02", "bad-date", "2026-04-02", "2026-03-20", 123],
         settings: {
           reminderWindowDays: "nope",
           snoozedUntil: "2026-04-22",

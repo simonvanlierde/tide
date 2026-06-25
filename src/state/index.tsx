@@ -1,7 +1,7 @@
 export {
+  type AppStateAction,
   appStateReducer,
   selectCycleSummary,
-  type AppStateAction,
 } from "./core";
 export {
   AppStateProvider,

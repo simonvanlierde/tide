@@ -1,8 +1,8 @@
 import type { MouseEvent, ReactElement } from "react";
-import { CalendarDays, House, Settings2 } from "../ui/icons";
 import { HistoryScreen } from "../features/history/HistoryScreen";
 import { SettingsScreen } from "../features/settings/SettingsScreen";
 import { TodayScreen } from "../features/today/TodayScreen";
+import { CalendarDays, House, Settings2 } from "../ui/icons";
 
 export interface AppScreen {
   path: "/" | "/history" | "/settings";
@@ -40,7 +40,9 @@ export function getAppScreen(pathname: string) {
   return appScreens.find((screen) => screen.path === pathname) ?? appScreens[0];
 }
 
-export function shouldHandleAppNavigation(event: MouseEvent<HTMLAnchorElement>) {
+export function shouldHandleAppNavigation(
+  event: MouseEvent<HTMLAnchorElement>,
+) {
   return !(
     event.defaultPrevented ||
     event.button !== 0 ||

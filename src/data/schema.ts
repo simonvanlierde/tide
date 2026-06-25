@@ -1,4 +1,9 @@
-import type { AppSettings, AppState, HomeDisplayMode, IsoDate } from "../domain/types";
+import type {
+  AppSettings,
+  AppState,
+  HomeDisplayMode,
+  IsoDate,
+} from "../domain/types";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
 
@@ -57,7 +62,12 @@ export function normalizeSettings(settings: unknown): AppSettings {
 }
 
 export function normalizeAppState(state: unknown): AppState {
-  if (!state || typeof state !== "object" || "version" in state || "state" in state) {
+  if (
+    !state ||
+    typeof state !== "object" ||
+    "version" in state ||
+    "state" in state
+  ) {
     return defaultAppState;
   }
 

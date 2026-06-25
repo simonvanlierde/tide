@@ -14,7 +14,9 @@ export function TodayHero({
       <p className="today-hero__eyebrow">Cycle today</p>
       <h1 className="today-screen__day">Day {cycleDay ?? "--"}</h1>
       <p className="today-screen__lede">{phaseSentence}</p>
-      {learningNote ? <p className="today-hero__aside">{learningNote}</p> : null}
+      {learningNote ? (
+        <p className="today-hero__aside">{learningNote}</p>
+      ) : null}
     </header>
   );
 }
