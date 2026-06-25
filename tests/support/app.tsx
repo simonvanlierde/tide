@@ -1,22 +1,31 @@
 import { render } from "@testing-library/react";
-import type { ReactElement, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { defaultAppState } from "../../src/data/schema";
-import type { AppState } from "../../src/domain/types";
+import type { AppSettings, AppState, IsoDate } from "../../src/domain/types";
 import { AppStateProvider } from "../../src/state";
 
+export const LEARNED_PERIOD_DAYS: IsoDate[] = [
+  "2026-03-05",
+  "2026-03-06",
+  "2026-04-02",
+  "2026-04-03",
+];
+
+export const LEARNING_PERIOD_DAYS: IsoDate[] = ["2026-04-19", "2026-04-20"];
+
 export function createLearnedCycleState() {
-  return createAppState({
-    periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-  });
+  return createAppState({ periodDays: LEARNED_PERIOD_DAYS });
 }
 
 export function createLearningCycleState() {
-  return createAppState({
-    periodDays: ["2026-04-19", "2026-04-20"],
-  });
+  return createAppState({ periodDays: LEARNING_PERIOD_DAYS });
 }
 
-export function createAppState(overrides: Partial<AppState> = {}): AppState {
+type AppStateOverrides = Partial<Omit<AppState, "settings">> & {
+  settings?: Partial<AppSettings>;
+};
+
+export function createAppState(overrides: AppStateOverrides = {}): AppState {
   return {
     ...defaultAppState,
     ...overrides,
@@ -32,21 +41,8 @@ interface RenderWithAppStateOptions {
 }
 
 export function renderWithAppState(
-  ui: ReactElement,
-  options: RenderWithAppStateOptions = {},
+  ui: ReactNode,
+  { state }: RenderWithAppStateOptions = {},
 ) {
-  return render(
-    <AppStateProvider initialState={options.state ?? createAppState()}>
-      {ui}
-    </AppStateProvider>,
-  );
-}
-
-export function renderWithAppStateProvider(
-  children: ReactNode,
-  initialState?: AppState,
-) {
-  return render(
-    <AppStateProvider initialState={initialState}>{children}</AppStateProvider>,
-  );
+  return render(<AppStateProvider initialState={state}>{ui}</AppStateProvider>);
 }
