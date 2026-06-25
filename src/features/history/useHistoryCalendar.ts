@@ -32,18 +32,25 @@ export function useHistoryCalendar(today: IsoDate) {
     });
   }
 
+  function openPicker() {
+    setIsPickerOpen(true);
+
+    if (!hasNativeMonthInput || !monthInputRef.current) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      openNativeMonthPicker(monthInputRef.current);
+    }, 0);
+  }
+
   return {
     periodDays: state.periodDays,
     isPickerOpen,
-    hasNativeMonthInput,
-    currentMonthIndex,
-    currentYear,
-    monthInputRef,
-    monthInputValue: formatMonthInputValue(visibleMonth),
     monthLabel: formatMonthLabel(visibleMonth),
     monthDays: buildMonthDays(visibleMonth, today),
     loggedDays: new Set(state.periodDays),
-    yearOptions: getHistoryYearOptions(today, state.periodDays),
+    openPicker,
     goToPreviousMonth() {
       setMonth(addMonths(visibleMonth, -1));
     },
@@ -53,42 +60,40 @@ export function useHistoryCalendar(today: IsoDate) {
     goToToday() {
       setMonth(today);
     },
-    openPicker() {
-      setIsPickerOpen(true);
-
-      if (!hasNativeMonthInput || !monthInputRef.current) {
-        return;
-      }
-
-      window.setTimeout(() => {
-        openNativeMonthPicker(monthInputRef.current);
-      }, 0);
-    },
-    onNativeMonthChange(value: string) {
-      if (!value) {
-        return;
-      }
-
-      setMonth(parseMonthInputValue(value));
-    },
-    onFallbackMonthChange(monthIndex: number) {
-      startTransition(() => {
-        setVisibleMonth(setIsoDateMonth(visibleMonth, monthIndex));
-      });
-    },
-    onFallbackYearChange(year: number) {
-      setMonth(
-        parseMonthInputValue(
-          `${year}-${String(currentMonthIndex + 1).padStart(2, "0")}`,
-        ),
-      );
-    },
     togglePeriodDay(day: IsoDate) {
       if (day > today) {
         return;
       }
 
       actions.togglePeriodDay(day);
+    },
+    monthPicker: {
+      isPickerOpen,
+      hasNativeMonthInput,
+      currentMonthIndex,
+      currentYear,
+      monthInputRef,
+      monthInputValue: formatMonthInputValue(visibleMonth),
+      yearOptions: getHistoryYearOptions(today),
+      onNativeMonthChange(value: string) {
+        if (!value) {
+          return;
+        }
+
+        setMonth(parseMonthInputValue(value));
+      },
+      onFallbackMonthChange(monthIndex: number) {
+        startTransition(() => {
+          setVisibleMonth(setIsoDateMonth(visibleMonth, monthIndex));
+        });
+      },
+      onFallbackYearChange(year: number) {
+        setMonth(
+          parseMonthInputValue(
+            `${year}-${String(currentMonthIndex + 1).padStart(2, "0")}`,
+          ),
+        );
+      },
     },
   };
 }

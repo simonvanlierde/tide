@@ -47,18 +47,7 @@ export function HistoryScreen({
             <ChevronRight aria-hidden="true" size={18} />
           </button>
         </div>
-        <HistoryMonthPicker
-          isPickerOpen={model.isPickerOpen}
-          hasNativeMonthInput={model.hasNativeMonthInput}
-          currentMonthIndex={model.currentMonthIndex}
-          currentYear={model.currentYear}
-          monthInputValue={model.monthInputValue}
-          yearOptions={model.yearOptions}
-          monthInputRef={model.monthInputRef}
-          onNativeMonthChange={model.onNativeMonthChange}
-          onFallbackMonthChange={model.onFallbackMonthChange}
-          onFallbackYearChange={model.onFallbackYearChange}
-        />
+        <HistoryMonthPicker {...model.monthPicker} />
         <HistoryCalendarGrid
           monthDays={model.monthDays}
           loggedDays={model.loggedDays}
