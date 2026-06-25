@@ -3,6 +3,11 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=10"
+  },
   "scripts": {
     "check": "pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm build && pnpm bundle:check",
     "dev": "vite",
@@ -29,8 +34,8 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-v8": "^3.2.6",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^3.2.6",
     "jsdom": "^26.1.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.9",
