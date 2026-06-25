@@ -1,7 +1,7 @@
-import { useEffect, useEffectEvent, useState } from "react";
 import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useCycleSummary } from "../../state";
 import { StatusMessage } from "../../ui/StatusMessage";
+import { useAutoDismissMessage } from "../../ui/useAutoDismissMessage";
 import { differenceInDays } from "../../utils/date";
 import {
   REMINDER_STATUS_TIMEOUT_MS,
@@ -13,47 +13,12 @@ interface RemindersSectionProps {
   today: IsoDate;
 }
 
-interface SettingsStatusMessage {
-  scope: "reminders";
-  text: string;
-}
-
-function useReminderStatusMessage(timeoutMs: number) {
-  const [statusMessage, setStatusMessage] =
-    useState<SettingsStatusMessage | null>(null);
-  const clearReminderMessage = useEffectEvent(() => {
-    setStatusMessage((current) =>
-      current?.scope === "reminders" ? null : current,
-    );
-  });
-
-  useEffect(() => {
-    if (statusMessage?.scope !== "reminders") {
-      return;
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      clearReminderMessage();
-    }, timeoutMs);
-
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [statusMessage, timeoutMs]);
-
-  return {
-    statusMessage,
-    setStatusMessage,
-  };
-}
-
 export function RemindersSection({ today }: RemindersSectionProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const summary = useCycleSummary(today);
-  const { statusMessage, setStatusMessage } = useReminderStatusMessage(
-    REMINDER_STATUS_TIMEOUT_MS,
-  );
+  const { message: statusMessage, showMessage: setReminderStatus } =
+    useAutoDismissMessage(REMINDER_STATUS_TIMEOUT_MS);
   const snoozeSummary =
     state.settings.snoozedUntil &&
     differenceInDays(state.settings.snoozedUntil, today) >= 0
@@ -63,13 +28,6 @@ export function RemindersSection({ today }: RemindersSectionProps) {
     summary.nextPeriod.daysUntil,
     state.settings.reminderWindowDays,
   );
-
-  function setReminderStatus(text: string) {
-    setStatusMessage({
-      scope: "reminders",
-      text,
-    });
-  }
 
   function handleReminderWindowChange(days: number) {
     actions.setReminderWindowDays(days);
@@ -145,8 +103,8 @@ export function RemindersSection({ today }: RemindersSectionProps) {
               Turn reminders back on
             </button>
           ) : null}
-          {statusMessage?.scope === "reminders" ? (
-            <StatusMessage>{statusMessage.text}</StatusMessage>
+          {statusMessage ? (
+            <StatusMessage>{statusMessage}</StatusMessage>
           ) : null}
         </div>
       </div>
