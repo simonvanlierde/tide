@@ -27,6 +27,11 @@ jobs:
       - name: Run pnpm check
         run: pnpm check
 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
   smoke-e2e:
     if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     needs: quality
