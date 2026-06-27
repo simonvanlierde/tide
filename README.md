@@ -1,6 +1,10 @@
 # Tide
 
 [![CI](https://github.com/simonvanlierde/tide/actions/workflows/ci.yml/badge.svg)](https://github.com/simonvanlierde/tide/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/simonvanlierde/tide/branch/main/graph/badge.svg)](https://codecov.io/gh/simonvanlierde/tide)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Ftide.duinlab.nl&label=tide.duinlab.nl)](https://tide.duinlab.nl)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8.svg)](https://tide.duinlab.nl)
 
 Tide is a privacy-first period tracker — a small, local-first React PWA that keeps all cycle data in your browser.
 
