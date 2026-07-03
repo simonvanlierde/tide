@@ -1,6 +1,7 @@
+import { BellOff, BellRing } from "lucide-react";
 import { getReminderState } from "../../domain/reminders";
 import type { AppSettings, IsoDate } from "../../domain/types";
-import { AppIcon, BellOff, BellRing } from "../../ui/icons";
+import { AppIcon } from "../../ui/icons";
 
 interface ReminderBannerProps {
   today: IsoDate;

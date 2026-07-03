@@ -36,13 +36,6 @@ export function formatDayButtonLabel(value: IsoDate) {
   })}`;
 }
 
-export function getMonthName(monthIndex: number) {
-  return new Date(Date.UTC(2026, monthIndex, 1)).toLocaleDateString("en-US", {
-    month: "long",
-    timeZone: "UTC",
-  });
-}
-
 export function buildMonthDays(
   visibleMonth: IsoDate,
   today: IsoDate,
@@ -69,13 +62,4 @@ export function buildMonthDays(
       isToday: value === today,
     };
   });
-}
-
-export function getHistoryYearOptions(today: IsoDate) {
-  const currentYear = parseIsoDate(today).getUTCFullYear();
-
-  return Array.from(
-    { length: currentYear - 2020 + 1 },
-    (_, index) => 2020 + index,
-  );
 }

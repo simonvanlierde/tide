@@ -1,8 +1,8 @@
+import { CalendarDays, House, Settings2 } from "lucide-react";
 import type { MouseEvent, ReactElement } from "react";
 import { HistoryScreen } from "../features/history/HistoryScreen";
 import { SettingsScreen } from "../features/settings/SettingsScreen";
 import { TodayScreen } from "../features/today/TodayScreen";
-import { CalendarDays, House, Settings2 } from "../ui/icons";
 
 export interface AppScreen {
   path: "/" | "/history" | "/settings";

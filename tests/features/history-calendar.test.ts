@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildMonthDays,
-  getHistoryYearOptions,
-} from "../../src/features/history/calendar";
+import { buildMonthDays } from "../../src/features/history/calendar";
 
 describe("history calendar helpers", () => {
   it("builds a full month grid with adjacent-month days and future metadata", () => {
@@ -37,11 +34,5 @@ describe("history calendar helpers", () => {
       value: "2026-09-06",
       isOutsideMonth: true,
     });
-  });
-
-  it("returns a full year range from 2020 through the current year", () => {
-    expect(getHistoryYearOptions("2026-04-18")).toEqual([
-      2020, 2021, 2022, 2023, 2024, 2025, 2026,
-    ]);
   });
 });

@@ -11,10 +11,6 @@ export type AppStateAction =
   | { type: "setHomeDisplayMode"; mode: HomeDisplayMode }
   | { type: "replaceState"; state: unknown };
 
-function sortPeriodDays(periodDays: IsoDate[]) {
-  return [...periodDays].sort();
-}
-
 export function appStateReducer(
   state: AppState,
   action: AppStateAction,
@@ -24,7 +20,7 @@ export function appStateReducer(
       const hasLoggedDay = state.periodDays.includes(action.day);
       const periodDays = hasLoggedDay
         ? state.periodDays.filter((value) => value !== action.day)
-        : sortPeriodDays([...state.periodDays, action.day]);
+        : [...state.periodDays, action.day].sort();
 
       return {
         ...state,

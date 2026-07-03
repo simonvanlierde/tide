@@ -32,12 +32,6 @@ export function formatMonthInputValue(value: IsoDate): `${number}-${number}` {
   return value.slice(0, 7) as `${number}-${number}`;
 }
 
-export function setIsoDateMonth(value: IsoDate, monthIndex: number): IsoDate {
-  const date = parseIsoDate(value);
-  date.setUTCMonth(monthIndex, 1);
-  return formatIsoDate(date);
-}
-
 export function parseMonthInputValue(value: string): IsoDate {
   return `${value}-01` as IsoDate;
 }

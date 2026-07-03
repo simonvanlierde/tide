@@ -4,7 +4,11 @@ import type {
   CyclePhase,
   IsoDate,
 } from "../../domain/types";
-import { useAppState, useAppStateActions, useCycleSummary } from "../../state";
+import {
+  useAppState,
+  useAppStateActions,
+  useCycleSummary,
+} from "../../state/provider";
 import { getTodayIsoDate } from "../../utils/date";
 import { ReminderBanner } from "../reminders/ReminderBanner";
 import { INFORMATION_COPY, SNOOZE_OPTIONS } from "../settings/config";

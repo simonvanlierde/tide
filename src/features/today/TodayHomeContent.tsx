@@ -1,9 +1,10 @@
+import { Info } from "lucide-react";
 import type {
   CycleSummary,
   HomeDisplayMode,
   IsoDate,
 } from "../../domain/types";
-import { AppIcon, Info } from "../../ui/icons";
+import { AppIcon } from "../../ui/icons";
 import { CircularCycleView } from "./CircularCycleView";
 import { LinearCycleView } from "./CycleView";
 

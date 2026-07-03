@@ -1,4 +1,5 @@
-import { AppIcon, BadgeCheck, Droplets } from "../../ui/icons";
+import { BadgeCheck, Droplets } from "lucide-react";
+import { AppIcon } from "../../ui/icons";
 
 interface LogActionProps {
   isLogged: boolean;

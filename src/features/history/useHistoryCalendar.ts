@@ -1,29 +1,20 @@
 import { startTransition, useRef, useState } from "react";
 import type { IsoDate } from "../../domain/types";
-import { useAppState, useAppStateActions } from "../../state";
+import { useAppState, useAppStateActions } from "../../state/provider";
 import {
   addMonths,
   formatMonthInputValue,
-  parseIsoDate,
   parseMonthInputValue,
-  setIsoDateMonth,
 } from "../../utils/date";
-import {
-  buildMonthDays,
-  formatMonthLabel,
-  getHistoryYearOptions,
-} from "./calendar";
-import { openNativeMonthPicker, supportsNativeMonthInput } from "./monthPicker";
+import { buildMonthDays, formatMonthLabel } from "./calendar";
+import { openNativeMonthPicker } from "./monthPicker";
 
 export function useHistoryCalendar(today: IsoDate) {
   const state = useAppState();
   const actions = useAppStateActions();
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [hasNativeMonthInput] = useState(() => supportsNativeMonthInput());
   const monthInputRef = useRef<HTMLInputElement | null>(null);
-  const currentYear = parseIsoDate(visibleMonth).getUTCFullYear();
-  const currentMonthIndex = parseIsoDate(visibleMonth).getUTCMonth();
 
   function setMonth(nextMonth: IsoDate) {
     startTransition(() => {
@@ -35,7 +26,7 @@ export function useHistoryCalendar(today: IsoDate) {
   function openPicker() {
     setIsPickerOpen(true);
 
-    if (!hasNativeMonthInput || !monthInputRef.current) {
+    if (!monthInputRef.current) {
       return;
     }
 
@@ -69,30 +60,14 @@ export function useHistoryCalendar(today: IsoDate) {
     },
     monthPicker: {
       isPickerOpen,
-      hasNativeMonthInput,
-      currentMonthIndex,
-      currentYear,
       monthInputRef,
       monthInputValue: formatMonthInputValue(visibleMonth),
-      yearOptions: getHistoryYearOptions(today),
       onNativeMonthChange(value: string) {
         if (!value) {
           return;
         }
 
         setMonth(parseMonthInputValue(value));
-      },
-      onFallbackMonthChange(monthIndex: number) {
-        startTransition(() => {
-          setVisibleMonth(setIsoDateMonth(visibleMonth, monthIndex));
-        });
-      },
-      onFallbackYearChange(year: number) {
-        setMonth(
-          parseMonthInputValue(
-            `${year}-${String(currentMonthIndex + 1).padStart(2, "0")}`,
-          ),
-        );
       },
     },
   };

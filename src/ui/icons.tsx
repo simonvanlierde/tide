@@ -1,16 +1,4 @@
 import type { LucideIcon } from "lucide-react";
-import {
-  BadgeCheck,
-  BellOff,
-  BellRing,
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  Droplets,
-  House,
-  Info,
-  Settings2,
-} from "lucide-react";
 
 interface AppIconProps {
   icon: LucideIcon;
@@ -27,16 +15,3 @@ export function AppIcon({
     <Icon aria-hidden="true" className={className} strokeWidth={strokeWidth} />
   );
 }
-
-export {
-  BadgeCheck,
-  BellOff,
-  BellRing,
-  CalendarDays,
-  ChevronLeft,
-  ChevronRight,
-  Droplets,
-  House,
-  Info,
-  Settings2,
-};

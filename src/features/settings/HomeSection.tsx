@@ -1,4 +1,4 @@
-import { useAppState, useAppStateActions } from "../../state";
+import { useAppState, useAppStateActions } from "../../state/provider";
 import { HOME_DISPLAY_MODE_OPTIONS } from "./config";
 
 export function HomeSection() {

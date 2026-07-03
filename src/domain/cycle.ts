@@ -10,12 +10,8 @@ interface BuildCycleSummaryInput {
   completedCycleLengths: number[];
 }
 
-function sortDates(values: IsoDate[]) {
-  return [...values].sort();
-}
-
 function getCycleStarts(periodDays: IsoDate[]) {
-  const sortedDays = sortDates(periodDays);
+  const sortedDays = [...periodDays].sort();
 
   return sortedDays.filter((day, index) => {
     if (index === 0) {

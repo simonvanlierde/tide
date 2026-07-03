@@ -1,7 +1,10 @@
+import { useEffect, useEffectEvent, useState } from "react";
 import type { IsoDate } from "../../domain/types";
-import { useAppState, useAppStateActions, useCycleSummary } from "../../state";
-import { StatusMessage } from "../../ui/StatusMessage";
-import { useAutoDismissMessage } from "../../ui/useAutoDismissMessage";
+import {
+  useAppState,
+  useAppStateActions,
+  useCycleSummary,
+} from "../../state/provider";
 import { differenceInDays } from "../../utils/date";
 import {
   REMINDER_STATUS_TIMEOUT_MS,
@@ -17,8 +20,21 @@ export function RemindersSection({ today }: RemindersSectionProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const summary = useCycleSummary(today);
-  const { message: statusMessage, showMessage: setReminderStatus } =
-    useAutoDismissMessage(REMINDER_STATUS_TIMEOUT_MS);
+  const [statusMessage, setReminderStatus] = useState<string | null>(null);
+  const clearStatus = useEffectEvent(() => setReminderStatus(null));
+
+  useEffect(() => {
+    if (statusMessage === null) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(
+      clearStatus,
+      REMINDER_STATUS_TIMEOUT_MS,
+    );
+    return () => window.clearTimeout(timeoutId);
+  }, [statusMessage]);
+
   const snoozeSummary =
     state.settings.snoozedUntil &&
     differenceInDays(state.settings.snoozedUntil, today) >= 0
@@ -104,7 +120,13 @@ export function RemindersSection({ today }: RemindersSectionProps) {
             </button>
           ) : null}
           {statusMessage ? (
-            <StatusMessage>{statusMessage}</StatusMessage>
+            <p
+              className="status-chip status-chip--muted"
+              role="status"
+              aria-live="polite"
+            >
+              {statusMessage}
+            </p>
           ) : null}
         </div>
       </div>
