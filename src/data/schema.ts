@@ -47,7 +47,8 @@ export function normalizeSettings(settings: unknown): AppSettings {
   return {
     reminderWindowDays:
       typeof candidate.reminderWindowDays === "number" &&
-      Number.isFinite(candidate.reminderWindowDays)
+      Number.isFinite(candidate.reminderWindowDays) &&
+      candidate.reminderWindowDays >= 0
         ? candidate.reminderWindowDays
         : defaultAppState.settings.reminderWindowDays,
     snoozedUntil: isIsoDate(candidate.snoozedUntil)

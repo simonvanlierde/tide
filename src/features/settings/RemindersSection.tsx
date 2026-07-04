@@ -37,7 +37,7 @@ export function RemindersSection({ today }: RemindersSectionProps) {
 
   const snoozeSummary =
     state.settings.snoozedUntil &&
-    differenceInDays(state.settings.snoozedUntil, today) >= 0
+    differenceInDays(state.settings.snoozedUntil, today) > 0
       ? `Snoozed until ${state.settings.snoozedUntil}.`
       : null;
   const reminderSummary = getReminderSummary(

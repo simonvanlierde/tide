@@ -28,7 +28,7 @@ export function getReminderState(input: ReminderStateInput) {
     daysUntilPeriod >= -1 && daysUntilPeriod <= input.reminderWindowDays;
   const isSnoozed =
     input.snoozedUntil !== null &&
-    differenceInDays(input.snoozedUntil, input.today) >= 0;
+    differenceInDays(input.snoozedUntil, input.today) > 0;
 
   if (!inReminderWindow || isSnoozed) {
     return {

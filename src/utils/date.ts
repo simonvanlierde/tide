@@ -43,5 +43,11 @@ export function differenceInDays(left: IsoDate, right: IsoDate): number {
 }
 
 export function getTodayIsoDate(): IsoDate {
-  return formatIsoDate(new Date());
+  // Local calendar parts, not toISOString (UTC), so "today" matches the user's
+  // wall-clock day near midnight in non-UTC timezones.
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}` as IsoDate;
 }

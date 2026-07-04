@@ -40,7 +40,6 @@ function getPhaseLabel(
   today: IsoDate,
   periodDays: IsoDate[],
   ovulationDate: IsoDate,
-  cycleDay: number,
 ) {
   if (periodDays.includes(today)) {
     return "menstrual" as const;
@@ -52,7 +51,7 @@ function getPhaseLabel(
     return "ovulation" as const;
   }
 
-  if (cycleDay > 0 && ovulationOffset > 1) {
+  if (ovulationOffset > 1) {
     return "luteal" as const;
   }
 
@@ -98,12 +97,7 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
 
   return {
     cycleDay,
-    phaseLabel: getPhaseLabel(
-      input.today,
-      input.periodDays,
-      ovulationDate,
-      cycleDay,
-    ),
+    phaseLabel: getPhaseLabel(input.today, input.periodDays, ovulationDate),
     fertile: isWithinFertileWindow(input.today, ovulationDate),
     ovulationDate,
     nextPeriod: {
