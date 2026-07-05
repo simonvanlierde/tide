@@ -1,6 +1,5 @@
 import type { CycleSummary, IsoDate } from "../../domain/types";
 import { addDays, differenceInDays } from "../../utils/date";
-import { CycleLegend } from "./CycleLegend";
 
 export interface CycleSegment {
   dayNumber: number;
@@ -8,12 +7,6 @@ export interface CycleSegment {
   isPeriod: boolean;
   isFertile: boolean;
   isOvulation: boolean;
-}
-
-interface CycleViewProps {
-  summary: CycleSummary;
-  periodDays: IsoDate[];
-  today: IsoDate;
 }
 
 export function buildCycleSegments(
@@ -24,7 +17,9 @@ export function buildCycleSegments(
   const totalDays =
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
       ? Math.max(
-          summary.cycleDay + summary.nextPeriod.daysUntil,
+          // cycleDay + daysUntil counts today twice (it is both the last day of
+          // this cycle and day 0 of the countdown), so subtract 1.
+          summary.cycleDay + summary.nextPeriod.daysUntil - 1,
           summary.cycleDay,
           28,
         )
@@ -61,47 +56,4 @@ export function buildCycleSegments(
       isOvulation: ovulationDay === dayNumber,
     } satisfies CycleSegment;
   });
-}
-
-export function LinearCycleView({
-  summary,
-  periodDays,
-  today,
-}: CycleViewProps) {
-  const segments = buildCycleSegments(summary, periodDays, today);
-
-  return (
-    <section aria-label="Linear cycle view" className="cycle-view">
-      <CycleLegend className="cycle-view__legend" />
-
-      <div className="cycle-view__track">
-        {segments.map((segment) => {
-          const className = [
-            "cycle-view__segment",
-            segment.isPeriod ? "is-period" : "",
-            segment.isFertile ? "is-fertile" : "",
-            segment.isOvulation ? "is-ovulation" : "",
-            segment.isCurrent ? "is-current" : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
-
-          return (
-            <div
-              key={segment.dayNumber}
-              role="img"
-              className={className}
-              aria-label={`Cycle day ${segment.dayNumber}${segment.isCurrent ? ", today" : ""}`}
-              title={`Cycle day ${segment.dayNumber}`}
-            />
-          );
-        })}
-      </div>
-
-      <div className="cycle-view__labels">
-        <span>Day 1</span>
-        <span>Day {segments.length}</span>
-      </div>
-    </section>
-  );
 }

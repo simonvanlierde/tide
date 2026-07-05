@@ -20,8 +20,8 @@ describe("buildCycleSegments", () => {
 
     const segments = buildCycleSegments(summary, periodDays, today);
 
-    // cycleDay 17, nextPeriod 12 days out -> max(29, 17, 28)
-    expect(segments).toHaveLength(29);
+    // 28-day learned cycle -> one segment per day, no phantom next-cycle day.
+    expect(segments).toHaveLength(28);
 
     // Logged bleeding falls on cycle days 1 and 2 (2026-04-02 / 2026-04-03).
     expect(segments[0]).toEqual({
@@ -31,15 +31,15 @@ describe("buildCycleSegments", () => {
       isFertile: false,
       isOvulation: false,
     });
-    expect(segments[1].isPeriod).toBe(true);
-    expect(segments[2].isPeriod).toBe(false);
+    expect(segments[1]?.isPeriod).toBe(true);
+    expect(segments[2]?.isPeriod).toBe(false);
 
     // Today is cycle day 17.
-    expect(segments[16].dayNumber).toBe(17);
-    expect(segments[16].isCurrent).toBe(true);
+    expect(segments[16]?.dayNumber).toBe(17);
+    expect(segments[16]?.isCurrent).toBe(true);
 
     // Ovulation lands on cycle day 15, fertile window spans days 10-16.
-    expect(segments[14].isOvulation).toBe(true);
+    expect(segments[14]?.isOvulation).toBe(true);
     expect(segments.filter((s) => s.isFertile).map((s) => s.dayNumber)).toEqual(
       [10, 11, 12, 13, 14, 15, 16],
     );
@@ -56,14 +56,14 @@ describe("buildCycleSegments", () => {
 
     const segments = buildCycleSegments(summary, periodDays, today);
 
-    expect(segments).toHaveLength(29);
+    expect(segments).toHaveLength(28);
     // Only the day on/before today counts as logged (2026-04-20 is in the future).
     expect(segments[0]).toMatchObject({
       dayNumber: 1,
       isPeriod: true,
       isCurrent: true,
     });
-    expect(segments[14].isOvulation).toBe(true);
+    expect(segments[14]?.isOvulation).toBe(true);
   });
 
   it("returns a flat 28-day track when the cycle day is unknown", () => {
