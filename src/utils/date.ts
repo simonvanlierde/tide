@@ -47,6 +47,27 @@ export function differenceInDays(left: IsoDate, right: IsoDate): number {
   );
 }
 
+const SHORT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+const MONTH_DAY_FORMAT = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+export function formatShortDate(value: IsoDate): string {
+  return SHORT_DATE_FORMAT.format(parseIsoDate(value));
+}
+
+export function formatMonthDay(value: IsoDate): string {
+  return MONTH_DAY_FORMAT.format(parseIsoDate(value));
+}
+
 export function getTodayIsoDate(): IsoDate {
   // Local calendar parts, not toISOString (UTC), so "today" matches the user's
   // wall-clock day near midnight in non-UTC timezones.

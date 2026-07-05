@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { buildCycleSummary } from "../../src/domain/cycle";
 import type { IsoDate } from "../../src/domain/types";
-import { buildCycleSegments } from "../../src/features/today/CycleView";
+import {
+  buildCycleSegments,
+  getSegmentStatus,
+} from "../../src/features/today/CycleView";
 
 describe("buildCycleSegments", () => {
   it("maps a learned cycle with logged days onto day segments", () => {
@@ -18,7 +21,7 @@ describe("buildCycleSegments", () => {
       completedCycleLengths: [28, 29, 27],
     });
 
-    const segments = buildCycleSegments(summary, periodDays, today);
+    const segments = buildCycleSegments(summary, periodDays, today, true);
 
     // 28-day learned cycle -> one segment per day, no phantom next-cycle day.
     expect(segments).toHaveLength(28);
@@ -26,6 +29,7 @@ describe("buildCycleSegments", () => {
     // Logged bleeding falls on cycle days 1 and 2 (2026-04-02 / 2026-04-03).
     expect(segments[0]).toEqual({
       dayNumber: 1,
+      date: "2026-04-02",
       isCurrent: false,
       isPeriod: true,
       isFertile: false,
@@ -37,6 +41,7 @@ describe("buildCycleSegments", () => {
     // Today is cycle day 17.
     expect(segments[16]?.dayNumber).toBe(17);
     expect(segments[16]?.isCurrent).toBe(true);
+    expect(segments[16]?.date).toBe(today);
 
     // Ovulation lands on cycle day 15, fertile window spans days 10-16.
     expect(segments[14]?.isOvulation).toBe(true);
@@ -54,7 +59,7 @@ describe("buildCycleSegments", () => {
       completedCycleLengths: [],
     });
 
-    const segments = buildCycleSegments(summary, periodDays, today);
+    const segments = buildCycleSegments(summary, periodDays, today, true);
 
     expect(segments).toHaveLength(28);
     // Only the day on/before today counts as logged (2026-04-20 is in the future).
@@ -66,6 +71,21 @@ describe("buildCycleSegments", () => {
     expect(segments[14]?.isOvulation).toBe(true);
   });
 
+  it("omits fertile and ovulation segments when fertility is hidden", () => {
+    const today: IsoDate = "2026-04-18";
+    const periodDays: IsoDate[] = ["2026-04-19", "2026-04-20"];
+    const summary = buildCycleSummary({
+      today,
+      periodDays,
+      completedCycleLengths: [],
+    });
+
+    const segments = buildCycleSegments(summary, periodDays, today, false);
+
+    expect(segments.some((segment) => segment.isFertile)).toBe(false);
+    expect(segments.some((segment) => segment.isOvulation)).toBe(false);
+  });
+
   it("returns a flat 28-day track when the cycle day is unknown", () => {
     const today: IsoDate = "2026-04-18";
     const summary = buildCycleSummary({
@@ -74,7 +94,7 @@ describe("buildCycleSegments", () => {
       completedCycleLengths: [],
     });
 
-    const segments = buildCycleSegments(summary, [], today);
+    const segments = buildCycleSegments(summary, [], today, true);
 
     expect(segments).toHaveLength(28);
     expect(
@@ -82,5 +102,68 @@ describe("buildCycleSegments", () => {
         (s) => !s.isCurrent && !s.isPeriod && !s.isFertile && !s.isOvulation,
       ),
     ).toBe(true);
+    expect(segments.every((s) => s.date === null)).toBe(true);
+  });
+});
+
+describe("getSegmentStatus", () => {
+  const today: IsoDate = "2026-04-18";
+  const periodDays: IsoDate[] = ["2026-04-02", "2026-04-03"];
+  const summary = buildCycleSummary({
+    today,
+    periodDays,
+    completedCycleLengths: [28],
+  });
+  const segments = buildCycleSegments(summary, periodDays, today, true);
+
+  function statusOf(dayNumber: number) {
+    const segment = segments[dayNumber - 1];
+    if (!segment) {
+      throw new Error(`no segment for day ${dayNumber}`);
+    }
+    return getSegmentStatus(segment, summary);
+  }
+
+  it("labels each kind of cycle day", () => {
+    expect(statusOf(1)).toBe("Period");
+    expect(statusOf(5)).toBe("Follicular");
+    expect(statusOf(10)).toBe("Fertile window");
+    expect(statusOf(15)).toBe("Ovulation expected");
+    expect(statusOf(20)).toBe("Luteal");
+  });
+
+  it("marks overdue days past the predicted period start", () => {
+    const overdueToday: IsoDate = "2026-05-01";
+    const overdueSummary = buildCycleSummary({
+      today: overdueToday,
+      periodDays,
+      completedCycleLengths: [28],
+    });
+    const overdueSegments = buildCycleSegments(
+      overdueSummary,
+      periodDays,
+      overdueToday,
+      true,
+    );
+
+    const lastSegment = overdueSegments.at(-1);
+    expect(lastSegment?.date).toBe(overdueToday);
+    expect(lastSegment && getSegmentStatus(lastSegment, overdueSummary)).toBe(
+      "Period expected",
+    );
+  });
+
+  it("returns no status without cycle data", () => {
+    const unknownSummary = buildCycleSummary({
+      today,
+      periodDays: [],
+      completedCycleLengths: [],
+    });
+    const unknownSegments = buildCycleSegments(unknownSummary, [], today, true);
+
+    expect(
+      unknownSegments[0] &&
+        getSegmentStatus(unknownSegments[0], unknownSummary),
+    ).toBe("");
   });
 });

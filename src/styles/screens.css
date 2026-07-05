@@ -4,18 +4,47 @@
     gap: 16px;
   }
 
-  .today-screen__lede {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 1.05rem;
-    line-height: 1.4;
-  }
-
   .today-screen__note {
     margin: 0;
     color: var(--ink-muted);
     font-size: 0.9rem;
     line-height: 1.45;
+  }
+
+  .reminder-prompt {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid var(--tide-soft);
+    background: var(--tide-tint);
+  }
+
+  .reminder-prompt__message {
+    margin: 0;
+    color: var(--tide-strong);
+    font-size: 1.05rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .reminder-prompt__dismiss {
+    justify-self: center;
+    padding: 8px 16px;
+    border: 0;
+    background: transparent;
+    color: var(--tide-strong);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .reminder-prompt__dismiss:hover {
+    color: var(--tide);
+  }
+
+  .reminder-prompt__dismiss:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
   }
 
   .utility-screen {
@@ -28,13 +57,21 @@
     display: grid;
     justify-items: center;
     gap: 20px;
-    padding: 6px 0 2px;
+    padding: 18px 0 2px;
   }
 
   .cycle-dial__frame {
     position: relative;
-    width: min(280px, 72vw);
+    width: min(280px, 64vw);
     aspect-ratio: 1;
+    border-radius: 50%;
+    touch-action: none;
+    cursor: pointer;
+  }
+
+  .cycle-dial__frame:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 6px;
   }
 
   .cycle-dial__ring {
@@ -78,6 +115,48 @@
     font-size: 1rem;
     font-weight: 500;
     color: var(--tide-strong);
+  }
+
+  .cycle-dial__date {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+  }
+
+  .cycle-dial__labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cycle-dial__label {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    line-height: 1;
+    white-space: nowrap;
+    /* The parent container is pointer-events: none; labels opt back in so
+       their title tooltips show. Their pointer events still bubble to the
+       frame, so scrubbing across a label keeps working. */
+    pointer-events: auto;
+  }
+
+  .cycle-dial__label--start {
+    top: -12px;
+    right: calc(50% + 44px);
+  }
+
+  .cycle-dial__label--end {
+    top: -12px;
+    left: calc(50% + 44px);
+  }
+
+  .cycle-view__dot--predicted {
+    box-sizing: border-box;
+    background: transparent;
+    border: 1.5px dashed var(--cycle-period);
   }
 
   .cycle-dial__marker {

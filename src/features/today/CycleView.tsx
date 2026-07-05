@@ -3,6 +3,7 @@ import { addDays, differenceInDays } from "../../utils/date";
 
 export interface CycleSegment {
   dayNumber: number;
+  date: IsoDate | null;
   isCurrent: boolean;
   isPeriod: boolean;
   isFertile: boolean;
@@ -13,6 +14,7 @@ export function buildCycleSegments(
   summary: CycleSummary,
   periodDays: IsoDate[],
   today: IsoDate,
+  showFertility: boolean,
 ) {
   const totalDays =
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
@@ -46,14 +48,49 @@ export function buildCycleSegments(
 
     return {
       dayNumber,
+      date: dateValue,
       isCurrent: dayNumber === summary.cycleDay,
       isPeriod: dateValue !== null && loggedDays.has(dateValue),
       isFertile:
+        showFertility &&
         fertileStart !== null &&
         ovulationDay !== null &&
         dayNumber >= fertileStart &&
         dayNumber <= ovulationDay + 1,
-      isOvulation: ovulationDay === dayNumber,
+      isOvulation: showFertility && ovulationDay === dayNumber,
     } satisfies CycleSegment;
   });
+}
+
+export function getSegmentStatus(
+  segment: CycleSegment,
+  summary: CycleSummary,
+): string {
+  if (segment.isPeriod) {
+    return "Period";
+  }
+
+  if (segment.isOvulation) {
+    return "Ovulation expected";
+  }
+
+  if (segment.isFertile) {
+    return "Fertile window";
+  }
+
+  if (
+    segment.date !== null &&
+    summary.nextPeriod.date !== null &&
+    segment.date >= summary.nextPeriod.date
+  ) {
+    return "Period expected";
+  }
+
+  if (segment.date !== null && summary.ovulationDate !== null) {
+    return differenceInDays(segment.date, summary.ovulationDate) > 0
+      ? "Luteal"
+      : "Follicular";
+  }
+
+  return "";
 }
