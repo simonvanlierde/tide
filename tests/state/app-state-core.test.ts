@@ -39,6 +39,55 @@ describe("app state core selectors", () => {
     expect(nextState.periodDays).toEqual(["2026-04-02"]);
   });
 
+  it("marks a one-tap log at the default medium flow and prunes it on removal", () => {
+    const logged = appStateReducer(createAppState(), {
+      type: "togglePeriodDay",
+      day: "2026-04-02",
+      today: "2026-04-30",
+    });
+    expect(logged.intensityByDay).toEqual({ "2026-04-02": "medium" });
+
+    const removed = appStateReducer(logged, {
+      type: "togglePeriodDay",
+      day: "2026-04-02",
+      today: "2026-04-30",
+    });
+    expect(removed.intensityByDay).toEqual({});
+  });
+
+  it("refines a logged day's flow via setDayIntensity", () => {
+    const state = createAppState({
+      periodDays: ["2026-04-02"],
+      intensityByDay: { "2026-04-02": "medium" },
+    });
+
+    const next = appStateReducer(state, {
+      type: "setDayIntensity",
+      day: "2026-04-02",
+      intensity: "spotting",
+      today: "2026-04-30",
+    });
+
+    expect(next.intensityByDay["2026-04-02"]).toBe("spotting");
+    expect(next.periodDays).toEqual(["2026-04-02"]);
+  });
+
+  it("excludes spotting days from cycle predictions", () => {
+    const spotting = createAppState({
+      periodDays: ["2026-04-02"],
+      intensityByDay: { "2026-04-02": "spotting" },
+    });
+    expect(selectCycleSummary(spotting, "2026-04-10").estimateMode).toBe(
+      "insufficient",
+    );
+
+    // The same day logged as real bleeding does anchor a prediction.
+    const bleeding = createAppState({ periodDays: ["2026-04-02"] });
+    expect(selectCycleSummary(bleeding, "2026-04-10").estimateMode).toBe(
+      "fallback",
+    );
+  });
+
   it("derives the cycle summary from plain app state", () => {
     const state = createLearnedCycleState();
 

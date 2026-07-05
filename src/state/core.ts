@@ -1,8 +1,20 @@
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
-import type { AppState, IsoDate, ThemePreference } from "../domain/types";
+import { DEFAULT_FLOW } from "../domain/flow";
+import type {
+  AppState,
+  FlowIntensity,
+  IsoDate,
+  ThemePreference,
+} from "../domain/types";
 
 export type AppStateAction =
   | { type: "togglePeriodDay"; day: IsoDate; today: IsoDate }
+  | {
+      type: "setDayIntensity";
+      day: IsoDate;
+      intensity: FlowIntensity;
+      today: IsoDate;
+    }
   | { type: "dismissReminder"; today: IsoDate }
   | { type: "setShowFertility"; show: boolean }
   | { type: "setTheme"; theme: ThemePreference };
@@ -25,9 +37,41 @@ export function appStateReducer(
         ? state.periodDays.filter((value) => value !== action.day)
         : [...state.periodDays, action.day].sort();
 
+      // Log at the default flow; removing a day prunes its intensity so the
+      // map never outlives the logged day.
+      const intensityByDay = { ...state.intensityByDay };
+      if (hasLoggedDay) {
+        delete intensityByDay[action.day];
+      } else {
+        intensityByDay[action.day] = DEFAULT_FLOW;
+      }
+
       return {
         ...state,
         periodDays,
+        intensityByDay,
+      };
+    }
+
+    case "setDayIntensity": {
+      // The gauge only appears once a day is logged, but stay robust: never set
+      // a level on a future, un-logged day.
+      const isLogged = state.periodDays.includes(action.day);
+      if (!isLogged && action.day > action.today) {
+        return state;
+      }
+
+      const periodDays = isLogged
+        ? state.periodDays
+        : [...state.periodDays, action.day].sort();
+
+      return {
+        ...state,
+        periodDays,
+        intensityByDay: {
+          ...state.intensityByDay,
+          [action.day]: action.intensity,
+        },
       };
     }
 
@@ -61,9 +105,15 @@ export function appStateReducer(
 }
 
 export function selectCycleSummary(state: AppState, today: IsoDate) {
+  // Spotting days are recorded and shown, but excluded from cycle-start
+  // detection and predictions — spotting is often not the true period start.
+  const predictionDays = state.periodDays.filter(
+    (day) => state.intensityByDay[day] !== "spotting",
+  );
+
   return buildCycleSummary({
     today,
-    periodDays: state.periodDays,
-    completedCycleLengths: getCompletedCycleLengths(state.periodDays),
+    periodDays: predictionDays,
+    completedCycleLengths: getCompletedCycleLengths(predictionDays),
   });
 }

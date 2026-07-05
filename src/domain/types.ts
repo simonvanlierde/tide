@@ -7,6 +7,7 @@ export type CyclePhase =
   | "unknown";
 export type CycleEstimateMode = "learned" | "fallback" | "insufficient";
 export type ThemePreference = "system" | "light" | "dark";
+export type FlowIntensity = "spotting" | "light" | "medium" | "heavy";
 
 export interface CycleSummary {
   cycleDay: number | null;
@@ -30,5 +31,11 @@ export interface AppSettings {
 
 export interface AppState {
   periodDays: IsoDate[];
+  /**
+   * Flow level per logged day. Sparse: days logged before this feature (or with
+   * a plain one-tap log) are absent and render at the default level. Keys are
+   * pruned to `periodDays`, so a key here is always a logged day.
+   */
+  intensityByDay: Record<IsoDate, FlowIntensity>;
   settings: AppSettings;
 }

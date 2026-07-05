@@ -70,6 +70,27 @@ describe("local storage", () => {
     );
   });
 
+  it("keeps only valid flow levels for days that are actually logged", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: {
+          "2026-04-02": "heavy", // valid, logged -> kept
+          "2026-04-03": "torrential", // invalid level -> dropped
+          "2026-04-09": "light", // not a logged day -> pruned
+        },
+      }),
+    );
+
+    expect(loadAppState()).toEqual(
+      createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: { "2026-04-02": "heavy" },
+      }),
+    );
+  });
+
   it("recovers logged data from the legacy versioned envelope", () => {
     window.localStorage.setItem(
       STORAGE_KEY,

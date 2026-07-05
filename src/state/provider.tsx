@@ -8,7 +8,12 @@ import {
   useReducer,
 } from "react";
 import { loadAppState, saveAppState } from "../data/storage";
-import type { AppState, IsoDate, ThemePreference } from "../domain/types";
+import type {
+  AppState,
+  FlowIntensity,
+  IsoDate,
+  ThemePreference,
+} from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
 import {
   type AppStateAction,
@@ -111,6 +116,9 @@ export function useAppStateActions() {
     () => ({
       togglePeriodDay(day: IsoDate, today: IsoDate) {
         dispatch({ type: "togglePeriodDay", day, today });
+      },
+      setDayIntensity(day: IsoDate, intensity: FlowIntensity, today: IsoDate) {
+        dispatch({ type: "setDayIntensity", day, intensity, today });
       },
       dismissReminder(today: IsoDate) {
         dispatch({ type: "dismissReminder", today });
