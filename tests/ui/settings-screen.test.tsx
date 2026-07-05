@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { loadAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
-import { REMINDER_STATUS_TIMEOUT_MS } from "../../src/features/settings/config";
+import { NOTICE_TIMEOUT_MS } from "../../src/features/settings/config";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
 
@@ -73,7 +73,7 @@ describe("SettingsScreen", () => {
     expect(screen.getByText(/reminders turned back on/i)).toBeInTheDocument();
 
     act(() => {
-      vi.advanceTimersByTime(REMINDER_STATUS_TIMEOUT_MS);
+      vi.advanceTimersByTime(NOTICE_TIMEOUT_MS);
     });
     expect(
       screen.queryByText(/reminders turned back on/i),

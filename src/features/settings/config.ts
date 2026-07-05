@@ -1,6 +1,7 @@
 export const REMINDER_WINDOW_OPTIONS = [2, 4, 6] as const;
 export const SNOOZE_OPTIONS = [1, 3, 5] as const;
-export const REMINDER_STATUS_TIMEOUT_MS = 3500;
+/** How long any transient confirmation notice stays on screen, app-wide. */
+export const NOTICE_TIMEOUT_MS = 5000;
 
 export const INFORMATION_COPY = {
   logging: "Log a day only when you had menstrual bleeding on that date.",

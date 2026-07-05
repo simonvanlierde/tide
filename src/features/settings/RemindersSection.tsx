@@ -7,7 +7,7 @@ import {
   useCycleSummary,
 } from "../../state/provider";
 import {
-  REMINDER_STATUS_TIMEOUT_MS,
+  NOTICE_TIMEOUT_MS,
   REMINDER_WINDOW_OPTIONS,
   SNOOZE_OPTIONS,
 } from "./config";
@@ -28,10 +28,7 @@ export function RemindersSection({ today }: RemindersSectionProps) {
       return;
     }
 
-    const timeoutId = window.setTimeout(
-      clearStatus,
-      REMINDER_STATUS_TIMEOUT_MS,
-    );
+    const timeoutId = window.setTimeout(clearStatus, NOTICE_TIMEOUT_MS);
     return () => window.clearTimeout(timeoutId);
   }, [statusMessage]);
 
