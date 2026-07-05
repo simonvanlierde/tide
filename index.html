@@ -6,6 +6,7 @@
     <!-- Kept in sync with the resolved theme (see the inline script below and
          the provider), so it tracks the in-app toggle, not just the OS. -->
     <meta name="theme-color" content="#f5f9f9" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Tide" />
@@ -14,7 +15,7 @@
     <link rel="icon" href="/icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>Tide</title>
-    <script>
+    <script>"use strict";
       // Apply the saved theme before first paint so there is no flash. The
       // provider keeps <html data-theme> in sync afterwards.
       (() => {
