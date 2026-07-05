@@ -51,8 +51,10 @@ export function HistoryScreen({
         <HistoryCalendarGrid
           monthDays={model.monthDays}
           loggedDays={model.loggedDays}
+          cycleMarkers={model.cycleMarkers}
           onToggleDay={model.togglePeriodDay}
         />
+        <CalendarLegend />
         <p className="supporting-note history-calendar__help">
           Tap any day you had menstrual bleeding.
         </p>
@@ -71,5 +73,29 @@ export function HistoryScreen({
         </article>
       ) : null}
     </section>
+  );
+}
+
+const LEGEND_ITEMS = [
+  { key: "logged", label: "Logged" },
+  { key: "fertile", label: "Fertile" },
+  { key: "ovulation", label: "Ovulation" },
+  { key: "predicted", label: "Expected" },
+] as const;
+
+// The per-day buttons announce their own marker to screen readers, so the
+// visual legend is decorative here.
+function CalendarLegend() {
+  return (
+    <div className="calendar-legend" aria-hidden="true">
+      {LEGEND_ITEMS.map((item) => (
+        <span key={item.key} className="calendar-legend__item">
+          <span
+            className={`calendar-legend__swatch calendar-legend__swatch--${item.key}`}
+          />
+          {item.label}
+        </span>
+      ))}
+    </div>
   );
 }

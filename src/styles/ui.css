@@ -190,7 +190,7 @@
 
   .secondary-action:hover,
   .chip-button:hover,
-  .calendar-grid__day:hover,
+  .calendar-grid__day:not(:disabled):hover,
   .history-calendar__nav:hover,
   .history-calendar__today:hover,
   .history-calendar__month-button:hover {
@@ -362,14 +362,28 @@
     background: transparent;
     color: var(--ink-muted);
     cursor: not-allowed;
-    opacity: 0.6;
+    opacity: 0.7;
   }
 
-  .calendar-grid__day.is-future:hover,
-  .calendar-grid__day:disabled:hover {
-    border-color: var(--surface-border);
+  /* Cycle predictions. Placed after the future/disabled rules so upcoming
+     fertile and period days still read clearly. */
+  .calendar-grid__day.is-fertile {
+    background: color-mix(in srgb, var(--cycle-fertile) 55%, transparent);
+    color: var(--ink);
+    opacity: 1;
+  }
+
+  .calendar-grid__day.is-ovulation {
+    background: color-mix(in srgb, var(--cycle-ovulation) 80%, transparent);
+    color: var(--ink);
+    opacity: 1;
+  }
+
+  .calendar-grid__day.is-predicted-period {
     background: transparent;
-    color: var(--ink-muted);
+    border: 2px dashed var(--bleed);
+    color: var(--bleed-strong);
+    opacity: 1;
   }
 
   .calendar-grid__day.is-logged {

@@ -1,5 +1,7 @@
-import type { IsoDate } from "../../domain/types";
+import type { CycleSummary, IsoDate } from "../../domain/types";
 import { addDays, formatIsoDate, parseIsoDate } from "../../utils/date";
+
+export type DayMarker = "fertile" | "ovulation" | "predicted-period";
 
 const MONTH_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -66,4 +68,26 @@ export function buildMonthDays(
       isToday: value === today,
     };
   });
+}
+
+// Predicted markers for the current cycle: the fertile window, ovulation, and
+// the next expected period. Later dates win, so ovulation overrides the fertile
+// day it sits on.
+export function buildCalendarMarkers(
+  summary: CycleSummary,
+): Map<IsoDate, DayMarker> {
+  const markers = new Map<IsoDate, DayMarker>();
+
+  if (summary.ovulationDate) {
+    for (let offset = -5; offset <= 1; offset++) {
+      markers.set(addDays(summary.ovulationDate, offset), "fertile");
+    }
+    markers.set(summary.ovulationDate, "ovulation");
+  }
+
+  if (summary.nextPeriod.date) {
+    markers.set(summary.nextPeriod.date, "predicted-period");
+  }
+
+  return markers;
 }

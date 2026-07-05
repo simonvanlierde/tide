@@ -192,6 +192,45 @@
     outline-offset: 2px;
   }
 
+  .calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .calendar-legend__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+  }
+
+  .calendar-legend__swatch {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    border-radius: 5px;
+  }
+
+  .calendar-legend__swatch--logged {
+    background: var(--bleed);
+  }
+
+  .calendar-legend__swatch--fertile {
+    background: color-mix(in srgb, var(--cycle-fertile) 55%, transparent);
+  }
+
+  .calendar-legend__swatch--ovulation {
+    background: color-mix(in srgb, var(--cycle-ovulation) 80%, transparent);
+  }
+
+  .calendar-legend__swatch--predicted {
+    background: transparent;
+    border: 2px dashed var(--bleed);
+  }
+
   @media (max-width: 400px) {
     .calendar-grid {
       gap: 6px;

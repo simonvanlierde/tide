@@ -2,19 +2,34 @@ import type { IsoDate } from "../../domain/types";
 import { parseIsoDate } from "../../utils/date";
 import {
   type CalendarDay,
+  type DayMarker,
   formatDayButtonLabel,
   HISTORY_WEEKDAY_LABELS,
 } from "./calendar";
 
+const MARKER_CLASS: Record<DayMarker, string> = {
+  fertile: "is-fertile",
+  ovulation: "is-ovulation",
+  "predicted-period": "is-predicted-period",
+};
+
+const MARKER_LABEL: Record<DayMarker, string> = {
+  fertile: "fertile window",
+  ovulation: "likely ovulation",
+  "predicted-period": "expected period",
+};
+
 interface HistoryCalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
+  cycleMarkers: Map<IsoDate, DayMarker>;
   onToggleDay: (day: IsoDate) => void;
 }
 
 export function HistoryCalendarGrid({
   monthDays,
   loggedDays,
+  cycleMarkers,
   onToggleDay,
 }: HistoryCalendarGridProps) {
   return (
@@ -29,15 +44,23 @@ export function HistoryCalendarGrid({
       <div className="calendar-grid__week">
         {monthDays.map((day) => {
           const value = day.value;
+          const isLogged = loggedDays.has(value);
+          // Logged days take the coral fill; a prediction only shows on days
+          // that aren't already logged.
+          const marker = isLogged ? undefined : cycleMarkers.get(value);
           const className = [
             "calendar-grid__day",
-            loggedDays.has(value) ? "is-logged" : "",
+            isLogged ? "is-logged" : "",
             day.isToday ? "is-today" : "",
             day.isOutsideMonth ? "is-outside-month" : "",
             day.isFuture ? "is-future" : "",
+            marker ? MARKER_CLASS[marker] : "",
           ]
             .filter(Boolean)
             .join(" ");
+          const dateLabel = day.isFuture
+            ? `${formatDayButtonLabel(value)} unavailable`
+            : formatDayButtonLabel(value);
 
           return (
             <button
@@ -46,9 +69,7 @@ export function HistoryCalendarGrid({
               className={className}
               disabled={day.isFuture}
               aria-label={
-                day.isFuture
-                  ? `${formatDayButtonLabel(value)} unavailable`
-                  : formatDayButtonLabel(value)
+                marker ? `${dateLabel}, ${MARKER_LABEL[marker]}` : dateLabel
               }
               onClick={() => onToggleDay(value)}
             >

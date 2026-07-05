@@ -1,17 +1,26 @@
 import { startTransition, useMemo, useRef, useState } from "react";
 import type { IsoDate } from "../../domain/types";
-import { useAppState, useAppStateActions } from "../../state/provider";
+import {
+  useAppState,
+  useAppStateActions,
+  useCycleSummary,
+} from "../../state/provider";
 import {
   addMonths,
   formatMonthInputValue,
   parseMonthInputValue,
 } from "../../utils/date";
-import { buildMonthDays, formatMonthLabel } from "./calendar";
+import {
+  buildCalendarMarkers,
+  buildMonthDays,
+  formatMonthLabel,
+} from "./calendar";
 import { openNativeMonthPicker } from "./monthPicker";
 
 export function useHistoryCalendar(today: IsoDate) {
   const state = useAppState();
   const actions = useAppStateActions();
+  const summary = useCycleSummary(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const monthInputRef = useRef<HTMLInputElement | null>(null);
@@ -24,6 +33,7 @@ export function useHistoryCalendar(today: IsoDate) {
     () => new Set(state.periodDays),
     [state.periodDays],
   );
+  const cycleMarkers = useMemo(() => buildCalendarMarkers(summary), [summary]);
   const monthLabel = useMemo(
     () => formatMonthLabel(visibleMonth),
     [visibleMonth],
@@ -52,6 +62,7 @@ export function useHistoryCalendar(today: IsoDate) {
     monthLabel,
     monthDays,
     loggedDays,
+    cycleMarkers,
     openPicker,
     goToPreviousMonth() {
       setMonth(addMonths(visibleMonth, -1));
