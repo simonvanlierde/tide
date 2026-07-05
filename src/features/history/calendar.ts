@@ -72,13 +72,14 @@ export function buildMonthDays(
 
 // Predicted markers for the current cycle: the fertile window, ovulation, and
 // the next expected period. Later dates win, so ovulation overrides the fertile
-// day it sits on.
+// day it sits on. Fertility markers are omitted when the user has hidden them.
 export function buildCalendarMarkers(
   summary: CycleSummary,
+  showFertility: boolean,
 ): Map<IsoDate, DayMarker> {
   const markers = new Map<IsoDate, DayMarker>();
 
-  if (summary.ovulationDate) {
+  if (showFertility && summary.ovulationDate) {
     for (let offset = -5; offset <= 1; offset++) {
       markers.set(addDays(summary.ovulationDate, offset), "fertile");
     }

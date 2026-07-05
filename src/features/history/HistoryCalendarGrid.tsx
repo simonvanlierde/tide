@@ -22,6 +22,7 @@ const MARKER_LABEL: Record<DayMarker, string> = {
 interface HistoryCalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
+  periodDayNumbers: Map<IsoDate, number>;
   cycleMarkers: Map<IsoDate, DayMarker>;
   onToggleDay: (day: IsoDate) => void;
 }
@@ -29,6 +30,7 @@ interface HistoryCalendarGridProps {
 export function HistoryCalendarGrid({
   monthDays,
   loggedDays,
+  periodDayNumbers,
   cycleMarkers,
   onToggleDay,
 }: HistoryCalendarGridProps) {
@@ -45,6 +47,7 @@ export function HistoryCalendarGrid({
         {monthDays.map((day) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
+          const periodDay = isLogged ? periodDayNumbers.get(value) : undefined;
           // Logged days take the coral fill; a prediction only shows on days
           // that aren't already logged.
           const marker = isLogged ? undefined : cycleMarkers.get(value);
@@ -74,6 +77,11 @@ export function HistoryCalendarGrid({
               onClick={() => onToggleDay(value)}
             >
               {parseIsoDate(value).getUTCDate()}
+              {periodDay ? (
+                <span className="calendar-grid__period-day" aria-hidden="true">
+                  {periodDay}
+                </span>
+              ) : null}
             </button>
           );
         })}

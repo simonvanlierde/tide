@@ -18,6 +18,33 @@ describe("HistoryScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("shows fertility markers by default but hides them when turned off", () => {
+    const shown = renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+    expect(
+      screen.getByRole("button", { name: /likely ovulation/i }),
+    ).toBeInTheDocument();
+    shown.unmount();
+
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02"],
+        settings: { showFertility: false },
+      }),
+    });
+    expect(
+      screen.queryByRole("button", { name: /likely ovulation/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /fertile window/i }),
+    ).not.toBeInTheDocument();
+    // The expected-period marker is not fertility data, so it stays.
+    expect(
+      screen.getByRole("button", { name: /expected period/i }),
+    ).toBeInTheDocument();
+  });
+
   it("uses the calendar as the main editor for logged days", () => {
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({

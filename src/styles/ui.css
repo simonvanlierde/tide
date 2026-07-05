@@ -199,10 +199,6 @@
     background: var(--tide-tint);
   }
 
-  .secondary-action--chip {
-    width: auto;
-  }
-
   .text-action {
     border: 0;
     padding: 4px 0;
@@ -229,8 +225,7 @@
     outline-offset: 2px;
   }
 
-  .chip-row,
-  .snooze-actions {
+  .chip-row {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -279,23 +274,13 @@
     line-height: 1.2;
   }
 
-  .settings-value {
-    margin: 0;
-    color: var(--ink);
-    font-size: 1.08rem;
-    line-height: 1.3;
-    font-weight: 500;
-  }
-
   .utility-card,
   .settings-group,
-  .settings-row,
   .calendar-grid {
     min-width: 0;
   }
 
   .settings-group,
-  .settings-row,
   .calendar-grid {
     display: grid;
     gap: 12px;
@@ -303,10 +288,6 @@
 
   .settings-group--compact {
     gap: 10px;
-  }
-
-  .settings-row--accent {
-    padding-top: 4px;
   }
 
   /* Utility cards (settings + history) */
@@ -339,11 +320,30 @@
   }
 
   .calendar-grid__day {
+    position: relative;
     min-height: 46px;
     border-radius: 14px;
     padding: 8px 4px;
     color: var(--ink);
     background: var(--surface-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Subtle "day N of this period" bubble in the corner of a logged bleeding
+     day. Light disc + inherited dark ink-on-fill text, matching the fills. */
+  .calendar-grid__period-day {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    display: inline-grid;
+    place-items: center;
+    min-width: 14px;
+    height: 14px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.6);
+    font-size: 0.58rem;
+    line-height: 1;
     font-variant-numeric: tabular-nums;
   }
 

@@ -1,4 +1,5 @@
 import { startTransition, useMemo, useRef, useState } from "react";
+import { getPeriodDayNumbers } from "../../domain/cycle";
 import type { IsoDate } from "../../domain/types";
 import {
   useAppState,
@@ -33,7 +34,15 @@ export function useHistoryCalendar(today: IsoDate) {
     () => new Set(state.periodDays),
     [state.periodDays],
   );
-  const cycleMarkers = useMemo(() => buildCalendarMarkers(summary), [summary]);
+  const periodDayNumbers = useMemo(
+    () => getPeriodDayNumbers(state.periodDays),
+    [state.periodDays],
+  );
+  const showFertility = state.settings.showFertility;
+  const cycleMarkers = useMemo(
+    () => buildCalendarMarkers(summary, showFertility),
+    [summary, showFertility],
+  );
   const monthLabel = useMemo(
     () => formatMonthLabel(visibleMonth),
     [visibleMonth],
@@ -62,7 +71,9 @@ export function useHistoryCalendar(today: IsoDate) {
     monthLabel,
     monthDays,
     loggedDays,
+    periodDayNumbers,
     cycleMarkers,
+    showFertility,
     openPicker,
     goToPreviousMonth() {
       setMonth(addMonths(visibleMonth, -1));

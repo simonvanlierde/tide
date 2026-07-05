@@ -50,7 +50,7 @@ describe("history calendar helpers", () => {
       estimateMode: "learned",
     };
 
-    const markers = buildCalendarMarkers(summary);
+    const markers = buildCalendarMarkers(summary, true);
 
     // Fertile window spans ovulation-5 through ovulation+1, with ovulation
     // itself overriding the fertile marker on its own day.
@@ -59,6 +59,23 @@ describe("history calendar helpers", () => {
     expect(markers.get("2026-04-15")).toBe("fertile");
     expect(markers.get("2026-04-28")).toBe("predicted-period");
     expect(markers.has("2026-04-08")).toBe(false);
+  });
+
+  it("drops fertility markers but keeps the expected period when hidden", () => {
+    const summary: CycleSummary = {
+      cycleDay: 10,
+      phaseLabel: "follicular",
+      fertile: false,
+      ovulationDate: "2026-04-14",
+      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
+      estimateMode: "learned",
+    };
+
+    const markers = buildCalendarMarkers(summary, false);
+
+    expect(markers.has("2026-04-14")).toBe(false);
+    expect(markers.has("2026-04-09")).toBe(false);
+    expect(markers.get("2026-04-28")).toBe("predicted-period");
   });
 
   it("produces no markers before a cycle can be estimated", () => {
@@ -71,6 +88,6 @@ describe("history calendar helpers", () => {
       estimateMode: "insufficient",
     };
 
-    expect(buildCalendarMarkers(summary).size).toBe(0);
+    expect(buildCalendarMarkers(summary, true).size).toBe(0);
   });
 });
