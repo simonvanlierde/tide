@@ -7,17 +7,23 @@
     --surface: #ffffff;
     --surface-soft: #f1f7f7;
     --surface-border: rgba(20, 48, 58, 0.09);
-    --tab-bg: rgba(245, 249, 249, 0.82);
+    /* Near-opaque so the coral log button behind it can't bleed through and
+       hurt the tab-label contrast. */
+    --tab-bg: rgba(245, 249, 249, 0.96);
 
     --ink: #14303a;
     --ink-soft: #486069;
-    --ink-muted: #7d949b;
+    /* Muted labels are darkened to clear WCAG AA (4.5:1) at small sizes. */
+    --ink-muted: #566d72;
 
     /* Tide teal — navigation, links, active state. The calm chrome. */
     --tide: #2f8f8a;
-    --tide-strong: #22736f;
+    --tide-strong: #1f6a65;
     --tide-soft: #d9ecea;
     --tide-tint: rgba(47, 143, 138, 0.1);
+    /* Deep teal for solid action surfaces (selected chips): dark enough for
+       white text at AA in both themes. */
+    --accent-solid: #1f6a65;
 
     /* Coral — the bleeding signal only: the log action and period days. */
     --bleed: #e26d5a;
@@ -28,6 +34,10 @@
     --cycle-ovulation: #e8a24b;
     --cycle-fertile: #f4d6a8;
     --cycle-idle: rgba(20, 48, 58, 0.08);
+    /* Text on the warm cycle fills — they stay light in both themes, so this
+       stays near-black in both themes (not overridden in the dark block) to
+       clear AA on coral, sand, and amber. */
+    --ink-on-fill: #0c191e;
 
     --shadow-soft: 0 18px 44px rgba(20, 48, 58, 0.1);
     --shadow-card: 0 10px 28px rgba(20, 48, 58, 0.06);
@@ -55,11 +65,11 @@
     --surface: #15272c;
     --surface-soft: #1b3238;
     --surface-border: rgba(255, 255, 255, 0.1);
-    --tab-bg: rgba(11, 22, 25, 0.82);
+    --tab-bg: rgba(11, 22, 25, 0.96);
 
     --ink: #e7eff0;
     --ink-soft: #a6bcc0;
-    --ink-muted: #7a9297;
+    --ink-muted: #9ab0b5;
 
     --tide: #4fb3ab;
     --tide-strong: #74ccc4;
@@ -69,8 +79,10 @@
     --bleed: #e8785f;
     --bleed-strong: #f0917a;
 
-    --cycle-ovulation: #e2a24f;
-    --cycle-fertile: #c9a262;
+    /* Fertile a pale warm sand, ovulation a saturated amber — clearly apart
+       from each other and from coral on the dark ground. */
+    --cycle-ovulation: #f2a63c;
+    --cycle-fertile: #ecd3a4;
     --cycle-idle: rgba(255, 255, 255, 0.1);
 
     --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);

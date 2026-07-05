@@ -219,11 +219,11 @@
   }
 
   .calendar-legend__swatch--fertile {
-    background: color-mix(in srgb, var(--cycle-fertile) 55%, transparent);
+    background: var(--cycle-fertile);
   }
 
   .calendar-legend__swatch--ovulation {
-    background: color-mix(in srgb, var(--cycle-ovulation) 80%, transparent);
+    background: var(--cycle-ovulation);
   }
 
   .calendar-legend__swatch--predicted {
