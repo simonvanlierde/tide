@@ -1,6 +1,7 @@
 import type { AppState } from "../domain/types";
 import { defaultAppState, normalizeAppState, STORAGE_KEY } from "./schema";
 
+// biome-ignore lint/performance/noBarrelFile: intentional re-export of the public storage key
 export { STORAGE_KEY } from "./schema";
 
 export const BACKUP_KEY = `${STORAGE_KEY}.backup`;
