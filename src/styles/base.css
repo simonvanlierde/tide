@@ -7,13 +7,8 @@
     margin: 0;
     min-height: 100vh;
     color: var(--ink);
-    background:
-      radial-gradient(
-        circle at top left,
-        rgba(255, 255, 255, 0.9),
-        transparent 35%
-      ),
-      linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+    /* Background is painted on :root (themed in tokens.css); let it show through. */
+    background: transparent;
   }
 
   button,
