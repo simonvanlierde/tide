@@ -3,6 +3,9 @@ import type { CycleSummary, IsoDate } from "./types";
 
 const DEFAULT_CYCLE_LENGTH = 28;
 const DEFAULT_LUTEAL_LENGTH = 14;
+// Gaps shorter than this are missed logging days within one period, not a new
+// cycle: real inter-cycle gaps are ~20+ days (cycle length minus period length).
+const NEW_CYCLE_MIN_GAP_DAYS = 10;
 
 interface BuildCycleSummaryInput {
   today: IsoDate;
@@ -14,26 +17,28 @@ function getCycleStarts(periodDays: IsoDate[]) {
   const sortedDays = [...periodDays].sort();
 
   return sortedDays.filter((day, index) => {
-    if (index === 0) {
-      return true;
-    }
-
-    return differenceInDays(day, sortedDays[index - 1]) > 1;
+    const previous = sortedDays[index - 1];
+    return (
+      previous === undefined ||
+      differenceInDays(day, previous) >= NEW_CYCLE_MIN_GAP_DAYS
+    );
   });
 }
 
 export function getCompletedCycleLengths(periodDays: IsoDate[]) {
   const cycleStarts = getCycleStarts(periodDays);
+  const lengths: number[] = [];
 
-  if (cycleStarts.length < 2) {
-    return [];
+  for (let index = 1; index < cycleStarts.length; index++) {
+    const start = cycleStarts[index];
+    const previousStart = cycleStarts[index - 1];
+
+    if (start && previousStart) {
+      lengths.push(differenceInDays(start, previousStart));
+    }
   }
 
-  return cycleStarts
-    .slice(1)
-    .map((cycleStart, index) =>
-      differenceInDays(cycleStart, cycleStarts[index]),
-    );
+  return lengths;
 }
 
 function getPhaseLabel(
