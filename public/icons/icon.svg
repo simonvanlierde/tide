@@ -10,13 +10,7 @@
   <!-- Sea-mist ground (fills the whole canvas for maskable icons) -->
   <rect width="512" height="512" fill="url(#bg)"/>
 
-  <!-- Cycle ring -->
+  <!-- Cycle ring around the body's own signal: concentric circles -->
   <circle cx="256" cy="256" r="155" fill="none" stroke="#2f8f8a" stroke-width="38"/>
-
-  <!-- Coral droplet: the cycle carrying the body's own signal -->
-  <path d="M256 188
-           C306 250 312 282 312 300
-           A56 56 0 1 1 200 300
-           C200 282 206 250 256 188 Z"
-        fill="#e26d5a"/>
+  <circle cx="256" cy="256" r="74" fill="#e26d5a"/>
 </svg>
