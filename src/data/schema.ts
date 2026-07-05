@@ -1,24 +1,12 @@
-import type {
-  AppSettings,
-  AppState,
-  HomeDisplayMode,
-  IsoDate,
-} from "../domain/types";
+import type { AppSettings, AppState, IsoDate } from "../domain/types";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
-
-export const HOME_DISPLAY_MODES: HomeDisplayMode[] = [
-  "summary",
-  "linear",
-  "circular",
-];
 
 export const defaultAppState: AppState = {
   periodDays: [],
   settings: {
     reminderWindowDays: 4,
     snoozedUntil: null,
-    homeDisplayMode: "summary",
   },
 };
 
@@ -54,25 +42,21 @@ export function normalizeSettings(settings: unknown): AppSettings {
     snoozedUntil: isIsoDate(candidate.snoozedUntil)
       ? candidate.snoozedUntil
       : defaultAppState.settings.snoozedUntil,
-    homeDisplayMode: HOME_DISPLAY_MODES.includes(
-      candidate.homeDisplayMode as HomeDisplayMode,
-    )
-      ? (candidate.homeDisplayMode as HomeDisplayMode)
-      : defaultAppState.settings.homeDisplayMode,
   };
 }
 
 export function normalizeAppState(state: unknown): AppState {
-  if (
-    !state ||
-    typeof state !== "object" ||
-    "version" in state ||
-    "state" in state
-  ) {
+  if (!state || typeof state !== "object") {
     return defaultAppState;
   }
 
-  const candidate = state as Partial<AppState>;
+  // Pre-release builds persisted a { version, state } envelope; unwrap it so
+  // upgrading users keep their logged history.
+  const candidate = (
+    "state" in state && state.state && typeof state.state === "object"
+      ? state.state
+      : state
+  ) as Partial<AppState>;
 
   return {
     periodDays: normalizePeriodDays(candidate.periodDays),

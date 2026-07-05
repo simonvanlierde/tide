@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
+  BACKUP_KEY,
   loadAppState,
   STORAGE_KEY,
   saveAppState,
@@ -13,7 +14,6 @@ describe("local storage", () => {
       settings: {
         reminderWindowDays: 4,
         snoozedUntil: null,
-        homeDisplayMode: "summary",
       },
     });
 
@@ -46,7 +46,6 @@ describe("local storage", () => {
         settings: {
           reminderWindowDays: 4,
           snoozedUntil: null,
-          homeDisplayMode: "summary",
         },
       }),
     );
@@ -60,7 +59,6 @@ describe("local storage", () => {
         settings: {
           reminderWindowDays: "nope",
           snoozedUntil: "2026-04-22",
-          homeDisplayMode: "gallery",
         },
       }),
     );
@@ -71,13 +69,12 @@ describe("local storage", () => {
         settings: {
           reminderWindowDays: 4,
           snoozedUntil: "2026-04-22",
-          homeDisplayMode: "summary",
         },
       }),
     );
   });
 
-  it("resets to defaults when it encounters the removed versioned envelope", () => {
+  it("recovers logged data from the legacy versioned envelope", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
@@ -88,6 +85,31 @@ describe("local storage", () => {
       }),
     );
 
+    expect(loadAppState()).toEqual(
+      createAppState({ periodDays: ["2026-04-02"] }),
+    );
+  });
+
+  it("backs up an unreadable blob before falling back to defaults", () => {
+    window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
+
     expect(loadAppState()).toEqual(createAppState());
+    expect(window.localStorage.getItem(BACKUP_KEY)).toBe(
+      "{ definitely not json",
+    );
+  });
+
+  it("keeps running when storage writes fail", () => {
+    const setItem = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new DOMException("quota", "QuotaExceededError");
+      });
+
+    try {
+      expect(() => saveAppState(createAppState())).not.toThrow();
+    } finally {
+      setItem.mockRestore();
+    }
   });
 });
