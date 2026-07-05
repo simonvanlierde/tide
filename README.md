@@ -30,15 +30,16 @@ Once installed it works offline, and all data stays on your device.
 - Fertile-window estimate (approximate)
 - Reminder before the predicted period, with snooze
 - Month-by-month history calendar for reviewing and logging days
-- Three home views: summary, linear (timeline), and circular (dial)
+- Home screen with a tidal cycle dial showing your current day and phase at a glance
 - Installable, offline-capable PWA
 - All data stays on the device in `localStorage` — no accounts, no network, no analytics
 
 ## Roadmap
 
 - Multi-language support
+- light vs dark theme
 - Calendar overlays: per-day period numbers and predicted ovulation / next-period markers
-- Public deployment
+- consider: Just show calendar view on home screen and remove all other  views
 
 ## Development
 
