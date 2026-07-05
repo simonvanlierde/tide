@@ -3,16 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: light)"
-      content="#f5f9f9"
-    />
-    <meta
-      name="theme-color"
-      media="(prefers-color-scheme: dark)"
-      content="#0e1a1e"
-    />
+    <!-- Kept in sync with the resolved theme (see the inline script below and
+         the provider), so it tracks the in-app toggle, not just the OS. -->
+    <meta name="theme-color" content="#f5f9f9" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Tide" />
@@ -33,6 +26,9 @@
             (theme !== "light" &&
               window.matchMedia("(prefers-color-scheme: dark)").matches);
           document.documentElement.dataset.theme = dark ? "dark" : "light";
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", dark ? "#0e1a1e" : "#f5f9f9");
         } catch {
           /* No saved theme: styles fall back to the light default. */
         }

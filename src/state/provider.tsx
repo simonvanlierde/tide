@@ -64,10 +64,12 @@ function useThemePreference(theme: ThemePreference) {
       const prefersDark =
         typeof window.matchMedia === "function" &&
         window.matchMedia(DARK_MEDIA_QUERY).matches;
-      root.dataset.theme =
-        theme === "dark" || (theme === "system" && prefersDark)
-          ? "dark"
-          : "light";
+      const dark = theme === "dark" || (theme === "system" && prefersDark);
+      root.dataset.theme = dark ? "dark" : "light";
+      // Keep the browser chrome (address bar / PWA status bar) in step.
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", dark ? "#0e1a1e" : "#f5f9f9");
     }
 
     apply();
