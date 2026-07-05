@@ -12,7 +12,7 @@ export interface AppScreen {
   render: () => ReactElement;
 }
 
-export const appScreens: readonly AppScreen[] = [
+export const appScreens = [
   {
     path: "/",
     title: "Today",
@@ -34,7 +34,7 @@ export const appScreens: readonly AppScreen[] = [
     icon: Settings2,
     render: () => <SettingsScreen />,
   },
-] as const;
+] as const satisfies readonly AppScreen[];
 
 export function getAppScreen(pathname: string) {
   return appScreens.find((screen) => screen.path === pathname) ?? appScreens[0];

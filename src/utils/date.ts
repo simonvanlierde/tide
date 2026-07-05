@@ -3,7 +3,12 @@ import type { IsoDate } from "../domain/types";
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 function toDateParts(value: IsoDate) {
-  const [year, month, day] = value.split("-").map(Number);
+  // IsoDate is validated as YYYY-MM-DD, so split always yields three numbers.
+  const [year, month, day] = value.split("-").map(Number) as [
+    number,
+    number,
+    number,
+  ];
   return { year, month, day };
 }
 
