@@ -1,6 +1,6 @@
 import { startTransition, useMemo, useRef, useState } from "react";
 import { getPeriodDayNumbers } from "../../domain/cycle";
-import type { IsoDate } from "../../domain/types";
+import type { FlowIntensity, IsoDate } from "../../domain/types";
 import {
   useAppState,
   useAppStateActions,
@@ -24,6 +24,7 @@ export function useHistoryCalendar(today: IsoDate) {
   const summary = useCycleSummary(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
   const monthInputRef = useRef<HTMLInputElement | null>(null);
 
   const monthDays = useMemo(
@@ -33,6 +34,13 @@ export function useHistoryCalendar(today: IsoDate) {
   const loggedDays = useMemo(
     () => new Set(state.periodDays),
     [state.periodDays],
+  );
+  const dayIntensity = useMemo(
+    () =>
+      new Map<IsoDate, FlowIntensity>(
+        Object.entries(state.intensityByDay) as [IsoDate, FlowIntensity][],
+      ),
+    [state.intensityByDay],
   );
   const periodDayNumbers = useMemo(
     () => getPeriodDayNumbers(state.periodDays),
@@ -71,9 +79,15 @@ export function useHistoryCalendar(today: IsoDate) {
     monthLabel,
     monthDays,
     loggedDays,
+    dayIntensity,
     periodDayNumbers,
     cycleMarkers,
     showFertility,
+    selectedDay,
+    selectedIntensity: selectedDay
+      ? state.intensityByDay[selectedDay]
+      : undefined,
+    isSelectedLogged: selectedDay ? loggedDays.has(selectedDay) : false,
     openPicker,
     goToPreviousMonth() {
       setMonth(addMonths(visibleMonth, -1));
@@ -84,8 +98,19 @@ export function useHistoryCalendar(today: IsoDate) {
     goToToday() {
       setMonth(today);
     },
-    togglePeriodDay(day: IsoDate) {
+    // Tapping a day opens its flow picker; tapping the open day closes it.
+    selectDay(day: IsoDate) {
+      setSelectedDay((current) => (current === day ? null : day));
+    },
+    closePicker() {
+      setSelectedDay(null);
+    },
+    setDayIntensity(day: IsoDate, intensity: FlowIntensity) {
+      actions.setDayIntensity(day, intensity, today);
+    },
+    removeDay(day: IsoDate) {
       actions.togglePeriodDay(day, today);
+      setSelectedDay(null);
     },
     monthPicker: {
       isPickerOpen,

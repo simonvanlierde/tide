@@ -5,9 +5,6 @@ export const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
 ];
-/** How long any transient confirmation notice stays on screen, app-wide. */
-export const NOTICE_TIMEOUT_MS = 5000;
-
 export const INFORMATION_COPY = {
   logging: "Log a day when you had menstrual bleeding on that date.",
   fertility: "Estimates are informational only and not birth control.",

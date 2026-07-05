@@ -1,4 +1,4 @@
-import type { IsoDate } from "../../domain/types";
+import type { FlowIntensity, IsoDate } from "../../domain/types";
 import { parseIsoDate } from "../../utils/date";
 import {
   type CalendarDay,
@@ -22,17 +22,21 @@ const MARKER_LABEL: Record<DayMarker, string> = {
 interface HistoryCalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
+  dayIntensity: Map<IsoDate, FlowIntensity>;
   periodDayNumbers: Map<IsoDate, number>;
   cycleMarkers: Map<IsoDate, DayMarker>;
-  onToggleDay: (day: IsoDate) => void;
+  selectedDay: IsoDate | null;
+  onSelectDay: (day: IsoDate) => void;
 }
 
 export function HistoryCalendarGrid({
   monthDays,
   loggedDays,
+  dayIntensity,
   periodDayNumbers,
   cycleMarkers,
-  onToggleDay,
+  selectedDay,
+  onSelectDay,
 }: HistoryCalendarGridProps) {
   return (
     <section className="calendar-grid" aria-label="History calendar">
@@ -48,13 +52,19 @@ export function HistoryCalendarGrid({
           const value = day.value;
           const isLogged = loggedDays.has(value);
           const periodDay = isLogged ? periodDayNumbers.get(value) : undefined;
-          // Logged days take the coral fill; a prediction only shows on days
-          // that aren't already logged.
+          // Logged days take the coral fill, deepened by flow level; a
+          // prediction only shows on days that aren't already logged.
+          const flow = isLogged
+            ? (dayIntensity.get(value) ?? "medium")
+            : undefined;
           const marker = isLogged ? undefined : cycleMarkers.get(value);
+          const isSelected = value === selectedDay;
           const className = [
             "calendar-grid__day",
             isLogged ? "is-logged" : "",
+            flow ? `is-flow-${flow}` : "",
             day.isToday ? "is-today" : "",
+            isSelected ? "is-selected" : "",
             day.isOutsideMonth ? "is-outside-month" : "",
             day.isFuture ? "is-future" : "",
             marker ? MARKER_CLASS[marker] : "",
@@ -74,7 +84,8 @@ export function HistoryCalendarGrid({
               aria-label={
                 marker ? `${dateLabel}, ${MARKER_LABEL[marker]}` : dateLabel
               }
-              onClick={() => onToggleDay(value)}
+              aria-pressed={isSelected}
+              onClick={() => onSelectDay(value)}
             >
               {parseIsoDate(value).getUTCDate()}
               {periodDay ? (

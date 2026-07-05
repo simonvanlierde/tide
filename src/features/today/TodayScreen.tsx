@@ -57,6 +57,7 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
         summary={summary}
         phaseLabel={getPhaseLine(summary.phaseLabel)}
         periodDays={state.periodDays}
+        intensityByDay={state.intensityByDay}
         today={today}
         showFertility={state.settings.showFertility}
       />
@@ -121,8 +122,12 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       ) : (
         <LogAction
           isLogged={isTodayLogged}
+          intensity={state.intensityByDay[today]}
           variant={logVariant}
           onToggle={() => actions.togglePeriodDay(today, today)}
+          onSelectIntensity={(intensity) =>
+            actions.setDayIntensity(today, intensity, today)
+          }
         />
       )}
     </section>

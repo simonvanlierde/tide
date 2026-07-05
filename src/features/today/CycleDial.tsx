@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import type { CycleSummary, IsoDate } from "../../domain/types";
+import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
 import { formatMonthDay, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
 import {
@@ -12,6 +12,7 @@ interface CycleDialProps {
   summary: CycleSummary;
   phaseLabel: string;
   periodDays: IsoDate[];
+  intensityByDay: Record<IsoDate, FlowIntensity>;
   today: IsoDate;
   showFertility: boolean;
 }
@@ -21,8 +22,8 @@ function getDialStyle(segments: CycleSegment[]) {
   const stops = segments.map((segment, index) => {
     const start = index * segmentSize;
     const end = start + segmentSize;
-    const color = segment.isPeriod
-      ? "var(--cycle-period)"
+    const color = segment.flow
+      ? `var(--flow-${segment.flow})`
       : segment.isOvulation
         ? "var(--cycle-ovulation)"
         : segment.isFertile
@@ -67,6 +68,7 @@ export function CycleDial({
   summary,
   phaseLabel,
   periodDays,
+  intensityByDay,
   today,
   showFertility,
 }: CycleDialProps) {
@@ -82,6 +84,7 @@ export function CycleDial({
     periodDays,
     today,
     showFertility,
+    intensityByDay,
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
   const rotation =

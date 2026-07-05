@@ -32,6 +32,7 @@ describe("buildCycleSegments", () => {
       date: "2026-04-02",
       isCurrent: false,
       isPeriod: true,
+      flow: "medium",
       isFertile: false,
       isOvulation: false,
     });

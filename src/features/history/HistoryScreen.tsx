@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
+import { DayFlowPicker } from "./DayFlowPicker";
 import { HistoryCalendarGrid } from "./HistoryCalendarGrid";
 import { HistoryMonthPicker } from "./HistoryMonthPicker";
 import { useHistoryCalendar } from "./useHistoryCalendar";
@@ -51,14 +52,29 @@ export function HistoryScreen({
         <HistoryCalendarGrid
           monthDays={model.monthDays}
           loggedDays={model.loggedDays}
+          dayIntensity={model.dayIntensity}
           periodDayNumbers={model.periodDayNumbers}
           cycleMarkers={model.cycleMarkers}
-          onToggleDay={model.togglePeriodDay}
+          selectedDay={model.selectedDay}
+          onSelectDay={model.selectDay}
         />
+        {model.selectedDay ? (
+          <DayFlowPicker
+            day={model.selectedDay}
+            intensity={model.selectedIntensity}
+            isLogged={model.isSelectedLogged}
+            onSelect={(intensity) =>
+              model.setDayIntensity(model.selectedDay as IsoDate, intensity)
+            }
+            onRemove={() => model.removeDay(model.selectedDay as IsoDate)}
+            onClose={model.closePicker}
+          />
+        ) : (
+          <p className="supporting-note history-calendar__help">
+            Tap any day to log bleeding and set its flow.
+          </p>
+        )}
         <CalendarLegend showFertility={model.showFertility} />
-        <p className="supporting-note history-calendar__help">
-          Tap any day you had menstrual bleeding.
-        </p>
         <button
           type="button"
           className="history-calendar__today"

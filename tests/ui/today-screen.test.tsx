@@ -199,7 +199,13 @@ describe("TodayScreen", () => {
     expect(
       screen.getByRole("button", { name: /remove bleeding log/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/bleeding logged for today/i)).toBeInTheDocument();
+
+    // A fresh one-tap log defaults to Medium, and the tide gauge appears to
+    // refine it — picking Spotting selects that level.
+    expect(screen.getByRole("radio", { name: /medium/i })).toBeChecked();
+    await user.click(screen.getByRole("radio", { name: /spotting/i }));
+    expect(screen.getByRole("radio", { name: /spotting/i })).toBeChecked();
+    expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
   });
 
   it("shows a learning-state note when fallback predictions are in use", () => {

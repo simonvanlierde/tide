@@ -1,45 +1,26 @@
-import { BadgeCheck, Droplets } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { Droplets } from "lucide-react";
+import type { FlowIntensity } from "../../domain/types";
 import { AppIcon } from "../../ui/icons";
-import { NOTICE_TIMEOUT_MS } from "../settings/config";
+import { FlowGauge } from "./FlowGauge";
 
 interface LogActionProps {
   isLogged: boolean;
+  /** Flow level of the logged day, or undefined for a plain (default) log. */
+  intensity?: FlowIntensity;
   onToggle: () => void;
+  /** Omit when the gauge can't appear (e.g. the reminder's always-unlogged prompt). */
+  onSelectIntensity?: (intensity: FlowIntensity) => void;
   /** "quiet" demotes the button to a calm secondary style when no bleed is expected. */
   variant?: "primary" | "quiet";
 }
 
 export function LogAction({
   isLogged,
+  intensity,
   onToggle,
+  onSelectIntensity,
   variant = "primary",
 }: LogActionProps) {
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const wasLogged = useRef(isLogged);
-
-  // Confirmation is a transient toast: appear only on the false→true transition
-  // (a fresh log), not when remounting with a day already logged. Then it
-  // auto-dismisses after the shared notice timeout.
-  useEffect(() => {
-    const justLogged = isLogged && !wasLogged.current;
-    wasLogged.current = isLogged;
-
-    if (!justLogged) {
-      if (!isLogged) {
-        setShowConfirmation(false);
-      }
-      return;
-    }
-
-    setShowConfirmation(true);
-    const timeoutId = window.setTimeout(
-      () => setShowConfirmation(false),
-      NOTICE_TIMEOUT_MS,
-    );
-    return () => window.clearTimeout(timeoutId);
-  }, [isLogged]);
-
   return (
     <div className="log-action">
       <button
@@ -52,11 +33,8 @@ export function LogAction({
           <span>{isLogged ? "Remove bleeding log" : "Log bleeding today"}</span>
         </span>
       </button>
-      {showConfirmation ? (
-        <p className="status-chip note-inline" role="status" aria-live="polite">
-          <AppIcon icon={BadgeCheck} className="note-icon" />
-          <span>Bleeding logged for today</span>
-        </p>
+      {isLogged && onSelectIntensity ? (
+        <FlowGauge selected={intensity} onSelect={onSelectIntensity} />
       ) : null}
     </div>
   );

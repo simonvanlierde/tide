@@ -39,7 +39,7 @@ export function formatMonthLabel(value: IsoDate) {
 }
 
 export function formatDayButtonLabel(value: IsoDate) {
-  return `Toggle ${DAY_LABEL_FORMAT.format(parseIsoDate(value))}`;
+  return `Edit ${DAY_LABEL_FORMAT.format(parseIsoDate(value))}`;
 }
 
 export function buildMonthDays(

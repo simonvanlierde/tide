@@ -55,7 +55,26 @@ describe("HistoryScreen", () => {
     expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
-  it("allows toggling a day from the calendar", async () => {
+  it("logs a day and sets its flow from the calendar picker", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02", "2026-04-12", "2026-04-20"],
+      }),
+    });
+
+    // Tapping an empty day opens its picker; choosing a level logs it.
+    await user.click(
+      screen.getByRole("button", { name: /edit april 5, 2026/i }),
+    );
+    await user.click(screen.getByRole("radio", { name: /heavy/i }));
+
+    expect(
+      screen.getByRole("button", { name: /edit april 5, 2026/i }),
+    ).toHaveClass("is-logged", "is-flow-heavy");
+  });
+
+  it("clears a logged day with the picker's remove action", async () => {
     const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
@@ -64,11 +83,13 @@ describe("HistoryScreen", () => {
     });
 
     await user.click(
-      screen.getByRole("button", { name: /toggle april 5, 2026/i }),
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
     );
+    await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+
     expect(
-      screen.getByRole("button", { name: /toggle april 5, 2026/i }),
-    ).toHaveClass("is-logged");
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    ).not.toHaveClass("is-logged");
   });
 
   it("changes the visible month from the month-year picker", async () => {
@@ -138,7 +159,7 @@ describe("HistoryScreen", () => {
     });
 
     expect(
-      screen.getByRole("button", { name: /toggle april 21, 2026/i }),
+      screen.getByRole("button", { name: /edit april 21, 2026/i }),
     ).toHaveClass("is-logged", "is-today");
   });
 
@@ -148,7 +169,7 @@ describe("HistoryScreen", () => {
     });
 
     expect(
-      screen.getByRole("button", { name: /toggle march 30, 2026/i }),
+      screen.getByRole("button", { name: /edit march 30, 2026/i }),
     ).toHaveClass("is-outside-month");
   });
 
@@ -167,7 +188,9 @@ describe("HistoryScreen", () => {
     renderWithAppState(<HistoryScreen today="2026-04-21" />);
 
     const grid = screen.getByLabelText(/history calendar/i);
-    const helper = screen.getByText(/tap any day you had menstrual bleeding/i);
+    const helper = screen.getByText(
+      /tap any day to log bleeding and set its flow/i,
+    );
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
     });

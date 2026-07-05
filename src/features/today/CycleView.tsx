@@ -1,4 +1,5 @@
-import type { CycleSummary, IsoDate } from "../../domain/types";
+import { DEFAULT_FLOW } from "../../domain/flow";
+import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
 import { addDays, differenceInDays } from "../../utils/date";
 
 export interface CycleSegment {
@@ -6,6 +7,8 @@ export interface CycleSegment {
   date: IsoDate | null;
   isCurrent: boolean;
   isPeriod: boolean;
+  /** Flow level for a period day, for the coral depth ramp; null otherwise. */
+  flow: FlowIntensity | null;
   isFertile: boolean;
   isOvulation: boolean;
 }
@@ -15,6 +18,7 @@ export function buildCycleSegments(
   periodDays: IsoDate[],
   today: IsoDate,
   showFertility: boolean,
+  intensityByDay: Record<IsoDate, FlowIntensity> = {},
 ) {
   const totalDays =
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
@@ -45,12 +49,17 @@ export function buildCycleSegments(
     const dayNumber = index + 1;
     const dateValue =
       cycleStartDate === null ? null : addDays(cycleStartDate, index);
+    const isPeriod = dateValue !== null && loggedDays.has(dateValue);
 
     return {
       dayNumber,
       date: dateValue,
       isCurrent: dayNumber === summary.cycleDay,
-      isPeriod: dateValue !== null && loggedDays.has(dateValue),
+      isPeriod,
+      flow:
+        isPeriod && dateValue !== null
+          ? (intensityByDay[dateValue] ?? DEFAULT_FLOW)
+          : null,
       isFertile:
         showFertility &&
         fertileStart !== null &&

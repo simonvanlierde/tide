@@ -29,6 +29,13 @@
     --bleed: #e26d5a;
     --bleed-strong: #cf5741;
 
+    /* Flow-intensity ramp: a rising coral tide, spotting → heavy. Medium is
+       the base coral; the ends bracket it lighter and deeper. */
+    --flow-spotting: #f0c1b6;
+    --flow-light: #e89a88;
+    --flow-medium: var(--bleed);
+    --flow-heavy: var(--bleed-strong);
+
     /* Cycle phases */
     --cycle-period: var(--bleed);
     --cycle-ovulation: #e8a24b;
@@ -78,6 +85,11 @@
 
     --bleed: #e8785f;
     --bleed-strong: #f0917a;
+
+    /* Spotting and light hold down the low end on the dark ground; medium and
+       heavy inherit the brighter dark-theme coral above. */
+    --flow-spotting: #b5604e;
+    --flow-light: #d06d58;
 
     /* Fertile a pale warm sand, ovulation a saturated amber — clearly apart
        from each other and from coral on the dark ground. */
