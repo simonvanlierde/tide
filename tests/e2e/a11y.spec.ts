@@ -15,7 +15,7 @@ function seedScript() {
   }
   return {
     periodDays: days,
-    settings: { reminderWindowDays: 4, snoozedUntil: null, theme: "system" },
+    settings: { dismissedFor: null, theme: "system" },
   };
 }
 

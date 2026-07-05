@@ -22,8 +22,8 @@ export const appScreens = [
   },
   {
     path: "/history",
-    title: "History",
-    navLabel: "History",
+    title: "Calendar",
+    navLabel: "Calendar",
     icon: CalendarDays,
     render: () => <HistoryScreen />,
   },

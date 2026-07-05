@@ -24,7 +24,7 @@ describe("App shell", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^today$/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /^history$/i }),
+      screen.getByRole("link", { name: /^calendar$/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute(
       "aria-current",
@@ -36,13 +36,13 @@ describe("App shell", () => {
     const user = userEvent.setup();
     renderWithAppState(<App />);
 
-    await user.click(screen.getByRole("link", { name: /^history$/i }));
+    await user.click(screen.getByRole("link", { name: /^calendar$/i }));
 
     expect(
-      screen.getByText(/^history$/i, { selector: ".app-header__title" }),
+      screen.getByText(/^calendar$/i, { selector: ".app-header__title" }),
     ).toBeInTheDocument();
     expect(window.location.pathname).toBe("/history");
-    expect(screen.getByRole("link", { name: /^history$/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /^calendar$/i })).toHaveAttribute(
       "aria-current",
       "page",
     );
