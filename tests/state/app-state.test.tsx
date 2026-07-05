@@ -2,7 +2,6 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
-import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { useAppState, useAppStateActions } from "../../src/state/provider";
 import {
   createAppState,
@@ -10,24 +9,29 @@ import {
   renderWithAppState,
 } from "../support/app";
 
-function Probe() {
+function Probe({ label = "probe" }: { label?: string }) {
   const state = useAppState();
   const actions = useAppStateActions();
 
   return (
     <>
-      <output aria-label="period-days">{state.periodDays.join(",")}</output>
-      <output aria-label="reminder-window">
-        {state.settings.reminderWindowDays}
+      <output aria-label={`period-days-${label}`}>
+        {state.periodDays.join(",")}
+      </output>
+      <output aria-label={`dismissed-for-${label}`}>
+        {state.settings.dismissedFor ?? ""}
       </output>
       <button
         type="button"
         onClick={() => actions.togglePeriodDay("2026-04-05", "2026-04-18")}
       >
-        toggle april 5
+        toggle {label}
       </button>
-      <button type="button" onClick={() => actions.setReminderWindowDays(6)}>
-        set window 6
+      <button
+        type="button"
+        onClick={() => actions.dismissReminder("2026-04-18")}
+      >
+        dismiss {label}
       </button>
     </>
   );
@@ -40,7 +44,7 @@ describe("app state", () => {
 
     renderWithAppState(<Probe />);
 
-    expect(screen.getByLabelText("period-days")).toHaveTextContent(
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
       "2026-03-05,2026-03-06,2026-04-02,2026-04-03",
     );
   });
@@ -49,15 +53,17 @@ describe("app state", () => {
     const user = userEvent.setup();
     renderWithAppState(
       <>
-        <SettingsScreen today="2026-04-18" />
-        <Probe />
+        <Probe label="a" />
+        <Probe label="b" />
       </>,
-      { state: createLearnedCycleState() },
+      { state: createAppState() },
     );
 
-    await user.click(screen.getByRole("button", { name: /^6 days$/i }));
+    await user.click(screen.getByRole("button", { name: /toggle a/i }));
 
-    expect(screen.getByLabelText("reminder-window")).toHaveTextContent("6");
+    expect(screen.getByLabelText("period-days-b")).toHaveTextContent(
+      "2026-04-05",
+    );
   });
 
   it("persists provider updates to local storage", async () => {
@@ -66,11 +72,13 @@ describe("app state", () => {
       state: createAppState({ periodDays: ["2026-04-02"] }),
     });
 
-    await user.click(screen.getByRole("button", { name: /set window 6/i }));
+    await user.click(screen.getByRole("button", { name: /dismiss probe/i }));
 
-    expect(screen.getByLabelText("reminder-window")).toHaveTextContent("6");
+    expect(screen.getByLabelText("dismissed-for-probe")).toHaveTextContent(
+      "2026-04-18",
+    );
     expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
-      '"reminderWindowDays":6',
+      '"dismissedFor":"2026-04-18"',
     );
   });
 });

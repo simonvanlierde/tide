@@ -21,8 +21,10 @@ export interface CycleSummary {
 }
 
 export interface AppSettings {
-  reminderWindowDays: number;
-  snoozedUntil: IsoDate | null;
+  /** Day the reminder was dismissed with "Not yet"; hidden while it equals today. */
+  dismissedFor: IsoDate | null;
+  /** Show fertile-window and ovulation estimates on the home screen and calendar. */
+  showFertility: boolean;
   theme: ThemePreference;
 }
 

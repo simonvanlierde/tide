@@ -6,9 +6,15 @@ import { NOTICE_TIMEOUT_MS } from "../settings/config";
 interface LogActionProps {
   isLogged: boolean;
   onToggle: () => void;
+  /** "quiet" demotes the button to a calm secondary style when no bleed is expected. */
+  variant?: "primary" | "quiet";
 }
 
-export function LogAction({ isLogged, onToggle }: LogActionProps) {
+export function LogAction({
+  isLogged,
+  onToggle,
+  variant = "primary",
+}: LogActionProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   // Confirmation is a transient toast: appear when the day gets logged, then
@@ -29,7 +35,11 @@ export function LogAction({ isLogged, onToggle }: LogActionProps) {
 
   return (
     <div className="log-action">
-      <button type="button" className="primary-action" onClick={onToggle}>
+      <button
+        type="button"
+        className={variant === "quiet" ? "secondary-action" : "primary-action"}
+        onClick={onToggle}
+      >
         <span className="button-label">
           <AppIcon icon={Droplets} className="button-icon" />
           <span>{isLogged ? "Remove bleeding log" : "Log bleeding today"}</span>

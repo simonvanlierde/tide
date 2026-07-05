@@ -112,14 +112,11 @@ export function useAppStateActions() {
       togglePeriodDay(day: IsoDate, today: IsoDate) {
         dispatch({ type: "togglePeriodDay", day, today });
       },
-      setReminderWindowDays(days: number) {
-        dispatch({ type: "setReminderWindowDays", days });
+      dismissReminder(today: IsoDate) {
+        dispatch({ type: "dismissReminder", today });
       },
-      snoozeReminders(today: IsoDate, days: number) {
-        dispatch({ type: "snoozeReminders", today, days });
-      },
-      clearReminderSnooze() {
-        dispatch({ type: "clearReminderSnooze" });
+      setShowFertility(show: boolean) {
+        dispatch({ type: "setShowFertility", show });
       },
       setTheme(theme: ThemePreference) {
         dispatch({ type: "setTheme", theme });

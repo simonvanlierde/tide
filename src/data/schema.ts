@@ -12,8 +12,8 @@ const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 export const defaultAppState: AppState = {
   periodDays: [],
   settings: {
-    reminderWindowDays: 4,
-    snoozedUntil: null,
+    dismissedFor: null,
+    showFertility: true,
     theme: "system",
   },
 };
@@ -41,15 +41,13 @@ export function normalizeSettings(settings: unknown): AppSettings {
       : {};
 
   return {
-    reminderWindowDays:
-      typeof candidate.reminderWindowDays === "number" &&
-      Number.isFinite(candidate.reminderWindowDays) &&
-      candidate.reminderWindowDays >= 0
-        ? candidate.reminderWindowDays
-        : defaultAppState.settings.reminderWindowDays,
-    snoozedUntil: isIsoDate(candidate.snoozedUntil)
-      ? candidate.snoozedUntil
-      : defaultAppState.settings.snoozedUntil,
+    dismissedFor: isIsoDate(candidate.dismissedFor)
+      ? candidate.dismissedFor
+      : defaultAppState.settings.dismissedFor,
+    showFertility:
+      typeof candidate.showFertility === "boolean"
+        ? candidate.showFertility
+        : defaultAppState.settings.showFertility,
     theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
       ? (candidate.theme as ThemePreference)
       : defaultAppState.settings.theme,

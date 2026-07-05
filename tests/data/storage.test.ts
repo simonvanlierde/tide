@@ -12,8 +12,7 @@ describe("local storage", () => {
     const state = createAppState({
       periodDays: ["2026-04-02"],
       settings: {
-        reminderWindowDays: 4,
-        snoozedUntil: null,
+        dismissedFor: "2026-04-01",
       },
     });
 
@@ -36,7 +35,7 @@ describe("local storage", () => {
       STORAGE_KEY,
       JSON.stringify({
         periodDays: ["2026-04-02"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null },
+        settings: { dismissedFor: null },
       }),
     );
 
@@ -44,8 +43,7 @@ describe("local storage", () => {
       createAppState({
         periodDays: ["2026-04-02"],
         settings: {
-          reminderWindowDays: 4,
-          snoozedUntil: null,
+          dismissedFor: null,
         },
       }),
     );
@@ -57,8 +55,7 @@ describe("local storage", () => {
       JSON.stringify({
         periodDays: ["2026-04-02", "bad-date", "2026-04-02", "2026-03-20", 123],
         settings: {
-          reminderWindowDays: "nope",
-          snoozedUntil: "2026-04-22",
+          dismissedFor: "nope",
         },
       }),
     );
@@ -67,8 +64,7 @@ describe("local storage", () => {
       createAppState({
         periodDays: ["2026-03-20", "2026-04-02"],
         settings: {
-          reminderWindowDays: 4,
-          snoozedUntil: "2026-04-22",
+          dismissedFor: null,
         },
       }),
     );
