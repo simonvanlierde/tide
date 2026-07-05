@@ -24,19 +24,16 @@ Once installed it works offline, and all data stays on your device.
 
 ## Features
 
-- Log and remove bleeding days
-- Current cycle day and phase (menstrual / follicular / ovulation / luteal)
-- Next-period prediction, learned from history with a 28-day fallback
-- Fertile-window estimate (approximate)
-- One-tap log prompt in the days around your predicted period
-- Month-by-month history calendar for reviewing and logging days
-- Home screen with a tidal cycle dial showing your current day and phase at a glance
-- Installable, offline-capable PWA. All data stays on the device: no accounts, no network, no analytics
+- **Log bleeding days**: add or remove with one tap
+- **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual / follicular / ovulation / luteal), with key cycle dates and a scrub preview
+- **Predictions**: next period learned from your history (28-day fallback), plus an approximate fertile window and ovulation estimate
+- **Log reminders**: a one-tap prompt in the days around your predicted period
+- **Calendar**: month-by-month view with per-day period numbers and ovulation / next-period markers, for reviewing and logging days
+- **Private by design**: installable, offline-capable PWA; all data stays on the device: no accounts, no network, no analytics
 
 ## Roadmap
 
 - Multi-language support
-- Calendar overlays: per-day period numbers and predicted ovulation / next-period markers
 
 ## Development
 
