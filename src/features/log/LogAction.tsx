@@ -1,5 +1,5 @@
 import { BadgeCheck, Droplets } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppIcon } from "../../ui/icons";
 import { NOTICE_TIMEOUT_MS } from "../settings/config";
 
@@ -16,12 +16,19 @@ export function LogAction({
   variant = "primary",
 }: LogActionProps) {
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const wasLogged = useRef(isLogged);
 
-  // Confirmation is a transient toast: appear when the day gets logged, then
-  // auto-dismiss after the shared notice timeout.
+  // Confirmation is a transient toast: appear only on the false→true transition
+  // (a fresh log), not when remounting with a day already logged. Then it
+  // auto-dismisses after the shared notice timeout.
   useEffect(() => {
-    if (!isLogged) {
-      setShowConfirmation(false);
+    const justLogged = isLogged && !wasLogged.current;
+    wasLogged.current = isLogged;
+
+    if (!justLogged) {
+      if (!isLogged) {
+        setShowConfirmation(false);
+      }
       return;
     }
 
