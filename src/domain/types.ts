@@ -6,6 +6,7 @@ export type CyclePhase =
   | "luteal"
   | "unknown";
 export type CycleEstimateMode = "learned" | "fallback" | "insufficient";
+export type ThemePreference = "system" | "light" | "dark";
 
 export interface CycleSummary {
   cycleDay: number | null;
@@ -22,6 +23,7 @@ export interface CycleSummary {
 export interface AppSettings {
   reminderWindowDays: number;
   snoozedUntil: IsoDate | null;
+  theme: ThemePreference;
 }
 
 export interface AppState {

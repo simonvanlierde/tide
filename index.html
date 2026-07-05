@@ -20,6 +20,23 @@
     <link rel="icon" href="/icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>Tide</title>
+    <script>
+      // Apply the saved theme before first paint so there is no flash. The
+      // provider keeps <html data-theme> in sync afterwards.
+      (() => {
+        try {
+          const raw = localStorage.getItem("tide.period-tracker.state");
+          const theme = raw ? JSON.parse(raw).settings.theme : "system";
+          const dark =
+            theme === "dark" ||
+            (theme !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+        } catch {
+          /* No saved theme: styles fall back to the light default. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

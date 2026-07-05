@@ -1,12 +1,13 @@
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
-import type { AppState, IsoDate } from "../domain/types";
+import type { AppState, IsoDate, ThemePreference } from "../domain/types";
 import { addDays } from "../utils/date";
 
 export type AppStateAction =
   | { type: "togglePeriodDay"; day: IsoDate; today: IsoDate }
   | { type: "setReminderWindowDays"; days: number }
   | { type: "snoozeReminders"; today: IsoDate; days: number }
-  | { type: "clearReminderSnooze" };
+  | { type: "clearReminderSnooze" }
+  | { type: "setTheme"; theme: ThemePreference };
 
 export function appStateReducer(
   state: AppState,
@@ -56,6 +57,15 @@ export function appStateReducer(
         settings: {
           ...state.settings,
           snoozedUntil: null,
+        },
+      };
+
+    case "setTheme":
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          theme: action.theme,
         },
       };
   }

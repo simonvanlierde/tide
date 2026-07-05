@@ -32,6 +32,7 @@
     --shadow-soft: 0 18px 44px rgba(20, 48, 58, 0.1);
     --shadow-card: 0 10px 28px rgba(20, 48, 58, 0.06);
 
+    color-scheme: light;
     color: var(--ink);
     font-family:
       system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
@@ -45,42 +46,43 @@
       linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
   }
 
-  /* Dark: the tide at night — deep sea-charcoal, brighter teal, coral holds. */
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-top: #0e1a1e;
-      --bg-bottom: #081113;
-      --surface: #15272c;
-      --surface-soft: #1b3238;
-      --surface-border: rgba(255, 255, 255, 0.1);
-      --tab-bg: rgba(11, 22, 25, 0.82);
+  /* Dark: the tide at night — deep sea-charcoal, brighter teal, coral holds.
+     Driven by data-theme (set from the theme preference), so it applies both
+     when the OS is dark and when the user forces dark in settings. */
+  :root[data-theme="dark"] {
+    --bg-top: #0e1a1e;
+    --bg-bottom: #081113;
+    --surface: #15272c;
+    --surface-soft: #1b3238;
+    --surface-border: rgba(255, 255, 255, 0.1);
+    --tab-bg: rgba(11, 22, 25, 0.82);
 
-      --ink: #e7eff0;
-      --ink-soft: #a6bcc0;
-      --ink-muted: #7a9297;
+    --ink: #e7eff0;
+    --ink-soft: #a6bcc0;
+    --ink-muted: #7a9297;
 
-      --tide: #4fb3ab;
-      --tide-strong: #74ccc4;
-      --tide-soft: rgba(79, 179, 171, 0.24);
-      --tide-tint: rgba(79, 179, 171, 0.14);
+    --tide: #4fb3ab;
+    --tide-strong: #74ccc4;
+    --tide-soft: rgba(79, 179, 171, 0.24);
+    --tide-tint: rgba(79, 179, 171, 0.14);
 
-      --bleed: #e8785f;
-      --bleed-strong: #f0917a;
+    --bleed: #e8785f;
+    --bleed-strong: #f0917a;
 
-      --cycle-ovulation: #e2a24f;
-      --cycle-fertile: #c9a262;
-      --cycle-idle: rgba(255, 255, 255, 0.1);
+    --cycle-ovulation: #e2a24f;
+    --cycle-fertile: #c9a262;
+    --cycle-idle: rgba(255, 255, 255, 0.1);
 
-      --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
-      --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);
+    --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
+    --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);
 
-      background:
-        radial-gradient(
-          circle at 50% -10%,
-          rgba(41, 82, 78, 0.55),
-          transparent 55%
-        ),
-        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
-    }
+    color-scheme: dark;
+    background:
+      radial-gradient(
+        circle at 50% -10%,
+        rgba(41, 82, 78, 0.55),
+        transparent 55%
+      ),
+      linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
   }
 }

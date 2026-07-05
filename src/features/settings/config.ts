@@ -1,5 +1,13 @@
+import type { ThemePreference } from "../../domain/types";
+
 export const REMINDER_WINDOW_OPTIONS = [2, 4, 6] as const;
 export const SNOOZE_OPTIONS = [1, 3, 5] as const;
+
+export const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
+  { value: "system", label: "System" },
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+];
 /** How long any transient confirmation notice stays on screen, app-wide. */
 export const NOTICE_TIMEOUT_MS = 5000;
 

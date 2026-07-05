@@ -114,4 +114,19 @@ describe("SettingsScreen", () => {
       screen.getByText(/informational only and not birth control/i),
     ).toBeInTheDocument();
   });
+
+  it("switches the theme and remembers the choice", async () => {
+    const user = userEvent.setup();
+    renderSettings();
+
+    await user.click(
+      within(screen.getByRole("group", { name: /^theme$/i })).getByRole(
+        "button",
+        { name: /^dark$/i },
+      ),
+    );
+
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect(loadAppState().settings.theme).toBe("dark");
+  });
 });

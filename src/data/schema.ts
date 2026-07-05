@@ -1,12 +1,20 @@
-import type { AppSettings, AppState, IsoDate } from "../domain/types";
+import type {
+  AppSettings,
+  AppState,
+  IsoDate,
+  ThemePreference,
+} from "../domain/types";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
+
+const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 
 export const defaultAppState: AppState = {
   periodDays: [],
   settings: {
     reminderWindowDays: 4,
     snoozedUntil: null,
+    theme: "system",
   },
 };
 
@@ -42,6 +50,9 @@ export function normalizeSettings(settings: unknown): AppSettings {
     snoozedUntil: isIsoDate(candidate.snoozedUntil)
       ? candidate.snoozedUntil
       : defaultAppState.settings.snoozedUntil,
+    theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
+      ? (candidate.theme as ThemePreference)
+      : defaultAppState.settings.theme,
   };
 }
 

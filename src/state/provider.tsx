@@ -8,7 +8,7 @@ import {
   useReducer,
 } from "react";
 import { loadAppState, saveAppState } from "../data/storage";
-import type { AppState, IsoDate } from "../domain/types";
+import type { AppState, IsoDate, ThemePreference } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
 import {
   type AppStateAction,
@@ -40,6 +40,8 @@ export function AppStateProvider({
     saveAppState(state);
   }, [state]);
 
+  useThemePreference(state.settings.theme);
+
   return (
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
@@ -47,6 +49,37 @@ export function AppStateProvider({
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
   );
+}
+
+const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
+
+// Reflect the theme preference onto <html data-theme>, following the OS while
+// set to "system". An inline script in index.html applies the same value before
+// first paint so there is no flash on load.
+function useThemePreference(theme: ThemePreference) {
+  useEffect(() => {
+    const root = document.documentElement;
+
+    function apply() {
+      const prefersDark =
+        typeof window.matchMedia === "function" &&
+        window.matchMedia(DARK_MEDIA_QUERY).matches;
+      root.dataset.theme =
+        theme === "dark" || (theme === "system" && prefersDark)
+          ? "dark"
+          : "light";
+    }
+
+    apply();
+
+    if (theme !== "system" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const media = window.matchMedia(DARK_MEDIA_QUERY);
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [theme]);
 }
 
 export function useAppState() {
@@ -85,6 +118,9 @@ export function useAppStateActions() {
       },
       clearReminderSnooze() {
         dispatch({ type: "clearReminderSnooze" });
+      },
+      setTheme(theme: ThemePreference) {
+        dispatch({ type: "setTheme", theme });
       },
     }),
     [dispatch],
