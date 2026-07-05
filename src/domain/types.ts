@@ -1,5 +1,4 @@
 export type IsoDate = `${number}-${number}-${number}`;
-export type HomeDisplayMode = "summary" | "linear" | "circular";
 export type CyclePhase =
   | "menstrual"
   | "follicular"
@@ -23,7 +22,6 @@ export interface CycleSummary {
 export interface AppSettings {
   reminderWindowDays: number;
   snoozedUntil: IsoDate | null;
-  homeDisplayMode: HomeDisplayMode;
 }
 
 export interface AppState {

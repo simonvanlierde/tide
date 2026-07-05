@@ -32,12 +32,12 @@ describe("SettingsScreen", () => {
       within(screen.getByRole("group", { name: /reminder window/i })).getByRole(
         "button",
         {
-          name: /^5 days$/i,
+          name: /^6 days$/i,
         },
       ),
     );
     expect(
-      screen.getByText(/5 days before your expected period/i),
+      screen.getByText(/6 days before your expected period/i),
     ).toBeInTheDocument();
   });
 
@@ -52,7 +52,6 @@ describe("SettingsScreen", () => {
         settings: {
           reminderWindowDays: 4,
           snoozedUntil: "2026-04-22",
-          homeDisplayMode: "summary",
         },
       }),
     );
@@ -81,7 +80,7 @@ describe("SettingsScreen", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("shows reminder timing and persists home controls", async () => {
+  it("shows reminder timing and persists the reminder window", async () => {
     const user = userEvent.setup();
     renderSettings(
       "2026-04-19",
@@ -92,12 +91,16 @@ describe("SettingsScreen", () => {
 
     expect(screen.getByText(/next reminder/i)).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /circular/i }));
+    await user.click(
+      within(screen.getByRole("group", { name: /reminder window/i })).getByRole(
+        "button",
+        { name: /^6 days$/i },
+      ),
+    );
 
     expect(loadAppState().settings).toMatchObject({
-      reminderWindowDays: 4,
+      reminderWindowDays: 6,
       snoozedUntil: null,
-      homeDisplayMode: "circular",
     });
   });
 

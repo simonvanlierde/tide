@@ -1,11 +1,4 @@
-import { HOME_DISPLAY_MODES } from "../../data/schema";
-
-export const HOME_DISPLAY_MODE_OPTIONS = HOME_DISPLAY_MODES.map((value) => ({
-  value,
-  label: `${value[0].toUpperCase()}${value.slice(1)}`,
-}));
-
-export const REMINDER_WINDOW_OPTIONS = [1, 3, 5] as const;
+export const REMINDER_WINDOW_OPTIONS = [2, 4, 6] as const;
 export const SNOOZE_OPTIONS = [1, 3, 5] as const;
 export const REMINDER_STATUS_TIMEOUT_MS = 3500;
 

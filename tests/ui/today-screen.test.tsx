@@ -7,7 +7,6 @@ import {
   createAppState,
   createLearnedCycleState,
   createLearningCycleState,
-  LEARNED_PERIOD_DAYS,
   renderWithAppState,
 } from "../support/app";
 
@@ -16,47 +15,22 @@ function renderToday(today: IsoDate, state = createLearnedCycleState()) {
 }
 
 describe("TodayScreen", () => {
-  it("renders the summary home with the core cycle cards", () => {
+  it("renders the cycle dial with the core cycle facts", () => {
     renderToday("2026-04-18");
 
     expect(
       screen.getByRole("heading", { name: /day 17/i }),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(
       screen.getByText(/currently in the luteal phase/i),
     ).toBeInTheDocument();
-    expect(screen.getByText(/period expected in 12 days/i)).toBeInTheDocument();
+    expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^luteal$/i)).toBeInTheDocument();
     expect(screen.getByText(/lower chance today/i)).toBeInTheDocument();
     expect(
       screen.getByLabelText(/show fertility disclaimer/i),
     ).toBeInTheDocument();
-  });
-
-  it("renders the linear cycle view when selected", () => {
-    renderToday(
-      "2026-04-18",
-      createAppState({
-        periodDays: LEARNED_PERIOD_DAYS,
-        settings: { homeDisplayMode: "linear" },
-      }),
-    );
-
-    expect(screen.getByLabelText(/linear cycle view/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/cycle summary/i)).not.toBeInTheDocument();
-  });
-
-  it("renders the circular cycle view when selected", () => {
-    renderToday(
-      "2026-04-18",
-      createAppState({
-        periodDays: LEARNED_PERIOD_DAYS,
-        settings: { homeDisplayMode: "circular" },
-      }),
-    );
-
-    expect(screen.getByLabelText(/circular cycle view/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/cycle summary/i)).not.toBeInTheDocument();
   });
 
   it("shows plain-language ovulation guidance", () => {
@@ -106,13 +80,39 @@ describe("TodayScreen", () => {
       }),
     );
 
-    expect(screen.getByText(/period expected 1 day ago/i)).toBeInTheDocument();
+    expect(screen.getByText(/^1 day ago$/i)).toBeInTheDocument();
     expect(screen.queryByText(/-1 day/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/^next period$/i)).toBeInTheDocument();
+    expect(screen.queryByText(/overdue|late/i)).not.toBeInTheDocument();
+  });
+
+  it("treats an expired snooze as inactive instead of showing it forever", () => {
+    renderToday(
+      "2026-04-30",
+      createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { snoozedUntil: "2026-04-20" },
+      }),
+    );
+
+    expect(screen.queryByText(/snoozed until/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/reminder active/i)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /window has passed for this cycle|reminder muted|period expected/i,
-      ),
+      screen.getByRole("button", { name: /snooze 1 day/i }),
     ).toBeInTheDocument();
+  });
+
+  it("shows the snoozed note while a snooze is active", () => {
+    renderToday(
+      "2026-04-30",
+      createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { snoozedUntil: "2026-05-02" },
+      }),
+    );
+
+    expect(screen.getByText(/snoozed until 2026-05-02/i)).toBeInTheDocument();
+    expect(screen.queryByText(/reminder active/i)).not.toBeInTheDocument();
   });
 
   it("shows reminder actions only while the reminder window is active", () => {

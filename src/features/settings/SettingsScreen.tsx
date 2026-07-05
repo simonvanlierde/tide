@@ -1,6 +1,5 @@
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
-import { HomeSection } from "./HomeSection";
 import { InformationSection } from "./InformationSection";
 import { RemindersSection } from "./RemindersSection";
 
@@ -13,7 +12,6 @@ export function SettingsScreen({
 }: SettingsScreenProps) {
   return (
     <section className="utility-screen">
-      <HomeSection />
       <RemindersSection today={today} />
       <InformationSection />
     </section>
