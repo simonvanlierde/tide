@@ -3,12 +3,12 @@ import {
   type Dispatch,
   type ReactNode,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useMemo,
   useReducer,
 } from "react";
 import { loadAppState, saveAppState } from "../data/storage";
-import type { AppState, HomeDisplayMode, IsoDate } from "../domain/types";
+import type { AppState, IsoDate } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
 import {
   type AppStateAction,
@@ -36,7 +36,7 @@ export function AppStateProvider({
     (value: AppState | null) => value ?? loadAppState(),
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     saveAppState(state);
   }, [state]);
 
@@ -74,8 +74,8 @@ export function useAppStateActions() {
 
   return useMemo(
     () => ({
-      togglePeriodDay(day: IsoDate) {
-        dispatch({ type: "togglePeriodDay", day });
+      togglePeriodDay(day: IsoDate, today: IsoDate) {
+        dispatch({ type: "togglePeriodDay", day, today });
       },
       setReminderWindowDays(days: number) {
         dispatch({ type: "setReminderWindowDays", days });
@@ -86,17 +86,12 @@ export function useAppStateActions() {
       clearReminderSnooze() {
         dispatch({ type: "clearReminderSnooze" });
       },
-      setHomeDisplayMode(mode: HomeDisplayMode) {
-        dispatch({ type: "setHomeDisplayMode", mode });
-      },
-      replaceState(state: unknown) {
-        dispatch({ type: "replaceState", state });
-      },
     }),
     [dispatch],
   );
 }
 
 export function useCycleSummary(today: IsoDate = getTodayIsoDate()) {
-  return selectCycleSummary(useAppState(), today);
+  const state = useAppState();
+  return useMemo(() => selectCycleSummary(state, today), [state, today]);
 }

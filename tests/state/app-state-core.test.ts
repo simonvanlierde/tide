@@ -11,6 +11,7 @@ describe("app state core selectors", () => {
     const nextState = appStateReducer(initialState, {
       type: "togglePeriodDay",
       day: "2026-04-05",
+      today: "2026-04-30",
     });
 
     expect(nextState.periodDays).toEqual([
@@ -20,43 +21,22 @@ describe("app state core selectors", () => {
     ]);
   });
 
-  it("normalizes replacement state through the current app-state shape only", () => {
-    const nextState = appStateReducer(createAppState(), {
-      type: "replaceState",
-      state: {
-        periodDays: ["2026-04-07", "bad-date", "2026-04-07"],
-        settings: {
-          reminderWindowDays: "invalid",
-          snoozedUntil: "2026-04-08",
-          homeDisplayMode: "gallery",
-        },
-      },
-    });
-
-    expect(nextState).toEqual(
-      createAppState({
-        periodDays: ["2026-04-07"],
-        settings: {
-          reminderWindowDays: 4,
-          snoozedUntil: "2026-04-08",
-          homeDisplayMode: "summary",
-        },
-      }),
+  it("refuses to log a future-dated bleeding day", () => {
+    const nextState = appStateReducer(
+      createAppState({ periodDays: ["2026-04-02"] }),
+      { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
     );
+
+    expect(nextState.periodDays).toEqual(["2026-04-02"]);
   });
 
-  it("rejects the removed versioned storage envelope", () => {
-    const nextState = appStateReducer(createAppState(), {
-      type: "replaceState",
-      state: {
-        version: 1,
-        state: createAppState({
-          periodDays: ["2026-04-07"],
-        }),
-      },
-    });
+  it("still lets a stale future-dated day be removed", () => {
+    const nextState = appStateReducer(
+      createAppState({ periodDays: ["2026-04-02", "2026-04-10"] }),
+      { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
+    );
 
-    expect(nextState).toEqual(createAppState());
+    expect(nextState.periodDays).toEqual(["2026-04-02"]);
   });
 
   it("derives the cycle summary from plain app state", () => {

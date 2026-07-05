@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
-import { TodayScreen } from "../../src/features/today/TodayScreen";
 import { useAppState, useAppStateActions } from "../../src/state/provider";
 import {
   createAppState,
@@ -18,20 +17,17 @@ function Probe() {
   return (
     <>
       <output aria-label="period-days">{state.periodDays.join(",")}</output>
-      <output aria-label="display-mode">
-        {state.settings.homeDisplayMode}
+      <output aria-label="reminder-window">
+        {state.settings.reminderWindowDays}
       </output>
       <button
         type="button"
-        onClick={() => actions.togglePeriodDay("2026-04-05")}
+        onClick={() => actions.togglePeriodDay("2026-04-05", "2026-04-18")}
       >
         toggle april 5
       </button>
-      <button
-        type="button"
-        onClick={() => actions.setHomeDisplayMode("circular")}
-      >
-        set circular
+      <button type="button" onClick={() => actions.setReminderWindowDays(6)}>
+        set window 6
       </button>
     </>
   );
@@ -54,15 +50,14 @@ describe("app state", () => {
     renderWithAppState(
       <>
         <SettingsScreen today="2026-04-18" />
-        <TodayScreen today="2026-04-18" />
+        <Probe />
       </>,
       { state: createLearnedCycleState() },
     );
 
-    await user.click(screen.getByRole("button", { name: /linear/i }));
+    await user.click(screen.getByRole("button", { name: /^6 days$/i }));
 
-    expect(screen.getByLabelText(/linear cycle view/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/cycle summary/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText("reminder-window")).toHaveTextContent("6");
   });
 
   it("persists provider updates to local storage", async () => {
@@ -71,11 +66,11 @@ describe("app state", () => {
       state: createAppState({ periodDays: ["2026-04-02"] }),
     });
 
-    await user.click(screen.getByRole("button", { name: /set circular/i }));
+    await user.click(screen.getByRole("button", { name: /set window 6/i }));
 
-    expect(screen.getByLabelText("display-mode")).toHaveTextContent("circular");
+    expect(screen.getByLabelText("reminder-window")).toHaveTextContent("6");
     expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
-      '"homeDisplayMode":"circular"',
+      '"reminderWindowDays":6',
     );
   });
 });

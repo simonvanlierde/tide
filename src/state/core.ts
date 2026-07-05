@@ -1,15 +1,12 @@
-import { normalizeAppState } from "../data/schema";
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
-import type { AppState, HomeDisplayMode, IsoDate } from "../domain/types";
+import type { AppState, IsoDate } from "../domain/types";
 import { addDays } from "../utils/date";
 
 export type AppStateAction =
-  | { type: "togglePeriodDay"; day: IsoDate }
+  | { type: "togglePeriodDay"; day: IsoDate; today: IsoDate }
   | { type: "setReminderWindowDays"; days: number }
   | { type: "snoozeReminders"; today: IsoDate; days: number }
-  | { type: "clearReminderSnooze" }
-  | { type: "setHomeDisplayMode"; mode: HomeDisplayMode }
-  | { type: "replaceState"; state: unknown };
+  | { type: "clearReminderSnooze" };
 
 export function appStateReducer(
   state: AppState,
@@ -18,6 +15,13 @@ export function appStateReducer(
   switch (action.type) {
     case "togglePeriodDay": {
       const hasLoggedDay = state.periodDays.includes(action.day);
+
+      // Never log a future-dated day; always allow removing an existing one
+      // (e.g. a stale entry left after the device clock moved backwards).
+      if (!hasLoggedDay && action.day > action.today) {
+        return state;
+      }
+
       const periodDays = hasLoggedDay
         ? state.periodDays.filter((value) => value !== action.day)
         : [...state.periodDays, action.day].sort();
@@ -54,18 +58,6 @@ export function appStateReducer(
           snoozedUntil: null,
         },
       };
-
-    case "setHomeDisplayMode":
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          homeDisplayMode: action.mode,
-        },
-      };
-
-    case "replaceState":
-      return normalizeAppState(action.state);
   }
 }
 
