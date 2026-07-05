@@ -1,11 +1,11 @@
 import { useEffect, useEffectEvent, useState } from "react";
+import { getReminderState, type ReminderState } from "../../domain/reminders";
 import type { IsoDate } from "../../domain/types";
 import {
   useAppState,
   useAppStateActions,
   useCycleSummary,
 } from "../../state/provider";
-import { differenceInDays } from "../../utils/date";
 import {
   REMINDER_STATUS_TIMEOUT_MS,
   REMINDER_WINDOW_OPTIONS,
@@ -35,15 +35,16 @@ export function RemindersSection({ today }: RemindersSectionProps) {
     return () => window.clearTimeout(timeoutId);
   }, [statusMessage]);
 
-  const snoozeSummary =
-    state.settings.snoozedUntil &&
-    differenceInDays(state.settings.snoozedUntil, today) > 0
-      ? `Snoozed until ${state.settings.snoozedUntil}.`
-      : null;
-  const reminderSummary = getReminderSummary(
-    summary.nextPeriod.daysUntil,
-    state.settings.reminderWindowDays,
-  );
+  const reminderState = getReminderState({
+    today,
+    nextPeriodDate: summary.nextPeriod.date,
+    reminderWindowDays: state.settings.reminderWindowDays,
+    snoozedUntil: state.settings.snoozedUntil,
+  });
+  const snoozeSummary = reminderState.isSnoozed
+    ? `Snoozed until ${state.settings.snoozedUntil}.`
+    : null;
+  const reminderSummary = getReminderSummary(reminderState);
 
   function handleReminderWindowChange(days: number) {
     actions.setReminderWindowDays(days);
@@ -92,9 +93,7 @@ export function RemindersSection({ today }: RemindersSectionProps) {
         </div>
 
         <div className="settings-row settings-row--accent">
-          <p className="supporting-note">
-            {snoozeSummary ?? "Active."} Next reminder: {reminderSummary}
-          </p>
+          <p className="supporting-note">{snoozeSummary ?? reminderSummary}</p>
           <fieldset
             className="chip-row chip-row--dense chip-fieldset"
             aria-label="Snooze reminders"
@@ -134,21 +133,17 @@ export function RemindersSection({ today }: RemindersSectionProps) {
   );
 }
 
-function getReminderSummary(
-  daysUntilPeriod: number | null,
-  reminderWindowDays: number,
-) {
-  if (daysUntilPeriod === null) {
+function getReminderSummary(reminderState: ReminderState) {
+  if (reminderState.daysUntilReminder === null) {
     return "Next reminder will appear once your next cycle estimate is ready.";
   }
 
-  const daysUntilReminder = daysUntilPeriod - reminderWindowDays;
-
-  if (daysUntilReminder > 0) {
-    return `Next reminder in ${daysUntilReminder} days.`;
+  if (reminderState.daysUntilReminder > 0) {
+    const days = reminderState.daysUntilReminder;
+    return `Next reminder in ${days} day${days === 1 ? "" : "s"}.`;
   }
 
-  if (daysUntilPeriod >= -1) {
+  if (reminderState.isInReminderWindow) {
     return "Reminder window is active now.";
   }
 

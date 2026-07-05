@@ -36,6 +36,36 @@ describe("getReminderState", () => {
     expect(state.shouldNudge).toBe(false);
   });
 
+  it("treats an expired snooze as inactive", () => {
+    const state = getReminderState({
+      today: "2026-04-28",
+      nextPeriodDate: "2026-04-30",
+      reminderWindowDays: 4,
+      snoozedUntil: "2026-04-27",
+    });
+
+    expect(state.isSnoozed).toBe(false);
+    expect(state.shouldNudge).toBe(true);
+  });
+
+  it("reports days until the next reminder", () => {
+    const beforeWindow = getReminderState({
+      today: "2026-04-10",
+      nextPeriodDate: "2026-04-30",
+      reminderWindowDays: 4,
+      snoozedUntil: null,
+    });
+    const noEstimate = getReminderState({
+      today: "2026-04-10",
+      nextPeriodDate: null,
+      reminderWindowDays: 4,
+      snoozedUntil: null,
+    });
+
+    expect(beforeWindow.daysUntilReminder).toBe(16);
+    expect(noEstimate.daysUntilReminder).toBeNull();
+  });
+
   it("keeps reminders active on the expected start day and one day late", () => {
     const dueDay = getReminderState({
       today: "2026-04-30",

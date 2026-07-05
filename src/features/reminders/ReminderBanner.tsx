@@ -1,31 +1,22 @@
 import { BellOff, BellRing } from "lucide-react";
-import { getReminderState } from "../../domain/reminders";
-import type { AppSettings, IsoDate } from "../../domain/types";
+import type { ReminderState } from "../../domain/reminders";
+import type { IsoDate } from "../../domain/types";
 import { AppIcon } from "../../ui/icons";
 
 interface ReminderBannerProps {
-  today: IsoDate;
-  nextPeriodDate: IsoDate | null;
-  settings: AppSettings;
+  reminderState: ReminderState;
+  snoozedUntil: IsoDate | null;
 }
 
 export function ReminderBanner({
-  today,
-  nextPeriodDate,
-  settings,
+  reminderState,
+  snoozedUntil,
 }: ReminderBannerProps) {
-  const reminderState = getReminderState({
-    today,
-    nextPeriodDate,
-    reminderWindowDays: settings.reminderWindowDays,
-    snoozedUntil: settings.snoozedUntil,
-  });
-
-  if (settings.snoozedUntil) {
+  if (reminderState.isSnoozed && snoozedUntil) {
     return (
       <p className="status-chip status-chip--muted note-inline">
         <AppIcon icon={BellOff} className="note-icon" />
-        <span>Snoozed until {settings.snoozedUntil}</span>
+        <span>Snoozed until {snoozedUntil}</span>
       </p>
     );
   }
