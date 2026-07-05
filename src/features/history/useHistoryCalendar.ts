@@ -1,4 +1,4 @@
-import { startTransition, useRef, useState } from "react";
+import { startTransition, useMemo, useRef, useState } from "react";
 import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions } from "../../state/provider";
 import {
@@ -16,6 +16,19 @@ export function useHistoryCalendar(today: IsoDate) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const monthInputRef = useRef<HTMLInputElement | null>(null);
 
+  const monthDays = useMemo(
+    () => buildMonthDays(visibleMonth, today),
+    [visibleMonth, today],
+  );
+  const loggedDays = useMemo(
+    () => new Set(state.periodDays),
+    [state.periodDays],
+  );
+  const monthLabel = useMemo(
+    () => formatMonthLabel(visibleMonth),
+    [visibleMonth],
+  );
+
   function setMonth(nextMonth: IsoDate) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
@@ -26,10 +39,8 @@ export function useHistoryCalendar(today: IsoDate) {
   function openPicker() {
     setIsPickerOpen(true);
 
-    if (!monthInputRef.current) {
-      return;
-    }
-
+    // The input mounts only after isPickerOpen flips, so defer the ref read to
+    // the next tick; on the first open the ref is still null right now.
     window.setTimeout(() => {
       openNativeMonthPicker(monthInputRef.current);
     }, 0);
@@ -38,9 +49,9 @@ export function useHistoryCalendar(today: IsoDate) {
   return {
     periodDays: state.periodDays,
     isPickerOpen,
-    monthLabel: formatMonthLabel(visibleMonth),
-    monthDays: buildMonthDays(visibleMonth, today),
-    loggedDays: new Set(state.periodDays),
+    monthLabel,
+    monthDays,
+    loggedDays,
     openPicker,
     goToPreviousMonth() {
       setMonth(addMonths(visibleMonth, -1));
@@ -52,11 +63,7 @@ export function useHistoryCalendar(today: IsoDate) {
       setMonth(today);
     },
     togglePeriodDay(day: IsoDate) {
-      if (day > today) {
-        return;
-      }
-
-      actions.togglePeriodDay(day);
+      actions.togglePeriodDay(day, today);
     },
     monthPicker: {
       isPickerOpen,

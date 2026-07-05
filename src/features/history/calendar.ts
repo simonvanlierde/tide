@@ -1,5 +1,18 @@
 import type { IsoDate } from "../../domain/types";
-import { parseIsoDate } from "../../utils/date";
+import { addDays, formatIsoDate, parseIsoDate } from "../../utils/date";
+
+const MONTH_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+const DAY_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", {
+  month: "long",
+  day: "numeric",
+  year: "numeric",
+  timeZone: "UTC",
+});
 
 export interface CalendarDay {
   key: string;
@@ -20,20 +33,11 @@ export const HISTORY_WEEKDAY_LABELS = [
 ] as const;
 
 export function formatMonthLabel(value: IsoDate) {
-  return parseIsoDate(value).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  });
+  return MONTH_LABEL_FORMAT.format(parseIsoDate(value));
 }
 
 export function formatDayButtonLabel(value: IsoDate) {
-  return `Toggle ${parseIsoDate(value).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  })}`;
+  return `Toggle ${DAY_LABEL_FORMAT.format(parseIsoDate(value))}`;
 }
 
 export function buildMonthDays(
@@ -43,21 +47,21 @@ export function buildMonthDays(
   const current = parseIsoDate(visibleMonth);
   const year = current.getUTCFullYear();
   const monthIndex = current.getUTCMonth();
-  const first = new Date(Date.UTC(year, monthIndex, 1));
-  const firstWeekday = (first.getUTCDay() + 6) % 7;
+  const firstWeekday =
+    (new Date(Date.UTC(year, monthIndex, 1)).getUTCDay() + 6) % 7;
   const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
   const totalCells = firstWeekday + daysInMonth <= 35 ? 35 : 42;
-  const start = new Date(Date.UTC(year, monthIndex, 1 - firstWeekday));
+  const gridStart = formatIsoDate(
+    new Date(Date.UTC(year, monthIndex, 1 - firstWeekday)),
+  );
 
   return Array.from({ length: totalCells }, (_, index) => {
-    const date = new Date(start);
-    date.setUTCDate(start.getUTCDate() + index);
-    const value = date.toISOString().slice(0, 10) as IsoDate;
+    const value = addDays(gridStart, index);
 
     return {
       key: value,
       value,
-      isOutsideMonth: date.getUTCMonth() !== monthIndex,
+      isOutsideMonth: parseIsoDate(value).getUTCMonth() !== monthIndex,
       isFuture: value > today,
       isToday: value === today,
     };
