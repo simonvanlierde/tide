@@ -10,6 +10,12 @@ Tide is a privacy-first period tracker — a small, local-first React PWA that k
 
 > **Status:** work in progress. Core tracking is implemented, tested, and live.
 
+<p align="center">
+  <img src="docs/screenshots/today-light.png" alt="Tide's Today screen in light theme: a tidal cycle dial on cycle day 13, follicular phase, with next-period and fertility cards" width="300">
+  &nbsp;&nbsp;
+  <img src="docs/screenshots/today-dark.png" alt="The same Today screen in dark theme" width="300">
+</p>
+
 ## Install
 
 Tide runs in the browser and installs as an app — no app store needed.
@@ -33,11 +39,12 @@ Once installed it works offline, and all data stays on your device.
 
 ## Roadmap
 
+- Improved onboarding UI / UX
 - Multi-language support
 
 ## Development
 
-Requires Node 24 and pnpm 10.
+Requires Node 26 and pnpm 11.
 
 ```bash
 pnpm install
@@ -51,9 +58,36 @@ pnpm dev
 | `pnpm test:e2e` | Playwright smoke tests |
 | `pnpm build` | Production build to `dist/` |
 
+### Accessibility
+
+Two automated checks run against the UI. Neither certifies a conformance level (e.g. WCAG AA) — they catch the subset of issues these tools can detect automatically.
+
+- **Static lint:** Biome's `a11y` rules are enabled (`biome.json`), so accessibility lints run as part of `pnpm lint` / `pnpm check` — on every pull request and push in CI.
+- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) (via `@axe-core/playwright`) against `/`, `/history`, and `/settings`, in both light and dark themes, tagged `wcag2a` + `wcag2aa`, and fails on any *serious* or *critical* violation. Run it with `pnpm test:e2e`. In CI it runs on every pull request (the `a11y-e2e` job) and, as part of the full smoke suite, on pushes to `main`.
+
 ## Architecture
 
-Cycle logic is kept pure and isolated from React and the browser, so it can be tested as plain functions:
+Cycle logic is kept pure and isolated from React and the browser, so it can be tested as plain functions. Dependencies point inward — the React layer reads through `state`, which is the only caller of the pure `domain` and the `data` persistence boundary:
+
+```mermaid
+flowchart TD
+    subgraph react["React layer"]
+        app["app · shell + routing"]
+        features["features · screens"]
+        ui["ui · primitives"]
+    end
+    state["state · reducer + selectors"]
+    data["data · localStorage boundary"]
+    domain["domain · pure cycle & reminder logic"]
+    storage[("localStorage")]
+
+    app --> features --> ui
+    features --> state
+    state --> domain
+    state --> data
+    data --> domain
+    data <--> storage
+```
 
 - `src/domain` — pure cycle and reminder logic (no React, storage, or browser APIs)
 - `src/data` — defaults, validation, and normalization at the `localStorage` boundary
@@ -65,6 +99,8 @@ Cycle logic is kept pure and isolated from React and the browser, so it can be t
 - `src/utils` — shared date helpers
 
 Tests mirror this layering, with a thin Playwright e2e layer covering routing, persistence across reloads, and PWA smoke.
+
+The core design decision — keeping all data on-device with no backend — is recorded in [docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md). Releases are tracked in [CHANGELOG.md](CHANGELOG.md).
 
 ## Deployment
 
