@@ -57,6 +57,7 @@ export function HistoryScreen({
           periodDayNumbers={model.periodDayNumbers}
           cycleMarkers={model.cycleMarkers}
           selectedDay={model.selectedDay}
+          justLoggedDay={model.justLoggedDay}
           onSelectDay={model.selectDay}
         />
         {model.selectedDay ? (
@@ -72,7 +73,7 @@ export function HistoryScreen({
           />
         ) : (
           <p className="supporting-note history-calendar__help">
-            Tap any day to log bleeding and set its flow.
+            Tap a day to log bleeding. Tap a logged day to change or remove it.
           </p>
         )}
         <CalendarLegend showFertility={model.showFertility} />

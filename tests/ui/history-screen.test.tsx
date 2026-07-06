@@ -55,7 +55,7 @@ describe("HistoryScreen", () => {
     expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
-  it("logs a day and sets its flow from the calendar picker", async () => {
+  it("logs a day at medium flow with a single tap", async () => {
     const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
@@ -63,14 +63,32 @@ describe("HistoryScreen", () => {
       }),
     });
 
-    // Tapping an empty day opens its picker; choosing a level logs it.
+    // One tap on an empty day logs it at the default flow, no picker needed.
     await user.click(
+      screen.getByRole("button", { name: /log april 5, 2026/i }),
+    );
+
+    expect(
       screen.getByRole("button", { name: /edit april 5, 2026/i }),
+    ).toHaveClass("is-logged", "is-flow-medium");
+  });
+
+  it("refines a logged day's flow from the picker on a second tap", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02", "2026-04-12", "2026-04-20"],
+      }),
+    });
+
+    // Tapping an already-logged day opens its picker to change the flow.
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
     );
     await user.click(screen.getByRole("radio", { name: /heavy/i }));
 
     expect(
-      screen.getByRole("button", { name: /edit april 5, 2026/i }),
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
     ).toHaveClass("is-logged", "is-flow-heavy");
   });
 
@@ -87,9 +105,69 @@ describe("HistoryScreen", () => {
     );
     await user.click(screen.getByRole("button", { name: /not bleeding/i }));
 
+    // Once cleared the day is empty again, so its label flips back to "Log".
     expect(
-      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+      screen.getByRole("button", { name: /log april 2, 2026/i }),
     ).not.toHaveClass("is-logged");
+  });
+
+  it("closes an open picker when another day is logged", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /^close$/i }),
+    ).toBeInTheDocument();
+
+    // Tapping an empty day logs it and moves selection off the old day.
+    await user.click(
+      screen.getByRole("button", { name: /log april 5, 2026/i }),
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /^close$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("changes month by swiping the calendar left and right", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.touchStart(grid, { touches: [{ clientX: 240, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 90, clientY: 130 }],
+    });
+    expect(
+      screen.getByRole("button", { name: /may 2026/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.touchStart(grid, { touches: [{ clientX: 90, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 240, clientY: 130 }],
+    });
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("changes month with PageDown and PageUp", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.keyDown(grid, { key: "PageDown" });
+    expect(
+      screen.getByRole("button", { name: /may 2026/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.keyDown(grid, { key: "PageUp" });
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
   });
 
   it("changes the visible month from the month-year picker", async () => {

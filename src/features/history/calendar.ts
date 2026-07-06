@@ -38,8 +38,9 @@ export function formatMonthLabel(value: IsoDate) {
   return MONTH_LABEL_FORMAT.format(parseIsoDate(value));
 }
 
-export function formatDayButtonLabel(value: IsoDate) {
-  return `Edit ${DAY_LABEL_FORMAT.format(parseIsoDate(value))}`;
+export function formatDayButtonLabel(value: IsoDate, isLogged = false) {
+  const verb = isLogged ? "Edit" : "Log";
+  return `${verb} ${DAY_LABEL_FORMAT.format(parseIsoDate(value))}`;
 }
 
 export function buildMonthDays(

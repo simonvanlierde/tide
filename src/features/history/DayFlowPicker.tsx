@@ -1,5 +1,6 @@
-import { X } from "lucide-react";
+import { DropletOff, X } from "lucide-react";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
+import { AppIcon } from "../../ui/icons";
 import { formatShortDate } from "../../utils/date";
 import { FlowGauge } from "../log/FlowGauge";
 
@@ -42,6 +43,7 @@ export function DayFlowPicker({
       />
       {isLogged ? (
         <button type="button" className="text-action" onClick={onRemove}>
+          <AppIcon icon={DropletOff} className="text-action__icon" />
           Not bleeding that day
         </button>
       ) : null}

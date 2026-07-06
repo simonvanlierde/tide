@@ -26,6 +26,7 @@ interface HistoryCalendarGridProps {
   periodDayNumbers: Map<IsoDate, number>;
   cycleMarkers: Map<IsoDate, DayMarker>;
   selectedDay: IsoDate | null;
+  justLoggedDay: IsoDate | null;
   onSelectDay: (day: IsoDate) => void;
 }
 
@@ -36,6 +37,7 @@ export function HistoryCalendarGrid({
   periodDayNumbers,
   cycleMarkers,
   selectedDay,
+  justLoggedDay,
   onSelectDay,
 }: HistoryCalendarGridProps) {
   return (
@@ -62,6 +64,7 @@ export function HistoryCalendarGrid({
           const className = [
             "calendar-grid__day",
             isLogged ? "is-logged" : "",
+            value === justLoggedDay ? "is-just-logged" : "",
             flow ? `is-flow-${flow}` : "",
             day.isToday ? "is-today" : "",
             isSelected ? "is-selected" : "",
@@ -72,8 +75,8 @@ export function HistoryCalendarGrid({
             .filter(Boolean)
             .join(" ");
           const dateLabel = day.isFuture
-            ? `${formatDayButtonLabel(value)} unavailable`
-            : formatDayButtonLabel(value);
+            ? `${formatDayButtonLabel(value, isLogged)} unavailable`
+            : formatDayButtonLabel(value, isLogged);
 
           return (
             <button
