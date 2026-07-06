@@ -90,3 +90,7 @@ command and preview settings live in the Cloudflare dashboard; the repo only pin
 directory in [`wrangler.jsonc`](wrangler.jsonc).
 
 To deploy from a local checkout: `pnpm deploy` (`wrangler pages deploy`).
+
+## License
+
+[MIT](LICENSE) © Simon van Lierde
