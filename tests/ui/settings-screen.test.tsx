@@ -10,10 +10,10 @@ function renderSettings(state = createAppState()) {
 }
 
 describe("SettingsScreen", () => {
-  it("shows the privacy notice inside a grouped settings card", () => {
+  it("shows the privacy notice inside the About card", () => {
     renderSettings();
     expect(
-      screen.getByRole("heading", { level: 2, name: /information/i }),
+      screen.getByRole("heading", { level: 2, name: /about/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/everything stays on this device/i),
@@ -59,11 +59,10 @@ describe("SettingsScreen", () => {
     const user = userEvent.setup();
     renderSettings();
 
-    await user.click(
-      within(
-        screen.getByRole("group", { name: /fertility estimates/i }),
-      ).getByRole("button", { name: /^hide$/i }),
-    );
+    const toggle = screen.getByRole("switch", { name: /fertility estimates/i });
+    expect(toggle).toBeChecked();
+
+    await user.click(toggle);
 
     expect(loadAppState().settings.showFertility).toBe(false);
   });

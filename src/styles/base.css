@@ -5,7 +5,10 @@
 
   body {
     margin: 0;
-    min-height: 100vh;
+    /* dvh, not vh: on mobile browsers vh is the chrome-hidden (large) viewport,
+       which sizes the page taller than what's visible and hides the bottom
+       behind the URL bar. dvh tracks the actually-visible area. */
+    min-height: 100dvh;
     color: var(--ink);
     /* Background is painted on :root (themed in tokens.css); let it show through. */
     background: transparent;
@@ -21,8 +24,15 @@
     cursor: pointer;
   }
 
+  /* Links take the calm teal, not the UA blue/purple. Nav and skip links set
+     their own color and win on specificity. */
+  a,
+  a:visited {
+    color: var(--tide-strong);
+  }
+
   #root {
-    min-height: 100vh;
+    min-height: 100dvh;
   }
 
   .visually-hidden {
