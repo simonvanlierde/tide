@@ -754,15 +754,15 @@
      new coral chip is tappable to refine or remove. Runs once, then rests. */
   @keyframes calendar-day-logged {
     from {
-      box-shadow: 0 0 0 0 var(--bleed-strong);
+      box-shadow: 0 0 0 0 rgba(226, 109, 90, 0.5);
     }
     to {
-      box-shadow: 0 0 0 10px rgba(226, 109, 90, 0);
+      box-shadow: 0 0 0 6px rgba(226, 109, 90, 0);
     }
   }
 
   .calendar-grid__day.is-just-logged {
-    animation: calendar-day-logged 600ms ease-out;
+    animation: calendar-day-logged 450ms ease-out;
   }
 
   @media (prefers-reduced-motion: reduce) {
