@@ -208,6 +208,55 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
   });
 
+  it("prompts for a first log when there is no cycle history at all", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: [] }));
+
+    expect(
+      screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^not enough data yet$/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/log bleeding days to start an estimate/i),
+    ).toBeInTheDocument();
+  });
+
+  it("says the period is expected today when it lands on today", () => {
+    renderToday("2026-05-17", createLearningCycleState());
+
+    expect(screen.getByText(/^expected today$/i)).toBeInTheDocument();
+  });
+
+  it("previews a key date label on pointer move while pressed", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    fireEvent.pointerMove(screen.getByTitle("Ovulation expected"), {
+      pointerId: 1,
+      buttons: 1,
+    });
+
+    expect(dial).toHaveAttribute("aria-valuenow", "15");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
+  });
+
+  it("resets the preview when the pointer leaves, cancels, or the dial blurs", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+
+    for (const reset of ["pointerLeave", "pointerCancel", "blur"] as const) {
+      fireEvent.pointerMove(screen.getByTitle("Ovulation expected"), {
+        pointerId: 1,
+        buttons: 1,
+      });
+      expect(dial).toHaveAttribute("aria-valuenow", "15");
+
+      fireEvent[reset](dial);
+      expect(dial).toHaveAttribute("aria-valuenow", "17");
+    }
+  });
+
   it("shows a learning-state note when fallback predictions are in use", () => {
     renderToday("2026-04-21", createLearningCycleState());
 

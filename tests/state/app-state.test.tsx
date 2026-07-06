@@ -107,7 +107,8 @@ describe("system theme preference", () => {
           return matches;
         },
         addEventListener: (_: string, fn: () => void) => listeners.add(fn),
-        removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+        removeEventListener: (_: string, fn: () => void) =>
+          listeners.delete(fn),
       })),
     );
     return {
@@ -134,5 +135,21 @@ describe("system theme preference", () => {
     // The change listener is torn down on unmount.
     unmount();
     expect(media.listenerCount()).toBe(0);
+  });
+
+  it("keeps the theme-color meta tag in step with the resolved theme", () => {
+    const meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    document.head.appendChild(meta);
+
+    try {
+      renderWithAppState(<output>probe</output>, {
+        state: createAppState({ settings: { theme: "dark" } }),
+      });
+
+      expect(meta.getAttribute("content")).toBe("#0e1a1e");
+    } finally {
+      meta.remove();
+    }
   });
 });
