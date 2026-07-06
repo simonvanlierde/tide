@@ -26,6 +26,8 @@ export interface AppSettings {
   dismissedFor: IsoDate | null;
   /** Show fertile-window and ovulation estimates on the home screen and calendar. */
   showFertility: boolean;
+  /** Number each logged bleeding day within its period (day 1, 2, 3…) on the calendar. */
+  showPeriodDayNumbers: boolean;
   theme: ThemePreference;
 }
 

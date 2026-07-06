@@ -24,6 +24,7 @@ interface HistoryCalendarGridProps {
   loggedDays: Set<IsoDate>;
   dayIntensity: Map<IsoDate, FlowIntensity>;
   periodDayNumbers: Map<IsoDate, number>;
+  showPeriodDayNumbers: boolean;
   cycleMarkers: Map<IsoDate, DayMarker>;
   selectedDay: IsoDate | null;
   justLoggedDay: IsoDate | null;
@@ -35,6 +36,7 @@ export function HistoryCalendarGrid({
   loggedDays,
   dayIntensity,
   periodDayNumbers,
+  showPeriodDayNumbers,
   cycleMarkers,
   selectedDay,
   justLoggedDay,
@@ -53,7 +55,10 @@ export function HistoryCalendarGrid({
         {monthDays.map((day) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
-          const periodDay = isLogged ? periodDayNumbers.get(value) : undefined;
+          const periodDay =
+            isLogged && showPeriodDayNumbers
+              ? periodDayNumbers.get(value)
+              : undefined;
           // Logged days take the coral fill, deepened by flow level; a
           // prediction only shows on days that aren't already logged.
           const flow = isLogged

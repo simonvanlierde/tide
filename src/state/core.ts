@@ -17,7 +17,9 @@ export type AppStateAction =
     }
   | { type: "dismissReminder"; today: IsoDate }
   | { type: "setShowFertility"; show: boolean }
-  | { type: "setTheme"; theme: ThemePreference };
+  | { type: "setShowPeriodDayNumbers"; show: boolean }
+  | { type: "setTheme"; theme: ThemePreference }
+  | { type: "importState"; state: AppState };
 
 export function appStateReducer(
   state: AppState,
@@ -93,6 +95,15 @@ export function appStateReducer(
         },
       };
 
+    case "setShowPeriodDayNumbers":
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          showPeriodDayNumbers: action.show,
+        },
+      };
+
     case "setTheme":
       return {
         ...state,
@@ -101,6 +112,10 @@ export function appStateReducer(
           theme: action.theme,
         },
       };
+
+    // Wholesale replace: the imported state is already normalized by the caller.
+    case "importState":
+      return action.state;
   }
 }
 

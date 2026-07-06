@@ -55,6 +55,7 @@ export function useHistoryCalendar(today: IsoDate) {
     [state.periodDays, state.intensityByDay],
   );
   const showFertility = state.settings.showFertility;
+  const showPeriodDayNumbers = state.settings.showPeriodDayNumbers;
   const cycleMarkers = useMemo(
     () => buildCalendarMarkers(summary, showFertility),
     [summary, showFertility],
@@ -95,6 +96,7 @@ export function useHistoryCalendar(today: IsoDate) {
     periodDayNumbers,
     cycleMarkers,
     showFertility,
+    showPeriodDayNumbers,
     selectedDay,
     justLoggedDay,
     // Mirror the grid: a logged day with no stored level reads as the default
@@ -114,7 +116,8 @@ export function useHistoryCalendar(today: IsoDate) {
     goToToday() {
       setMonth(today);
     },
-    // Tapping a day opens its flow picker; tapping the open day closes it.
+    // Empty day → one-tap log at the default flow (medium). Logged day → open
+    // its picker to change the flow or remove it; tapping the open day closes.
     selectDay(day: IsoDate) {
       if (!loggedDays.has(day)) {
         actions.togglePeriodDay(day, today);
