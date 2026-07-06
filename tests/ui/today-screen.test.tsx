@@ -164,7 +164,7 @@ describe("TodayScreen", () => {
     await user.click(screen.getByLabelText(/show fertility disclaimer/i));
 
     expect(
-      screen.getByText(/informational only and not birth control/i),
+      screen.getByText(/informational, not birth control/i),
     ).toBeInTheDocument();
   });
 

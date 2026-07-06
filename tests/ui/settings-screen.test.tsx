@@ -52,10 +52,10 @@ describe("SettingsScreen", () => {
     renderSettings();
 
     expect(
-      screen.getByText(/log a day when you had menstrual bleeding/i),
+      screen.getByText(/log the days you had menstrual bleeding/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/informational only and not birth control/i),
+      screen.getByText(/informational, not birth control/i),
     ).toBeInTheDocument();
   });
 

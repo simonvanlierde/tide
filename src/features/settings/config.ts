@@ -6,8 +6,8 @@ export const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: "dark", label: "Dark" },
 ];
 export const INFORMATION_COPY = {
-  logging: "Log a day when you had menstrual bleeding on that date.",
-  fertility: "Estimates are informational only and not birth control.",
+  logging: "Log the days you had menstrual bleeding.",
+  fertility: "Estimates are informational, not birth control.",
   privacy: "Everything stays on this device.",
 } as const;
 
