@@ -86,10 +86,15 @@
     --bleed: #e8785f;
     --bleed-strong: #f0917a;
 
-    /* Spotting and light hold down the low end on the dark ground; medium and
-       heavy inherit the brighter dark-theme coral above. */
-    --flow-spotting: #b5604e;
-    --flow-light: #d06d58;
+    /* Same rising tide as light mode — pale rose to deep coral, spotting →
+       heavy — retuned for the dark ground: every step stays light enough to
+       carry the near-black --ink-on-fill day number (all clear AA) and sits
+       off the charcoal. Decoupled from --bleed/--bleed-strong so heavy reads
+       as the deepest step, not the hover-bright coral. */
+    --flow-spotting: #ecb4a7;
+    --flow-light: #e79079;
+    --flow-medium: #e2745c;
+    --flow-heavy: #d95f45;
 
     /* Fertile a pale warm sand, ovulation a saturated amber — clearly apart
        from each other and from coral on the dark ground. */
