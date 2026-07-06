@@ -27,7 +27,7 @@ describe("SettingsScreen", () => {
   it("links to the source repository from the About card", () => {
     renderSettings();
 
-    const link = screen.getByRole("link", { name: /source on github/i });
+    const link = screen.getByRole("link", { name: /source code/i });
     expect(link).toHaveAttribute(
       "href",
       "https://github.com/simonvanlierde/tide",
@@ -52,10 +52,10 @@ describe("SettingsScreen", () => {
     renderSettings();
 
     expect(
-      screen.getByText(/log a day when you had menstrual bleeding/i),
+      screen.getByText(/log the days you had menstrual bleeding/i),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/informational only and not birth control/i),
+      screen.getByText(/informational, not birth control/i),
     ).toBeInTheDocument();
   });
 

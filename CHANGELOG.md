@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.1] - 2026-07-06
+
+### Changed
+
+- Reworked the About footer: version and source link as a pill, plus a
+  copyright line.
+- Shortened the About notes and slimmed the Data card spacing.
+- Dependabot now uses a cooldown before opening update PRs.
+
 ## [0.2.0] - 2026-07-06
 
 ### Added
@@ -64,5 +73,6 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
+[0.2.1]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.1
 [0.2.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.0
 [0.1.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.1.0
