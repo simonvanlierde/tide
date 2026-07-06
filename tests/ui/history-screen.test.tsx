@@ -247,7 +247,7 @@ describe("HistoryScreen", () => {
     });
 
     expect(
-      screen.getByRole("button", { name: /edit march 30, 2026/i }),
+      screen.getByRole("button", { name: /log march 30, 2026/i }),
     ).toHaveClass("is-outside-month");
   });
 
@@ -267,7 +267,7 @@ describe("HistoryScreen", () => {
 
     const grid = screen.getByLabelText(/history calendar/i);
     const helper = screen.getByText(
-      /tap any day to log bleeding and set its flow/i,
+      /tap a day to log bleeding\. tap a logged day to change or remove it/i,
     );
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
@@ -281,6 +281,27 @@ describe("HistoryScreen", () => {
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).not.toBe(0);
     expect(todayButton).toHaveClass("history-calendar__today");
+  });
+
+  it("hides period day numbers when the setting is off", () => {
+    const withNumbers = renderWithAppState(
+      <HistoryScreen today="2026-04-18" />,
+      { state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }) },
+    );
+    expect(
+      withNumbers.container.querySelectorAll(".calendar-grid__period-day"),
+    ).not.toHaveLength(0);
+    withNumbers.unmount();
+
+    const hidden = renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { showPeriodDayNumbers: false },
+      }),
+    });
+    expect(
+      hidden.container.querySelectorAll(".calendar-grid__period-day"),
+    ).toHaveLength(0);
   });
 
   it("shows a quiet empty state when no logs exist", () => {
