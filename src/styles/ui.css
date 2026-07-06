@@ -190,13 +190,19 @@
 
   .secondary-action:hover,
   .chip-button:hover,
-  .calendar-grid__day:not(:disabled):hover,
+  .calendar-grid__day:not(:disabled):not(.is-logged):hover,
   .history-calendar__nav:hover,
   .history-calendar__today:hover,
   .history-calendar__month-button:hover {
     border-color: var(--tide);
     color: var(--tide-strong);
     background: var(--tide-tint);
+  }
+
+  /* Logged days keep their coral fill on hover — only a subtle press, never a
+     blue wash. Selection is shown by the ring alone (see .is-selected). */
+  .calendar-grid__day.is-logged:not(:disabled):hover {
+    filter: brightness(0.95);
   }
 
   .text-action {
@@ -397,9 +403,38 @@
   }
 
   .chip-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 9px 15px;
     border-radius: 999px;
     font-size: 0.94rem;
+  }
+
+  .chip-button__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Very narrow phones: drop the label, leaving a round icon-only button. The
+     aria-label keeps each action named for assistive tech. */
+  @media (max-width: 360px) {
+    .chip-button__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .chip-button {
+      padding: 9px;
+    }
   }
 
   .chip-button.is-active {
@@ -443,10 +478,19 @@
     flex-wrap: wrap;
   }
 
-  /* A note belongs to its row but drops onto its own full-width line. */
-  .settings-row__note {
-    flex-basis: 100%;
-    margin-top: -2px;
+  /* Controls sit together on the right: the info affordance then the switch. */
+  .settings-row__controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Card heading paired with an info affordance on the right. */
+  .section-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   /* Theme picker: label stacked over the full-width segmented control. */
@@ -455,8 +499,9 @@
     margin-bottom: 8px;
   }
 
-  /* Hairline between the two Preferences controls. */
-  .theme-field + .settings-row {
+  /* Hairline between stacked Preferences controls. */
+  .theme-field + .settings-row,
+  .settings-row + .settings-row {
     border-top: 1px solid var(--surface-border);
     padding-top: 12px;
   }
@@ -586,6 +631,12 @@
   /* Calendar */
   .calendar-grid {
     gap: 10px;
+  }
+
+  /* Swipe surface: follows the finger horizontally, lets vertical scroll pass.
+     The inline transform/transition is driven from HistoryScreen. */
+  .calendar-swipe {
+    touch-action: pan-y;
   }
 
   .calendar-grid__header,

@@ -1,4 +1,6 @@
 import { useAppState, useAppStateActions } from "../../state/provider";
+import { SETTINGS_HELP } from "./config";
+import { InfoPopover } from "./InfoPopover";
 
 export function FertilitySection() {
   const state = useAppState();
@@ -10,18 +12,19 @@ export function FertilitySection() {
       <span className="settings-label" id="fertility-label">
         Show fertility estimates
       </span>
-      <button
-        type="button"
-        role="switch"
-        aria-checked={current}
-        aria-labelledby="fertility-label"
-        className="switch"
-        onClick={() => actions.setShowFertility(!current)}
-      />
-      <p className="supporting-note settings-row__note">
-        Shows fertile-window and ovulation estimates on the home screen and
-        calendar.
-      </p>
+      <div className="settings-row__controls">
+        <InfoPopover label="About fertility estimates">
+          {SETTINGS_HELP.fertility}
+        </InfoPopover>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={current}
+          aria-labelledby="fertility-label"
+          className="switch"
+          onClick={() => actions.setShowFertility(!current)}
+        />
+      </div>
     </div>
   );
 }
