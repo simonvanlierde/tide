@@ -1,5 +1,11 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { type KeyboardEvent, type TouchEvent, useRef } from "react";
+import {
+  type KeyboardEvent,
+  type TouchEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
 import { DayFlowPicker } from "./DayFlowPicker";
@@ -15,7 +21,35 @@ export function HistoryScreen({
   today = getTodayIsoDate(),
 }: HistoryScreenProps) {
   const model = useHistoryCalendar(today);
+  const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const [pinpointNonce, setPinpointNonce] = useState(0);
+
+  // Pop the today cell so people see exactly where they are after "Today".
+  // Web Animations replays on every press; skip it under reduced motion.
+  useEffect(() => {
+    if (pinpointNonce === 0 || prefersReducedMotion()) {
+      return;
+    }
+    const cell = articleRef.current?.querySelector<HTMLElement>(
+      ".calendar-grid__day.is-today",
+    );
+    if (typeof cell?.animate === "function") {
+      cell.animate(
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(1.18)" },
+          { transform: "scale(1)" },
+        ],
+        { duration: 460, easing: "ease-out" },
+      );
+    }
+  }, [pinpointNonce]);
+
+  function handleGoToToday() {
+    model.goToToday();
+    setPinpointNonce((nonce) => nonce + 1);
+  }
 
   function handleTouchStart(event: TouchEvent) {
     const touch = event.touches[0];
@@ -68,9 +102,8 @@ export function HistoryScreen({
     <section className="utility-screen">
       <h1 className="visually-hidden">Calendar</h1>
       <article
+        ref={articleRef}
         className="utility-card history-calendar"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
         onKeyDown={handleKeyDown}
       >
         <div
@@ -104,17 +137,23 @@ export function HistoryScreen({
           </button>
         </div>
         <HistoryMonthPicker {...model.monthPicker} />
-        <HistoryCalendarGrid
-          monthDays={model.monthDays}
-          loggedDays={model.loggedDays}
-          dayIntensity={model.dayIntensity}
-          periodDayNumbers={model.periodDayNumbers}
-          showPeriodDayNumbers={model.showPeriodDayNumbers}
-          cycleMarkers={model.cycleMarkers}
-          selectedDay={model.selectedDay}
-          justLoggedDay={model.justLoggedDay}
-          onSelectDay={model.selectDay}
-        />
+        <div
+          className="calendar-swipe"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <HistoryCalendarGrid
+            monthDays={model.monthDays}
+            loggedDays={model.loggedDays}
+            dayIntensity={model.dayIntensity}
+            periodDayNumbers={model.periodDayNumbers}
+            showPeriodDayNumbers={model.showPeriodDayNumbers}
+            cycleMarkers={model.cycleMarkers}
+            selectedDay={model.selectedDay}
+            justLoggedDay={model.justLoggedDay}
+            onSelectDay={model.selectDay}
+          />
+        </div>
         {model.selectedDay ? (
           <DayFlowPicker
             day={model.selectedDay}
@@ -136,7 +175,7 @@ export function HistoryScreen({
           type="button"
           className="history-calendar__today"
           aria-label="Go to current month"
-          onClick={model.goToToday}
+          onClick={handleGoToToday}
         >
           Today
         </button>
@@ -147,6 +186,12 @@ export function HistoryScreen({
         </article>
       ) : null}
     </section>
+  );
+}
+
+function prefersReducedMotion() {
+  return (
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
   );
 }
 
