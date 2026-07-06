@@ -1,6 +1,6 @@
-import { screen } from "@testing-library/react";
+import { act, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { useAppState, useAppStateActions } from "../../src/state/provider";
 import {
@@ -80,5 +80,59 @@ describe("app state", () => {
     expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
       '"dismissedFor":"2026-04-18"',
     );
+  });
+
+  it("refuses to expose state or actions outside a provider", () => {
+    expect(() => renderHook(() => useAppState())).toThrow(
+      /must be used inside AppStateProvider/,
+    );
+    expect(() => renderHook(() => useAppStateActions())).toThrow(
+      /must be used inside AppStateProvider/,
+    );
+  });
+});
+
+describe("system theme preference", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  function stubMatchMedia(initialMatches: boolean) {
+    let matches = initialMatches;
+    const listeners = new Set<() => void>();
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        get matches() {
+          return matches;
+        },
+        addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+        removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+      })),
+    );
+    return {
+      emitChange(next: boolean) {
+        matches = next;
+        for (const fn of listeners) fn();
+      },
+      listenerCount: () => listeners.size,
+    };
+  }
+
+  it("follows the OS preference and reacts to changes while theme is system", () => {
+    const media = stubMatchMedia(true);
+
+    const { unmount } = renderWithAppState(<output>probe</output>, {
+      state: createAppState({ settings: { theme: "system" } }),
+    });
+
+    expect(document.documentElement.dataset.theme).toBe("dark");
+
+    act(() => media.emitChange(false));
+    expect(document.documentElement.dataset.theme).toBe("light");
+
+    // The change listener is torn down on unmount.
+    unmount();
+    expect(media.listenerCount()).toBe(0);
   });
 });
