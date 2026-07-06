@@ -16,7 +16,8 @@ async function openOverlays(page: Page, path: string) {
       Array.from({ length: count }, (_, i) => triggers.nth(i).click()),
     );
   } else if (path === "/history") {
-    await page.locator(".calendar-grid__day:not([disabled])").first().click();
+    // A logged day opens the flow picker; an empty day one-tap logs instead.
+    await page.locator(".calendar-grid__day.is-logged").first().click();
     await expect(page.getByRole("button", { name: /^close$/i })).toBeVisible();
   }
 }
