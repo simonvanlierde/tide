@@ -63,7 +63,7 @@ pnpm dev
 Two automated checks run against the UI. Neither certifies a conformance level (e.g. WCAG AA) — they catch the subset of issues these tools can detect automatically.
 
 - **Static lint:** Biome's `a11y` rules are enabled (`biome.json`), so accessibility lints run as part of `pnpm lint` / `pnpm check` — on every pull request and push in CI.
-- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) (via `@axe-core/playwright`) against `/`, `/history`, and `/settings`, in both light and dark themes, tagged `wcag2a` + `wcag2aa`, and fails on any *serious* or *critical* violation. Run it with `pnpm test:e2e`. In CI it runs on every pull request (the `a11y-e2e` job) and, as part of the full smoke suite, on pushes to `main`.
+- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) (via `@axe-core/playwright`) against `/`, `/history`, and `/settings`, in both light and dark themes and with the page's overlays open (info popover, calendar flow picker), tagged `wcag2a` + `wcag2aa`, and fails on any *moderate*, *serious*, or *critical* violation. Run it with `pnpm test:e2e`. In CI it runs on every pull request (the `a11y-e2e` job) and, as part of the full smoke suite, on pushes to `main`.
 
 ## Architecture
 

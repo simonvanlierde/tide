@@ -1,7 +1,25 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 const ROUTES = ["/", "/history", "/settings"];
+
+// Open any overlay a route hides behind an interaction, so axe scans it too —
+// the info popover on Today and the flow picker on the calendar. Static routes
+// have nothing to open.
+async function openOverlays(page: Page, path: string) {
+  if (path === "/") {
+    const triggers = page.locator(".info-popover__trigger");
+    const count = await triggers.count();
+    expect(count).toBeGreaterThan(0);
+    // Independent <details> toggles — open them together.
+    await Promise.all(
+      Array.from({ length: count }, (_, i) => triggers.nth(i).click()),
+    );
+  } else if (path === "/history") {
+    await page.locator(".calendar-grid__day:not([disabled])").first().click();
+    await expect(page.getByRole("button", { name: /^close$/i })).toBeVisible();
+  }
+}
 
 // Seed a fresh cycle relative to the real "today" so every screen renders real
 // content — a dial with a day, and a calendar with logged and predicted days.
@@ -39,18 +57,19 @@ for (const colorScheme of ["light", "dark"] as const) {
           page.getByRole("navigation", { name: /primary navigation/i }),
         ).toBeVisible();
 
+        await openOverlays(page, path);
+
         const { violations } = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa"])
           .analyze();
 
-        const serious = violations.filter(
-          (violation) =>
-            violation.impact === "serious" || violation.impact === "critical",
+        const impactful = violations.filter((violation) =>
+          ["moderate", "serious", "critical"].includes(violation.impact ?? ""),
         );
 
         expect(
-          serious,
-          serious.map((v) => `${v.id}: ${v.help}`).join("\n"),
+          impactful,
+          impactful.map((v) => `${v.id} (${v.impact}): ${v.help}`).join("\n"),
         ).toEqual([]);
       });
     }

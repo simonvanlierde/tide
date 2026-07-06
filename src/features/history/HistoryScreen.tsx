@@ -17,6 +17,7 @@ export function HistoryScreen({
 
   return (
     <section className="utility-screen">
+      <h1 className="visually-hidden">Calendar</h1>
       <article className="utility-card history-calendar">
         <div
           className="history-calendar__header"

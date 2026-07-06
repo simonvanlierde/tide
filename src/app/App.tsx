@@ -75,11 +75,16 @@ export function App() {
 
   return (
     <div className="app-shell">
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
       <header className="app-header">
         <span className="app-wordmark">tide</span>
         <span className="app-header__title">{activeScreen.title}</span>
       </header>
-      <main className="app-main">{activeScreen.render()}</main>
+      <main id="main" className="app-main" tabIndex={-1}>
+        {activeScreen.render()}
+      </main>
       <TabBar activePath={activeScreen.path} onNavigate={navigate} />
     </div>
   );
