@@ -41,6 +41,15 @@ describe("getReminderState", () => {
     expect(state.isOverdue).toBe(true);
   });
 
+  it("stops prompting once the prediction is long overdue (abandoned)", () => {
+    // 15 days past the expected date, nothing logged: the estimate is stale, so
+    // it must stop nagging instead of prompting every day forever.
+    const state = getReminderState({ ...BASE, today: "2026-05-15" });
+
+    expect(state.isExpectedSoon).toBe(false);
+    expect(state.shouldPrompt).toBe(false);
+  });
+
   it("stops prompting once today is logged", () => {
     const state = getReminderState({ ...BASE, isTodayLogged: true });
 

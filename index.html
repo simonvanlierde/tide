@@ -21,7 +21,11 @@
       (() => {
         try {
           const raw = localStorage.getItem("tide.period-tracker.state");
-          const theme = raw ? JSON.parse(raw).settings.theme : "system";
+          const parsed = raw ? JSON.parse(raw) : null;
+          // Unwrap the legacy { version, state } envelope the same way
+          // normalizeAppState does, so migrated users don't flash the wrong theme.
+          const settings = parsed && (parsed.state?.settings ?? parsed.settings);
+          const theme = settings?.theme ?? "system";
           const dark =
             theme === "dark" ||
             (theme !== "light" &&

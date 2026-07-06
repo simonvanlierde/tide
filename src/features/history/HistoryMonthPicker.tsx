@@ -31,6 +31,9 @@ export function HistoryMonthPicker({
           type="month"
           aria-label="Select month and year"
           className="history-calendar__picker-input"
+          // Hints for browsers (e.g. Firefox) that fall back to a text field.
+          placeholder="YYYY-MM"
+          pattern="\d{4}-\d{2}"
           value={monthInputValue}
           onChange={(event) => {
             onNativeMonthChange(event.target.value);

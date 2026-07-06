@@ -1,5 +1,6 @@
 import { startTransition, useMemo, useRef, useState } from "react";
 import { getPeriodDayNumbers } from "../../domain/cycle";
+import { DEFAULT_FLOW, getPredictionDays } from "../../domain/flow";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
 import {
   useAppState,
@@ -43,8 +44,13 @@ export function useHistoryCalendar(today: IsoDate) {
     [state.intensityByDay],
   );
   const periodDayNumbers = useMemo(
-    () => getPeriodDayNumbers(state.periodDays),
-    [state.periodDays],
+    // Number days from the same spotting-filtered set the cycle summary uses, so
+    // the calendar and the Today dial agree on "day N" of a period.
+    () =>
+      getPeriodDayNumbers(
+        getPredictionDays(state.periodDays, state.intensityByDay),
+      ),
+    [state.periodDays, state.intensityByDay],
   );
   const showFertility = state.settings.showFertility;
   const cycleMarkers = useMemo(
@@ -60,6 +66,9 @@ export function useHistoryCalendar(today: IsoDate) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
       setIsPickerOpen(false);
+      // Close the flow picker too: it edits a specific day, which the new month
+      // no longer shows.
+      setSelectedDay(null);
     });
   }
 
@@ -84,9 +93,12 @@ export function useHistoryCalendar(today: IsoDate) {
     cycleMarkers,
     showFertility,
     selectedDay,
-    selectedIntensity: selectedDay
-      ? state.intensityByDay[selectedDay]
-      : undefined,
+    // Mirror the grid: a logged day with no stored level reads as the default
+    // flow, so the picker's gauge matches the day's coral fill.
+    selectedIntensity:
+      selectedDay && loggedDays.has(selectedDay)
+        ? (state.intensityByDay[selectedDay] ?? DEFAULT_FLOW)
+        : undefined,
     isSelectedLogged: selectedDay ? loggedDays.has(selectedDay) : false,
     openPicker,
     goToPreviousMonth() {

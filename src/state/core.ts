@@ -1,5 +1,5 @@
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
-import { DEFAULT_FLOW } from "../domain/flow";
+import { DEFAULT_FLOW, getPredictionDays } from "../domain/flow";
 import type {
   AppState,
   FlowIntensity,
@@ -105,10 +105,9 @@ export function appStateReducer(
 }
 
 export function selectCycleSummary(state: AppState, today: IsoDate) {
-  // Spotting days are recorded and shown, but excluded from cycle-start
-  // detection and predictions — spotting is often not the true period start.
-  const predictionDays = state.periodDays.filter(
-    (day) => state.intensityByDay[day] !== "spotting",
+  const predictionDays = getPredictionDays(
+    state.periodDays,
+    state.intensityByDay,
   );
 
   return buildCycleSummary({

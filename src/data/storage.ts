@@ -31,7 +31,9 @@ export function saveAppState(state: AppState) {
 function setItemSafely(key: string, value: string) {
   try {
     window.localStorage.setItem(key, value);
-  } catch {
-    // Intentionally ignored.
+  } catch (error) {
+    // Don't crash, but surface it: a swallowed failure here is silent data loss.
+    // biome-ignore lint/suspicious/noConsole: last-resort diagnostic for lost persistence
+    console.warn(`tide: could not persist "${key}" to localStorage`, error);
   }
 }
