@@ -8,13 +8,9 @@
 
 Tide is a privacy-first period tracker — a small, local-first React PWA that keeps all cycle data in your browser.
 
-<p align="center">
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/today-dark.png">
-  <img alt="Tide's Today screen" src="docs/screenshots/today-light.png" width="300">
-</picture>
-</p>
+| Today | Calendar |
+| --- | --- |
+| <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/today-dark.png"><img alt="Tide's Today screen" src="docs/screenshots/today-light.png" width="300"></picture> | <picture><source media="(prefers-color-scheme: dark)" srcset="docs/screenshots/calendar-dark.png"><img alt="Tide's Calendar screen" src="docs/screenshots/calendar-light.png" width="300"></picture> |
 
 ## Install
 
