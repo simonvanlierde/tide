@@ -61,6 +61,7 @@ export function DataSection() {
           ref={fileInput}
           type="file"
           accept="application/json,.json"
+          aria-label="Import data file"
           className="visually-hidden"
           onChange={handleImport}
         />
