@@ -29,7 +29,7 @@ export function DataSection() {
   }
 
   return (
-    <article className="utility-card">
+    <article className="utility-card utility-card--slim">
       <div className="section-heading-row">
         <h2 className="section-title">Data</h2>
         <InfoPopover label="About import and export">

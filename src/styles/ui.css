@@ -680,6 +680,13 @@
     box-shadow: var(--shadow-card);
   }
 
+  /* Cards holding a single control row don't need the full block rhythm; trim
+     vertical padding and gap while keeping horizontal alignment with the rest. */
+  .utility-card--slim {
+    padding-block: 15px;
+    gap: 11px;
+  }
+
   /* Calendar */
   .calendar-grid {
     gap: 10px;
