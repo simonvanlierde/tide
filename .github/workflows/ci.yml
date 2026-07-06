@@ -33,10 +33,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  # Runs only on PRs — main gets the full smoke suite below, which already
-  # includes these axe checks, so there is no duplicate run.
-  a11y-e2e:
-    if: github.event_name == 'pull_request'
+  e2e:
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     needs: quality
     runs-on: ubuntu-latest
     container:
@@ -48,21 +46,10 @@ jobs:
       - name: Set up toolchain
         uses: ./.github/actions/setup-node-pnpm
 
-      - name: Run axe accessibility checks
-        run: pnpm test:e2e tests/e2e/a11y.spec.ts
-
-  smoke-e2e:
-    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
-    needs: quality
-    runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.61.1-noble
-    steps:
-      - name: Checkout
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-
-      - name: Set up toolchain
-        uses: ./.github/actions/setup-node-pnpm
-
-      - name: Run Playwright smoke tests
-        run: pnpm test:e2e
+      - name: Run Playwright tests
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            pnpm test:e2e tests/e2e/a11y.spec.ts
+          else
+            pnpm test:e2e
+          fi
