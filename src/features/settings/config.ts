@@ -10,3 +10,5 @@ export const INFORMATION_COPY = {
   fertility: "Estimates are informational only and not birth control.",
   privacy: "Everything stays on this device.",
 } as const;
+
+export const REPOSITORY_URL = "https://github.com/simonvanlierde/tide";

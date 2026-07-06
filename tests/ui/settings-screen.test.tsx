@@ -20,6 +20,16 @@ describe("SettingsScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("links to the source repository from the About card", () => {
+    renderSettings();
+
+    const link = screen.getByRole("link", { name: /source on github/i });
+    expect(link).toHaveAttribute(
+      "href",
+      "https://github.com/simonvanlierde/tide",
+    );
+  });
+
   it("no longer surfaces reminder or snooze controls", () => {
     renderSettings();
 
