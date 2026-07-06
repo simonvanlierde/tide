@@ -4,6 +4,39 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-07-06
+
+### Added
+
+- Calendar logging is now one tap for empty days, with a follow-up picker for
+  changing flow or removing a logged day.
+- Calendar navigation now supports swiping between months, PageUp/PageDown
+  keyboard shortcuts, and a Today highlight.
+- Settings now include import/export controls for local JSON backups.
+- Settings now include a toggle for showing or hiding period day numbers on the
+  calendar.
+- The README now shows both Today and Calendar screenshots, with light and dark
+  variants.
+
+### Changed
+
+- Settings preferences were reorganized into a compact Preferences card with
+  switches, a segmented theme control, and inline helper popovers.
+- Calendar day labels now distinguish between logging empty days and editing
+  logged days.
+- Mobile layout and viewport handling were tightened for narrow and short
+  screens.
+- Dark theme flow colors were retuned so each intensity remains readable.
+
+### Tested
+
+- Added import/export parsing coverage.
+- Added calendar interaction coverage for one-tap logging, picker focus,
+  outside-click close, swipe navigation, PageUp/PageDown navigation, and hidden
+  period day numbers.
+- Added Playwright viewport coverage for narrow phones, fold cover widths, and
+  short screens.
+
 ## [0.1.0] - 2026-07-06
 
 First tagged release. Core cycle tracking is implemented, tested, and live at
@@ -31,4 +64,5 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
+[0.2.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.0
 [0.1.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.1.0
