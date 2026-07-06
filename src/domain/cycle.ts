@@ -6,7 +6,7 @@ const DEFAULT_LUTEAL_LENGTH = 14;
 // Gaps shorter than this are missed logging days within one period, not a new
 // cycle: real inter-cycle gaps are ~20+ days (cycle length minus period length).
 // NOTE: we use a fixed 10-day floor; a genuinely short (<~11-day) cycle would merge
-// into one run. 
+// into one run.
 // TODO: Learn a per-user threshold from cycle history if that matters.
 const NEW_CYCLE_MIN_GAP_DAYS = 10;
 

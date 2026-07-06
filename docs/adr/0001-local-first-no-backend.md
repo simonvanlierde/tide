@@ -5,15 +5,12 @@
 
 ## Context
 
-Tide tracks menstrual cycles — among the most sensitive personal data a person
-can record. In several jurisdictions this data has become a legal liability for
-whoever holds it. The usual app architecture (accounts, a server, a database)
-means someone other than the user holds that data and can be compelled to
-produce it, and it adds a breach surface, hosting cost, and ongoing operational
-duty that a solo project cannot credibly staff.
-
-The counter-pull is that a backend is what normally provides cross-device sync,
-cloud backup, and multi-user features.
+Tide tracks menstrual cycles — among the most sensitive data a person can
+record, and in several jurisdictions a legal liability for whoever holds it. The
+usual architecture (accounts, server, database) puts that data in someone else's
+custody — subpoena-able, breachable, and an operational duty a solo project
+cannot credibly staff. The counter-pull: a backend is what normally provides
+sync, cloud backup, and multi-user features.
 
 ## Decision
 
@@ -45,8 +42,8 @@ Costs / limits, accepted:
 
 ## Alternatives considered
 
-- **Backend with accounts** — rejected: reintroduces exactly the data-custody
+- **Backend with accounts** — rejected: reintroduces the exact data-custody
   liability this project exists to avoid.
-- **End-to-end-encrypted cloud sync** — deferred: it would restore sync without
-  readable server-side data, but the key-management and recovery UX is a large
-  amount of work that is not justified for a single-device tracker today.
+- **End-to-end-encrypted cloud sync** — deferred: restores sync without readable
+  server-side data, but the key-management and recovery UX isn't justified for a
+  single-device tracker today.
