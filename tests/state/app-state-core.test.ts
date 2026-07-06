@@ -72,6 +72,19 @@ describe("app state core selectors", () => {
     expect(next.periodDays).toEqual(["2026-04-02"]);
   });
 
+  it("refuses to set a flow level on a future, un-logged day", () => {
+    const state = createAppState({ periodDays: ["2026-04-02"] });
+
+    const next = appStateReducer(state, {
+      type: "setDayIntensity",
+      day: "2026-04-10",
+      intensity: "heavy",
+      today: "2026-04-05",
+    });
+
+    expect(next).toBe(state);
+  });
+
   it("excludes spotting days from cycle predictions", () => {
     const spotting = createAppState({
       periodDays: ["2026-04-02"],
