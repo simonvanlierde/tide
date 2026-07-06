@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
-import { AppStateProvider } from "../../src/state/provider";
 import { useHistoryCalendar } from "../../src/features/history/useHistoryCalendar";
+import { AppStateProvider } from "../../src/state/provider";
 import { createLearnedCycleState } from "../support/app";
 
 function wrapper({ children }: { children: ReactNode }) {
