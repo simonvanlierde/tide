@@ -134,6 +134,40 @@ describe("HistoryScreen", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("focuses the selected intensity when the picker opens", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    );
+
+    // A logged day defaults to medium, so the arrow keys have a starting point.
+    expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
+  });
+
+  it("closes the picker when interacting outside it", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /^close$/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.pointerDown(document.body);
+
+    expect(
+      screen.queryByRole("button", { name: /^close$/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("changes month by swiping the calendar left and right", () => {
     renderWithAppState(<HistoryScreen today="2026-04-18" />);
     const grid = screen.getByLabelText(/history calendar/i);
