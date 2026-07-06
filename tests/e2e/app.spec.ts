@@ -5,7 +5,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await expect(page.getByText(/^today$/i).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /^today$/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^history$/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^calendar$/i })).toBeVisible();
   await expect(page.getByRole("link", { name: /^settings$/i })).toBeVisible();
 
   await page.getByRole("link", { name: /^settings$/i }).click();
