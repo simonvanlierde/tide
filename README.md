@@ -84,4 +84,9 @@ The core design decision — keeping all data on-device with no backend — is r
 
 ## Deployment
 
-`pnpm build` outputs a static site to `dist/`, deployable to any static host.
+**[tide.duinlab.nl](https://tide.duinlab.nl)** is hosted on Cloudflare Pages via its Git
+integration: a push to `main` triggers a build (`pnpm build`) that publishes `dist/`. The build
+command and preview settings live in the Cloudflare dashboard; the repo only pins the output
+directory in [`wrangler.jsonc`](wrangler.jsonc).
+
+To deploy from a local checkout: `pnpm deploy` (`wrangler pages deploy`).

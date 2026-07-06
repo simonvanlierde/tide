@@ -4,8 +4,6 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
 ## [0.1.0] - 2026-07-06
 
 First tagged release. Core cycle tracking is implemented, tested, and live at
@@ -33,5 +31,4 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
-[Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.1.0
