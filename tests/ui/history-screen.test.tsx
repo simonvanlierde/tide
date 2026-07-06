@@ -1,10 +1,29 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HistoryScreen } from "../../src/features/history/HistoryScreen";
 import { createAppState, renderWithAppState } from "../support/app";
 
+const originalAnimate = HTMLElement.prototype.animate;
+
 describe("HistoryScreen", () => {
+  afterEach(() => {
+    HTMLElement.prototype.animate = originalAnimate;
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  function stubMatchMedia(matches: boolean) {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    );
+  }
+
   it("renders a month calendar with bleeding-day guidance", () => {
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
@@ -189,6 +208,39 @@ describe("HistoryScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("ignores incomplete, short, and vertical swipes", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.touchStart(grid, { touches: [] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 90, clientY: 90 }],
+    });
+    fireEvent.touchStart(grid, { touches: [{ clientX: 240, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 210, clientY: 125 }],
+    });
+    fireEvent.touchStart(grid, { touches: [{ clientX: 240, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 170, clientY: 220 }],
+    });
+
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("ignores unrelated calendar keyboard shortcuts", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.keyDown(grid, { key: "End" });
+
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
   it("changes month with PageDown and PageUp", () => {
     renderWithAppState(<HistoryScreen today="2026-04-18" />);
     const grid = screen.getByLabelText(/history calendar/i);
@@ -199,6 +251,20 @@ describe("HistoryScreen", () => {
     ).toBeInTheDocument();
 
     fireEvent.keyDown(grid, { key: "PageUp" });
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("leaves month input keyboard handling to the picker", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+
+    await user.click(screen.getByRole("button", { name: /april 2026/i }));
+    fireEvent.keyDown(screen.getByLabelText(/select month and year/i), {
+      key: "PageDown",
+    });
+
     expect(
       screen.getByRole("button", { name: /april 2026/i }),
     ).toBeInTheDocument();
@@ -243,6 +309,43 @@ describe("HistoryScreen", () => {
     expect(
       screen.getByRole("button", { name: /april 2026/i }),
     ).toBeInTheDocument();
+  });
+
+  it("animates today after using the today action when motion is allowed", async () => {
+    const user = userEvent.setup();
+    const animate = vi.fn();
+    stubMatchMedia(false);
+    HTMLElement.prototype.animate =
+      animate as typeof HTMLElement.prototype.animate;
+    renderWithAppState(<HistoryScreen today="2026-04-21" />);
+
+    await user.click(
+      screen.getByRole("button", { name: /go to current month/i }),
+    );
+
+    expect(animate).toHaveBeenCalledWith(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(1.18)" },
+        { transform: "scale(1)" },
+      ],
+      { duration: 460, easing: "ease-out" },
+    );
+  });
+
+  it("skips the today animation when reduced motion is requested", async () => {
+    const user = userEvent.setup();
+    const animate = vi.fn();
+    stubMatchMedia(true);
+    HTMLElement.prototype.animate =
+      animate as typeof HTMLElement.prototype.animate;
+    renderWithAppState(<HistoryScreen today="2026-04-21" />);
+
+    await user.click(
+      screen.getByRole("button", { name: /go to current month/i }),
+    );
+
+    expect(animate).not.toHaveBeenCalled();
   });
 
   it("disables future days and does not toggle them", async () => {
