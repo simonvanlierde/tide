@@ -22,9 +22,10 @@ describe("openNativeMonthPicker", () => {
 
   it("focuses the field when showPicker throws (e.g. Firefox month input)", () => {
     const input = document.createElement("input");
-    (input as HTMLInputElement & { showPicker: () => void }).showPicker = () => {
-      throw new Error("not supported");
-    };
+    (input as HTMLInputElement & { showPicker: () => void }).showPicker =
+      () => {
+        throw new Error("not supported");
+      };
     const focus = vi.spyOn(input, "focus");
 
     openNativeMonthPicker(input);
