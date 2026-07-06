@@ -1,44 +1,82 @@
-import { startTransition, useRef, useState } from "react";
-import type { IsoDate } from "../../domain/types";
-import { useAppState, useAppStateActions } from "../../state";
+import { startTransition, useMemo, useRef, useState } from "react";
+import { getPeriodDayNumbers } from "../../domain/cycle";
+import { DEFAULT_FLOW, getPredictionDays } from "../../domain/flow";
+import type { FlowIntensity, IsoDate } from "../../domain/types";
+import {
+  useAppState,
+  useAppStateActions,
+  useCycleSummary,
+} from "../../state/provider";
 import {
   addMonths,
   formatMonthInputValue,
-  parseIsoDate,
   parseMonthInputValue,
-  setIsoDateMonth,
 } from "../../utils/date";
 import {
+  buildCalendarMarkers,
   buildMonthDays,
   formatMonthLabel,
-  getHistoryYearOptions,
 } from "./calendar";
-import { openNativeMonthPicker, supportsNativeMonthInput } from "./monthPicker";
+import { openNativeMonthPicker } from "./monthPicker";
 
 export function useHistoryCalendar(today: IsoDate) {
   const state = useAppState();
   const actions = useAppStateActions();
+  const summary = useCycleSummary(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [hasNativeMonthInput] = useState(() => supportsNativeMonthInput());
+  const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
   const monthInputRef = useRef<HTMLInputElement | null>(null);
-  const currentYear = parseIsoDate(visibleMonth).getUTCFullYear();
-  const currentMonthIndex = parseIsoDate(visibleMonth).getUTCMonth();
+
+  const monthDays = useMemo(
+    () => buildMonthDays(visibleMonth, today),
+    [visibleMonth, today],
+  );
+  const loggedDays = useMemo(
+    () => new Set(state.periodDays),
+    [state.periodDays],
+  );
+  const dayIntensity = useMemo(
+    () =>
+      new Map<IsoDate, FlowIntensity>(
+        Object.entries(state.intensityByDay) as [IsoDate, FlowIntensity][],
+      ),
+    [state.intensityByDay],
+  );
+  const periodDayNumbers = useMemo(
+    // Number days from the same spotting-filtered set the cycle summary uses, so
+    // the calendar and the Today dial agree on "day N" of a period.
+    () =>
+      getPeriodDayNumbers(
+        getPredictionDays(state.periodDays, state.intensityByDay),
+      ),
+    [state.periodDays, state.intensityByDay],
+  );
+  const showFertility = state.settings.showFertility;
+  const cycleMarkers = useMemo(
+    () => buildCalendarMarkers(summary, showFertility),
+    [summary, showFertility],
+  );
+  const monthLabel = useMemo(
+    () => formatMonthLabel(visibleMonth),
+    [visibleMonth],
+  );
 
   function setMonth(nextMonth: IsoDate) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
       setIsPickerOpen(false);
+      // Close the flow picker too: it edits a specific day, which the new month
+      // no longer shows.
+      setSelectedDay(null);
     });
   }
 
   function openPicker() {
     setIsPickerOpen(true);
 
-    if (!hasNativeMonthInput || !monthInputRef.current) {
-      return;
-    }
-
+    // The input mounts only after isPickerOpen flips, so defer the ref read to
+    // the next tick; on the first open the ref is still null right now.
     window.setTimeout(() => {
       openNativeMonthPicker(monthInputRef.current);
     }, 0);
@@ -47,9 +85,21 @@ export function useHistoryCalendar(today: IsoDate) {
   return {
     periodDays: state.periodDays,
     isPickerOpen,
-    monthLabel: formatMonthLabel(visibleMonth),
-    monthDays: buildMonthDays(visibleMonth, today),
-    loggedDays: new Set(state.periodDays),
+    monthLabel,
+    monthDays,
+    loggedDays,
+    dayIntensity,
+    periodDayNumbers,
+    cycleMarkers,
+    showFertility,
+    selectedDay,
+    // Mirror the grid: a logged day with no stored level reads as the default
+    // flow, so the picker's gauge matches the day's coral fill.
+    selectedIntensity:
+      selectedDay && loggedDays.has(selectedDay)
+        ? (state.intensityByDay[selectedDay] ?? DEFAULT_FLOW)
+        : undefined,
+    isSelectedLogged: selectedDay ? loggedDays.has(selectedDay) : false,
     openPicker,
     goToPreviousMonth() {
       setMonth(addMonths(visibleMonth, -1));
@@ -60,39 +110,30 @@ export function useHistoryCalendar(today: IsoDate) {
     goToToday() {
       setMonth(today);
     },
-    togglePeriodDay(day: IsoDate) {
-      if (day > today) {
-        return;
-      }
-
-      actions.togglePeriodDay(day);
+    // Tapping a day opens its flow picker; tapping the open day closes it.
+    selectDay(day: IsoDate) {
+      setSelectedDay((current) => (current === day ? null : day));
+    },
+    closePicker() {
+      setSelectedDay(null);
+    },
+    setDayIntensity(day: IsoDate, intensity: FlowIntensity) {
+      actions.setDayIntensity(day, intensity, today);
+    },
+    removeDay(day: IsoDate) {
+      actions.togglePeriodDay(day, today);
+      setSelectedDay(null);
     },
     monthPicker: {
       isPickerOpen,
-      hasNativeMonthInput,
-      currentMonthIndex,
-      currentYear,
       monthInputRef,
       monthInputValue: formatMonthInputValue(visibleMonth),
-      yearOptions: getHistoryYearOptions(today),
       onNativeMonthChange(value: string) {
         if (!value) {
           return;
         }
 
         setMonth(parseMonthInputValue(value));
-      },
-      onFallbackMonthChange(monthIndex: number) {
-        startTransition(() => {
-          setVisibleMonth(setIsoDateMonth(visibleMonth, monthIndex));
-        });
-      },
-      onFallbackYearChange(year: number) {
-        setMonth(
-          parseMonthInputValue(
-            `${year}-${String(currentMonthIndex + 1).padStart(2, "0")}`,
-          ),
-        );
       },
     },
   };

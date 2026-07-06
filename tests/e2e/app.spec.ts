@@ -5,7 +5,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await expect(page.getByText(/^today$/i).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /^today$/i })).toBeVisible();
-  await expect(page.getByRole("link", { name: /^history$/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /^calendar$/i })).toBeVisible();
   await expect(page.getByRole("link", { name: /^settings$/i })).toBeVisible();
 
   await page.getByRole("link", { name: /^settings$/i }).click();
@@ -14,7 +14,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
     page.getByRole("heading", { name: /information/i }),
   ).toBeVisible();
 
-  await page.getByRole("link", { name: /^history$/i }).click();
+  await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/history$/);
   await expect(page.getByLabel(/history calendar/i)).toBeVisible();
 });

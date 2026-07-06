@@ -4,7 +4,7 @@ import { getAppScreen } from "../../src/app/navigation";
 describe("app navigation", () => {
   it("resolves the known Tide screen paths", () => {
     expect(getAppScreen("/").title).toBe("Today");
-    expect(getAppScreen("/history").title).toBe("History");
+    expect(getAppScreen("/history").title).toBe("Calendar");
     expect(getAppScreen("/settings").title).toBe("Settings");
   });
 

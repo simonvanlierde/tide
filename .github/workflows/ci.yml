@@ -7,6 +7,7 @@ on:
       - main
   workflow_dispatch:
 
+
 permissions:
   contents: read
 
@@ -19,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Set up toolchain
         uses: ./.github/actions/setup-node-pnpm
@@ -28,22 +29,27 @@ jobs:
         run: pnpm check
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v7
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
-  smoke-e2e:
-    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+  e2e:
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
     needs: quality
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.59.1-noble
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Set up toolchain
         uses: ./.github/actions/setup-node-pnpm
 
-      - name: Run Playwright smoke tests
-        run: pnpm test:e2e
+      - name: Run Playwright tests
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            pnpm test:e2e tests/e2e/a11y.spec.ts
+          else
+            pnpm test:e2e
+          fi

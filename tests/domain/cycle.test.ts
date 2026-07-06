@@ -1,7 +1,60 @@
 import { describe, expect, it } from "vitest";
-import { buildCycleSummary } from "../../src/domain/cycle";
+import {
+  buildCycleSummary,
+  getCompletedCycleLengths,
+  getPeriodDayNumbers,
+} from "../../src/domain/cycle";
+
+describe("getPeriodDayNumbers", () => {
+  it("counts calendar days since the period start, so skipped days still count and a new period resets", () => {
+    const numbers = getPeriodDayNumbers([
+      "2026-06-01",
+      "2026-06-05", // gap of 4 -> same period, calendar day 5
+      "2026-06-29", // gap of 24 -> new period, day 1
+      "2026-06-30",
+    ]);
+
+    expect(numbers.get("2026-06-01")).toBe(1);
+    expect(numbers.get("2026-06-05")).toBe(5);
+    expect(numbers.get("2026-06-29")).toBe(1);
+    expect(numbers.get("2026-06-30")).toBe(2);
+  });
+});
+
+describe("getCompletedCycleLengths", () => {
+  it("ignores gaps from missed logging days when computing completed cycle lengths", () => {
+    expect(
+      getCompletedCycleLengths([
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-04",
+        "2026-06-05",
+        "2026-06-29",
+        "2026-06-30",
+      ]),
+    ).toEqual([28]);
+  });
+});
 
 describe("buildCycleSummary", () => {
+  it("does not treat a missed logging day inside a period as a new cycle start", () => {
+    const periodDays = [
+      "2026-06-01",
+      "2026-06-02",
+      "2026-06-04",
+      "2026-06-05",
+    ] as const;
+    const summary = buildCycleSummary({
+      today: "2026-06-10",
+      periodDays: [...periodDays],
+      completedCycleLengths: getCompletedCycleLengths([...periodDays]),
+    });
+
+    expect(summary.cycleDay).toBe(10);
+    expect(summary.estimateMode).toBe("fallback");
+    expect(summary.nextPeriod.date).toBe("2026-06-29");
+  });
+
   it("uses a 28-day fallback cycle model when only one cycle start exists", () => {
     const summary = buildCycleSummary({
       today: "2026-04-19",

@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
+  BACKUP_KEY,
   loadAppState,
   STORAGE_KEY,
   saveAppState,
@@ -11,9 +12,7 @@ describe("local storage", () => {
     const state = createAppState({
       periodDays: ["2026-04-02"],
       settings: {
-        reminderWindowDays: 4,
-        snoozedUntil: null,
-        homeDisplayMode: "summary",
+        dismissedFor: "2026-04-01",
       },
     });
 
@@ -36,7 +35,7 @@ describe("local storage", () => {
       STORAGE_KEY,
       JSON.stringify({
         periodDays: ["2026-04-02"],
-        settings: { reminderWindowDays: 4, snoozedUntil: null },
+        settings: { dismissedFor: null },
       }),
     );
 
@@ -44,9 +43,7 @@ describe("local storage", () => {
       createAppState({
         periodDays: ["2026-04-02"],
         settings: {
-          reminderWindowDays: 4,
-          snoozedUntil: null,
-          homeDisplayMode: "summary",
+          dismissedFor: null,
         },
       }),
     );
@@ -58,9 +55,7 @@ describe("local storage", () => {
       JSON.stringify({
         periodDays: ["2026-04-02", "bad-date", "2026-04-02", "2026-03-20", 123],
         settings: {
-          reminderWindowDays: "nope",
-          snoozedUntil: "2026-04-22",
-          homeDisplayMode: "gallery",
+          dismissedFor: "nope",
         },
       }),
     );
@@ -69,15 +64,34 @@ describe("local storage", () => {
       createAppState({
         periodDays: ["2026-03-20", "2026-04-02"],
         settings: {
-          reminderWindowDays: 4,
-          snoozedUntil: "2026-04-22",
-          homeDisplayMode: "summary",
+          dismissedFor: null,
         },
       }),
     );
   });
 
-  it("resets to defaults when it encounters the removed versioned envelope", () => {
+  it("keeps only valid flow levels for days that are actually logged", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: {
+          "2026-04-02": "heavy", // valid, logged -> kept
+          "2026-04-03": "torrential", // invalid level -> dropped
+          "2026-04-09": "light", // not a logged day -> pruned
+        },
+      }),
+    );
+
+    expect(loadAppState()).toEqual(
+      createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: { "2026-04-02": "heavy" },
+      }),
+    );
+  });
+
+  it("recovers logged data from the legacy versioned envelope", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
@@ -88,6 +102,31 @@ describe("local storage", () => {
       }),
     );
 
+    expect(loadAppState()).toEqual(
+      createAppState({ periodDays: ["2026-04-02"] }),
+    );
+  });
+
+  it("backs up an unreadable blob before falling back to defaults", () => {
+    window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
+
     expect(loadAppState()).toEqual(createAppState());
+    expect(window.localStorage.getItem(BACKUP_KEY)).toBe(
+      "{ definitely not json",
+    );
+  });
+
+  it("keeps running when storage writes fail", () => {
+    const setItem = vi
+      .spyOn(Storage.prototype, "setItem")
+      .mockImplementation(() => {
+        throw new DOMException("quota", "QuotaExceededError");
+      });
+
+    try {
+      expect(() => saveAppState(createAppState())).not.toThrow();
+    } finally {
+      setItem.mockRestore();
+    }
   });
 });

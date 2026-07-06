@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
@@ -24,7 +24,7 @@ describe("App shell", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^today$/i })).toBeInTheDocument();
     expect(
-      screen.getByRole("link", { name: /^history$/i }),
+      screen.getByRole("link", { name: /^calendar$/i }),
     ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute(
       "aria-current",
@@ -36,15 +36,52 @@ describe("App shell", () => {
     const user = userEvent.setup();
     renderWithAppState(<App />);
 
-    await user.click(screen.getByRole("link", { name: /^history$/i }));
+    await user.click(screen.getByRole("link", { name: /^calendar$/i }));
 
     expect(
-      screen.getByText(/^history$/i, { selector: ".app-header__title" }),
+      screen.getByText(/^calendar$/i, { selector: ".app-header__title" }),
     ).toBeInTheDocument();
     expect(window.location.pathname).toBe("/history");
-    expect(screen.getByRole("link", { name: /^history$/i })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /^calendar$/i })).toHaveAttribute(
       "aria-current",
       "page",
     );
+  });
+
+  it("follows browser back/forward by syncing to the popstate location", () => {
+    renderWithAppState(<App />);
+
+    window.history.replaceState(null, "", "/history");
+    fireEvent.popState(window);
+
+    expect(
+      screen.getByText(/^calendar$/i, { selector: ".app-header__title" }),
+    ).toBeInTheDocument();
+  });
+
+  it("ignores a click on the already-active screen link", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<App />);
+
+    await user.click(screen.getByRole("link", { name: /^settings$/i }));
+
+    expect(window.location.pathname).toBe("/settings");
+    expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  });
+
+  it("lets a modified click fall through to the browser instead of navigating", () => {
+    renderWithAppState(<App />);
+
+    const calendarLink = screen.getByRole("link", { name: /^calendar$/i });
+    fireEvent.click(calendarLink, { metaKey: true });
+
+    // No in-app navigation: the settings screen and path are untouched.
+    expect(window.location.pathname).toBe("/settings");
+    expect(
+      screen.getByText(/^settings$/i, { selector: ".app-header__title" }),
+    ).toBeInTheDocument();
   });
 });

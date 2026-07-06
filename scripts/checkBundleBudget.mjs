@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import process from "node:process";
 import { gzipSync } from "node:zlib";
 
 const DIST_ASSETS_DIR = join(process.cwd(), "dist", "assets");

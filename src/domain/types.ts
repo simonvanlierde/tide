@@ -1,5 +1,4 @@
 export type IsoDate = `${number}-${number}-${number}`;
-export type HomeDisplayMode = "summary" | "linear" | "circular";
 export type CyclePhase =
   | "menstrual"
   | "follicular"
@@ -7,6 +6,8 @@ export type CyclePhase =
   | "luteal"
   | "unknown";
 export type CycleEstimateMode = "learned" | "fallback" | "insufficient";
+export type ThemePreference = "system" | "light" | "dark";
+export type FlowIntensity = "spotting" | "light" | "medium" | "heavy";
 
 export interface CycleSummary {
   cycleDay: number | null;
@@ -21,12 +22,20 @@ export interface CycleSummary {
 }
 
 export interface AppSettings {
-  reminderWindowDays: number;
-  snoozedUntil: IsoDate | null;
-  homeDisplayMode: HomeDisplayMode;
+  /** Day the reminder was dismissed with "Not yet"; hidden while it equals today. */
+  dismissedFor: IsoDate | null;
+  /** Show fertile-window and ovulation estimates on the home screen and calendar. */
+  showFertility: boolean;
+  theme: ThemePreference;
 }
 
 export interface AppState {
   periodDays: IsoDate[];
+  /**
+   * Flow level per logged day. Sparse: days logged before this feature (or with
+   * a plain one-tap log) are absent and render at the default level. Keys are
+   * pruned to `periodDays`, so a key here is always a logged day.
+   */
+  intensityByDay: Record<IsoDate, FlowIntensity>;
   settings: AppSettings;
 }

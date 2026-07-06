@@ -1,52 +1,220 @@
 @layer screens {
-  .today-screen,
+  .today-screen {
+    display: grid;
+    gap: 16px;
+  }
+
+  .today-screen__note {
+    margin: 0;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .reminder-prompt {
+    display: grid;
+    gap: 14px;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid var(--tide-soft);
+    background: var(--tide-tint);
+  }
+
+  .reminder-prompt__message {
+    margin: 0;
+    color: var(--tide-strong);
+    font-size: 1.05rem;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .reminder-prompt__dismiss {
+    justify-self: center;
+    padding: 8px 16px;
+    border: 0;
+    background: transparent;
+    color: var(--tide-strong);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .reminder-prompt__dismiss:hover {
+    color: var(--tide);
+  }
+
+  .reminder-prompt__dismiss:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
   .utility-screen {
     display: grid;
+    gap: 16px;
+  }
+
+  /* Tidal dial — the signature */
+  .cycle-dial {
+    display: grid;
+    justify-items: center;
+    gap: 20px;
+    padding: 18px 0 2px;
+  }
+
+  .cycle-dial__frame {
+    position: relative;
+    width: min(280px, 64vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    touch-action: none;
+    cursor: pointer;
+  }
+
+  .cycle-dial__frame:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 6px;
+  }
+
+  .cycle-dial__ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    padding: 26px;
+    box-sizing: border-box;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .cycle-dial__inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--surface);
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 4px;
+    text-align: center;
+  }
+
+  .cycle-dial__eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  .cycle-dial__day {
+    font-size: 4.4rem;
+    line-height: 0.86;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cycle-dial__phase {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--tide-strong);
+  }
+
+  .cycle-dial__date {
+    font-size: 0.82rem;
+    color: var(--ink-muted);
+  }
+
+  .cycle-dial__labels {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .cycle-dial__label {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    line-height: 1;
+    white-space: nowrap;
+    /* The parent container is pointer-events: none; labels opt back in so
+       their title tooltips show. Their pointer events still bubble to the
+       frame, so scrubbing across a label keeps working. */
+    pointer-events: auto;
+  }
+
+  .cycle-dial__label--start {
+    top: -12px;
+    right: calc(50% + 44px);
+  }
+
+  .cycle-dial__label--end {
+    top: -12px;
+    left: calc(50% + 44px);
+  }
+
+  .cycle-view__dot--predicted {
+    box-sizing: border-box;
+    background: transparent;
+    border: 1.5px dashed var(--cycle-period);
+  }
+
+  .cycle-dial__marker {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    pointer-events: none;
+  }
+
+  .cycle-dial__marker-dot {
+    width: 16px;
+    height: 16px;
+    margin-top: 5px;
+    border-radius: 999px;
+    background: var(--ink);
+    border: 3px solid var(--surface);
+    box-shadow: 0 2px 6px rgba(20, 48, 58, 0.3);
+  }
+
+  .cycle-dial__legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 14px;
   }
 
-  .today-screen__day {
-    margin: 0;
-    font-size: clamp(3.2rem, 12vw, 5rem);
-    line-height: 0.92;
-  }
-
-  .today-hero {
-    display: grid;
-    gap: 8px;
-  }
-
-  .today-hero__eyebrow {
-    margin: 0;
-    color: var(--ink-muted);
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .today-hero__aside {
-    margin: 2px 0 0;
+  .cycle-view__legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     color: var(--ink-soft);
-    font-size: 0.95rem;
-    line-height: 1.45;
+    font-size: 0.86rem;
+    line-height: 1.2;
   }
 
-  .today-screen__lede,
-  .today-screen__summary {
-    margin: 0;
-    color: var(--ink-soft);
-    font-size: 1rem;
-    line-height: 1.45;
+  .cycle-view__dot {
+    width: 9px;
+    height: 9px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: var(--cycle-idle);
   }
 
-  .today-summary,
-  .utility-stack,
-  .metric-grid,
-  .log-action {
-    display: grid;
-    gap: 12px;
+  .cycle-view__dot--period {
+    background: var(--cycle-period);
   }
 
+  .cycle-view__dot--fertile {
+    background: var(--cycle-fertile);
+  }
+
+  .cycle-view__dot--ovulation {
+    background: var(--cycle-ovulation);
+  }
+
+  /* History calendar */
   .history-calendar {
     display: grid;
     gap: 14px;
@@ -76,182 +244,79 @@
 
   .history-calendar__picker {
     display: grid;
-    gap: 12px;
+    gap: 8px;
     padding: 14px;
-    border-radius: 20px;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.92),
-      rgba(250, 244, 239, 0.9)
-    );
-    border: 1px solid rgba(98, 70, 56, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    border-radius: 16px;
+    background: var(--surface-soft);
+    border: 1px solid var(--surface-border);
   }
 
-  .history-calendar__picker-label {
-    margin-bottom: 6px;
+  .calendar-picker-field {
+    display: grid;
+    gap: 6px;
   }
 
-  .history-calendar__picker-input,
-  .history-calendar__picker-select {
+  .history-calendar__picker-input {
     width: 100%;
     min-height: 46px;
     padding: 0 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(98, 70, 56, 0.14);
-    background: rgba(255, 255, 255, 0.96);
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface);
     color: var(--ink);
-    box-shadow: 0 6px 16px rgba(98, 70, 56, 0.06);
   }
 
-  .history-calendar__picker-input:focus-visible,
-  .history-calendar__picker-select:focus-visible {
-    outline: 2px solid rgba(186, 95, 77, 0.28);
+  .history-calendar__picker-input:focus-visible {
+    outline: 2px solid var(--tide);
     outline-offset: 2px;
   }
 
-  .cycle-view,
-  .cycle-circle {
-    display: grid;
-    gap: 14px;
-    padding: 16px;
-    border-radius: 22px;
-    background: var(--surface);
-    border: 1px solid var(--surface-border);
-    box-shadow: var(--shadow-soft);
-  }
-
-  .cycle-view__legend,
-  .cycle-circle__legend {
+  .calendar-legend {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 12px;
   }
 
-  .cycle-view__legend-item {
+  .calendar-legend__item {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     color: var(--ink-soft);
-    font-size: 0.92rem;
-    line-height: 1.2;
+    font-size: 0.82rem;
   }
 
-  .cycle-view__dot {
-    width: 10px;
-    height: 10px;
+  .calendar-legend__swatch {
+    width: 14px;
+    height: 14px;
     flex: 0 0 auto;
-    border-radius: 999px;
-    background: rgba(114, 92, 80, 0.2);
+    border-radius: 5px;
   }
 
-  .cycle-view__dot--period {
-    background: var(--cycle-period);
+  .calendar-legend__swatch--logged {
+    background: var(--bleed);
   }
 
-  .cycle-view__dot--fertile {
+  .calendar-legend__swatch--fertile {
     background: var(--cycle-fertile);
   }
 
-  .cycle-view__dot--ovulation {
+  .calendar-legend__swatch--ovulation {
     background: var(--cycle-ovulation);
   }
 
-  .cycle-view__track {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
-    gap: 6px;
+  .calendar-legend__swatch--predicted {
+    background: transparent;
+    border: 2px dashed var(--bleed);
   }
 
-  .cycle-view__segment {
-    height: 22px;
-    border-radius: 999px;
-    background: rgba(114, 92, 80, 0.12);
-  }
-
-  .cycle-view__segment.is-period {
-    background: var(--cycle-period);
-  }
-
-  .cycle-view__segment.is-fertile {
-    background: var(--cycle-fertile);
-  }
-
-  .cycle-view__segment.is-ovulation {
-    background: var(--cycle-ovulation);
-  }
-
-  .cycle-view__segment.is-current {
-    outline: 2px solid #4f372d;
-    outline-offset: 2px;
-  }
-
-  .cycle-view__labels {
-    display: flex;
-    justify-content: space-between;
-    color: var(--ink-soft);
-    font-size: 0.92rem;
-  }
-
-  .cycle-circle__frame {
-    position: relative;
-    width: min(300px, 78vw);
-    aspect-ratio: 1;
-    margin-inline: auto;
-  }
-
-  .cycle-circle__ring {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    padding: 22px;
-    box-sizing: border-box;
-  }
-
-  .cycle-circle__inner {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: rgba(255, 250, 246, 0.94);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    color: var(--ink);
-  }
-
-  .cycle-circle__label {
-    color: var(--ink-muted);
-    font-size: 0.9rem;
-  }
-
-  .cycle-circle__marker {
-    position: absolute;
-    left: 50%;
-    top: 10px;
-    width: 2px;
-    height: calc(50% - 10px);
-    background: #4f372d;
-    transform-origin: bottom center;
-  }
-
-  @container (max-width: 26rem) {
-    .summary-chip-row,
-    .calendar-picker-fallback {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media (max-width: 480px) {
+  @media (max-width: 400px) {
     .calendar-grid {
-      gap: 8px;
+      gap: 6px;
     }
 
     .calendar-grid__weekday {
-      font-size: 0.7rem;
-    }
-
-    .history-calendar__header {
-      gap: 8px;
+      font-size: 0.68rem;
     }
   }
 }

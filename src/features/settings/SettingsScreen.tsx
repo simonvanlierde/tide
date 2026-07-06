@@ -1,21 +1,16 @@
-import type { IsoDate } from "../../domain/types";
-import { getTodayIsoDate } from "../../utils/date";
-import { HomeSection } from "./HomeSection";
+import { AboutSection } from "./AboutSection";
+import { FertilitySection } from "./FertilitySection";
 import { InformationSection } from "./InformationSection";
-import { RemindersSection } from "./RemindersSection";
+import { ThemeSection } from "./ThemeSection";
 
-interface SettingsScreenProps {
-  today?: IsoDate;
-}
-
-export function SettingsScreen({
-  today = getTodayIsoDate(),
-}: SettingsScreenProps) {
+export function SettingsScreen() {
   return (
     <section className="utility-screen">
-      <HomeSection />
-      <RemindersSection today={today} />
+      <h1 className="visually-hidden">Settings</h1>
+      <ThemeSection />
+      <FertilitySection />
       <InformationSection />
+      <AboutSection />
     </section>
   );
 }

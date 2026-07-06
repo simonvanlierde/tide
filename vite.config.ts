@@ -12,8 +12,8 @@ const manifest: Partial<ManifestOptions> = {
   scope: "/",
   display: "standalone",
   orientation: "portrait",
-  theme_color: "#fff8f5",
-  background_color: "#fffdfb",
+  theme_color: "#f5f9f9",
+  background_color: "#f5f9f9",
   icons: [
     {
       src: "/icons/icon-192.png",
@@ -36,6 +36,7 @@ export default defineConfig({
     VitePWA({
       includeAssets: [
         "favicon.ico",
+        "icons/icon.svg",
         "icons/icon-192.png",
         "icons/icon-512.png",
       ],

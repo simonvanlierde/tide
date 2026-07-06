@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import type { IsoDate } from "../../src/domain/types";
@@ -16,55 +16,144 @@ function renderToday(today: IsoDate, state = createLearnedCycleState()) {
 }
 
 describe("TodayScreen", () => {
-  it("renders the summary home with the core cycle cards", () => {
+  it("renders the cycle dial with the core cycle facts", () => {
     renderToday("2026-04-18");
 
     expect(
       screen.getByRole("heading", { name: /day 17/i }),
     ).toBeInTheDocument();
-    expect(
-      screen.getByText(/currently in the luteal phase/i),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/period expected in 12 days/i)).toBeInTheDocument();
-    expect(screen.getByText(/^luteal$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
+    expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
     expect(screen.getByText(/lower chance today/i)).toBeInTheDocument();
     expect(
       screen.getByLabelText(/show fertility disclaimer/i),
     ).toBeInTheDocument();
   });
 
-  it("renders the linear cycle view when selected", () => {
-    renderToday(
-      "2026-04-18",
-      createAppState({
-        periodDays: LEARNED_PERIOD_DAYS,
-        settings: { homeDisplayMode: "linear" },
-      }),
-    );
+  it("shows the ovulation estimate in the fertility fact", () => {
+    renderToday("2026-04-18");
 
-    expect(screen.getByLabelText(/linear cycle view/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/cycle summary/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/ovulation 2 days ago · thu, apr 16/i),
+    ).toBeInTheDocument();
   });
 
-  it("renders the circular cycle view when selected", () => {
-    renderToday(
-      "2026-04-18",
-      createAppState({
-        periodDays: LEARNED_PERIOD_DAYS,
-        settings: { homeDisplayMode: "circular" },
-      }),
+  it("shows key cycle dates on the dial with explanatory labels", () => {
+    renderToday("2026-04-18");
+
+    expect(screen.getByTitle("Previous period start")).toHaveTextContent(
+      "Apr 2",
+    );
+    expect(screen.getByTitle("Next period expected")).toHaveTextContent(
+      "Apr 30",
+    );
+    expect(screen.getByTitle("Fertile window starts")).toHaveTextContent(
+      "Apr 11",
+    );
+    expect(screen.getByTitle("Ovulation expected")).toHaveTextContent("Apr 16");
+    expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument(); // today
+  });
+
+  it("previews other cycle days with the keyboard", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    expect(dial).toHaveAttribute("aria-valuenow", "17");
+
+    dial.focus();
+    await user.keyboard("{ArrowRight}");
+
+    expect(dial).toHaveAttribute("aria-valuenow", "18");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Sun, Apr 19");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Luteal");
+    expect(screen.getByText("Sun, Apr 19")).toBeInTheDocument();
+
+    await user.keyboard("{ArrowLeft}");
+    expect(dial).toHaveAttribute("aria-valuenow", "17");
+    await user.keyboard("{ArrowUp}{ArrowDown}");
+    expect(dial).toHaveAttribute("aria-valuenow", "17");
+
+    await user.keyboard("{Escape}");
+    expect(dial).toHaveAttribute("aria-valuenow", "17");
+    expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument();
+  });
+
+  it("scrubs the dial with a pointer and resets on release", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    dial.getBoundingClientRect = () =>
+      ({
+        left: 0,
+        top: 0,
+        width: 280,
+        height: 280,
+        right: 280,
+        bottom: 280,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }) as DOMRect;
+    dial.setPointerCapture = () => {};
+
+    // 3 o'clock on a 28-day dial is day 8.
+    fireEvent.pointerDown(dial, {
+      pointerId: 1,
+      buttons: 1,
+      clientX: 280,
+      clientY: 140,
+    });
+    expect(dial).toHaveAttribute("aria-valuenow", "8");
+
+    // Dragging to 6 o'clock lands on day 15, the expected ovulation day.
+    fireEvent.pointerMove(dial, {
+      pointerId: 1,
+      buttons: 1,
+      clientX: 140,
+      clientY: 280,
+    });
+    expect(dial).toHaveAttribute("aria-valuenow", "15");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
+
+    fireEvent.pointerUp(dial, { pointerId: 1 });
+    expect(dial).toHaveAttribute("aria-valuenow", "17");
+  });
+
+  it("explains a key date label in the center while pressed", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    const nextPeriodLabel = screen.getByTitle("Next period expected");
+
+    fireEvent.pointerDown(nextPeriodLabel, { pointerId: 1, buttons: 1 });
+    expect(screen.getByText("Period expected")).toBeInTheDocument();
+    expect(dial.getAttribute("aria-valuetext")).toBe(
+      "Next period expected, Thu, Apr 30",
     );
 
-    expect(screen.getByLabelText(/circular cycle view/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/cycle summary/i)).not.toBeInTheDocument();
+    fireEvent.pointerUp(nextPeriodLabel, { pointerId: 1 });
+    expect(dial).toHaveAttribute("aria-valuenow", "17");
+
+    // The ovulation label previews the ovulation day itself.
+    fireEvent.pointerDown(screen.getByTitle("Ovulation expected"), {
+      pointerId: 1,
+      buttons: 1,
+    });
+    expect(dial).toHaveAttribute("aria-valuenow", "15");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
+  });
+
+  it("words the ovulation estimate for the day itself", () => {
+    renderToday("2026-04-16");
+    expect(screen.getByText(/ovulation expected today/i)).toBeInTheDocument();
   });
 
   it("shows plain-language ovulation guidance", () => {
     renderToday("2026-04-15");
 
-    expect(
-      screen.getByText(/ovulation is likely around now/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
     expect(screen.getByText(/higher chance today/i)).toBeInTheDocument();
   });
 
@@ -79,6 +168,27 @@ describe("TodayScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("hides the fertility fact when fertility estimates are turned off", () => {
+    renderToday(
+      "2026-04-18",
+      createAppState({
+        periodDays: LEARNED_PERIOD_DAYS,
+        settings: { showFertility: false },
+      }),
+    );
+
+    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
+    expect(screen.queryByText(/chance today/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(/show fertility disclaimer/i),
+    ).not.toBeInTheDocument();
+    // ...and the fertile/ovulation markers vanish from the central dial too.
+    expect(
+      screen.queryByTitle("Fertile window starts"),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTitle("Ovulation expected")).not.toBeInTheDocument();
+  });
+
   it("logs a bleeding day from the primary action", async () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");
@@ -89,7 +199,62 @@ describe("TodayScreen", () => {
     expect(
       screen.getByRole("button", { name: /remove bleeding log/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/bleeding logged for today/i)).toBeInTheDocument();
+
+    // A fresh one-tap log defaults to Medium, and the tide gauge appears to
+    // refine it — picking Spotting selects that level.
+    expect(screen.getByRole("radio", { name: /medium/i })).toBeChecked();
+    await user.click(screen.getByRole("radio", { name: /spotting/i }));
+    expect(screen.getByRole("radio", { name: /spotting/i })).toBeChecked();
+    expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
+  });
+
+  it("prompts for a first log when there is no cycle history at all", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: [] }));
+
+    expect(
+      screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^not enough data yet$/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/log bleeding days to start an estimate/i),
+    ).toBeInTheDocument();
+  });
+
+  it("says the period is expected today when it lands on today", () => {
+    renderToday("2026-05-17", createLearningCycleState());
+
+    expect(screen.getByText(/^expected today$/i)).toBeInTheDocument();
+  });
+
+  it("previews a key date label on pointer move while pressed", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    fireEvent.pointerMove(screen.getByTitle("Ovulation expected"), {
+      pointerId: 1,
+      buttons: 1,
+    });
+
+    expect(dial).toHaveAttribute("aria-valuenow", "15");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
+  });
+
+  it("resets the preview when the pointer leaves, cancels, or the dial blurs", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+
+    for (const reset of ["pointerLeave", "pointerCancel", "blur"] as const) {
+      fireEvent.pointerMove(screen.getByTitle("Ovulation expected"), {
+        pointerId: 1,
+        buttons: 1,
+      });
+      expect(dial).toHaveAttribute("aria-valuenow", "15");
+
+      fireEvent[reset](dial);
+      expect(dial).toHaveAttribute("aria-valuenow", "17");
+    }
   });
 
   it("shows a learning-state note when fallback predictions are in use", () => {
@@ -98,46 +263,80 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/learning from recent logs/i)).toBeInTheDocument();
   });
 
-  it("shows a calm late label and reminder state around the prediction window", () => {
+  it("prompts to log inside the reminder window", () => {
     renderToday(
-      "2026-05-01",
-      createAppState({
-        periodDays: ["2026-04-02", "2026-04-03"],
-      }),
+      "2026-04-28",
+      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
     );
 
-    expect(screen.getByText(/period expected 1 day ago/i)).toBeInTheDocument();
-    expect(screen.queryByText(/-1 day/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/your period is expected/i)).toBeInTheDocument();
     expect(
-      screen.getByText(
-        /window has passed for this cycle|reminder muted|period expected/i,
-      ),
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /not yet/i }),
     ).toBeInTheDocument();
   });
 
-  it("shows reminder actions only while the reminder window is active", () => {
-    renderToday("2026-04-21", createLearningCycleState());
+  it("switches to overdue wording once the period is late", () => {
+    renderToday(
+      "2026-05-01",
+      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    );
+
+    expect(screen.getByText(/your period was expected/i)).toBeInTheDocument();
+  });
+
+  it("dismisses the prompt for the day with 'Not yet'", async () => {
+    const user = userEvent.setup();
+    renderToday(
+      "2026-04-28",
+      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    );
+
+    await user.click(screen.getByRole("button", { name: /not yet/i }));
 
     expect(
-      screen.queryByRole("button", { name: /snooze 1 day/i }),
+      screen.queryByText(/your period is expected/i),
     ).not.toBeInTheDocument();
+    // Dismissing hides the prompt but keeps the log action prominent — a period
+    // is still expected, so logging should stay one easy orange tap away.
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveClass("primary-action");
+  });
 
+  it("clears the prompt after logging today from it", async () => {
+    const user = userEvent.setup();
     renderToday(
-      "2026-04-30",
-      createAppState({
-        periodDays: ["2026-04-02", "2026-04-03"],
-      }),
+      "2026-04-28",
+      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
     );
 
     expect(
-      screen.getByRole("button", { name: /snooze 1 day/i }),
-    ).toBeInTheDocument();
+      screen.queryByText(/your period is expected/i),
+    ).not.toBeInTheDocument();
+    // Undoing a log is a calm secondary action, not a loud orange CTA.
     expect(
-      screen.getByRole("button", { name: /snooze 3 days/i }),
-    ).toBeInTheDocument();
+      screen.getByRole("button", { name: /remove bleeding log/i }),
+    ).toHaveClass("secondary-action");
+  });
+
+  it("keeps a calm log action and no prompt outside the window", () => {
+    renderToday("2026-04-18");
+
     expect(
-      screen.getByRole("button", { name: /snooze 5 days/i }),
+      screen.queryByText(/your period is expected/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/your period was expected/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/reminder active/i)).toBeInTheDocument();
   });
 });

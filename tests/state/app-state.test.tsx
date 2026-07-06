@@ -1,9 +1,7 @@
-import { screen } from "@testing-library/react";
+import { act, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
-import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
-import { TodayScreen } from "../../src/features/today/TodayScreen";
 import { useAppState, useAppStateActions } from "../../src/state/provider";
 import {
   createAppState,
@@ -11,27 +9,29 @@ import {
   renderWithAppState,
 } from "../support/app";
 
-function Probe() {
+function Probe({ label = "probe" }: { label?: string }) {
   const state = useAppState();
   const actions = useAppStateActions();
 
   return (
     <>
-      <output aria-label="period-days">{state.periodDays.join(",")}</output>
-      <output aria-label="display-mode">
-        {state.settings.homeDisplayMode}
+      <output aria-label={`period-days-${label}`}>
+        {state.periodDays.join(",")}
+      </output>
+      <output aria-label={`dismissed-for-${label}`}>
+        {state.settings.dismissedFor ?? ""}
       </output>
       <button
         type="button"
-        onClick={() => actions.togglePeriodDay("2026-04-05")}
+        onClick={() => actions.togglePeriodDay("2026-04-05", "2026-04-18")}
       >
-        toggle april 5
+        toggle {label}
       </button>
       <button
         type="button"
-        onClick={() => actions.setHomeDisplayMode("circular")}
+        onClick={() => actions.dismissReminder("2026-04-18")}
       >
-        set circular
+        dismiss {label}
       </button>
     </>
   );
@@ -44,7 +44,7 @@ describe("app state", () => {
 
     renderWithAppState(<Probe />);
 
-    expect(screen.getByLabelText("period-days")).toHaveTextContent(
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
       "2026-03-05,2026-03-06,2026-04-02,2026-04-03",
     );
   });
@@ -53,16 +53,17 @@ describe("app state", () => {
     const user = userEvent.setup();
     renderWithAppState(
       <>
-        <SettingsScreen today="2026-04-18" />
-        <TodayScreen today="2026-04-18" />
+        <Probe label="a" />
+        <Probe label="b" />
       </>,
-      { state: createLearnedCycleState() },
+      { state: createAppState() },
     );
 
-    await user.click(screen.getByRole("button", { name: /linear/i }));
+    await user.click(screen.getByRole("button", { name: /toggle a/i }));
 
-    expect(screen.getByLabelText(/linear cycle view/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/cycle summary/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText("period-days-b")).toHaveTextContent(
+      "2026-04-05",
+    );
   });
 
   it("persists provider updates to local storage", async () => {
@@ -71,11 +72,84 @@ describe("app state", () => {
       state: createAppState({ periodDays: ["2026-04-02"] }),
     });
 
-    await user.click(screen.getByRole("button", { name: /set circular/i }));
+    await user.click(screen.getByRole("button", { name: /dismiss probe/i }));
 
-    expect(screen.getByLabelText("display-mode")).toHaveTextContent("circular");
-    expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
-      '"homeDisplayMode":"circular"',
+    expect(screen.getByLabelText("dismissed-for-probe")).toHaveTextContent(
+      "2026-04-18",
     );
+    expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
+      '"dismissedFor":"2026-04-18"',
+    );
+  });
+
+  it("refuses to expose state or actions outside a provider", () => {
+    expect(() => renderHook(() => useAppState())).toThrow(
+      /must be used inside AppStateProvider/,
+    );
+    expect(() => renderHook(() => useAppStateActions())).toThrow(
+      /must be used inside AppStateProvider/,
+    );
+  });
+});
+
+describe("system theme preference", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  function stubMatchMedia(initialMatches: boolean) {
+    let matches = initialMatches;
+    const listeners = new Set<() => void>();
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        get matches() {
+          return matches;
+        },
+        addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+        removeEventListener: (_: string, fn: () => void) =>
+          listeners.delete(fn),
+      })),
+    );
+    return {
+      emitChange(next: boolean) {
+        matches = next;
+        for (const fn of listeners) fn();
+      },
+      listenerCount: () => listeners.size,
+    };
+  }
+
+  it("follows the OS preference and reacts to changes while theme is system", () => {
+    const media = stubMatchMedia(true);
+
+    const { unmount } = renderWithAppState(<output>probe</output>, {
+      state: createAppState({ settings: { theme: "system" } }),
+    });
+
+    expect(document.documentElement.dataset.theme).toBe("dark");
+
+    act(() => media.emitChange(false));
+    expect(document.documentElement.dataset.theme).toBe("light");
+
+    // The change listener is torn down on unmount.
+    unmount();
+    expect(media.listenerCount()).toBe(0);
+  });
+
+  it("keeps the theme-color meta tag in step with the resolved theme", () => {
+    const meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
+    document.head.appendChild(meta);
+
+    try {
+      renderWithAppState(<output>probe</output>, {
+        state: createAppState({ settings: { theme: "dark" } }),
+      });
+
+      expect(meta.getAttribute("content")).toBe("#0e1a1e");
+    } finally {
+      meta.remove();
+    }
   });
 });

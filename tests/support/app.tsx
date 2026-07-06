@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { defaultAppState } from "../../src/data/schema";
 import type { AppSettings, AppState, IsoDate } from "../../src/domain/types";
-import { AppStateProvider } from "../../src/state";
+import { AppStateProvider } from "../../src/state/provider";
 
 export const LEARNED_PERIOD_DAYS: IsoDate[] = [
   "2026-03-05",

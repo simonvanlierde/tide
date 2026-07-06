@@ -3,14 +3,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#fff8f5" />
+    <!-- Kept in sync with the resolved theme (see the inline script below and
+         the provider), so it tracks the in-app toggle, not just the OS. -->
+    <meta name="theme-color" content="#f5f9f9" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Tide" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
     <link rel="icon" href="/icons/icon-192.png" type="image/png" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <title>Tide</title>
+    <script>"use strict";
+      // Apply the saved theme before first paint so there is no flash. The
+      // provider keeps <html data-theme> in sync afterwards.
+      (() => {
+        try {
+          const raw = localStorage.getItem("tide.period-tracker.state");
+          const parsed = raw ? JSON.parse(raw) : null;
+          // Unwrap the legacy { version, state } envelope the same way
+          // normalizeAppState does, so migrated users don't flash the wrong theme.
+          const settings = parsed && (parsed.state?.settings ?? parsed.settings);
+          const theme = settings?.theme ?? "system";
+          const dark =
+            theme === "dark" ||
+            (theme !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          document.documentElement.dataset.theme = dark ? "dark" : "light";
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", dark ? "#0e1a1e" : "#f5f9f9");
+        } catch {
+          /* No saved theme: styles fall back to the light default. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

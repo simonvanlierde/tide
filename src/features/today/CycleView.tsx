@@ -1,30 +1,31 @@
-import type { CycleSummary, IsoDate } from "../../domain/types";
+import { DEFAULT_FLOW } from "../../domain/flow";
+import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
 import { addDays, differenceInDays } from "../../utils/date";
-import { CycleLegend } from "./CycleLegend";
 
 export interface CycleSegment {
   dayNumber: number;
+  date: IsoDate | null;
   isCurrent: boolean;
   isPeriod: boolean;
+  /** Flow level for a period day, for the coral depth ramp; null otherwise. */
+  flow: FlowIntensity | null;
   isFertile: boolean;
   isOvulation: boolean;
-}
-
-interface CycleViewProps {
-  summary: CycleSummary;
-  periodDays: IsoDate[];
-  today: IsoDate;
 }
 
 export function buildCycleSegments(
   summary: CycleSummary,
   periodDays: IsoDate[],
   today: IsoDate,
+  showFertility: boolean,
+  intensityByDay: Record<IsoDate, FlowIntensity> = {},
 ) {
   const totalDays =
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
       ? Math.max(
-          summary.cycleDay + summary.nextPeriod.daysUntil,
+          // cycleDay + daysUntil counts today twice (it is both the last day of
+          // this cycle and day 0 of the countdown), so subtract 1.
+          summary.cycleDay + summary.nextPeriod.daysUntil - 1,
           summary.cycleDay,
           28,
         )
@@ -48,60 +49,57 @@ export function buildCycleSegments(
     const dayNumber = index + 1;
     const dateValue =
       cycleStartDate === null ? null : addDays(cycleStartDate, index);
+    const isPeriod = dateValue !== null && loggedDays.has(dateValue);
 
     return {
       dayNumber,
+      date: dateValue,
       isCurrent: dayNumber === summary.cycleDay,
-      isPeriod: dateValue !== null && loggedDays.has(dateValue),
+      isPeriod,
+      flow:
+        isPeriod && dateValue !== null
+          ? (intensityByDay[dateValue] ?? DEFAULT_FLOW)
+          : null,
       isFertile:
+        showFertility &&
         fertileStart !== null &&
         ovulationDay !== null &&
         dayNumber >= fertileStart &&
         dayNumber <= ovulationDay + 1,
-      isOvulation: ovulationDay === dayNumber,
+      isOvulation: showFertility && ovulationDay === dayNumber,
     } satisfies CycleSegment;
   });
 }
 
-export function LinearCycleView({
-  summary,
-  periodDays,
-  today,
-}: CycleViewProps) {
-  const segments = buildCycleSegments(summary, periodDays, today);
+export function getSegmentStatus(
+  segment: CycleSegment,
+  summary: CycleSummary,
+): string {
+  if (segment.isPeriod) {
+    return "Period";
+  }
 
-  return (
-    <section aria-label="Linear cycle view" className="cycle-view">
-      <CycleLegend className="cycle-view__legend" />
+  if (segment.isOvulation) {
+    return "Ovulation expected";
+  }
 
-      <div className="cycle-view__track">
-        {segments.map((segment) => {
-          const className = [
-            "cycle-view__segment",
-            segment.isPeriod ? "is-period" : "",
-            segment.isFertile ? "is-fertile" : "",
-            segment.isOvulation ? "is-ovulation" : "",
-            segment.isCurrent ? "is-current" : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
+  if (segment.isFertile) {
+    return "Fertile window";
+  }
 
-          return (
-            <div
-              key={segment.dayNumber}
-              role="img"
-              className={className}
-              aria-label={`Cycle day ${segment.dayNumber}${segment.isCurrent ? ", today" : ""}`}
-              title={`Cycle day ${segment.dayNumber}`}
-            />
-          );
-        })}
-      </div>
+  if (
+    segment.date !== null &&
+    summary.nextPeriod.date !== null &&
+    segment.date >= summary.nextPeriod.date
+  ) {
+    return "Period expected";
+  }
 
-      <div className="cycle-view__labels">
-        <span>Day 1</span>
-        <span>Day {segments.length}</span>
-      </div>
-    </section>
-  );
+  if (segment.date !== null && summary.ovulationDate !== null) {
+    return differenceInDays(segment.date, summary.ovulationDate) > 0
+      ? "Luteal"
+      : "Follicular";
+  }
+
+  return "";
 }

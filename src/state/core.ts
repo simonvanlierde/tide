@@ -1,19 +1,23 @@
-import { normalizeAppState } from "../data/schema";
 import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
-import type { AppState, HomeDisplayMode, IsoDate } from "../domain/types";
-import { addDays } from "../utils/date";
+import { DEFAULT_FLOW, getPredictionDays } from "../domain/flow";
+import type {
+  AppState,
+  FlowIntensity,
+  IsoDate,
+  ThemePreference,
+} from "../domain/types";
 
 export type AppStateAction =
-  | { type: "togglePeriodDay"; day: IsoDate }
-  | { type: "setReminderWindowDays"; days: number }
-  | { type: "snoozeReminders"; today: IsoDate; days: number }
-  | { type: "clearReminderSnooze" }
-  | { type: "setHomeDisplayMode"; mode: HomeDisplayMode }
-  | { type: "replaceState"; state: unknown };
-
-function sortPeriodDays(periodDays: IsoDate[]) {
-  return [...periodDays].sort();
-}
+  | { type: "togglePeriodDay"; day: IsoDate; today: IsoDate }
+  | {
+      type: "setDayIntensity";
+      day: IsoDate;
+      intensity: FlowIntensity;
+      today: IsoDate;
+    }
+  | { type: "dismissReminder"; today: IsoDate }
+  | { type: "setShowFertility"; show: boolean }
+  | { type: "setTheme"; theme: ThemePreference };
 
 export function appStateReducer(
   state: AppState,
@@ -22,61 +26,93 @@ export function appStateReducer(
   switch (action.type) {
     case "togglePeriodDay": {
       const hasLoggedDay = state.periodDays.includes(action.day);
+
+      // Never log a future-dated day; always allow removing an existing one
+      // (e.g. a stale entry left after the device clock moved backwards).
+      if (!hasLoggedDay && action.day > action.today) {
+        return state;
+      }
+
       const periodDays = hasLoggedDay
         ? state.periodDays.filter((value) => value !== action.day)
-        : sortPeriodDays([...state.periodDays, action.day]);
+        : [...state.periodDays, action.day].sort();
+
+      // Log at the default flow; removing a day prunes its intensity so the
+      // map never outlives the logged day.
+      const intensityByDay = { ...state.intensityByDay };
+      if (hasLoggedDay) {
+        delete intensityByDay[action.day];
+      } else {
+        intensityByDay[action.day] = DEFAULT_FLOW;
+      }
 
       return {
         ...state,
         periodDays,
+        intensityByDay,
       };
     }
 
-    case "setReminderWindowDays":
+    case "setDayIntensity": {
+      // The gauge only appears once a day is logged, but stay robust: never set
+      // a level on a future, un-logged day.
+      const isLogged = state.periodDays.includes(action.day);
+      if (!isLogged && action.day > action.today) {
+        return state;
+      }
+
+      const periodDays = isLogged
+        ? state.periodDays
+        : [...state.periodDays, action.day].sort();
+
+      return {
+        ...state,
+        periodDays,
+        intensityByDay: {
+          ...state.intensityByDay,
+          [action.day]: action.intensity,
+        },
+      };
+    }
+
+    case "dismissReminder":
       return {
         ...state,
         settings: {
           ...state.settings,
-          reminderWindowDays: action.days,
+          dismissedFor: action.today,
         },
       };
 
-    case "snoozeReminders":
+    case "setShowFertility":
       return {
         ...state,
         settings: {
           ...state.settings,
-          snoozedUntil: addDays(action.today, action.days),
+          showFertility: action.show,
         },
       };
 
-    case "clearReminderSnooze":
+    case "setTheme":
       return {
         ...state,
         settings: {
           ...state.settings,
-          snoozedUntil: null,
+          theme: action.theme,
         },
       };
-
-    case "setHomeDisplayMode":
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          homeDisplayMode: action.mode,
-        },
-      };
-
-    case "replaceState":
-      return normalizeAppState(action.state);
   }
 }
 
 export function selectCycleSummary(state: AppState, today: IsoDate) {
+  const predictionDays = getPredictionDays(
+    state.periodDays,
+    state.intensityByDay,
+  );
+
   return buildCycleSummary({
     today,
-    periodDays: state.periodDays,
-    completedCycleLengths: getCompletedCycleLengths(state.periodDays),
+    periodDays: predictionDays,
+    completedCycleLengths: getCompletedCycleLengths(predictionDays),
   });
 }

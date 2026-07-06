@@ -3,12 +3,17 @@ import {
   type Dispatch,
   type ReactNode,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useMemo,
   useReducer,
 } from "react";
 import { loadAppState, saveAppState } from "../data/storage";
-import type { AppState, HomeDisplayMode, IsoDate } from "../domain/types";
+import type {
+  AppState,
+  FlowIntensity,
+  IsoDate,
+  ThemePreference,
+} from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
 import {
   type AppStateAction,
@@ -36,9 +41,11 @@ export function AppStateProvider({
     (value: AppState | null) => value ?? loadAppState(),
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     saveAppState(state);
   }, [state]);
+
+  useThemePreference(state.settings.theme);
 
   return (
     <AppStateContext.Provider value={state}>
@@ -47,6 +54,39 @@ export function AppStateProvider({
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
   );
+}
+
+const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
+
+// Reflect the theme preference onto <html data-theme>, following the OS while
+// set to "system". An inline script in index.html applies the same value before
+// first paint so there is no flash on load.
+function useThemePreference(theme: ThemePreference) {
+  useEffect(() => {
+    const root = document.documentElement;
+
+    function apply() {
+      const prefersDark =
+        typeof window.matchMedia === "function" &&
+        window.matchMedia(DARK_MEDIA_QUERY).matches;
+      const dark = theme === "dark" || (theme === "system" && prefersDark);
+      root.dataset.theme = dark ? "dark" : "light";
+      // Keep the browser chrome (address bar / PWA status bar) in step.
+      document
+        .querySelector('meta[name="theme-color"]')
+        ?.setAttribute("content", dark ? "#0e1a1e" : "#f5f9f9");
+    }
+
+    apply();
+
+    if (theme !== "system" || typeof window.matchMedia !== "function") {
+      return;
+    }
+
+    const media = window.matchMedia(DARK_MEDIA_QUERY);
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, [theme]);
 }
 
 export function useAppState() {
@@ -74,23 +114,20 @@ export function useAppStateActions() {
 
   return useMemo(
     () => ({
-      togglePeriodDay(day: IsoDate) {
-        dispatch({ type: "togglePeriodDay", day });
+      togglePeriodDay(day: IsoDate, today: IsoDate) {
+        dispatch({ type: "togglePeriodDay", day, today });
       },
-      setReminderWindowDays(days: number) {
-        dispatch({ type: "setReminderWindowDays", days });
+      setDayIntensity(day: IsoDate, intensity: FlowIntensity, today: IsoDate) {
+        dispatch({ type: "setDayIntensity", day, intensity, today });
       },
-      snoozeReminders(today: IsoDate, days: number) {
-        dispatch({ type: "snoozeReminders", today, days });
+      dismissReminder(today: IsoDate) {
+        dispatch({ type: "dismissReminder", today });
       },
-      clearReminderSnooze() {
-        dispatch({ type: "clearReminderSnooze" });
+      setShowFertility(show: boolean) {
+        dispatch({ type: "setShowFertility", show });
       },
-      setHomeDisplayMode(mode: HomeDisplayMode) {
-        dispatch({ type: "setHomeDisplayMode", mode });
-      },
-      replaceState(state: unknown) {
-        dispatch({ type: "replaceState", state });
+      setTheme(theme: ThemePreference) {
+        dispatch({ type: "setTheme", theme });
       },
     }),
     [dispatch],
@@ -98,5 +135,6 @@ export function useAppStateActions() {
 }
 
 export function useCycleSummary(today: IsoDate = getTodayIsoDate()) {
-  return selectCycleSummary(useAppState(), today);
+  const state = useAppState();
+  return useMemo(() => selectCycleSummary(state, today), [state, today]);
 }

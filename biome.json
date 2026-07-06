@@ -1,4 +1,5 @@
 {
+  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
@@ -8,10 +9,59 @@
     "enabled": true,
     "indentStyle": "space"
   },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "preset": "recommended",
+      "a11y": "on",
+      "correctness": "on",
+      "performance": "on",
+      "security": "on",
+      "suspicious": "on"
+    },
+    "domains": {
+      "react": "recommended",
+      "test": "recommended"
     }
-  }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["tests/**"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "useTopLevelRegex": "off",
+            "noJsxPropsBind": "off"
+          },
+          "security": { "noSecrets": "off" },
+          "suspicious": {
+            "noBitwiseOperators": "off",
+            "noEmptyBlockStatements": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["scripts/**"],
+      "linter": {
+        "rules": {
+          "correctness": { "noNodejsModules": "off" },
+          "suspicious": { "noConsole": "off" }
+        }
+      }
+    }
+  ]
 }

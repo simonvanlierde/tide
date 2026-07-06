@@ -11,6 +11,7 @@ describe("app state core selectors", () => {
     const nextState = appStateReducer(initialState, {
       type: "togglePeriodDay",
       day: "2026-04-05",
+      today: "2026-04-30",
     });
 
     expect(nextState.periodDays).toEqual([
@@ -20,43 +21,84 @@ describe("app state core selectors", () => {
     ]);
   });
 
-  it("normalizes replacement state through the current app-state shape only", () => {
-    const nextState = appStateReducer(createAppState(), {
-      type: "replaceState",
-      state: {
-        periodDays: ["2026-04-07", "bad-date", "2026-04-07"],
-        settings: {
-          reminderWindowDays: "invalid",
-          snoozedUntil: "2026-04-08",
-          homeDisplayMode: "gallery",
-        },
-      },
-    });
-
-    expect(nextState).toEqual(
-      createAppState({
-        periodDays: ["2026-04-07"],
-        settings: {
-          reminderWindowDays: 4,
-          snoozedUntil: "2026-04-08",
-          homeDisplayMode: "summary",
-        },
-      }),
+  it("refuses to log a future-dated bleeding day", () => {
+    const nextState = appStateReducer(
+      createAppState({ periodDays: ["2026-04-02"] }),
+      { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
     );
+
+    expect(nextState.periodDays).toEqual(["2026-04-02"]);
   });
 
-  it("rejects the removed versioned storage envelope", () => {
-    const nextState = appStateReducer(createAppState(), {
-      type: "replaceState",
-      state: {
-        version: 1,
-        state: createAppState({
-          periodDays: ["2026-04-07"],
-        }),
-      },
+  it("still lets a stale future-dated day be removed", () => {
+    const nextState = appStateReducer(
+      createAppState({ periodDays: ["2026-04-02", "2026-04-10"] }),
+      { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
+    );
+
+    expect(nextState.periodDays).toEqual(["2026-04-02"]);
+  });
+
+  it("marks a one-tap log at the default medium flow and prunes it on removal", () => {
+    const logged = appStateReducer(createAppState(), {
+      type: "togglePeriodDay",
+      day: "2026-04-02",
+      today: "2026-04-30",
+    });
+    expect(logged.intensityByDay).toEqual({ "2026-04-02": "medium" });
+
+    const removed = appStateReducer(logged, {
+      type: "togglePeriodDay",
+      day: "2026-04-02",
+      today: "2026-04-30",
+    });
+    expect(removed.intensityByDay).toEqual({});
+  });
+
+  it("refines a logged day's flow via setDayIntensity", () => {
+    const state = createAppState({
+      periodDays: ["2026-04-02"],
+      intensityByDay: { "2026-04-02": "medium" },
     });
 
-    expect(nextState).toEqual(createAppState());
+    const next = appStateReducer(state, {
+      type: "setDayIntensity",
+      day: "2026-04-02",
+      intensity: "spotting",
+      today: "2026-04-30",
+    });
+
+    expect(next.intensityByDay["2026-04-02"]).toBe("spotting");
+    expect(next.periodDays).toEqual(["2026-04-02"]);
+  });
+
+  it("refuses to set a flow level on a future, un-logged day", () => {
+    const state = createAppState({ periodDays: ["2026-04-02"] });
+
+    const next = appStateReducer(state, {
+      type: "setDayIntensity",
+      day: "2026-04-10",
+      intensity: "heavy",
+      today: "2026-04-05",
+    });
+
+    expect(next).toBe(state);
+  });
+
+  it("excludes spotting days from cycle predictions", () => {
+    const spotting = createAppState({
+      periodDays: ["2026-04-02"],
+      intensityByDay: { "2026-04-02": "spotting" },
+    });
+    expect(selectCycleSummary(spotting, "2026-04-10").estimateMode).toBe(
+      "insufficient",
+    );
+
+    // The same day logged as real bleeding does anchor a prediction.
+    const bleeding = createAppState({ periodDays: ["2026-04-02"] });
+    expect(selectCycleSummary(bleeding, "2026-04-10").estimateMode).toBe(
+      "fallback",
+    );
   });
 
   it("derives the cycle summary from plain app state", () => {

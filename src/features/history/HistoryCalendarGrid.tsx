@@ -1,21 +1,42 @@
-import type { IsoDate } from "../../domain/types";
+import type { FlowIntensity, IsoDate } from "../../domain/types";
 import { parseIsoDate } from "../../utils/date";
 import {
   type CalendarDay,
+  type DayMarker,
   formatDayButtonLabel,
   HISTORY_WEEKDAY_LABELS,
 } from "./calendar";
 
+const MARKER_CLASS: Record<DayMarker, string> = {
+  fertile: "is-fertile",
+  ovulation: "is-ovulation",
+  "predicted-period": "is-predicted-period",
+};
+
+const MARKER_LABEL: Record<DayMarker, string> = {
+  fertile: "fertile window",
+  ovulation: "likely ovulation",
+  "predicted-period": "expected period",
+};
+
 interface HistoryCalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
-  onToggleDay: (day: IsoDate) => void;
+  dayIntensity: Map<IsoDate, FlowIntensity>;
+  periodDayNumbers: Map<IsoDate, number>;
+  cycleMarkers: Map<IsoDate, DayMarker>;
+  selectedDay: IsoDate | null;
+  onSelectDay: (day: IsoDate) => void;
 }
 
 export function HistoryCalendarGrid({
   monthDays,
   loggedDays,
-  onToggleDay,
+  dayIntensity,
+  periodDayNumbers,
+  cycleMarkers,
+  selectedDay,
+  onSelectDay,
 }: HistoryCalendarGridProps) {
   return (
     <section className="calendar-grid" aria-label="History calendar">
@@ -29,15 +50,30 @@ export function HistoryCalendarGrid({
       <div className="calendar-grid__week">
         {monthDays.map((day) => {
           const value = day.value;
+          const isLogged = loggedDays.has(value);
+          const periodDay = isLogged ? periodDayNumbers.get(value) : undefined;
+          // Logged days take the coral fill, deepened by flow level; a
+          // prediction only shows on days that aren't already logged.
+          const flow = isLogged
+            ? (dayIntensity.get(value) ?? "medium")
+            : undefined;
+          const marker = isLogged ? undefined : cycleMarkers.get(value);
+          const isSelected = value === selectedDay;
           const className = [
             "calendar-grid__day",
-            loggedDays.has(value) ? "is-logged" : "",
+            isLogged ? "is-logged" : "",
+            flow ? `is-flow-${flow}` : "",
             day.isToday ? "is-today" : "",
+            isSelected ? "is-selected" : "",
             day.isOutsideMonth ? "is-outside-month" : "",
             day.isFuture ? "is-future" : "",
+            marker ? MARKER_CLASS[marker] : "",
           ]
             .filter(Boolean)
             .join(" ");
+          const dateLabel = day.isFuture
+            ? `${formatDayButtonLabel(value)} unavailable`
+            : formatDayButtonLabel(value);
 
           return (
             <button
@@ -46,13 +82,17 @@ export function HistoryCalendarGrid({
               className={className}
               disabled={day.isFuture}
               aria-label={
-                day.isFuture
-                  ? `${formatDayButtonLabel(value)} unavailable`
-                  : formatDayButtonLabel(value)
+                marker ? `${dateLabel}, ${MARKER_LABEL[marker]}` : dateLabel
               }
-              onClick={() => onToggleDay(value)}
+              aria-pressed={isSelected}
+              onClick={() => onSelectDay(value)}
             >
               {parseIsoDate(value).getUTCDate()}
+              {periodDay ? (
+                <span className="calendar-grid__period-day" aria-hidden="true">
+                  {periodDay}
+                </span>
+              ) : null}
             </button>
           );
         })}

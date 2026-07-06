@@ -1,31 +1,111 @@
 @layer tokens {
   :root {
-    --bg-top: #fffaf6;
-    --bg-bottom: #f5ede5;
-    --bg-highlight: rgba(255, 255, 255, 0.72);
-    --surface: rgba(255, 255, 255, 0.82);
-    --surface-strong: rgba(255, 255, 255, 0.94);
-    --surface-border: rgba(98, 70, 56, 0.1);
-    --ink: #3f2a22;
-    --ink-soft: #745d50;
-    --ink-muted: #9b8274;
-    --accent: #cf705d;
-    --accent-strong: #ba5f4d;
-    --accent-soft: #f7dfd4;
-    --accent-tint: rgba(207, 112, 93, 0.12);
-    --cycle-period: var(--accent);
-    --cycle-ovulation: #d99a56;
-    --cycle-fertile: #f0cc99;
-    --cycle-idle: rgba(114, 92, 80, 0.14);
-    --shadow-soft: 0 18px 50px rgba(53, 33, 25, 0.1);
-    --shadow-card: 0 14px 30px rgba(70, 46, 35, 0.08);
+    /* Tidal palette: cool, calm chrome; warm coral reserved for the body's
+       own signal (bleeding). */
+    --bg-top: #f5f9f9;
+    --bg-bottom: #e4eef0;
+    --surface: #ffffff;
+    --surface-soft: #f1f7f7;
+    --surface-border: rgba(20, 48, 58, 0.09);
+    /* Near-opaque so the coral log button behind it can't bleed through and
+       hurt the tab-label contrast. */
+    --tab-bg: rgba(245, 249, 249, 0.96);
+
+    --ink: #14303a;
+    --ink-soft: #486069;
+    /* Muted labels are darkened to clear WCAG AA (4.5:1) at small sizes. */
+    --ink-muted: #566d72;
+
+    /* Tide teal — navigation, links, active state. The calm chrome. */
+    --tide: #2f8f8a;
+    --tide-strong: #1f6a65;
+    --tide-soft: #d9ecea;
+    --tide-tint: rgba(47, 143, 138, 0.1);
+    /* Deep teal for solid action surfaces (selected chips): dark enough for
+       white text at AA in both themes. */
+    --accent-solid: #1f6a65;
+
+    /* Coral — the bleeding signal only: the log action and period days. */
+    --bleed: #e26d5a;
+    --bleed-strong: #cf5741;
+
+    /* Flow-intensity ramp: a rising coral tide, spotting → heavy. Medium is
+       the base coral; the ends bracket it lighter and deeper. */
+    --flow-spotting: #f0c1b6;
+    --flow-light: #e89a88;
+    --flow-medium: var(--bleed);
+    --flow-heavy: var(--bleed-strong);
+
+    /* Cycle phases */
+    --cycle-period: var(--bleed);
+    --cycle-ovulation: #e8a24b;
+    --cycle-fertile: #f4d6a8;
+    --cycle-idle: rgba(20, 48, 58, 0.08);
+    /* Text on the warm cycle fills — they stay light in both themes, so this
+       stays near-black in both themes (not overridden in the dark block) to
+       clear AA on coral, sand, and amber. */
+    --ink-on-fill: #0c191e;
+
+    --shadow-soft: 0 18px 44px rgba(20, 48, 58, 0.1);
+    --shadow-card: 0 10px 28px rgba(20, 48, 58, 0.06);
+
+    color-scheme: light;
     color: var(--ink);
-    font-family: "Iowan Old Style", "Palatino Linotype", serif;
+    font-family:
+      system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+      sans-serif;
     background:
       radial-gradient(
-        circle at top left,
-        rgba(255, 255, 255, 0.9),
-        transparent 35%
+        circle at 50% -10%,
+        rgba(217, 236, 234, 0.7),
+        transparent 55%
+      ),
+      linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+  }
+
+  /* Dark: the tide at night — deep sea-charcoal, brighter teal, coral holds.
+     Driven by data-theme (set from the theme preference), so it applies both
+     when the OS is dark and when the user forces dark in settings. */
+  :root[data-theme="dark"] {
+    --bg-top: #0e1a1e;
+    --bg-bottom: #081113;
+    --surface: #15272c;
+    --surface-soft: #1b3238;
+    --surface-border: rgba(255, 255, 255, 0.1);
+    --tab-bg: rgba(11, 22, 25, 0.96);
+
+    --ink: #e7eff0;
+    --ink-soft: #a6bcc0;
+    --ink-muted: #9ab0b5;
+
+    --tide: #4fb3ab;
+    --tide-strong: #74ccc4;
+    --tide-soft: rgba(79, 179, 171, 0.24);
+    --tide-tint: rgba(79, 179, 171, 0.14);
+
+    --bleed: #e8785f;
+    --bleed-strong: #f0917a;
+
+    /* Spotting and light hold down the low end on the dark ground; medium and
+       heavy inherit the brighter dark-theme coral above. */
+    --flow-spotting: #b5604e;
+    --flow-light: #d06d58;
+
+    /* Fertile a pale warm sand, ovulation a saturated amber — clearly apart
+       from each other and from coral on the dark ground. */
+    --cycle-ovulation: #f2a63c;
+    --cycle-fertile: #ecd3a4;
+    --cycle-idle: rgba(255, 255, 255, 0.1);
+
+    --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
+    --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);
+
+    color-scheme: dark;
+    background:
+      radial-gradient(
+        circle at 50% -10%,
+        rgba(41, 82, 78, 0.55),
+        transparent 55%
       ),
       linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
   }

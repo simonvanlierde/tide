@@ -1,7 +1,20 @@
-@layer tokens, base, shell, ui, screens;
+@layer tokens, base, shell, ui, screens, a11y;
 
 @import "./tokens.css";
 @import "./base.css";
 @import "./shell.css";
 @import "./ui.css";
 @import "./screens.css";
+
+/* Last layer wins over component transitions without needing !important. */
+@layer a11y {
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms;
+      animation-duration: 0.01ms;
+      scroll-behavior: auto;
+    }
+  }
+}

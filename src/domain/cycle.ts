@@ -3,6 +3,12 @@ import type { CycleSummary, IsoDate } from "./types";
 
 const DEFAULT_CYCLE_LENGTH = 28;
 const DEFAULT_LUTEAL_LENGTH = 14;
+// Gaps shorter than this are missed logging days within one period, not a new
+// cycle: real inter-cycle gaps are ~20+ days (cycle length minus period length).
+// NOTE: we use a fixed 10-day floor; a genuinely short (<~11-day) cycle would merge
+// into one run.
+// TODO: Learn a per-user threshold from cycle history if that matters.
+const NEW_CYCLE_MIN_GAP_DAYS = 10;
 
 interface BuildCycleSummaryInput {
   today: IsoDate;
@@ -10,41 +16,66 @@ interface BuildCycleSummaryInput {
   completedCycleLengths: number[];
 }
 
-function sortDates(values: IsoDate[]) {
-  return [...values].sort();
-}
-
 function getCycleStarts(periodDays: IsoDate[]) {
-  const sortedDays = sortDates(periodDays);
+  const sortedDays = [...periodDays].sort();
 
   return sortedDays.filter((day, index) => {
-    if (index === 0) {
-      return true;
+    const previous = sortedDays[index - 1];
+    return (
+      previous === undefined ||
+      differenceInDays(day, previous) >= NEW_CYCLE_MIN_GAP_DAYS
+    );
+  });
+}
+
+// Per logged day, its 1-based position within its period: calendar days since
+// that period's start + 1, so skipped days still count (matching cycleDay). A
+// gap >= NEW_CYCLE_MIN_GAP_DAYS opens a new period and resets the count.
+export function getPeriodDayNumbers(
+  periodDays: IsoDate[],
+): Map<IsoDate, number> {
+  const sortedDays = [...periodDays].sort();
+  const numbers = new Map<IsoDate, number>();
+  let start: IsoDate | undefined;
+
+  for (let index = 0; index < sortedDays.length; index++) {
+    const day = sortedDays[index];
+    if (!day) continue;
+    const previous = sortedDays[index - 1];
+
+    if (
+      start === undefined ||
+      differenceInDays(day, previous ?? day) >= NEW_CYCLE_MIN_GAP_DAYS
+    ) {
+      start = day;
     }
 
-    return differenceInDays(day, sortedDays[index - 1]) > 1;
-  });
+    numbers.set(day, differenceInDays(day, start) + 1);
+  }
+
+  return numbers;
 }
 
 export function getCompletedCycleLengths(periodDays: IsoDate[]) {
   const cycleStarts = getCycleStarts(periodDays);
+  const lengths: number[] = [];
 
-  if (cycleStarts.length < 2) {
-    return [];
+  for (let index = 1; index < cycleStarts.length; index++) {
+    const start = cycleStarts[index];
+    const previousStart = cycleStarts[index - 1];
+
+    if (start && previousStart) {
+      lengths.push(differenceInDays(start, previousStart));
+    }
   }
 
-  return cycleStarts
-    .slice(1)
-    .map((cycleStart, index) =>
-      differenceInDays(cycleStart, cycleStarts[index]),
-    );
+  return lengths;
 }
 
 function getPhaseLabel(
   today: IsoDate,
   periodDays: IsoDate[],
   ovulationDate: IsoDate,
-  cycleDay: number,
 ) {
   if (periodDays.includes(today)) {
     return "menstrual" as const;
@@ -56,7 +87,7 @@ function getPhaseLabel(
     return "ovulation" as const;
   }
 
-  if (cycleDay > 0 && ovulationOffset > 1) {
+  if (ovulationOffset > 1) {
     return "luteal" as const;
   }
 
@@ -102,12 +133,7 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
 
   return {
     cycleDay,
-    phaseLabel: getPhaseLabel(
-      input.today,
-      input.periodDays,
-      ovulationDate,
-      cycleDay,
-    ),
+    phaseLabel: getPhaseLabel(input.today, input.periodDays, ovulationDate),
     fertile: isWithinFertileWindow(input.today, ovulationDate),
     ovulationDate,
     nextPeriod: {

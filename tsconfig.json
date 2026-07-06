@@ -9,9 +9,11 @@
     "allowImportingTsExtensions": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "types": ["vite/client", "vitest/globals"]
   },
   "include": ["src", "tests", "vite.config.ts", "vitest.config.ts"]

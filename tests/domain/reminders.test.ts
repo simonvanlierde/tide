@@ -1,63 +1,79 @@
 import { describe, expect, it } from "vitest";
 import { getReminderState } from "../../src/domain/reminders";
 
+const BASE = {
+  today: "2026-04-28",
+  nextPeriodDate: "2026-04-30",
+  isTodayLogged: false,
+  dismissedFor: null,
+} as const;
+
 describe("getReminderState", () => {
-  it("enables reminders during the expected period window", () => {
-    const state = getReminderState({
-      today: "2026-04-28",
-      nextPeriodDate: "2026-04-30",
-      reminderWindowDays: 4,
-      snoozedUntil: null,
-    });
+  it("prompts within the two-day window before the expected period", () => {
+    const state = getReminderState(BASE);
 
-    expect(state.shouldNudge).toBe(true);
-    expect(state.isInReminderWindow).toBe(true);
+    expect(state.shouldPrompt).toBe(true);
+    expect(state.isExpectedSoon).toBe(true);
+    expect(state.isOverdue).toBe(false);
+    expect(state.expectedDate).toBe("2026-04-30");
   });
 
-  it("suppresses reminders while snoozed", () => {
-    const state = getReminderState({
-      today: "2026-04-28",
-      nextPeriodDate: "2026-04-30",
-      reminderWindowDays: 4,
-      snoozedUntil: "2026-05-01",
-    });
+  it("stays 'expected soon' even when dismissed or logged", () => {
+    const dismissed = getReminderState({ ...BASE, dismissedFor: "2026-04-28" });
+    const logged = getReminderState({ ...BASE, isTodayLogged: true });
 
-    expect(state.shouldNudge).toBe(false);
+    expect(dismissed.shouldPrompt).toBe(false);
+    expect(dismissed.isExpectedSoon).toBe(true);
+    expect(logged.shouldPrompt).toBe(false);
+    expect(logged.isExpectedSoon).toBe(true);
   });
 
-  it("hides reminder relevance outside the reminder window", () => {
-    const state = getReminderState({
-      today: "2026-04-10",
-      nextPeriodDate: "2026-04-30",
-      reminderWindowDays: 4,
-      snoozedUntil: null,
-    });
+  it("stays silent outside the window", () => {
+    const state = getReminderState({ ...BASE, today: "2026-04-27" });
 
-    expect(state.shouldNudge).toBe(false);
+    expect(state.shouldPrompt).toBe(false);
   });
 
-  it("keeps reminders active on the expected start day and one day late", () => {
-    const dueDay = getReminderState({
-      today: "2026-04-30",
-      nextPeriodDate: "2026-04-30",
-      reminderWindowDays: 4,
-      snoozedUntil: null,
+  it("keeps prompting once overdue and flags it", () => {
+    const state = getReminderState({ ...BASE, today: "2026-05-05" });
+
+    expect(state.shouldPrompt).toBe(true);
+    expect(state.isOverdue).toBe(true);
+  });
+
+  it("stops prompting once the prediction is long overdue (abandoned)", () => {
+    // 15 days past the expected date, nothing logged: the estimate is stale, so
+    // it must stop nagging instead of prompting every day forever.
+    const state = getReminderState({ ...BASE, today: "2026-05-15" });
+
+    expect(state.isExpectedSoon).toBe(false);
+    expect(state.shouldPrompt).toBe(false);
+  });
+
+  it("stops prompting once today is logged", () => {
+    const state = getReminderState({ ...BASE, isTodayLogged: true });
+
+    expect(state.shouldPrompt).toBe(false);
+  });
+
+  it("hides the prompt for the day it was dismissed", () => {
+    const dismissedToday = getReminderState({
+      ...BASE,
+      dismissedFor: "2026-04-28",
     });
-    const oneDayLate = getReminderState({
-      today: "2026-05-01",
-      nextPeriodDate: "2026-04-30",
-      reminderWindowDays: 4,
-      snoozedUntil: null,
-    });
-    const twoDaysLate = getReminderState({
-      today: "2026-05-02",
-      nextPeriodDate: "2026-04-30",
-      reminderWindowDays: 4,
-      snoozedUntil: null,
+    const dismissedEarlier = getReminderState({
+      ...BASE,
+      dismissedFor: "2026-04-27",
     });
 
-    expect(dueDay.shouldNudge).toBe(true);
-    expect(oneDayLate.shouldNudge).toBe(true);
-    expect(twoDaysLate.shouldNudge).toBe(false);
+    expect(dismissedToday.shouldPrompt).toBe(false);
+    expect(dismissedEarlier.shouldPrompt).toBe(true);
+  });
+
+  it("does nothing without a prediction", () => {
+    const state = getReminderState({ ...BASE, nextPeriodDate: null });
+
+    expect(state.shouldPrompt).toBe(false);
+    expect(state.expectedDate).toBeNull();
   });
 });

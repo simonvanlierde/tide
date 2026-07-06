@@ -32,14 +32,12 @@ function usePathname() {
   return { pathname, navigate };
 }
 
-interface UtilityNavProps {
+interface TabBarProps {
   activePath: string;
   onNavigate: (nextPath: string) => void;
 }
 
-function UtilityNav({ activePath, onNavigate }: UtilityNavProps) {
-  const activeScreen = getAppScreen(activePath);
-
+function TabBar({ activePath, onNavigate }: TabBarProps) {
   function handleClick(event: MouseEvent<HTMLAnchorElement>, nextPath: string) {
     if (!shouldHandleAppNavigation(event)) {
       return;
@@ -50,30 +48,24 @@ function UtilityNav({ activePath, onNavigate }: UtilityNavProps) {
   }
 
   return (
-    <header className="app-header">
-      <div className="app-header__title">{activeScreen.title}</div>
-
-      <nav aria-label="Primary navigation" className="utility-nav">
-        {appScreens.map((screen) => (
-          <a
-            key={screen.path}
-            href={screen.path}
-            aria-current={screen.path === activePath ? "page" : undefined}
-            className={
-              screen.path === activePath
-                ? "icon-button is-active"
-                : "icon-button"
-            }
-            onClick={(event) => handleClick(event, screen.path)}
-          >
-            <span className="visually-hidden">{screen.navLabel}</span>
-            <span aria-hidden="true">
-              <AppIcon icon={screen.icon} />
-            </span>
-          </a>
-        ))}
-      </nav>
-    </header>
+    <nav aria-label="Primary navigation" className="tab-bar">
+      {appScreens.map((screen) => (
+        <a
+          key={screen.path}
+          href={screen.path}
+          aria-current={screen.path === activePath ? "page" : undefined}
+          className={
+            screen.path === activePath ? "tab-item is-active" : "tab-item"
+          }
+          onClick={(event) => handleClick(event, screen.path)}
+        >
+          <span aria-hidden="true">
+            <AppIcon icon={screen.icon} className="tab-item__glyph" />
+          </span>
+          <span className="tab-item__label">{screen.navLabel}</span>
+        </a>
+      ))}
+    </nav>
   );
 }
 
@@ -82,9 +74,18 @@ export function App() {
   const activeScreen = getAppScreen(pathname);
 
   return (
-    <main className="app-shell">
-      <UtilityNav activePath={activeScreen.path} onNavigate={navigate} />
-      {activeScreen.render()}
-    </main>
+    <div className="app-shell">
+      <a href="#main" className="skip-link">
+        Skip to content
+      </a>
+      <header className="app-header">
+        <span className="app-wordmark">tide</span>
+        <span className="app-header__title">{activeScreen.title}</span>
+      </header>
+      <main id="main" className="app-main" tabIndex={-1}>
+        {activeScreen.render()}
+      </main>
+      <TabBar activePath={activeScreen.path} onNavigate={navigate} />
+    </div>
   );
 }

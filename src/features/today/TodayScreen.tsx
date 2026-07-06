@@ -1,16 +1,26 @@
+import { Info } from "lucide-react";
 import { getReminderState } from "../../domain/reminders";
 import type {
   CycleEstimateMode,
   CyclePhase,
+  CycleSummary,
   IsoDate,
 } from "../../domain/types";
-import { useAppState, useAppStateActions, useCycleSummary } from "../../state";
-import { getTodayIsoDate } from "../../utils/date";
-import { ReminderBanner } from "../reminders/ReminderBanner";
-import { INFORMATION_COPY, SNOOZE_OPTIONS } from "../settings/config";
-import { TodayHero } from "./TodayHero";
-import { TodayHomeContent } from "./TodayHomeContent";
-import { TodayReminderActions } from "./TodayReminderActions";
+import {
+  useAppState,
+  useAppStateActions,
+  useCycleSummary,
+} from "../../state/provider";
+import { AppIcon } from "../../ui/icons";
+import {
+  differenceInDays,
+  formatShortDate,
+  getTodayIsoDate,
+} from "../../utils/date";
+import { LogAction } from "../log/LogAction";
+import { ReminderPrompt } from "../reminders/ReminderPrompt";
+import { INFORMATION_COPY } from "../settings/config";
+import { CycleDial } from "./CycleDial";
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -24,77 +34,152 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
   const reminderState = getReminderState({
     today,
     nextPeriodDate: summary.nextPeriod.date,
-    reminderWindowDays: state.settings.reminderWindowDays,
-    snoozedUntil: state.settings.snoozedUntil,
+    isTodayLogged,
+    dismissedFor: state.settings.dismissedFor,
   });
-  const shouldShowSnoozeActions =
-    !state.settings.snoozedUntil && reminderState.shouldNudge;
+  const learningNote = getLearningNote(summary.estimateMode);
+  // Prominent only when a fresh bleed is plausible — currently menstruating or a
+  // period is expected soon (stays prominent after dismissing the prompt). Once
+  // today is logged it drops to calm: "Remove" is a secondary, undo-style action.
+  const logVariant =
+    !isTodayLogged &&
+    (summary.phaseLabel === "menstrual" || reminderState.isExpectedSoon)
+      ? "primary"
+      : "quiet";
 
   return (
     <section className="today-screen">
-      <TodayHero
-        cycleDay={summary.cycleDay}
-        phaseSentence={getPhaseSentence(summary.phaseLabel)}
-        learningNote={getLearningNote(summary.estimateMode)}
-      />
-
-      <TodayHomeContent
-        displayMode={state.settings.homeDisplayMode}
+      <h1 className="visually-hidden">
+        Cycle day {summary.cycleDay ?? "unknown"},{" "}
+        {getPhaseWord(summary.phaseLabel)}
+      </h1>
+      <CycleDial
         summary={summary}
+        phaseLabel={getPhaseLine(summary.phaseLabel)}
         periodDays={state.periodDays}
+        intensityByDay={state.intensityByDay}
         today={today}
-        nextPeriodSummary={getNextPeriodSummary(summary.nextPeriod.daysUntil)}
-        fertilityEstimate={getFertilityEstimate(
-          summary.phaseLabel,
-          summary.fertile,
-        )}
-        fertilityDisclaimer={INFORMATION_COPY.fertility}
+        showFertility={state.settings.showFertility}
       />
 
-      <TodayReminderActions
-        isTodayLogged={isTodayLogged}
-        shouldShowSnoozeActions={shouldShowSnoozeActions}
-        snoozeOptions={SNOOZE_OPTIONS}
-        onToggleToday={() => actions.togglePeriodDay(today)}
-        onSnooze={(days) => actions.snoozeReminders(today, days)}
-      />
-      <div className="status-row">
-        <ReminderBanner
-          today={today}
-          nextPeriodDate={summary.nextPeriod.date}
-          settings={state.settings}
+      {learningNote ? (
+        <p className="today-screen__note">{learningNote}</p>
+      ) : null}
+
+      <dl className="fact-list">
+        <div className="fact">
+          <dt className="fact__label">Next period</dt>
+          <dd className="fact__value">
+            <span>{getNextPeriodPhrase(summary.nextPeriod.daysUntil)}</span>
+            {summary.nextPeriod.date ? (
+              <span className="fact__meta">
+                {formatShortDate(summary.nextPeriod.date)}
+              </span>
+            ) : null}
+          </dd>
+        </div>
+
+        {state.settings.showFertility ? (
+          <div className="fact">
+            <dt className="fact__label">Fertility</dt>
+            <dd className="fact__value">
+              <span className="fact__value--inline">
+                <span>
+                  {getFertilityEstimate(summary.phaseLabel, summary.fertile)}
+                </span>
+                <details className="info-popover">
+                  <summary
+                    className="info-popover__trigger"
+                    aria-label="Show fertility disclaimer"
+                  >
+                    <AppIcon icon={Info} className="info-popover__icon" />
+                  </summary>
+                  <div className="info-popover__content" role="note">
+                    {INFORMATION_COPY.fertility}
+                  </div>
+                </details>
+              </span>
+              {summary.ovulationDate ? (
+                <span className="fact__meta">
+                  {getOvulationPhrase(
+                    differenceInDays(summary.ovulationDate, today),
+                  )}{" "}
+                  · {formatShortDate(summary.ovulationDate)}
+                </span>
+              ) : null}
+            </dd>
+          </div>
+        ) : null}
+      </dl>
+
+      {reminderState.shouldPrompt && reminderState.expectedDate ? (
+        <ReminderPrompt
+          isOverdue={reminderState.isOverdue}
+          expectedLabel={formatShortDate(reminderState.expectedDate)}
+          onLog={() => actions.togglePeriodDay(today, today)}
+          onDismiss={() => actions.dismissReminder(today)}
         />
-      </div>
+      ) : (
+        <LogAction
+          isLogged={isTodayLogged}
+          intensity={state.intensityByDay[today]}
+          variant={logVariant}
+          onToggle={() => actions.togglePeriodDay(today, today)}
+          onSelectIntensity={(intensity) =>
+            actions.setDayIntensity(today, intensity, today)
+          }
+        />
+      )}
     </section>
   );
 }
 
-function getNextPeriodSummary(daysUntil: number | null) {
+function getNextPeriodPhrase(
+  daysUntil: CycleSummary["nextPeriod"]["daysUntil"],
+) {
   if (daysUntil === null) {
-    return "Period estimate not available yet";
+    return "Not enough data yet";
   }
 
   if (daysUntil < 0) {
     const daysAgo = Math.abs(daysUntil);
-    return `Period expected ${daysAgo} day${daysAgo === 1 ? "" : "s"} ago`;
+    return `${daysAgo} day${daysAgo === 1 ? "" : "s"} ago`;
   }
 
-  return `Period expected in ${daysUntil} day${daysUntil === 1 ? "" : "s"}`;
+  if (daysUntil === 0) {
+    return "Expected today";
+  }
+
+  return `In ${daysUntil} day${daysUntil === 1 ? "" : "s"}`;
 }
 
-function getPhaseSentence(phaseLabel: CyclePhase) {
-  switch (phaseLabel) {
-    case "menstrual":
-      return "You are currently in the menstrual phase.";
-    case "follicular":
-      return "Currently in the follicular phase.";
-    case "ovulation":
-      return "Ovulation is likely around now.";
-    case "luteal":
-      return "Currently in the luteal phase.";
-    default:
-      return "Still learning your cycle from recent logs.";
+function getPhaseWord(phaseLabel: CyclePhase) {
+  if (phaseLabel === "unknown") {
+    return "Learning";
   }
+
+  return `${phaseLabel.charAt(0).toUpperCase()}${phaseLabel.slice(1)}`;
+}
+
+function getPhaseLine(phaseLabel: CyclePhase) {
+  if (phaseLabel === "unknown") {
+    return "Learning";
+  }
+
+  return `${getPhaseWord(phaseLabel)} phase`;
+}
+
+function getOvulationPhrase(daysUntil: number) {
+  if (daysUntil < 0) {
+    const daysAgo = Math.abs(daysUntil);
+    return `Ovulation ${daysAgo} day${daysAgo === 1 ? "" : "s"} ago`;
+  }
+
+  if (daysUntil === 0) {
+    return "Ovulation expected today";
+  }
+
+  return `Ovulation in ${daysUntil} day${daysUntil === 1 ? "" : "s"}`;
 }
 
 function getFertilityEstimate(phaseLabel: CyclePhase, fertile: boolean) {

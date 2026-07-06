@@ -3,7 +3,12 @@ import type { IsoDate } from "../domain/types";
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 function toDateParts(value: IsoDate) {
-  const [year, month, day] = value.split("-").map(Number);
+  // IsoDate is validated as YYYY-MM-DD, so split always yields three numbers.
+  const [year, month, day] = value.split("-").map(Number) as [
+    number,
+    number,
+    number,
+  ];
   return { year, month, day };
 }
 
@@ -32,12 +37,6 @@ export function formatMonthInputValue(value: IsoDate): `${number}-${number}` {
   return value.slice(0, 7) as `${number}-${number}`;
 }
 
-export function setIsoDateMonth(value: IsoDate, monthIndex: number): IsoDate {
-  const date = parseIsoDate(value);
-  date.setUTCMonth(monthIndex, 1);
-  return formatIsoDate(date);
-}
-
 export function parseMonthInputValue(value: string): IsoDate {
   return `${value}-01` as IsoDate;
 }
@@ -48,6 +47,33 @@ export function differenceInDays(left: IsoDate, right: IsoDate): number {
   );
 }
 
+const SHORT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
+  weekday: "short",
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+const MONTH_DAY_FORMAT = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  timeZone: "UTC",
+});
+
+export function formatShortDate(value: IsoDate): string {
+  return SHORT_DATE_FORMAT.format(parseIsoDate(value));
+}
+
+export function formatMonthDay(value: IsoDate): string {
+  return MONTH_DAY_FORMAT.format(parseIsoDate(value));
+}
+
 export function getTodayIsoDate(): IsoDate {
-  return formatIsoDate(new Date());
+  // Local calendar parts, not toISOString (UTC), so "today" matches the user's
+  // wall-clock day near midnight in non-UTC timezones.
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}` as IsoDate;
 }
