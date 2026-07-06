@@ -190,7 +190,7 @@
 
   .secondary-action:hover,
   .chip-button:hover,
-  .calendar-grid__day:not(:disabled):hover,
+  .calendar-grid__day:not(:disabled):not(.is-logged):hover,
   .history-calendar__nav:hover,
   .history-calendar__today:hover,
   .history-calendar__month-button:hover {
@@ -199,13 +199,28 @@
     background: var(--tide-tint);
   }
 
+  /* Logged days keep their coral fill on hover — only a subtle press, never a
+     blue wash. Selection is shown by the ring alone (see .is-selected). */
+  .calendar-grid__day.is-logged:not(:disabled):hover {
+    filter: brightness(0.95);
+  }
+
   .text-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     border: 0;
     padding: 4px 0;
     background: transparent;
     color: var(--tide-strong);
     font-weight: 500;
     text-align: left;
+  }
+
+  .text-action__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   .text-action:hover {
@@ -388,9 +403,38 @@
   }
 
   .chip-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 9px 15px;
     border-radius: 999px;
     font-size: 0.94rem;
+  }
+
+  .chip-button__icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  /* Very narrow phones: drop the label, leaving a round icon-only button. The
+     aria-label keeps each action named for assistive tech. */
+  @media (max-width: 360px) {
+    .chip-button__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .chip-button {
+      padding: 9px;
+    }
   }
 
   .chip-button.is-active {
@@ -424,6 +468,155 @@
     gap: 10px;
   }
 
+  /* Compact settings line: label on the left, controls on the right, wrapping
+     to a stacked layout when the row runs out of width on narrow phones. */
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 16px;
+    flex-wrap: wrap;
+  }
+
+  /* Controls sit together on the right: the info affordance then the switch. */
+  .settings-row__controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Card heading paired with an info affordance on the right. */
+  .section-heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* Theme picker: label stacked over the full-width segmented control. */
+  .theme-field__legend {
+    padding: 0;
+    margin-bottom: 8px;
+  }
+
+  /* Hairline between stacked Preferences controls. */
+  .theme-field + .settings-row,
+  .settings-row + .settings-row {
+    border-top: 1px solid var(--surface-border);
+    padding-top: 12px;
+  }
+
+  /* Segmented control: one track, the active option raised out of it. */
+  .segmented {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 4px;
+    width: 100%;
+    padding: 4px;
+    border-radius: 14px;
+    background: var(--surface-soft);
+    border: 1px solid var(--surface-border);
+  }
+
+  .segmented__option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition:
+      background-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .segmented__option:hover {
+    color: var(--tide-strong);
+  }
+
+  .segmented__option.is-active {
+    background: var(--surface);
+    color: var(--tide-strong);
+    box-shadow: var(--shadow-card);
+  }
+
+  .segmented__option:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
+  .segmented__icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+
+  /* On very narrow screens the labels crowd; drop to icon-only. They stay in
+     the DOM so each option keeps its accessible name. */
+  @container (max-width: 340px) {
+    .segmented__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  }
+
+  /* On/off switch: a coral-free teal toggle with a sliding knob. */
+  .switch {
+    position: relative;
+    flex: 0 0 auto;
+    width: 46px;
+    height: 28px;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface-soft);
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+
+  .switch::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--surface);
+    box-shadow: 0 1px 3px rgba(20, 48, 58, 0.25);
+    transition: transform 160ms ease;
+  }
+
+  .switch[aria-checked="true"] {
+    background: var(--accent-solid);
+    border-color: var(--accent-solid);
+  }
+
+  .switch[aria-checked="true"]::after {
+    transform: translateX(18px);
+    background: #fff;
+  }
+
+  .switch:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
   /* Utility cards (settings + history) */
   .utility-card {
     display: grid;
@@ -438,6 +631,12 @@
   /* Calendar */
   .calendar-grid {
     gap: 10px;
+  }
+
+  /* Swipe surface: follows the finger horizontally, lets vertical scroll pass.
+     The inline transform/transition is driven from HistoryScreen. */
+  .calendar-swipe {
+    touch-action: pan-y;
   }
 
   .calendar-grid__header,
@@ -549,6 +748,27 @@
 
   .calendar-grid__day.is-logged.is-today {
     outline-color: var(--bleed-strong);
+  }
+
+  /* One-shot ring pulse the moment a day is logged — a soft nudge that the
+     new coral chip is tappable to refine or remove. Runs once, then rests. */
+  @keyframes calendar-day-logged {
+    from {
+      box-shadow: 0 0 0 0 rgba(226, 109, 90, 0.5);
+    }
+    to {
+      box-shadow: 0 0 0 6px rgba(226, 109, 90, 0);
+    }
+  }
+
+  .calendar-grid__day.is-just-logged {
+    animation: calendar-day-logged 450ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .calendar-grid__day.is-just-logged {
+      animation: none;
+    }
   }
 
   .history-calendar__nav,

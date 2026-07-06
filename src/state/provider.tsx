@@ -126,8 +126,14 @@ export function useAppStateActions() {
       setShowFertility(show: boolean) {
         dispatch({ type: "setShowFertility", show });
       },
+      setShowPeriodDayNumbers(show: boolean) {
+        dispatch({ type: "setShowPeriodDayNumbers", show });
+      },
       setTheme(theme: ThemePreference) {
         dispatch({ type: "setTheme", theme });
+      },
+      importState(state: AppState) {
+        dispatch({ type: "importState", state });
       },
     }),
     [dispatch],

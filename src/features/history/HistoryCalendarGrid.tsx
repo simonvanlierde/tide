@@ -24,8 +24,10 @@ interface HistoryCalendarGridProps {
   loggedDays: Set<IsoDate>;
   dayIntensity: Map<IsoDate, FlowIntensity>;
   periodDayNumbers: Map<IsoDate, number>;
+  showPeriodDayNumbers: boolean;
   cycleMarkers: Map<IsoDate, DayMarker>;
   selectedDay: IsoDate | null;
+  justLoggedDay: IsoDate | null;
   onSelectDay: (day: IsoDate) => void;
 }
 
@@ -34,8 +36,10 @@ export function HistoryCalendarGrid({
   loggedDays,
   dayIntensity,
   periodDayNumbers,
+  showPeriodDayNumbers,
   cycleMarkers,
   selectedDay,
+  justLoggedDay,
   onSelectDay,
 }: HistoryCalendarGridProps) {
   return (
@@ -51,7 +55,10 @@ export function HistoryCalendarGrid({
         {monthDays.map((day) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
-          const periodDay = isLogged ? periodDayNumbers.get(value) : undefined;
+          const periodDay =
+            isLogged && showPeriodDayNumbers
+              ? periodDayNumbers.get(value)
+              : undefined;
           // Logged days take the coral fill, deepened by flow level; a
           // prediction only shows on days that aren't already logged.
           const flow = isLogged
@@ -62,6 +69,7 @@ export function HistoryCalendarGrid({
           const className = [
             "calendar-grid__day",
             isLogged ? "is-logged" : "",
+            value === justLoggedDay ? "is-just-logged" : "",
             flow ? `is-flow-${flow}` : "",
             day.isToday ? "is-today" : "",
             isSelected ? "is-selected" : "",
@@ -72,8 +80,8 @@ export function HistoryCalendarGrid({
             .filter(Boolean)
             .join(" ");
           const dateLabel = day.isFuture
-            ? `${formatDayButtonLabel(value)} unavailable`
-            : formatDayButtonLabel(value);
+            ? `${formatDayButtonLabel(value, isLogged)} unavailable`
+            : formatDayButtonLabel(value, isLogged);
 
           return (
             <button

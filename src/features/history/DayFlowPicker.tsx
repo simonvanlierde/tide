@@ -1,5 +1,7 @@
-import { X } from "lucide-react";
+import { DropletOff, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
+import { AppIcon } from "../../ui/icons";
 import { formatShortDate } from "../../utils/date";
 import { FlowGauge } from "../log/FlowGauge";
 
@@ -22,8 +24,27 @@ export function DayFlowPicker({
   onRemove,
   onClose,
 }: DayFlowPickerProps) {
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  // Close when interacting outside the picker. Day buttons are left alone —
+  // tapping one is already handled by the calendar's own selection logic.
+  useEffect(() => {
+    function handleOutside(event: PointerEvent) {
+      const target = event.target as HTMLElement;
+      if (
+        pickerRef.current?.contains(target) ||
+        target.closest(".calendar-grid")
+      ) {
+        return;
+      }
+      onClose();
+    }
+    document.addEventListener("pointerdown", handleOutside);
+    return () => document.removeEventListener("pointerdown", handleOutside);
+  }, [onClose]);
+
   return (
-    <div className="day-flow-picker">
+    <div className="day-flow-picker" ref={pickerRef}>
       <div className="day-flow-picker__head">
         <span className="day-flow-picker__date">{formatShortDate(day)}</span>
         <button
@@ -39,9 +60,11 @@ export function DayFlowPicker({
         selected={intensity}
         onSelect={onSelect}
         name={`flow-${day}`}
+        autoFocus
       />
       {isLogged ? (
         <button type="button" className="text-action" onClick={onRemove}>
+          <AppIcon icon={DropletOff} className="text-action__icon" />
           Not bleeding that day
         </button>
       ) : null}

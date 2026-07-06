@@ -2,7 +2,12 @@ import { act, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
-import { useAppState, useAppStateActions } from "../../src/state/provider";
+import {
+  AppStateProvider,
+  useAppState,
+  useAppStateActions,
+  useCycleSummary,
+} from "../../src/state/provider";
 import {
   createAppState,
   createLearnedCycleState,
@@ -32,6 +37,14 @@ function Probe({ label = "probe" }: { label?: string }) {
         onClick={() => actions.dismissReminder("2026-04-18")}
       >
         dismiss {label}
+      </button>
+      <button
+        type="button"
+        onClick={() =>
+          actions.importState(createAppState({ periodDays: ["2026-05-01"] }))
+        }
+      >
+        import {label}
       </button>
     </>
   );
@@ -82,6 +95,19 @@ describe("app state", () => {
     );
   });
 
+  it("replaces provider state from an imported backup", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<Probe />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(screen.getByRole("button", { name: /import probe/i }));
+
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
+      "2026-05-01",
+    );
+  });
+
   it("refuses to expose state or actions outside a provider", () => {
     expect(() => renderHook(() => useAppState())).toThrow(
       /must be used inside AppStateProvider/,
@@ -89,6 +115,21 @@ describe("app state", () => {
     expect(() => renderHook(() => useAppStateActions())).toThrow(
       /must be used inside AppStateProvider/,
     );
+  });
+
+  it("uses today's date when cycle summary callers omit one", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-04-18T10:00:00.000Z"));
+
+    const { result } = renderHook(() => useCycleSummary(), {
+      wrapper: ({ children }) => (
+        <AppStateProvider initialState={createLearnedCycleState()}>
+          {children}
+        </AppStateProvider>
+      ),
+    });
+
+    expect(result.current.cycleDay).toBe(17);
   });
 });
 

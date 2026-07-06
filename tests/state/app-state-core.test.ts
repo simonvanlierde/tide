@@ -72,6 +72,18 @@ describe("app state core selectors", () => {
     expect(next.periodDays).toEqual(["2026-04-02"]);
   });
 
+  it("logs a past untracked day when setting its flow level", () => {
+    const next = appStateReducer(createAppState({ periodDays: [] }), {
+      type: "setDayIntensity",
+      day: "2026-04-02",
+      intensity: "light",
+      today: "2026-04-18",
+    });
+
+    expect(next.periodDays).toEqual(["2026-04-02"]);
+    expect(next.intensityByDay).toEqual({ "2026-04-02": "light" });
+  });
+
   it("refuses to set a flow level on a future, un-logged day", () => {
     const state = createAppState({ periodDays: ["2026-04-02"] });
 
@@ -83,6 +95,20 @@ describe("app state core selectors", () => {
     });
 
     expect(next).toBe(state);
+  });
+
+  it("replaces state wholesale with an imported backup", () => {
+    const imported = createAppState({
+      periodDays: ["2026-04-12"],
+      intensityByDay: { "2026-04-12": "light" },
+    });
+
+    const next = appStateReducer(createAppState({ periodDays: [] }), {
+      type: "importState",
+      state: imported,
+    });
+
+    expect(next).toBe(imported);
   });
 
   it("excludes spotting days from cycle predictions", () => {

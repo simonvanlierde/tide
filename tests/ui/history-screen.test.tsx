@@ -1,10 +1,29 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HistoryScreen } from "../../src/features/history/HistoryScreen";
 import { createAppState, renderWithAppState } from "../support/app";
 
+const originalAnimate = HTMLElement.prototype.animate;
+
 describe("HistoryScreen", () => {
+  afterEach(() => {
+    HTMLElement.prototype.animate = originalAnimate;
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  function stubMatchMedia(matches: boolean) {
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })),
+    );
+  }
+
   it("renders a month calendar with bleeding-day guidance", () => {
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
@@ -55,7 +74,7 @@ describe("HistoryScreen", () => {
     expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
-  it("logs a day and sets its flow from the calendar picker", async () => {
+  it("logs a day at medium flow with a single tap", async () => {
     const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
@@ -63,14 +82,32 @@ describe("HistoryScreen", () => {
       }),
     });
 
-    // Tapping an empty day opens its picker; choosing a level logs it.
+    // One tap on an empty day logs it at the default flow, no picker needed.
     await user.click(
+      screen.getByRole("button", { name: /log april 5, 2026/i }),
+    );
+
+    expect(
       screen.getByRole("button", { name: /edit april 5, 2026/i }),
+    ).toHaveClass("is-logged", "is-flow-medium");
+  });
+
+  it("refines a logged day's flow from the picker on a second tap", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02", "2026-04-12", "2026-04-20"],
+      }),
+    });
+
+    // Tapping an already-logged day opens its picker to change the flow.
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
     );
     await user.click(screen.getByRole("radio", { name: /heavy/i }));
 
     expect(
-      screen.getByRole("button", { name: /edit april 5, 2026/i }),
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
     ).toHaveClass("is-logged", "is-flow-heavy");
   });
 
@@ -87,9 +124,150 @@ describe("HistoryScreen", () => {
     );
     await user.click(screen.getByRole("button", { name: /not bleeding/i }));
 
+    // Once cleared the day is empty again, so its label flips back to "Log".
     expect(
-      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+      screen.getByRole("button", { name: /log april 2, 2026/i }),
     ).not.toHaveClass("is-logged");
+  });
+
+  it("closes an open picker when another day is logged", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /^close$/i }),
+    ).toBeInTheDocument();
+
+    // Tapping an empty day logs it and moves selection off the old day.
+    await user.click(
+      screen.getByRole("button", { name: /log april 5, 2026/i }),
+    );
+
+    expect(
+      screen.queryByRole("button", { name: /^close$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("focuses the selected intensity when the picker opens", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    );
+
+    // A logged day defaults to medium, so the arrow keys have a starting point.
+    expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
+  });
+
+  it("closes the picker when interacting outside it", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /edit april 2, 2026/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /^close$/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.pointerDown(document.body);
+
+    expect(
+      screen.queryByRole("button", { name: /^close$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("changes month by swiping the calendar left and right", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.touchStart(grid, { touches: [{ clientX: 240, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 90, clientY: 130 }],
+    });
+    expect(
+      screen.getByRole("button", { name: /may 2026/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.touchStart(grid, { touches: [{ clientX: 90, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 240, clientY: 130 }],
+    });
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("ignores incomplete, short, and vertical swipes", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.touchStart(grid, { touches: [] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 90, clientY: 90 }],
+    });
+    fireEvent.touchStart(grid, { touches: [{ clientX: 240, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 210, clientY: 125 }],
+    });
+    fireEvent.touchStart(grid, { touches: [{ clientX: 240, clientY: 120 }] });
+    fireEvent.touchEnd(grid, {
+      changedTouches: [{ clientX: 170, clientY: 220 }],
+    });
+
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("ignores unrelated calendar keyboard shortcuts", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.keyDown(grid, { key: "End" });
+
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("changes month with PageDown and PageUp", () => {
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+    const grid = screen.getByLabelText(/history calendar/i);
+
+    fireEvent.keyDown(grid, { key: "PageDown" });
+    expect(
+      screen.getByRole("button", { name: /may 2026/i }),
+    ).toBeInTheDocument();
+
+    fireEvent.keyDown(grid, { key: "PageUp" });
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("leaves month input keyboard handling to the picker", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<HistoryScreen today="2026-04-18" />);
+
+    await user.click(screen.getByRole("button", { name: /april 2026/i }));
+    fireEvent.keyDown(screen.getByLabelText(/select month and year/i), {
+      key: "PageDown",
+    });
+
+    expect(
+      screen.getByRole("button", { name: /april 2026/i }),
+    ).toBeInTheDocument();
   });
 
   it("changes the visible month from the month-year picker", async () => {
@@ -133,6 +311,43 @@ describe("HistoryScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("animates today after using the today action when motion is allowed", async () => {
+    const user = userEvent.setup();
+    const animate = vi.fn();
+    stubMatchMedia(false);
+    HTMLElement.prototype.animate =
+      animate as typeof HTMLElement.prototype.animate;
+    renderWithAppState(<HistoryScreen today="2026-04-21" />);
+
+    await user.click(
+      screen.getByRole("button", { name: /go to current month/i }),
+    );
+
+    expect(animate).toHaveBeenCalledWith(
+      [
+        { transform: "scale(1)" },
+        { transform: "scale(1.18)" },
+        { transform: "scale(1)" },
+      ],
+      { duration: 460, easing: "ease-out" },
+    );
+  });
+
+  it("skips the today animation when reduced motion is requested", async () => {
+    const user = userEvent.setup();
+    const animate = vi.fn();
+    stubMatchMedia(true);
+    HTMLElement.prototype.animate =
+      animate as typeof HTMLElement.prototype.animate;
+    renderWithAppState(<HistoryScreen today="2026-04-21" />);
+
+    await user.click(
+      screen.getByRole("button", { name: /go to current month/i }),
+    );
+
+    expect(animate).not.toHaveBeenCalled();
+  });
+
   it("disables future days and does not toggle them", async () => {
     const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-21" />, {
@@ -169,7 +384,7 @@ describe("HistoryScreen", () => {
     });
 
     expect(
-      screen.getByRole("button", { name: /edit march 30, 2026/i }),
+      screen.getByRole("button", { name: /log march 30, 2026/i }),
     ).toHaveClass("is-outside-month");
   });
 
@@ -189,7 +404,7 @@ describe("HistoryScreen", () => {
 
     const grid = screen.getByLabelText(/history calendar/i);
     const helper = screen.getByText(
-      /tap any day to log bleeding and set its flow/i,
+      /tap a day to log bleeding\. tap a logged day to change or remove it/i,
     );
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
@@ -203,6 +418,27 @@ describe("HistoryScreen", () => {
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).not.toBe(0);
     expect(todayButton).toHaveClass("history-calendar__today");
+  });
+
+  it("hides period day numbers when the setting is off", () => {
+    const withNumbers = renderWithAppState(
+      <HistoryScreen today="2026-04-18" />,
+      { state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }) },
+    );
+    expect(
+      withNumbers.container.querySelectorAll(".calendar-grid__period-day"),
+    ).not.toHaveLength(0);
+    withNumbers.unmount();
+
+    const hidden = renderWithAppState(<HistoryScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        settings: { showPeriodDayNumbers: false },
+      }),
+    });
+    expect(
+      hidden.container.querySelectorAll(".calendar-grid__period-day"),
+    ).toHaveLength(0);
   });
 
   it("shows a quiet empty state when no logs exist", () => {

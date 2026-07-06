@@ -26,6 +26,8 @@ export function useHistoryCalendar(today: IsoDate) {
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
+  // The day just logged by a one-tap; drives its one-shot "tap to edit" pulse.
+  const [justLoggedDay, setJustLoggedDay] = useState<IsoDate | null>(null);
   const monthInputRef = useRef<HTMLInputElement | null>(null);
 
   const monthDays = useMemo(
@@ -53,6 +55,7 @@ export function useHistoryCalendar(today: IsoDate) {
     [state.periodDays, state.intensityByDay],
   );
   const showFertility = state.settings.showFertility;
+  const showPeriodDayNumbers = state.settings.showPeriodDayNumbers;
   const cycleMarkers = useMemo(
     () => buildCalendarMarkers(summary, showFertility),
     [summary, showFertility],
@@ -69,6 +72,7 @@ export function useHistoryCalendar(today: IsoDate) {
       // Close the flow picker too: it edits a specific day, which the new month
       // no longer shows.
       setSelectedDay(null);
+      setJustLoggedDay(null);
     });
   }
 
@@ -92,7 +96,9 @@ export function useHistoryCalendar(today: IsoDate) {
     periodDayNumbers,
     cycleMarkers,
     showFertility,
+    showPeriodDayNumbers,
     selectedDay,
+    justLoggedDay,
     // Mirror the grid: a logged day with no stored level reads as the default
     // flow, so the picker's gauge matches the day's coral fill.
     selectedIntensity:
@@ -110,8 +116,17 @@ export function useHistoryCalendar(today: IsoDate) {
     goToToday() {
       setMonth(today);
     },
-    // Tapping a day opens its flow picker; tapping the open day closes it.
+    // Empty day → one-tap log at the default flow (medium). Logged day → open
+    // its picker to change the flow or remove it; tapping the open day closes.
     selectDay(day: IsoDate) {
+      if (!loggedDays.has(day)) {
+        actions.togglePeriodDay(day, today);
+        setJustLoggedDay(day);
+        // Selection follows the tap: close any picker left open on another day.
+        setSelectedDay(null);
+        return;
+      }
+      setJustLoggedDay(null);
       setSelectedDay((current) => (current === day ? null : day));
     },
     closePicker() {

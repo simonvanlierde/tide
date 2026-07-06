@@ -1,4 +1,11 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  type KeyboardEvent,
+  type TouchEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
 import { DayFlowPicker } from "./DayFlowPicker";
@@ -14,11 +21,91 @@ export function HistoryScreen({
   today = getTodayIsoDate(),
 }: HistoryScreenProps) {
   const model = useHistoryCalendar(today);
+  const articleRef = useRef<HTMLElement>(null);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const [pinpointNonce, setPinpointNonce] = useState(0);
+
+  // Pop the today cell so people see exactly where they are after "Today".
+  // Web Animations replays on every press; skip it under reduced motion.
+  useEffect(() => {
+    if (pinpointNonce === 0 || prefersReducedMotion()) {
+      return;
+    }
+    const cell = articleRef.current?.querySelector<HTMLElement>(
+      ".calendar-grid__day.is-today",
+    );
+    if (typeof cell?.animate === "function") {
+      cell.animate(
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(1.18)" },
+          { transform: "scale(1)" },
+        ],
+        { duration: 460, easing: "ease-out" },
+      );
+    }
+  }, [pinpointNonce]);
+
+  function handleGoToToday() {
+    model.goToToday();
+    setPinpointNonce((nonce) => nonce + 1);
+  }
+
+  function handleTouchStart(event: TouchEvent) {
+    const touch = event.touches[0];
+    if (touch) {
+      touchStart.current = { x: touch.clientX, y: touch.clientY };
+    }
+  }
+
+  // A mostly-horizontal swipe flips the month; swipe left for next (pages
+  // forward), right for previous. Small or vertical drags are ignored so taps
+  // and scrolls still work.
+  function handleTouchEnd(event: TouchEvent) {
+    const start = touchStart.current;
+    touchStart.current = null;
+    const touch = event.changedTouches[0];
+    if (!start || !touch) {
+      return;
+    }
+
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    if (Math.abs(dx) < 50 || Math.abs(dx) <= Math.abs(dy)) {
+      return;
+    }
+
+    if (dx < 0) {
+      model.goToNextMonth();
+    } else {
+      model.goToPreviousMonth();
+    }
+  }
+
+  // PageUp/PageDown change month (the ARIA date-grid convention). Arrow keys are
+  // left alone — the flow gauge is a radiogroup that owns them. Skip the month
+  // input, which handles its own keys.
+  function handleKeyDown(event: KeyboardEvent) {
+    if (event.target instanceof HTMLInputElement) {
+      return;
+    }
+    if (event.key === "PageUp") {
+      event.preventDefault();
+      model.goToPreviousMonth();
+    } else if (event.key === "PageDown") {
+      event.preventDefault();
+      model.goToNextMonth();
+    }
+  }
 
   return (
     <section className="utility-screen">
       <h1 className="visually-hidden">Calendar</h1>
-      <article className="utility-card history-calendar">
+      <article
+        ref={articleRef}
+        className="utility-card history-calendar"
+        onKeyDown={handleKeyDown}
+      >
         <div
           className="history-calendar__header"
           data-testid="history-calendar-header"
@@ -50,15 +137,23 @@ export function HistoryScreen({
           </button>
         </div>
         <HistoryMonthPicker {...model.monthPicker} />
-        <HistoryCalendarGrid
-          monthDays={model.monthDays}
-          loggedDays={model.loggedDays}
-          dayIntensity={model.dayIntensity}
-          periodDayNumbers={model.periodDayNumbers}
-          cycleMarkers={model.cycleMarkers}
-          selectedDay={model.selectedDay}
-          onSelectDay={model.selectDay}
-        />
+        <div
+          className="calendar-swipe"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <HistoryCalendarGrid
+            monthDays={model.monthDays}
+            loggedDays={model.loggedDays}
+            dayIntensity={model.dayIntensity}
+            periodDayNumbers={model.periodDayNumbers}
+            showPeriodDayNumbers={model.showPeriodDayNumbers}
+            cycleMarkers={model.cycleMarkers}
+            selectedDay={model.selectedDay}
+            justLoggedDay={model.justLoggedDay}
+            onSelectDay={model.selectDay}
+          />
+        </div>
         {model.selectedDay ? (
           <DayFlowPicker
             day={model.selectedDay}
@@ -72,7 +167,7 @@ export function HistoryScreen({
           />
         ) : (
           <p className="supporting-note history-calendar__help">
-            Tap any day to log bleeding and set its flow.
+            Tap a day to log bleeding. Tap a logged day to change or remove it.
           </p>
         )}
         <CalendarLegend showFertility={model.showFertility} />
@@ -80,7 +175,7 @@ export function HistoryScreen({
           type="button"
           className="history-calendar__today"
           aria-label="Go to current month"
-          onClick={model.goToToday}
+          onClick={handleGoToToday}
         >
           Today
         </button>
@@ -91,6 +186,12 @@ export function HistoryScreen({
         </article>
       ) : null}
     </section>
+  );
+}
+
+function prefersReducedMotion() {
+  return (
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
   );
 }
 

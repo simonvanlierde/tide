@@ -10,9 +10,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await page.getByRole("link", { name: /^settings$/i }).click();
   await expect(page).toHaveURL(/\/settings$/);
-  await expect(
-    page.getByRole("heading", { name: /information/i }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
 
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/history$/);
@@ -61,9 +59,7 @@ test("deep links reload correctly for the static app paths", async ({
   await expect(page.getByRole("button", { name: /april 2026/i })).toBeVisible();
 
   await page.goto("/settings");
-  await expect(
-    page.getByRole("heading", { name: /information/i }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
   await page.reload();
   await expect(
     page.getByText(/everything stays on this device/i),

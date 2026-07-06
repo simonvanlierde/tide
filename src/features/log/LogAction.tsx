@@ -1,4 +1,4 @@
-import { Droplets } from "lucide-react";
+import { DropletOff, Droplets } from "lucide-react";
 import type { FlowIntensity } from "../../domain/types";
 import { AppIcon } from "../../ui/icons";
 import { FlowGauge } from "./FlowGauge";
@@ -29,7 +29,10 @@ export function LogAction({
         onClick={onToggle}
       >
         <span className="button-label">
-          <AppIcon icon={Droplets} className="button-icon" />
+          <AppIcon
+            icon={isLogged ? DropletOff : Droplets}
+            className="button-icon"
+          />
           <span>{isLogged ? "Remove bleeding log" : "Log bleeding today"}</span>
         </span>
       </button>
