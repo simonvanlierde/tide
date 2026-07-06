@@ -19,6 +19,58 @@
     line-height: 1.5;
   }
 
+  /* Colophon — version, source link, copyright as one quiet credit. Scoped
+     under .utility-card so it outranks the `.utility-card p` color/size above. */
+  .utility-card .colophon {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 10px;
+    margin: 5px 0 0;
+    color: var(--ink-muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .colophon__version {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    letter-spacing: 0.02em;
+  }
+
+  /* Version + source as a subtle pill — reads as a deliberate tag, not a
+     stray inline link, so it drops the underline for the chip shape. */
+  .colophon__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--surface-soft);
+    border: 1px solid var(--surface-border);
+    text-decoration: none;
+  }
+
+  .colophon__link:hover,
+  .colophon__link:focus-visible {
+    border-color: var(--tide);
+  }
+
+  .colophon__link:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
+  .colophon__icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  .colophon__copyright {
+    font-size: 0.97rem;
+  }
+
   /* Fact list — the two things that matter, on the home screen */
   .fact-list {
     display: grid;
