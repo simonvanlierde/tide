@@ -2,6 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadAppState } from "../../src/data/storage";
+import { getPeriodDays } from "../../src/domain/flow";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
 
@@ -20,7 +21,7 @@ describe("SettingsScreen", () => {
       screen.getByRole("heading", { level: 2, name: /about/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(/everything stays on this device/i),
+      screen.getByText(/your data never leaves this device/i),
     ).toBeInTheDocument();
   });
 
@@ -52,10 +53,7 @@ describe("SettingsScreen", () => {
     renderSettings();
 
     expect(
-      screen.getByText(/log the days you had menstrual bleeding/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(/informational, not birth control/i),
+      screen.getByText(/fertility estimates are informational/i),
     ).toBeInTheDocument();
   });
 
@@ -71,18 +69,18 @@ describe("SettingsScreen", () => {
     expect(loadAppState().settings.showFertility).toBe(false);
   });
 
-  it("toggles period day numbers off and remembers the choice", async () => {
+  it("toggles cycle day numbers off and remembers the choice", async () => {
     const user = userEvent.setup();
     renderSettings();
 
     const toggle = screen.getByRole("switch", {
-      name: /period day numbers/i,
+      name: /cycle day numbers/i,
     });
     expect(toggle).toBeChecked();
 
     await user.click(toggle);
 
-    expect(loadAppState().settings.showPeriodDayNumbers).toBe(false);
+    expect(loadAppState().settings.showCycleDayNumbers).toBe(false);
   });
 
   it("switches the theme and remembers the choice", async () => {
@@ -117,7 +115,14 @@ describe("SettingsScreen", () => {
     await user.click(screen.getByRole("button", { name: /^export$/i }));
 
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
-    expect(JSON.parse(await blob.text())).toEqual(state);
+    expect(JSON.parse(await blob.text())).toEqual({
+      days: { "2026-04-02": "medium" },
+      settings: {
+        showFertility: true,
+        showCycleDayNumbers: true,
+        theme: "system",
+      },
+    });
     expect(blob.type).toBe("application/json");
     expect(click).toHaveBeenCalledOnce();
     expect(click.mock.contexts[0]).toMatchObject({
@@ -149,7 +154,9 @@ describe("SettingsScreen", () => {
     );
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(loadAppState().periodDays).toEqual(["2026-04-02"]);
+    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+      "2026-04-02",
+    ]);
     expect(loadAppState().intensityByDay).toEqual({ "2026-04-02": "heavy" });
   });
 

@@ -41,7 +41,7 @@ describe("App shell", () => {
     expect(
       screen.getByText(/^calendar$/i, { selector: ".app-header__title" }),
     ).toBeInTheDocument();
-    expect(window.location.pathname).toBe("/history");
+    expect(window.location.pathname).toBe("/calendar");
     expect(screen.getByRole("link", { name: /^calendar$/i })).toHaveAttribute(
       "aria-current",
       "page",
@@ -51,7 +51,7 @@ describe("App shell", () => {
   it("follows browser back/forward by syncing to the popstate location", () => {
     renderWithAppState(<App />);
 
-    window.history.replaceState(null, "", "/history");
+    window.history.replaceState(null, "", "/calendar");
     fireEvent.popState(window);
 
     expect(

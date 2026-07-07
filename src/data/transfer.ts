@@ -1,11 +1,34 @@
-import type { AppState } from "../domain/types";
+import type { AppState, FlowIntensity, IsoDate } from "../domain/types";
 import { normalizeAppState } from "./schema";
 
 const EXPORT_FILENAME = "tide-backup.json";
 
+interface BackupFile {
+  // The logged days and their flow — its keys are the period days, so they
+  // aren't listed a second time. This is the app's own state shape.
+  days: Record<IsoDate, FlowIntensity>;
+  settings: Pick<
+    AppState["settings"],
+    "showFertility" | "showCycleDayNumbers" | "theme"
+  >;
+}
+
+// Compact backup shape: the date -> flow map plus the durable settings. The
+// reminder-dismissal is transient UI state and is intentionally omitted.
+function toBackupFile(state: AppState): BackupFile {
+  return {
+    days: state.intensityByDay,
+    settings: {
+      showFertility: state.settings.showFertility,
+      showCycleDayNumbers: state.settings.showCycleDayNumbers,
+      theme: state.settings.theme,
+    },
+  };
+}
+
 // Download the current state as a JSON file the user can keep as a backup.
 export function downloadAppState(state: AppState) {
-  const blob = new Blob([JSON.stringify(state, null, 2)], {
+  const blob = new Blob([JSON.stringify(toBackupFile(state), null, 2)], {
     type: "application/json",
   });
   const url = URL.createObjectURL(blob);

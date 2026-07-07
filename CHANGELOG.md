@@ -4,6 +4,39 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-06
+
+### Added
+
+- Forecasts now show learned multi-day periods across future cycles, with a
+  fertile window that adapts to recent cycle variability.
+- The Today screen now includes a cycle insights panel.
+- GitHub issue templates, a pull request template, and contributing guidelines
+  are now included.
+
+### Changed
+
+- Redesigned the Today cycle dial as an open gauge with a scrubbable predicted
+  period preview.
+- Calendar period-day numbers are now cycle-day numbers, and the History
+  calendar repeats full predicted period spans into future cycles.
+- Replaced the native month input with a custom History month and year picker.
+- Refreshed the Settings information popovers, section layout, screenshots, and
+  app styling.
+- Period days are now derived from the daily flow-intensity map.
+- Documentation now explains how local cycle predictions are calculated.
+- Renamed the internal History feature to Calendar (module, components, CSS classes, and the `/history` route is now `/calendar`) to match the UI label.
+
+### Fixed
+
+- Fixed cycle math and calendar edge cases around ovulation markers, final
+  logged periods, overdue cycle-day numbering, and dial scrubbing.
+
+### Tested
+
+- Added and updated coverage for predictions, forecasts, the redesigned dial,
+  insights, settings, import migration, and history interactions.
+
 ## [0.2.1] - 2026-07-06
 
 ### Changed
@@ -73,6 +106,7 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
+[0.3.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.3.0
 [0.2.1]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.1
 [0.2.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.0
 [0.1.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.1.0

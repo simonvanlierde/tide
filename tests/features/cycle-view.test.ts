@@ -44,11 +44,35 @@ describe("buildCycleSegments", () => {
     expect(segments[16]?.isCurrent).toBe(true);
     expect(segments[16]?.date).toBe(today);
 
-    // Ovulation lands on cycle day 15, fertile window spans days 10-16.
+    // Ovulation lands on cycle day 15. Cycle lengths [28,29,27] have sub-day
+    // spread (stddev ≈ 0.8), which floors to no widening — a regular cycler keeps
+    // the tight −5/+1 biological window, so the fertile window spans days 10-16.
     expect(segments[14]?.isOvulation).toBe(true);
     expect(segments.filter((s) => s.isFertile).map((s) => s.dayNumber)).toEqual(
       [10, 11, 12, 13, 14, 15, 16],
     );
+  });
+
+  it("sizes the ring to a short learned cycle without padding to 28", () => {
+    const today: IsoDate = "2026-06-06";
+    const periodDays: IsoDate[] = ["2026-06-01", "2026-06-02"];
+    const summary = buildCycleSummary({
+      today,
+      periodDays,
+      completedCycleLengths: [24, 24, 25], // median 24
+    });
+
+    const segments = buildCycleSegments(summary, periodDays, today, true);
+
+    // A 24-day cycle gets a 24-day ring — not the old 28-day floor. The next
+    // period then lands on the day past the arc (the dial's nub), so the ring
+    // holds no phantom "Period expected" tail inside it.
+    expect(segments).toHaveLength(24);
+    expect(segments.at(-1)?.date).toBe("2026-06-24");
+    expect(summary.nextPeriod.date).toBe("2026-06-25");
+    expect(
+      segments.some((s) => getSegmentStatus(s, summary) === "Period expected"),
+    ).toBe(false);
   });
 
   it("maps a fallback 28-day cycle from a single logged start", () => {

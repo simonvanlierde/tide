@@ -1,0 +1,162 @@
+import { X } from "lucide-react";
+import { useEffect, useRef } from "react";
+import {
+  DEFAULT_CYCLE_LENGTH,
+  DEFAULT_LUTEAL_LENGTH,
+  FERTILE_WINDOW_END,
+  FERTILE_WINDOW_START,
+  MAX_PERIOD_LENGTH,
+  MIN_PERIOD_LENGTH,
+  RECENT_CYCLE_WINDOW,
+} from "../../domain/cycle";
+import type { CycleStats, CycleSummary } from "../../domain/types";
+
+interface CycleInsightsProps {
+  summary: CycleSummary;
+  stats: CycleStats;
+  onClose: () => void;
+}
+
+// The numbers behind the estimate, plus a plain-language note on how they're
+// worked out. A native <dialog> gives us the focus trap, Esc-to-close, and
+// backdrop for free. Mounted only while open, so it's shown on mount and a
+// native close (Esc, backdrop) unmounts it via onClose.
+export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    dialogRef.current?.showModal();
+  }, []);
+
+  const regularity = getRegularity(stats.variabilityDays);
+
+  // Close through the native dialog so the browser restores focus to the trigger
+  // before onClose unmounts us. Unmounting an open <dialog> directly (Esc aside)
+  // skips that focus restoration, stranding keyboard users on <body>.
+  const requestClose = () => dialogRef.current?.close();
+
+  return (
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: backdrop tap-to-dismiss on a modal <dialog>; keyboard close is handled natively by Esc
+    // biome-ignore lint/a11y/useKeyWithClickEvents: same — Esc closes the dialog for keyboard users, this click only dismisses on the backdrop
+    <dialog
+      ref={dialogRef}
+      className="insights"
+      aria-labelledby="insights-title"
+      onClose={onClose}
+      onClick={(event) => {
+        // Clicks land on the backdrop as the <dialog> element itself.
+        if (event.target === dialogRef.current) {
+          requestClose();
+        }
+      }}
+    >
+      <div className="insights__head">
+        <h2 id="insights-title" className="insights__title">
+          Cycle insights
+        </h2>
+        <button
+          type="button"
+          className="insights__close"
+          aria-label="Close"
+          onClick={requestClose}
+        >
+          <X aria-hidden="true" size={18} />
+        </button>
+      </div>
+
+      <div className="insights__stats">
+        <Stat value={summary.cycleLength} unit="days" label="Cycle length" />
+        <Stat value={summary.periodLength} unit="days" label="Period length" />
+        <Stat value={stats.cyclesTracked} label="Cycles tracked" />
+      </div>
+
+      {stats.cyclesTracked === 0 ? (
+        <p className="insights__note">
+          Based on a typical {DEFAULT_CYCLE_LENGTH}-day cycle until you’ve
+          logged a full cycle.
+        </p>
+      ) : null}
+
+      <div className="insights__regularity">
+        <span className="insights__regularity-label">Cycle regularity</span>
+        <span
+          className="insights__meter"
+          role="img"
+          aria-label={`Cycle regularity: ${regularity.label}`}
+        >
+          {[1, 2, 3, 4].map((step) => (
+            <span
+              key={step}
+              className="insights__meter-seg"
+              data-filled={step <= regularity.level}
+            />
+          ))}
+        </span>
+        <span className="insights__regularity-word">{regularity.label}</span>
+      </div>
+
+      <details className="insights__how">
+        <summary className="insights__how-summary">
+          How predictions work
+        </summary>
+        <ul className="insights__how-list">
+          <li>
+            Everything is worked out on your device from the days you log.
+          </li>
+          <li>
+            Cycle length is the median of your last {RECENT_CYCLE_WINDOW}{" "}
+            cycles, so one odd month doesn’t throw it off. Before two cycles, a
+            typical {DEFAULT_CYCLE_LENGTH}-day cycle is used.
+          </li>
+          <li>
+            Period length is your recent average, kept to a normal{" "}
+            {MIN_PERIOD_LENGTH}–{MAX_PERIOD_LENGTH} days.
+          </li>
+          <li>
+            Your next period is your last start plus that cycle length;
+            ovulation is estimated {DEFAULT_LUTEAL_LENGTH} days before it.
+          </li>
+          <li>
+            The fertile window runs {Math.abs(FERTILE_WINDOW_START)} days before
+            to {FERTILE_WINDOW_END} day after ovulation, and widens when your
+            cycles vary more.
+          </li>
+        </ul>
+      </details>
+    </dialog>
+  );
+}
+
+interface StatProps {
+  value: number;
+  label: string;
+  unit?: string;
+}
+
+function Stat({ value, label, unit }: StatProps) {
+  return (
+    <div className="insights__stat">
+      <span className="insights__stat-value">{value}</span>
+      {unit ? <span className="insights__stat-unit">{unit}</span> : null}
+      <span className="insights__stat-label">{label}</span>
+    </div>
+  );
+}
+
+// Map cycle-length spread (standard deviation, in days) to a 0–4 meter and a
+// word. Null means fewer than two cycles — nothing to compare yet.
+function getRegularity(variabilityDays: number | null) {
+  if (variabilityDays === null) {
+    return { level: 0, label: "Not enough data yet" };
+  }
+  if (variabilityDays <= 1) {
+    return { level: 4, label: "Very regular" };
+  }
+  if (variabilityDays <= 2) {
+    return { level: 3, label: "Regular" };
+  }
+  if (variabilityDays <= 4) {
+    return { level: 2, label: "Somewhat variable" };
+  }
+  return { level: 1, label: "Variable" };
+}

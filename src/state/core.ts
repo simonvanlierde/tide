@@ -1,4 +1,8 @@
-import { buildCycleSummary, getCompletedCycleLengths } from "../domain/cycle";
+import {
+  buildCycleSummary,
+  getCompletedCycleLengths,
+  getCycleStats,
+} from "../domain/cycle";
 import { DEFAULT_FLOW, getPredictionDays } from "../domain/flow";
 import type {
   AppState,
@@ -17,7 +21,7 @@ export type AppStateAction =
     }
   | { type: "dismissReminder"; today: IsoDate }
   | { type: "setShowFertility"; show: boolean }
-  | { type: "setShowPeriodDayNumbers"; show: boolean }
+  | { type: "setShowCycleDayNumbers"; show: boolean }
   | { type: "setTheme"; theme: ThemePreference }
   | { type: "importState"; state: AppState };
 
@@ -27,7 +31,7 @@ export function appStateReducer(
 ): AppState {
   switch (action.type) {
     case "togglePeriodDay": {
-      const hasLoggedDay = state.periodDays.includes(action.day);
+      const hasLoggedDay = action.day in state.intensityByDay;
 
       // Never log a future-dated day; always allow removing an existing one
       // (e.g. a stale entry left after the device clock moved backwards).
@@ -35,12 +39,8 @@ export function appStateReducer(
         return state;
       }
 
-      const periodDays = hasLoggedDay
-        ? state.periodDays.filter((value) => value !== action.day)
-        : [...state.periodDays, action.day].sort();
-
-      // Log at the default flow; removing a day prunes its intensity so the
-      // map never outlives the logged day.
+      // Log at the default flow; removing a day drops its entry (the map is the
+      // set of logged days, so no separate list to keep in sync).
       const intensityByDay = { ...state.intensityByDay };
       if (hasLoggedDay) {
         delete intensityByDay[action.day];
@@ -50,7 +50,6 @@ export function appStateReducer(
 
       return {
         ...state,
-        periodDays,
         intensityByDay,
       };
     }
@@ -58,18 +57,13 @@ export function appStateReducer(
     case "setDayIntensity": {
       // The gauge only appears once a day is logged, but stay robust: never set
       // a level on a future, un-logged day.
-      const isLogged = state.periodDays.includes(action.day);
+      const isLogged = action.day in state.intensityByDay;
       if (!isLogged && action.day > action.today) {
         return state;
       }
 
-      const periodDays = isLogged
-        ? state.periodDays
-        : [...state.periodDays, action.day].sort();
-
       return {
         ...state,
-        periodDays,
         intensityByDay: {
           ...state.intensityByDay,
           [action.day]: action.intensity,
@@ -82,7 +76,7 @@ export function appStateReducer(
         ...state,
         settings: {
           ...state.settings,
-          dismissedFor: action.today,
+          dismissedOn: action.today,
         },
       };
 
@@ -95,12 +89,13 @@ export function appStateReducer(
         },
       };
 
-    case "setShowPeriodDayNumbers":
+    // biome-ignore lint/security/noSecrets: an action type name, not a credential
+    case "setShowCycleDayNumbers":
       return {
         ...state,
         settings: {
           ...state.settings,
-          showPeriodDayNumbers: action.show,
+          showCycleDayNumbers: action.show,
         },
       };
 
@@ -120,14 +115,15 @@ export function appStateReducer(
 }
 
 export function selectCycleSummary(state: AppState, today: IsoDate) {
-  const predictionDays = getPredictionDays(
-    state.periodDays,
-    state.intensityByDay,
-  );
+  const predictionDays = getPredictionDays(state.intensityByDay);
 
   return buildCycleSummary({
     today,
     periodDays: predictionDays,
     completedCycleLengths: getCompletedCycleLengths(predictionDays),
   });
+}
+
+export function selectCycleStats(state: AppState) {
+  return getCycleStats(getPredictionDays(state.intensityByDay));
 }

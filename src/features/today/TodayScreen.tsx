@@ -1,4 +1,6 @@
-import { Info } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
   CycleEstimateMode,
@@ -9,6 +11,7 @@ import type {
 import {
   useAppState,
   useAppStateActions,
+  useCycleStats,
   useCycleSummary,
 } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
@@ -20,7 +23,9 @@ import {
 import { LogAction } from "../log/LogAction";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
 import { INFORMATION_COPY } from "../settings/config";
+import { InfoPopover } from "../settings/InfoPopover";
 import { CycleDial } from "./CycleDial";
+import { CycleInsights } from "./CycleInsights";
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -30,12 +35,14 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const summary = useCycleSummary(today);
-  const isTodayLogged = state.periodDays.includes(today);
+  const stats = useCycleStats();
+  const [insightsOpen, setInsightsOpen] = useState(false);
+  const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
     today,
     nextPeriodDate: summary.nextPeriod.date,
     isTodayLogged,
-    dismissedFor: state.settings.dismissedFor,
+    dismissedOn: state.settings.dismissedOn,
   });
   const learningNote = getLearningNote(summary.estimateMode);
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
@@ -56,7 +63,7 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       <CycleDial
         summary={summary}
         phaseLabel={getPhaseLine(summary.phaseLabel)}
-        periodDays={state.periodDays}
+        periodDays={getPeriodDays(state.intensityByDay)}
         intensityByDay={state.intensityByDay}
         today={today}
         showFertility={state.settings.showFertility}
@@ -66,51 +73,62 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
         <p className="today-screen__note">{learningNote}</p>
       ) : null}
 
-      <dl className="fact-list">
-        <div className="fact">
-          <dt className="fact__label">Next period</dt>
-          <dd className="fact__value">
-            <span>{getNextPeriodPhrase(summary.nextPeriod.daysUntil)}</span>
-            {summary.nextPeriod.date ? (
-              <span className="fact__meta">
-                {formatShortDate(summary.nextPeriod.date)}
-              </span>
-            ) : null}
-          </dd>
-        </div>
-
-        {state.settings.showFertility ? (
+      <div className="fact-list">
+        <dl className="fact-list__rows">
           <div className="fact">
-            <dt className="fact__label">Fertility</dt>
+            <dt className="fact__label">Next period</dt>
             <dd className="fact__value">
-              <span className="fact__value--inline">
-                <span>
-                  {getFertilityEstimate(summary.phaseLabel, summary.fertile)}
-                </span>
-                <details className="info-popover">
-                  <summary
-                    className="info-popover__trigger"
-                    aria-label="Show fertility disclaimer"
-                  >
-                    <AppIcon icon={Info} className="info-popover__icon" />
-                  </summary>
-                  <div className="info-popover__content" role="note">
-                    {INFORMATION_COPY.fertility}
-                  </div>
-                </details>
-              </span>
-              {summary.ovulationDate ? (
+              <span>{getNextPeriodPhrase(summary.nextPeriod.daysUntil)}</span>
+              {summary.nextPeriod.date ? (
                 <span className="fact__meta">
-                  {getOvulationPhrase(
-                    differenceInDays(summary.ovulationDate, today),
-                  )}{" "}
-                  · {formatShortDate(summary.ovulationDate)}
+                  {formatShortDate(summary.nextPeriod.date)}
                 </span>
               ) : null}
             </dd>
           </div>
-        ) : null}
-      </dl>
+
+          {state.settings.showFertility ? (
+            <div className="fact">
+              <dt className="fact__label fact__label--with-info">
+                Fertility
+                <InfoPopover label="How fertility is estimated" align="start">
+                  <p>{INFORMATION_COPY.fertilityMethod}</p>
+                  <p>{INFORMATION_COPY.fertility}</p>
+                </InfoPopover>
+              </dt>
+              <dd className="fact__value">
+                <span>
+                  {getFertilityEstimate(summary.phaseLabel, summary.fertile)}
+                </span>
+                {summary.ovulationDate ? (
+                  <span className="fact__meta">
+                    {getOvulationPhrase(
+                      differenceInDays(summary.ovulationDate, today),
+                    )}
+                  </span>
+                ) : null}
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+
+        <button
+          type="button"
+          className="fact-list__more"
+          onClick={() => setInsightsOpen(true)}
+        >
+          Cycle insights
+          <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
+        </button>
+      </div>
+
+      {insightsOpen ? (
+        <CycleInsights
+          summary={summary}
+          stats={stats}
+          onClose={() => setInsightsOpen(false)}
+        />
+      ) : null}
 
       {reminderState.shouldPrompt && reminderState.expectedDate ? (
         <ReminderPrompt
@@ -176,7 +194,7 @@ function getOvulationPhrase(daysUntil: number) {
   }
 
   if (daysUntil === 0) {
-    return "Ovulation expected today";
+    return "Ovulation today";
   }
 
   return `Ovulation in ${daysUntil} day${daysUntil === 1 ? "" : "s"}`;
@@ -184,19 +202,19 @@ function getOvulationPhrase(daysUntil: number) {
 
 function getFertilityEstimate(phaseLabel: CyclePhase, fertile: boolean) {
   if (phaseLabel === "ovulation" || fertile) {
-    return "Higher chance today";
+    return "Higher today";
   }
 
-  return "Lower chance today";
+  return "Lower today";
 }
 
 function getLearningNote(estimateMode: CycleEstimateMode) {
   if (estimateMode === "fallback") {
-    return "Learning from recent logs. Using a typical 28-day cycle for now.";
+    return "Using a typical 28-day cycle until we learn your pattern.";
   }
 
   if (estimateMode === "insufficient") {
-    return "Log bleeding days to start an estimate.";
+    return "Log bleeding to start an estimate.";
   }
 
   return null;

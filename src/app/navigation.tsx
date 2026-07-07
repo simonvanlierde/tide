@@ -1,11 +1,11 @@
 import { CalendarDays, House, Settings2 } from "lucide-react";
 import type { MouseEvent, ReactElement } from "react";
-import { HistoryScreen } from "../features/history/HistoryScreen";
+import { CalendarScreen } from "../features/calendar/CalendarScreen";
 import { SettingsScreen } from "../features/settings/SettingsScreen";
 import { TodayScreen } from "../features/today/TodayScreen";
 
 export interface AppScreen {
-  path: "/" | "/history" | "/settings";
+  path: "/" | "/calendar" | "/settings";
   title: string;
   navLabel: string;
   icon: typeof House;
@@ -21,11 +21,11 @@ export const appScreens = [
     render: () => <TodayScreen />,
   },
   {
-    path: "/history",
+    path: "/calendar",
     title: "Calendar",
     navLabel: "Calendar",
     icon: CalendarDays,
-    render: () => <HistoryScreen />,
+    render: () => <CalendarScreen />,
   },
   {
     path: "/settings",

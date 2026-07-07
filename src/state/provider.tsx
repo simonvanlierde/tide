@@ -18,6 +18,7 @@ import { getTodayIsoDate } from "../utils/date";
 import {
   type AppStateAction,
   appStateReducer,
+  selectCycleStats,
   selectCycleSummary,
 } from "./core";
 
@@ -126,8 +127,9 @@ export function useAppStateActions() {
       setShowFertility(show: boolean) {
         dispatch({ type: "setShowFertility", show });
       },
-      setShowPeriodDayNumbers(show: boolean) {
-        dispatch({ type: "setShowPeriodDayNumbers", show });
+      setShowCycleDayNumbers(show: boolean) {
+        // biome-ignore lint/security/noSecrets: an action type name, not a credential
+        dispatch({ type: "setShowCycleDayNumbers", show });
       },
       setTheme(theme: ThemePreference) {
         dispatch({ type: "setTheme", theme });
@@ -143,4 +145,9 @@ export function useAppStateActions() {
 export function useCycleSummary(today: IsoDate = getTodayIsoDate()) {
   const state = useAppState();
   return useMemo(() => selectCycleSummary(state, today), [state, today]);
+}
+
+export function useCycleStats() {
+  const state = useAppState();
+  return useMemo(() => selectCycleStats(state), [state]);
 }

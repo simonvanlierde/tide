@@ -40,7 +40,7 @@
     --cycle-period: var(--bleed);
     --cycle-ovulation: #e8a24b;
     --cycle-fertile: #f4d6a8;
-    --cycle-idle: rgba(20, 48, 58, 0.08);
+    --cycle-idle: rgba(84, 123, 121, 0.4);
     /* Text on the warm cycle fills — they stay light in both themes, so this
        stays near-black in both themes (not overridden in the dark block) to
        clear AA on coral, sand, and amber. */
@@ -100,7 +100,7 @@
        from each other and from coral on the dark ground. */
     --cycle-ovulation: #f2a63c;
     --cycle-fertile: #ecd3a4;
-    --cycle-idle: rgba(255, 255, 255, 0.1);
+    --cycle-idle: rgba(194, 238, 234, 0.3);
 
     --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
     --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);

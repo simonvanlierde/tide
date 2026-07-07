@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { INFORMATION_COPY } from "../../src/features/settings/config";
 
 test("app shell loads and primary navigation works", async ({ page }) => {
   await page.goto("/");
@@ -13,8 +14,8 @@ test("app shell loads and primary navigation works", async ({ page }) => {
   await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
 
   await page.getByRole("link", { name: /^calendar$/i }).click();
-  await expect(page).toHaveURL(/\/history$/);
-  await expect(page.getByLabel(/history calendar/i)).toBeVisible();
+  await expect(page).toHaveURL(/\/calendar$/);
+  await expect(page.getByLabel(/calendar/i)).toBeVisible();
 });
 
 test("logging today persists across reload", async ({ page }) => {
@@ -49,21 +50,19 @@ test("logging today persists across reload", async ({ page }) => {
 test("deep links reload correctly for the static app paths", async ({
   page,
 }) => {
-  // Pin "today" so the history calendar opens on a known month regardless of
+  // Pin "today" so the calendar opens on a known month regardless of
   // the real date the suite runs on.
   await page.clock.setFixedTime(new Date("2026-04-15T12:00:00Z"));
 
-  await page.goto("/history");
-  await expect(page.getByLabel(/history calendar/i)).toBeVisible();
+  await page.goto("/calendar");
+  await expect(page.getByLabel(/calendar/i)).toBeVisible();
   await page.reload();
   await expect(page.getByRole("button", { name: /april 2026/i })).toBeVisible();
 
   await page.goto("/settings");
   await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
   await page.reload();
-  await expect(
-    page.getByText(/everything stays on this device/i),
-  ).toBeVisible();
+  await expect(page.getByText(INFORMATION_COPY.privacy)).toBeVisible();
 });
 
 test("manifest and install assets are served", async ({ page }) => {

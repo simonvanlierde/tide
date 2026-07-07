@@ -6,17 +6,19 @@ export const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: "dark", label: "Dark" },
 ];
 export const INFORMATION_COPY = {
-  logging: "Log the days you had menstrual bleeding.",
-  fertility: "Estimates are informational, not birth control.",
-  privacy: "Everything stays on this device.",
+  privacy: "Your data never leaves this device.",
+  fertility:
+    "Fertility estimates are informational, not a birth control method.",
+  fertilityMethod:
+    "Higher around your predicted ovulation. Estimated from your recent cycle lengths.",
 } as const;
 
 // Helper copy that lives behind an info popover next to its control.
 export const SETTINGS_HELP = {
   fertility:
     "Shows fertile-window and ovulation estimates on the home screen and calendar.",
-  periodDayNumbers:
-    "Numbers each logged bleeding day within its period day (1, 2, 3, ...) on the calendar.",
+  cycleDayNumbers:
+    "Numbers the days of your current cycle (1, 2, 3, ...) on the calendar, up to your next expected period.",
   data: "Export saves your days to a file. Import replaces them from a backup.",
 } as const;
 

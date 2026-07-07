@@ -19,13 +19,22 @@ export const FLOW_LABELS: Record<FlowIntensity, string> = {
   heavy: "Heavy",
 };
 
-// Days that count toward cycle-start detection, day numbering and predictions.
-// Spotting is recorded and shown, but excluded here — it is often not the true
-// period start. Both the cycle summary and the history calendar derive from this
-// single filter so they can never number the same period differently.
-export function getPredictionDays(
-  periodDays: IsoDate[],
+// The logged period days, sorted. A key in intensityByDay IS a logged day
+// (every logged day carries a flow), so its keys are the single source of truth.
+export function getPeriodDays(
   intensityByDay: Record<IsoDate, FlowIntensity>,
 ): IsoDate[] {
-  return periodDays.filter((day) => intensityByDay[day] !== "spotting");
+  return (Object.keys(intensityByDay) as IsoDate[]).sort();
+}
+
+// Days that count toward cycle-start detection, day numbering and predictions.
+// Spotting is recorded and shown, but excluded here — it is often not the true
+// period start. Both the cycle summary and the calendar derive from this
+// single filter so they can never number the same period differently.
+export function getPredictionDays(
+  intensityByDay: Record<IsoDate, FlowIntensity>,
+): IsoDate[] {
+  return getPeriodDays(intensityByDay).filter(
+    (day) => intensityByDay[day] !== "spotting",
+  );
 }

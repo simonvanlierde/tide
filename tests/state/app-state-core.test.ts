@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { getPeriodDays } from "../../src/domain/flow";
 import { appStateReducer, selectCycleSummary } from "../../src/state/core";
 import { createAppState, createLearnedCycleState } from "../support/app";
 
@@ -14,7 +15,7 @@ describe("app state core selectors", () => {
       today: "2026-04-30",
     });
 
-    expect(nextState.periodDays).toEqual([
+    expect(getPeriodDays(nextState.intensityByDay)).toEqual([
       "2026-04-02",
       "2026-04-05",
       "2026-04-12",
@@ -27,7 +28,7 @@ describe("app state core selectors", () => {
       { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
     );
 
-    expect(nextState.periodDays).toEqual(["2026-04-02"]);
+    expect(getPeriodDays(nextState.intensityByDay)).toEqual(["2026-04-02"]);
   });
 
   it("still lets a stale future-dated day be removed", () => {
@@ -36,7 +37,7 @@ describe("app state core selectors", () => {
       { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
     );
 
-    expect(nextState.periodDays).toEqual(["2026-04-02"]);
+    expect(getPeriodDays(nextState.intensityByDay)).toEqual(["2026-04-02"]);
   });
 
   it("marks a one-tap log at the default medium flow and prunes it on removal", () => {
@@ -69,7 +70,7 @@ describe("app state core selectors", () => {
     });
 
     expect(next.intensityByDay["2026-04-02"]).toBe("spotting");
-    expect(next.periodDays).toEqual(["2026-04-02"]);
+    expect(getPeriodDays(next.intensityByDay)).toEqual(["2026-04-02"]);
   });
 
   it("logs a past untracked day when setting its flow level", () => {
@@ -80,7 +81,7 @@ describe("app state core selectors", () => {
       today: "2026-04-18",
     });
 
-    expect(next.periodDays).toEqual(["2026-04-02"]);
+    expect(getPeriodDays(next.intensityByDay)).toEqual(["2026-04-02"]);
     expect(next.intensityByDay).toEqual({ "2026-04-02": "light" });
   });
 

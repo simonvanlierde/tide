@@ -8,13 +8,72 @@ afterEach(() => {
 });
 
 describe("parseImportedState", () => {
-  it("round-trips an exported state", () => {
-    const state = createAppState({
-      periodDays: ["2026-04-02"],
-      intensityByDay: { "2026-04-02": "heavy" },
-    });
+  it("imports the compact date -> flow backup format, deriving the period days from its keys", () => {
+    const parsed = parseImportedState(
+      JSON.stringify({
+        days: { "2026-04-02": "heavy", "2026-04-03": "medium" },
+        settings: { showFertility: false, theme: "dark" },
+      }),
+    );
 
-    expect(parseImportedState(JSON.stringify(state))).toEqual(state);
+    expect(parsed).toEqual(
+      createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: { "2026-04-02": "heavy", "2026-04-03": "medium" },
+        settings: { showFertility: false, theme: "dark" },
+      }),
+    );
+  });
+
+  it("migrates the older periodDays + intensityByDay shape on import", () => {
+    const parsed = parseImportedState(
+      JSON.stringify({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: { "2026-04-02": "heavy" },
+        settings: { dismissedFor: "2026-04-02", theme: "dark" },
+      }),
+    );
+
+    // Legacy periodDays are authoritative: a logged day with no level defaults
+    // to medium, and the retired dismissedFor key is dropped.
+    expect(parsed).toEqual(
+      createAppState({
+        periodDays: ["2026-04-02", "2026-04-03"],
+        intensityByDay: { "2026-04-02": "heavy" },
+        settings: { theme: "dark" },
+      }),
+    );
+  });
+
+  it("round-trips a state through export and back, dropping only transient dismiss state", () => {
+    const state = createAppState({
+      periodDays: ["2026-04-02", "2026-04-03"],
+      intensityByDay: { "2026-04-02": "heavy" },
+      settings: { dismissedOn: "2026-04-02", showFertility: false },
+    });
+    const click = vi
+      .spyOn(HTMLAnchorElement.prototype, "click")
+      .mockImplementation(() => {});
+    const createObjectURL = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:tide-backup");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+
+    downloadAppState(state);
+    const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
+
+    return blob.text().then((text) => {
+      // dismissedOn is transient UI state and must not leave in the backup.
+      expect(text).not.toContain("dismissedOn");
+      expect(parseImportedState(text)).toEqual({
+        ...state,
+        // Export writes an explicit flow for every logged day, so a logged-but-
+        // unrated day comes back as an explicit default rather than an absent key.
+        intensityByDay: { "2026-04-02": "heavy", "2026-04-03": "medium" },
+        settings: { ...state.settings, dismissedOn: null },
+      });
+      expect(click).toHaveBeenCalledOnce();
+    });
   });
 
   it("throws on non-JSON so the caller can warn the user", () => {
@@ -46,7 +105,20 @@ describe("downloadAppState", () => {
     downloadAppState(state);
 
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
-    expect(await blob.text()).toBe(JSON.stringify(state, null, 2));
+    expect(await blob.text()).toBe(
+      JSON.stringify(
+        {
+          days: { "2026-04-02": "medium" },
+          settings: {
+            showFertility: true,
+            showCycleDayNumbers: true,
+            theme: "system",
+          },
+        },
+        null,
+        2,
+      ),
+    );
     expect(blob.type).toBe("application/json");
     expect(click).toHaveBeenCalledOnce();
     expect(click.mock.contexts[0]).toMatchObject({

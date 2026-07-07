@@ -15,4 +15,13 @@ describe("schema normalization at the storage trust boundary", () => {
     expect(normalizeAppState("garbage")).toEqual(defaultAppState);
     expect(normalizeAppState(null)).toEqual(defaultAppState);
   });
+
+  it("migrates the retired showPeriodDayNumbers setting", () => {
+    // A user who turned day numbers off before the rename keeps them off.
+    const migrated = normalizeAppState({
+      intensityByDay: {},
+      settings: { showPeriodDayNumbers: false },
+    });
+    expect(migrated.settings.showCycleDayNumbers).toBe(false);
+  });
 });
