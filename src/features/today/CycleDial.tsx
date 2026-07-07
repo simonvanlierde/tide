@@ -162,11 +162,16 @@ export function CycleDial({
 
   // A compact expected-period nub past the logged cycle (plus a decorative tail
   // drawn in the gradient). Kept to PREDICTED_SPAN_DAYS so it hints at the next
-  // start without eating the ring; the floor in dayIndexFromPoint means this
-  // still yields a single scrubbable "period expected" cell. Modelled here, not
-  // in the segment data, so it can be previewed like any other day.
+  // start without eating the ring. Modelled here, not in the segment data, so it
+  // can be previewed like any other day.
+  //
+  // Only shown for a genuinely upcoming period: once it's due today or overdue,
+  // the next-period date has already been folded into the ring as its "Period
+  // expected" tail, so a nub past the arc would double it and mislabel a past
+  // date as a future cycle day.
   const nextDate = summary.nextPeriod.date;
-  const hasPrediction = nextDate !== null && Boolean(segments[0]?.date);
+  const hasPrediction =
+    nextDate !== null && nextDate > today && Boolean(segments[0]?.date);
   const cycleDayCount = segments.length;
   const predictedCount = hasPrediction ? PREDICTED_SPAN_DAYS : 0;
   const totalCells = cycleDayCount + predictedCount;

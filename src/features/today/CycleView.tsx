@@ -24,10 +24,13 @@ export function buildCycleSegments(
     summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
       ? Math.max(
           // cycleDay + daysUntil counts today twice (it is both the last day of
-          // this cycle and day 0 of the countdown), so subtract 1.
+          // this cycle and day 0 of the countdown), so subtract 1 — this is the
+          // learned cycle length. The ring spans exactly that many days, so the
+          // next period lands on the day after the arc, not somewhere inside a
+          // padded ring. cycleDay wins when a period is overdue and the cycle
+          // runs long past its expected length.
           summary.cycleDay + summary.nextPeriod.daysUntil - 1,
           summary.cycleDay,
-          28,
         )
       : 28;
   const cycleStartDate =

@@ -53,6 +53,28 @@ describe("buildCycleSegments", () => {
     );
   });
 
+  it("sizes the ring to a short learned cycle without padding to 28", () => {
+    const today: IsoDate = "2026-06-06";
+    const periodDays: IsoDate[] = ["2026-06-01", "2026-06-02"];
+    const summary = buildCycleSummary({
+      today,
+      periodDays,
+      completedCycleLengths: [24, 24, 25], // median 24
+    });
+
+    const segments = buildCycleSegments(summary, periodDays, today, true);
+
+    // A 24-day cycle gets a 24-day ring — not the old 28-day floor. The next
+    // period then lands on the day past the arc (the dial's nub), so the ring
+    // holds no phantom "Period expected" tail inside it.
+    expect(segments).toHaveLength(24);
+    expect(segments.at(-1)?.date).toBe("2026-06-24");
+    expect(summary.nextPeriod.date).toBe("2026-06-25");
+    expect(
+      segments.some((s) => getSegmentStatus(s, summary) === "Period expected"),
+    ).toBe(false);
+  });
+
   it("maps a fallback 28-day cycle from a single logged start", () => {
     const today: IsoDate = "2026-04-19";
     const periodDays: IsoDate[] = ["2026-04-19", "2026-04-20"];

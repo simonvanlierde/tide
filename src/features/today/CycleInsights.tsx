@@ -30,6 +30,11 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
 
   const regularity = getRegularity(stats.variabilityDays);
 
+  // Close through the native dialog so the browser restores focus to the trigger
+  // before onClose unmounts us. Unmounting an open <dialog> directly (Esc aside)
+  // skips that focus restoration, stranding keyboard users on <body>.
+  const requestClose = () => dialogRef.current?.close();
+
   return (
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: backdrop tap-to-dismiss on a modal <dialog>; keyboard close is handled natively by Esc
     // biome-ignore lint/a11y/useKeyWithClickEvents: same — Esc closes the dialog for keyboard users, this click only dismisses on the backdrop
@@ -41,7 +46,7 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
       onClick={(event) => {
         // Clicks land on the backdrop as the <dialog> element itself.
         if (event.target === dialogRef.current) {
-          onClose();
+          requestClose();
         }
       }}
     >
@@ -53,7 +58,7 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
           type="button"
           className="insights__close"
           aria-label="Close"
-          onClick={onClose}
+          onClick={requestClose}
         >
           <X aria-hidden="true" size={18} />
         </button>
