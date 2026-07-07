@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { INFORMATION_COPY } from "../../src/features/settings/config";
 
 test("app shell loads and primary navigation works", async ({ page }) => {
   await page.goto("/");
@@ -61,9 +62,7 @@ test("deep links reload correctly for the static app paths", async ({
   await page.goto("/settings");
   await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
   await page.reload();
-  await expect(
-    page.getByText(/your data never leaves this device/i),
-  ).toBeVisible();
+  await expect(page.getByText(INFORMATION_COPY.privacy)).toBeVisible();
 });
 
 test("manifest and install assets are served", async ({ page }) => {
