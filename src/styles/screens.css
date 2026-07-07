@@ -290,13 +290,13 @@
     display: grid;
     grid-template-columns: repeat(2, auto);
     justify-content: center;
-    gap: 8px 18px;
+    gap: 8px 12px;
   }
 
   /* Once the shell is wide enough to hold all four items, lay the key out on a
      single row. Keyed to the shell's container width (the shell sets
      container-type), so it tracks the real card width instead of the viewport. */
-  @container (min-width: 440px) {
+  @container (min-width: 380px) {
     .calendar-legend {
       grid-template-columns: repeat(4, auto);
     }

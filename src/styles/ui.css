@@ -628,14 +628,6 @@
     flex-wrap: nowrap;
   }
 
-  /* Fill the space left beside the "Theme" label and shrink with it, rather
-     than snapping between two content-fit sizes. flex won't shrink past the
-     control's own min-content, so it settles at the icon-only size once the
-     labels drop (below) — that intrinsic minimum is the floor. */
-  .theme-field .segmented {
-    flex: 1 1 auto;
-  }
-
   /* Hairline between stacked Preferences controls. */
   .theme-field + .settings-row,
   .settings-row + .settings-row {
@@ -654,6 +646,14 @@
     border-radius: 14px;
     background: var(--surface-soft);
     border: 1px solid var(--surface-border);
+  }
+
+  /* Fill the space left beside the "Theme" label and shrink with it, rather
+     than snapping between two content-fit sizes. flex won't shrink past the
+     control's own min-content, so it settles at the icon-only size once the
+     labels drop — that intrinsic minimum is the floor. */
+  .theme-field .segmented {
+    flex: 1 1 auto;
   }
 
   .segmented__option {
@@ -843,9 +843,22 @@
     box-shadow: inset 0 0 0 1px var(--surface-border);
   }
 
-  .calendar-grid__day.is-today {
-    outline: 2px solid var(--tide);
-    outline-offset: 1px;
+  /* Today: a quiet "you are here" underscore centered under the number. Drawn
+     as a pseudo-element (not outline) so it sits independent of the selected
+     ring when a day is both today and selected, and reads on any fill —
+     surface, coral, fertile — via currentColor. */
+  .calendar-grid__day.is-today::after {
+    content: "";
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.65;
+    pointer-events: none;
   }
 
   .calendar-grid__day.is-outside-month {
@@ -910,10 +923,6 @@
   .calendar-grid__day.is-selected {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
-  }
-
-  .calendar-grid__day.is-logged.is-today {
-    outline-color: var(--bleed-strong);
   }
 
   /* One-shot ring pulse the moment a day is logged — a soft nudge that the
