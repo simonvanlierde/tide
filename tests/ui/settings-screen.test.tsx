@@ -71,18 +71,18 @@ describe("SettingsScreen", () => {
     expect(loadAppState().settings.showFertility).toBe(false);
   });
 
-  it("toggles period day numbers off and remembers the choice", async () => {
+  it("toggles cycle day numbers off and remembers the choice", async () => {
     const user = userEvent.setup();
     renderSettings();
 
     const toggle = screen.getByRole("switch", {
-      name: /period day numbers/i,
+      name: /cycle day numbers/i,
     });
     expect(toggle).toBeChecked();
 
     await user.click(toggle);
 
-    expect(loadAppState().settings.showPeriodDayNumbers).toBe(false);
+    expect(loadAppState().settings.showCycleDayNumbers).toBe(false);
   });
 
   it("switches the theme and remembers the choice", async () => {

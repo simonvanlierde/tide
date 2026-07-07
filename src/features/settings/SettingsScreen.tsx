@@ -1,7 +1,7 @@
 import { AboutSection } from "./AboutSection";
+import { CycleNumbersSection } from "./CycleNumbersSection";
 import { DataSection } from "./DataSection";
 import { FertilitySection } from "./FertilitySection";
-import { PeriodNumbersSection } from "./PeriodNumbersSection";
 import { ThemeSection } from "./ThemeSection";
 
 export function SettingsScreen() {
@@ -13,7 +13,7 @@ export function SettingsScreen() {
         <div className="settings-group settings-group--compact">
           <ThemeSection />
           <FertilitySection />
-          <PeriodNumbersSection />
+          <CycleNumbersSection />
         </div>
       </article>
       <DataSection />

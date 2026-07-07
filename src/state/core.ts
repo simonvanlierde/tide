@@ -17,7 +17,7 @@ export type AppStateAction =
     }
   | { type: "dismissReminder"; today: IsoDate }
   | { type: "setShowFertility"; show: boolean }
-  | { type: "setShowPeriodDayNumbers"; show: boolean }
+  | { type: "setShowCycleDayNumbers"; show: boolean }
   | { type: "setTheme"; theme: ThemePreference }
   | { type: "importState"; state: AppState };
 
@@ -95,12 +95,12 @@ export function appStateReducer(
         },
       };
 
-    case "setShowPeriodDayNumbers":
+    case "setShowCycleDayNumbers":
       return {
         ...state,
         settings: {
           ...state.settings,
-          showPeriodDayNumbers: action.show,
+          showCycleDayNumbers: action.show,
         },
       };
 

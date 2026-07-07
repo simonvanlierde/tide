@@ -17,11 +17,22 @@ interface CycleDialProps {
   showFertility: boolean;
 }
 
+// The dial is a broken ring: a gap at 12 o'clock splits the previous period
+// start (just clockwise of the gap) from the predicted next period (just
+// counter-clockwise), so past and future no longer collide at the seam.
+const GAP_DEG = 24;
+const ARC_START_DEG = GAP_DEG / 2; // day 1 begins here, clockwise from top
+const ARC_SWEEP_DEG = 360 - GAP_DEG; // arc the whole cycle spans
+
+// Center angle (deg, clockwise from 12 o'clock) of a day's segment.
+function dayAngleDeg(index: number, totalDays: number) {
+  return ARC_START_DEG + (ARC_SWEEP_DEG * (index + 0.5)) / totalDays;
+}
+
 function getDialStyle(segments: CycleSegment[]) {
-  const segmentSize = 100 / segments.length;
   const stops = segments.map((segment, index) => {
-    const start = index * segmentSize;
-    const end = start + segmentSize;
+    const start = (ARC_SWEEP_DEG * index) / segments.length;
+    const end = (ARC_SWEEP_DEG * (index + 1)) / segments.length;
     const color = segment.flow
       ? `var(--flow-${segment.flow})`
       : segment.isOvulation
@@ -30,10 +41,25 @@ function getDialStyle(segments: CycleSegment[]) {
           ? "var(--cycle-fertile)"
           : "var(--cycle-idle)";
 
-    return `${color} ${start}% ${end}%`;
+    return `${color} ${start}deg ${end}deg`;
   });
+  // The remaining arc stays transparent — the gap at the top of the ring.
+  stops.push(`transparent ${ARC_SWEEP_DEG}deg 360deg`);
 
-  return { background: `conic-gradient(from 0deg, ${stops.join(", ")})` };
+  return {
+    background: `conic-gradient(from ${ARC_START_DEG}deg, ${stops.join(", ")})`,
+  };
+}
+
+function pointerAngleDeg(
+  x: number,
+  y: number,
+  rect: { left: number; top: number; width: number; height: number },
+): number {
+  const dx = x - (rect.left + rect.width / 2);
+  const dy = y - (rect.top + rect.height / 2);
+  // atan2(dx, -dy) puts 0deg at 12 o'clock, matching the conic gradient.
+  return ((Math.atan2(dx, -dy) * 180) / Math.PI + 360) % 360;
 }
 
 export function dayIndexFromPoint(
@@ -42,11 +68,9 @@ export function dayIndexFromPoint(
   rect: { left: number; top: number; width: number; height: number },
   totalDays: number,
 ): number {
-  const dx = x - (rect.left + rect.width / 2);
-  const dy = y - (rect.top + rect.height / 2);
-  // atan2(dx, -dy) puts 0deg at 12 o'clock, matching the conic gradient.
-  const angle = ((Math.atan2(dx, -dy) * 180) / Math.PI + 360) % 360;
-  return Math.min(Math.floor((angle / 360) * totalDays), totalDays - 1);
+  const relative = pointerAngleDeg(x, y, rect) - ARC_START_DEG;
+  const index = Math.floor((relative / ARC_SWEEP_DEG) * totalDays);
+  return Math.min(Math.max(index, 0), totalDays - 1);
 }
 
 // Distance of the angle-positioned labels from the dial center, as a fraction
@@ -54,7 +78,7 @@ export function dayIndexFromPoint(
 const LABEL_RADIUS = 0.56;
 
 function getLabelPosition(dayIndex: number, totalDays: number) {
-  const angle = ((dayIndex + 0.5) / totalDays) * 2 * Math.PI;
+  const angle = (dayAngleDeg(dayIndex, totalDays) * Math.PI) / 180;
   const isRightHalf = Math.sin(angle) >= 0;
 
   return {
@@ -78,6 +102,9 @@ export function CycleDial({
   const [previewIndex, setPreviewIndex] = useState<number | "next" | null>(
     null,
   );
+  // The exact pointer angle while scrubbing, so the ghost dot tracks the finger
+  // rather than snapping to the day center. Null for keyboard/label previews.
+  const [previewAngle, setPreviewAngle] = useState<number | null>(null);
 
   const segments = buildCycleSegments(
     summary,
@@ -88,7 +115,18 @@ export function CycleDial({
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
   const rotation =
-    currentIndex >= 0 ? ((currentIndex + 0.5) / segments.length) * 360 : 0;
+    currentIndex >= 0 ? dayAngleDeg(currentIndex, segments.length) : 0;
+
+  // Ghost marker under the pointer: free-follows the finger while scrubbing,
+  // otherwise sits on the previewed day (keyboard, label press).
+  const ghostAngle =
+    previewIndex === null
+      ? null
+      : previewAngle !== null
+        ? previewAngle
+        : previewIndex === "next"
+          ? ARC_START_DEG + ARC_SWEEP_DEG
+          : dayAngleDeg(previewIndex, segments.length);
 
   const preview =
     typeof previewIndex === "number" ? segments[previewIndex] : null;
@@ -122,10 +160,21 @@ export function CycleDial({
       setPreviewIndex(
         dayIndexFromPoint(event.clientX, event.clientY, rect, segments.length),
       );
+      // Clamp the ghost to the track so it never floats into the top gap.
+      const angle = pointerAngleDeg(event.clientX, event.clientY, rect);
+      setPreviewAngle(
+        Math.min(Math.max(angle, ARC_START_DEG), ARC_START_DEG + ARC_SWEEP_DEG),
+      );
     }
   }
 
+  function clearPreview() {
+    setPreviewIndex(null);
+    setPreviewAngle(null);
+  }
+
   function stepPreview(step: number) {
+    setPreviewAngle(null);
     setPreviewIndex((index) => {
       const from =
         typeof index === "number"
@@ -143,11 +192,13 @@ export function CycleDial({
     return {
       onPointerDown: (event: React.PointerEvent) => {
         event.stopPropagation();
+        setPreviewAngle(null);
         setPreviewIndex(target);
       },
       onPointerMove: (event: React.PointerEvent) => {
         event.stopPropagation();
         if (event.buttons > 0 || event.pointerType === "mouse") {
+          setPreviewAngle(null);
           setPreviewIndex(target);
         }
       },
@@ -162,7 +213,7 @@ export function CycleDial({
       event.preventDefault();
       stepPreview(-1);
     } else if (event.key === "Escape") {
-      setPreviewIndex(null);
+      clearPreview();
     }
   }
 
@@ -191,11 +242,11 @@ export function CycleDial({
             updatePreview(event);
           }
         }}
-        onPointerUp={() => setPreviewIndex(null)}
-        onPointerLeave={() => setPreviewIndex(null)}
-        onPointerCancel={() => setPreviewIndex(null)}
+        onPointerUp={clearPreview}
+        onPointerLeave={clearPreview}
+        onPointerCancel={clearPreview}
         onKeyDown={handleKeyDown}
-        onBlur={() => setPreviewIndex(null)}
+        onBlur={clearPreview}
       >
         <div className="cycle-dial__ring" style={getDialStyle(segments)}>
           <div className="cycle-dial__inner">
@@ -215,6 +266,15 @@ export function CycleDial({
         >
           <span aria-hidden="true" className="cycle-dial__marker-dot" />
         </div>
+        {ghostAngle !== null ? (
+          <div
+            className="cycle-dial__ghost"
+            style={{ transform: `rotate(${ghostAngle}deg)` }}
+            aria-hidden="true"
+          >
+            <span className="cycle-dial__ghost-dot" />
+          </div>
+        ) : null}
         <div className="cycle-dial__labels">
           {cycleStartDate ? (
             <span

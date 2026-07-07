@@ -98,14 +98,15 @@ describe("TodayScreen", () => {
       }) as DOMRect;
     dial.setPointerCapture = () => {};
 
-    // 3 o'clock on a 28-day dial is day 8.
+    // The ring is broken by a gap at the top, so the cycle spans 336deg from
+    // 12deg clockwise of the top — 3 o'clock lands on day 7.
     fireEvent.pointerDown(dial, {
       pointerId: 1,
       buttons: 1,
       clientX: 280,
       clientY: 140,
     });
-    expect(dial).toHaveAttribute("aria-valuenow", "8");
+    expect(dial).toHaveAttribute("aria-valuenow", "7");
 
     // Dragging to 6 o'clock lands on day 15, the expected ovulation day.
     fireEvent.pointerMove(dial, {

@@ -35,6 +35,12 @@ Once installed it works offline, and all data stays on your device.
 
 ## Roadmap
 
+- Ring
+  - Add subtle day markers
+  - More contrast between ring and background
+  - Add expected period thingy within end of ring
+  - no floating key date labels
+- Next up: insights and stats
 - Improved onboarding UI / UX
 - Multi-language support
 

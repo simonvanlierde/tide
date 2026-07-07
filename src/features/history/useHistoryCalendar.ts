@@ -14,6 +14,7 @@ import {
 } from "../../utils/date";
 import {
   buildCalendarMarkers,
+  buildCycleDayNumbers,
   buildMonthDays,
   formatMonthLabel,
 } from "./calendar";
@@ -55,10 +56,27 @@ export function useHistoryCalendar(today: IsoDate) {
     [state.periodDays, state.intensityByDay],
   );
   const showFertility = state.settings.showFertility;
-  const showPeriodDayNumbers = state.settings.showPeriodDayNumbers;
+  const showCycleDayNumbers = state.settings.showCycleDayNumbers;
   const cycleMarkers = useMemo(
-    () => buildCalendarMarkers(summary, showFertility),
-    [summary, showFertility],
+    () =>
+      buildCalendarMarkers(
+        summary,
+        showFertility,
+        monthDays[0]?.value ?? visibleMonth,
+        monthDays.at(-1)?.value ?? visibleMonth,
+      ),
+    [summary, showFertility, monthDays, visibleMonth],
+  );
+  // Fills every non-logged day of the current cycle with its cycle-day number,
+  // so the calendar shows a running count up to the next expected period.
+  const cycleDayNumbers = useMemo(
+    () =>
+      buildCycleDayNumbers(
+        summary,
+        monthDays[0]?.value ?? visibleMonth,
+        monthDays.at(-1)?.value ?? visibleMonth,
+      ),
+    [summary, monthDays, visibleMonth],
   );
   const monthLabel = useMemo(
     () => formatMonthLabel(visibleMonth),
@@ -94,9 +112,10 @@ export function useHistoryCalendar(today: IsoDate) {
     loggedDays,
     dayIntensity,
     periodDayNumbers,
+    cycleDayNumbers,
     cycleMarkers,
     showFertility,
-    showPeriodDayNumbers,
+    showCycleDayNumbers,
     selectedDay,
     justLoggedDay,
     // Mirror the grid: a logged day with no stored level reads as the default

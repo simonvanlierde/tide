@@ -58,10 +58,10 @@ describe("HistoryScreen", () => {
     expect(
       screen.queryByRole("button", { name: /fertile window/i }),
     ).not.toBeInTheDocument();
-    // The expected-period marker is not fertility data, so it stays.
+    // The expected-period run is not fertility data, so it stays.
     expect(
-      screen.getByRole("button", { name: /expected period/i }),
-    ).toBeInTheDocument();
+      screen.getAllByRole("button", { name: /expected period/i }).length,
+    ).toBeGreaterThan(0);
   });
 
   it("uses the calendar as the main editor for logged days", () => {
@@ -420,7 +420,7 @@ describe("HistoryScreen", () => {
     expect(todayButton).toHaveClass("history-calendar__today");
   });
 
-  it("hides period day numbers when the setting is off", () => {
+  it("hides cycle day numbers when the setting is off", () => {
     const withNumbers = renderWithAppState(
       <HistoryScreen today="2026-04-18" />,
       { state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }) },
@@ -433,7 +433,7 @@ describe("HistoryScreen", () => {
     const hidden = renderWithAppState(<HistoryScreen today="2026-04-18" />, {
       state: createAppState({
         periodDays: ["2026-04-02", "2026-04-03"],
-        settings: { showPeriodDayNumbers: false },
+        settings: { showCycleDayNumbers: false },
       }),
     });
     expect(

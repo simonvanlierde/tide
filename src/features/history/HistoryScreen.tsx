@@ -147,7 +147,8 @@ export function HistoryScreen({
             loggedDays={model.loggedDays}
             dayIntensity={model.dayIntensity}
             periodDayNumbers={model.periodDayNumbers}
-            showPeriodDayNumbers={model.showPeriodDayNumbers}
+            cycleDayNumbers={model.cycleDayNumbers}
+            showCycleDayNumbers={model.showCycleDayNumbers}
             cycleMarkers={model.cycleMarkers}
             selectedDay={model.selectedDay}
             justLoggedDay={model.justLoggedDay}

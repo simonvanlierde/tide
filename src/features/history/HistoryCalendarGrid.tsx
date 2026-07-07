@@ -24,7 +24,8 @@ interface HistoryCalendarGridProps {
   loggedDays: Set<IsoDate>;
   dayIntensity: Map<IsoDate, FlowIntensity>;
   periodDayNumbers: Map<IsoDate, number>;
-  showPeriodDayNumbers: boolean;
+  cycleDayNumbers: Map<IsoDate, number>;
+  showCycleDayNumbers: boolean;
   cycleMarkers: Map<IsoDate, DayMarker>;
   selectedDay: IsoDate | null;
   justLoggedDay: IsoDate | null;
@@ -36,7 +37,8 @@ export function HistoryCalendarGrid({
   loggedDays,
   dayIntensity,
   periodDayNumbers,
-  showPeriodDayNumbers,
+  cycleDayNumbers,
+  showCycleDayNumbers,
   cycleMarkers,
   selectedDay,
   justLoggedDay,
@@ -55,10 +57,13 @@ export function HistoryCalendarGrid({
         {monthDays.map((day) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
-          const periodDay =
-            isLogged && showPeriodDayNumbers
+          // Logged days keep their per-period number; other days show the
+          // running cycle-day count. Both hide when the setting is off.
+          const dayNumber = showCycleDayNumbers
+            ? isLogged
               ? periodDayNumbers.get(value)
-              : undefined;
+              : cycleDayNumbers.get(value)
+            : undefined;
           // Logged days take the coral fill, deepened by flow level; a
           // prediction only shows on days that aren't already logged.
           const flow = isLogged
@@ -96,9 +101,16 @@ export function HistoryCalendarGrid({
               onClick={() => onSelectDay(value)}
             >
               {parseIsoDate(value).getUTCDate()}
-              {periodDay ? (
-                <span className="calendar-grid__period-day" aria-hidden="true">
-                  {periodDay}
+              {dayNumber ? (
+                <span
+                  className={
+                    isLogged
+                      ? "calendar-grid__period-day"
+                      : "calendar-grid__period-day calendar-grid__period-day--cycle"
+                  }
+                  aria-hidden="true"
+                >
+                  {dayNumber}
                 </span>
               ) : null}
             </button>

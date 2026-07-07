@@ -17,7 +17,7 @@ export const defaultAppState: AppState = {
   settings: {
     dismissedFor: null,
     showFertility: true,
-    showPeriodDayNumbers: true,
+    showCycleDayNumbers: true,
     theme: "system",
   },
 };
@@ -80,10 +80,10 @@ export function normalizeSettings(settings: unknown): AppSettings {
       typeof candidate.showFertility === "boolean"
         ? candidate.showFertility
         : defaultAppState.settings.showFertility,
-    showPeriodDayNumbers:
-      typeof candidate.showPeriodDayNumbers === "boolean"
-        ? candidate.showPeriodDayNumbers
-        : defaultAppState.settings.showPeriodDayNumbers,
+    showCycleDayNumbers:
+      typeof candidate.showCycleDayNumbers === "boolean"
+        ? candidate.showCycleDayNumbers
+        : defaultAppState.settings.showCycleDayNumbers,
     theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
       ? (candidate.theme as ThemePreference)
       : defaultAppState.settings.theme,

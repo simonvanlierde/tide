@@ -15,8 +15,8 @@ export const INFORMATION_COPY = {
 export const SETTINGS_HELP = {
   fertility:
     "Shows fertile-window and ovulation estimates on the home screen and calendar.",
-  periodDayNumbers:
-    "Numbers each logged bleeding day within its period day (1, 2, 3, ...) on the calendar.",
+  cycleDayNumbers:
+    "Numbers the days of your current cycle (1, 2, 3, ...) on the calendar, up to your next expected period.",
   data: "Export saves your days to a file. Import replaces them from a backup.",
 } as const;
 

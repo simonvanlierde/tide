@@ -739,6 +739,15 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Running cycle-day count on non-logged days: quieter than the logged-day
+     bubble so the coral days stay the focal point. Opaque disc + hairline so
+     it reads on the soft surface and on fertile/ovulation fills alike. */
+  .calendar-grid__period-day--cycle {
+    background: var(--surface);
+    color: var(--ink-muted);
+    box-shadow: inset 0 0 0 1px var(--surface-border);
+  }
+
   .calendar-grid__day.is-today {
     outline: 2px solid var(--tide);
     outline-offset: 1px;

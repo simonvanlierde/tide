@@ -1,5 +1,10 @@
 import type { CycleSummary, IsoDate } from "../../domain/types";
-import { addDays, formatIsoDate, parseIsoDate } from "../../utils/date";
+import {
+  addDays,
+  differenceInDays,
+  formatIsoDate,
+  parseIsoDate,
+} from "../../utils/date";
 
 export type DayMarker = "fertile" | "ovulation" | "predicted-period";
 
@@ -71,12 +76,17 @@ export function buildMonthDays(
   });
 }
 
-// Predicted markers for the current cycle: the fertile window, ovulation, and
-// the next expected period. Later dates win, so ovulation overrides the fertile
-// day it sits on. Fertility markers are omitted when the user has hidden them.
+// Predicted markers for the visible grid window [rangeStart, rangeEnd]: the
+// fertile window and ovulation for the next cycle, plus the expected period —
+// a `periodLength`-day run repeating every `cycleLength` days from the next
+// period onward, so the forecast continues indefinitely into the future. Later
+// dates win, so ovulation overrides the fertile day it sits on. Fertility
+// markers are omitted when the user has hidden them.
 export function buildCalendarMarkers(
   summary: CycleSummary,
   showFertility: boolean,
+  rangeStart: IsoDate,
+  rangeEnd: IsoDate,
 ): Map<IsoDate, DayMarker> {
   const markers = new Map<IsoDate, DayMarker>();
 
@@ -87,9 +97,52 @@ export function buildCalendarMarkers(
     markers.set(summary.ovulationDate, "ovulation");
   }
 
-  if (summary.nextPeriod.date) {
-    markers.set(summary.nextPeriod.date, "predicted-period");
+  if (summary.nextPeriod.date && summary.cycleLength > 0) {
+    // Step forward one cycle at a time and paint each period run that overlaps
+    // the window. Bounded by rangeEnd, so past months (start > rangeEnd) get
+    // nothing and the loop stays cheap.
+    for (
+      let start = summary.nextPeriod.date;
+      start <= rangeEnd;
+      start = addDays(start, summary.cycleLength)
+    ) {
+      for (let offset = 0; offset < summary.periodLength; offset++) {
+        const day = addDays(start, offset);
+        if (day >= rangeStart && day <= rangeEnd) {
+          markers.set(day, "predicted-period");
+        }
+      }
+    }
   }
 
   return markers;
+}
+
+// Running cycle-day number for every day of the CURRENT cycle: 1 on the last
+// period's start, counting up to — but not into — the next expected period,
+// which is the next cycle's day 1. Bounded to the visible window. Empty when
+// there's no period history to anchor day 1. Logged days are numbered
+// separately (per-period) by getPeriodDayNumbers, so this fills the gaps.
+export function buildCycleDayNumbers(
+  summary: CycleSummary,
+  rangeStart: IsoDate,
+  rangeEnd: IsoDate,
+): Map<IsoDate, number> {
+  const numbers = new Map<IsoDate, number>();
+  const nextPeriod = summary.nextPeriod.date;
+  if (!nextPeriod || summary.cycleLength <= 0) {
+    return numbers;
+  }
+
+  const cycleStart = addDays(nextPeriod, -summary.cycleLength);
+  const from = cycleStart > rangeStart ? cycleStart : rangeStart;
+  for (
+    let day = from;
+    day <= rangeEnd && day < nextPeriod;
+    day = addDays(day, 1)
+  ) {
+    numbers.set(day, differenceInDays(day, cycleStart) + 1);
+  }
+
+  return numbers;
 }

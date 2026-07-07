@@ -18,6 +18,10 @@ export interface CycleSummary {
     date: IsoDate | null;
     daysUntil: number | null;
   };
+  /** Average days between cycle starts; drives the repeating period forecast. */
+  cycleLength: number;
+  /** Learned length of an expected period run, in days (clamped 3–5). */
+  periodLength: number;
   estimateMode: CycleEstimateMode;
 }
 
@@ -26,8 +30,8 @@ export interface AppSettings {
   dismissedFor: IsoDate | null;
   /** Show fertile-window and ovulation estimates on the home screen and calendar. */
   showFertility: boolean;
-  /** Number each logged bleeding day within its period (day 1, 2, 3…) on the calendar. */
-  showPeriodDayNumbers: boolean;
+  /** Number the days of the current cycle (day 1, 2, 3…) on the calendar. */
+  showCycleDayNumbers: boolean;
   theme: ThemePreference;
 }
 

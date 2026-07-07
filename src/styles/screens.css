@@ -143,14 +143,16 @@
     pointer-events: auto;
   }
 
+  /* The gap sits at the top: previous-period start brackets its right edge,
+     next period its left edge. */
   .cycle-dial__label--start {
     top: -12px;
-    right: calc(50% + 44px);
+    left: calc(50% + 44px);
   }
 
   .cycle-dial__label--end {
     top: -12px;
-    left: calc(50% + 44px);
+    right: calc(50% + 44px);
   }
 
   .cycle-view__dot--predicted {
@@ -176,6 +178,27 @@
     background: var(--ink);
     border: 3px solid var(--surface);
     box-shadow: 0 2px 6px rgba(20, 48, 58, 0.3);
+  }
+
+  /* Follows the pointer while scrubbing, so the finger's spot on the ring stays
+     readable even when a fingertip covers it. */
+  .cycle-dial__ghost {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    justify-items: center;
+    align-items: start;
+    pointer-events: none;
+  }
+
+  .cycle-dial__ghost-dot {
+    width: 20px;
+    height: 20px;
+    margin-top: 3px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 2.5px solid var(--tide);
+    box-shadow: 0 1px 4px rgba(20, 48, 58, 0.2);
   }
 
   .cycle-dial__legend {
