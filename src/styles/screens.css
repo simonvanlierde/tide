@@ -57,7 +57,7 @@
     display: grid;
     justify-items: center;
     gap: 20px;
-    padding: 18px 0 2px;
+    padding: 4px 0 2px;
   }
 
   .cycle-dial__frame {
@@ -261,6 +261,14 @@
     gap: 6px;
   }
 
+  /* Month takes the wider share; year needs only four digits. */
+  .history-calendar__picker-selects {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 8px;
+    margin-top: 6px;
+  }
+
   .history-calendar__picker-input {
     width: 100%;
     min-height: 46px;
@@ -276,11 +284,22 @@
     outline-offset: 2px;
   }
 
+  /* Two-column key on narrow shells: one row when fertility is off (2 items), a
+     balanced 2x2 when it's on (4 items) — never an orphaned trailing item. */
   .calendar-legend {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
     justify-content: center;
-    gap: 12px;
+    gap: 8px 18px;
+  }
+
+  /* Once the shell is wide enough to hold all four items, lay the key out on a
+     single row. Keyed to the shell's container width (the shell sets
+     container-type), so it tracks the real card width instead of the viewport. */
+  @container (min-width: 440px) {
+    .calendar-legend {
+      grid-template-columns: repeat(4, auto);
+    }
   }
 
   .calendar-legend__item {
