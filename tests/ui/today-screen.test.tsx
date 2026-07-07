@@ -26,18 +26,38 @@ describe("TodayScreen", () => {
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/lower chance today/i)).toBeInTheDocument();
+    expect(screen.getByText(/lower today/i)).toBeInTheDocument();
     expect(
-      screen.getByLabelText(/show fertility disclaimer/i),
+      screen.getByLabelText(/how fertility is estimated/i),
     ).toBeInTheDocument();
   });
 
   it("shows the ovulation estimate in the fertility fact", () => {
     renderToday("2026-04-18");
 
+    expect(screen.getByText(/ovulation 2 days ago/i)).toBeInTheDocument();
+  });
+
+  it("opens the cycle insights dialog with the stats behind the estimate", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+
+    // Closed by default: not mounted until the trigger is used.
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /cycle insights/i }));
+
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toBeInTheDocument();
     expect(
-      screen.getByText(/ovulation 2 days ago · thu, apr 16/i),
+      screen.getByRole("heading", { name: /cycle insights/i }),
     ).toBeInTheDocument();
+    // One completed 28-day cycle in the learned fixture.
+    expect(screen.getByText("Cycle length")).toBeInTheDocument();
+    expect(screen.getByText("How predictions work")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /close/i }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("draws the predicted next period as a coral fill on the dial", () => {
@@ -117,24 +137,24 @@ describe("TodayScreen", () => {
 
   it("words the ovulation estimate for the day itself", () => {
     renderToday("2026-04-16");
-    expect(screen.getByText(/ovulation expected today/i)).toBeInTheDocument();
+    expect(screen.getByText(/ovulation today/i)).toBeInTheDocument();
   });
 
   it("shows plain-language ovulation guidance", () => {
     renderToday("2026-04-15");
 
     expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/higher chance today/i)).toBeInTheDocument();
+    expect(screen.getByText(/higher today/i)).toBeInTheDocument();
   });
 
   it("shows the fertility disclaimer in an info popover", async () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");
 
-    await user.click(screen.getByLabelText(/show fertility disclaimer/i));
+    await user.click(screen.getByLabelText(/how fertility is estimated/i));
 
     expect(
-      screen.getByText(/informational, not birth control/i),
+      screen.getByText(/informational, not a birth control method/i),
     ).toBeInTheDocument();
   });
 
@@ -148,9 +168,11 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(screen.queryByText(/chance today/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByLabelText(/show fertility disclaimer/i),
+      screen.queryByText(/higher today|lower today/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByLabelText(/how fertility is estimated/i),
     ).not.toBeInTheDocument();
   });
 

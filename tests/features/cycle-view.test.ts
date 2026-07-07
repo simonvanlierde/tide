@@ -44,12 +44,12 @@ describe("buildCycleSegments", () => {
     expect(segments[16]?.isCurrent).toBe(true);
     expect(segments[16]?.date).toBe(today);
 
-    // Ovulation lands on cycle day 15. The −5/+1 biological window widens by 1
-    // day each side here: cycle lengths [28,29,27] have a spread (stddev ≈ 0.8,
-    // rounds to 1), so the fertile window spans days 9-17.
+    // Ovulation lands on cycle day 15. Cycle lengths [28,29,27] have sub-day
+    // spread (stddev ≈ 0.8), which floors to no widening — a regular cycler keeps
+    // the tight −5/+1 biological window, so the fertile window spans days 10-16.
     expect(segments[14]?.isOvulation).toBe(true);
     expect(segments.filter((s) => s.isFertile).map((s) => s.dayNumber)).toEqual(
-      [9, 10, 11, 12, 13, 14, 15, 16, 17],
+      [10, 11, 12, 13, 14, 15, 16],
     );
   });
 

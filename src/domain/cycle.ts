@@ -139,9 +139,11 @@ export function getCompletedCycleLengths(periodDays: IsoDate[]) {
 function median(values: number[]): number {
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? (sorted[mid - 1]! + sorted[mid]!) / 2
-    : sorted[mid]!;
+  const upper = sorted[mid] ?? 0;
+  if (sorted.length % 2 !== 0) {
+    return upper;
+  }
+  return ((sorted[mid - 1] ?? upper) + upper) / 2;
 }
 
 function standardDeviation(values: number[]): number {
@@ -160,12 +162,14 @@ function estimateCycleLength(completedCycleLengths: number[]): number {
 
 // Fertile-window offsets from ovulation, widened by recent cycle-length spread.
 // Needs >= 2 recent cycles to have a spread at all; below that, the biological
-// base window stands.
+// base window stands. We floor (not round) the SD: sub-day jitter (SD < 1) is a
+// regular cycler and must keep the tight biological window — only a full day of
+// spread earns a day of widening. Rounding would smear regular cycles wider.
 function getFertileWindow(completedCycleLengths: number[]) {
   const recent = completedCycleLengths.slice(-RECENT_CYCLE_WINDOW);
   const spread =
     recent.length >= 2
-      ? Math.min(MAX_FERTILE_WIDENING, Math.round(standardDeviation(recent)))
+      ? Math.min(MAX_FERTILE_WIDENING, Math.floor(standardDeviation(recent)))
       : 0;
   return {
     start: FERTILE_WINDOW_START - spread,
@@ -248,5 +252,22 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
     periodLength: getAveragePeriodLength(input.periodDays),
     estimateMode:
       input.completedCycleLengths.length > 0 ? "learned" : "fallback",
+  };
+}
+
+// The numbers behind the estimate, for the insights view: the current cycle and
+// period estimates, how many completed cycles they're learned from, and how much
+// recent cycles vary (standard deviation, null until two cycles exist).
+export function getCycleStats(periodDays: IsoDate[]): CycleStats {
+  const completed = getCompletedCycleLengths(periodDays);
+  const recent = completed.slice(-RECENT_CYCLE_WINDOW);
+  return {
+    cycleLength: estimateCycleLength(completed),
+    periodLength: getAveragePeriodLength(periodDays),
+    cyclesTracked: completed.length,
+    variabilityDays:
+      recent.length >= 2
+        ? Math.round(standardDeviation(recent) * 10) / 10
+        : null,
   };
 }

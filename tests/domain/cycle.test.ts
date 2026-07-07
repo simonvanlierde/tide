@@ -3,9 +3,11 @@ import {
   buildCycleSummary,
   getAveragePeriodLength,
   getCompletedCycleLengths,
+  getCycleStats,
   getPastOvulationDates,
   getPeriodDayNumbers,
 } from "../../src/domain/cycle";
+import type { IsoDate } from "../../src/domain/types";
 
 describe("getPeriodDayNumbers", () => {
   it("counts calendar days since the period start, so skipped days still count and a new period resets", () => {
@@ -192,6 +194,45 @@ describe("buildCycleSummary", () => {
     expect(summary.fertileWindow).toEqual({ start: -5, end: 1 });
   });
 
+  it("keeps the tight window for sub-day cycle jitter (regression: 27–29 day cycles are regular)", () => {
+    // Three ~monthly periods whose starts fall 29/27/28 days apart: SD ≈ 0.8 day.
+    // That is a regular cycler and must not widen past the 7-day biological base.
+    const periodDays: IsoDate[] = [
+      "2026-03-31",
+      "2026-04-01",
+      "2026-04-02",
+      "2026-04-29",
+      "2026-04-30",
+      "2026-05-01",
+      "2026-05-26",
+      "2026-05-27",
+      "2026-05-28",
+      "2026-06-23",
+      "2026-06-24",
+      "2026-06-25",
+    ];
+    expect(getCompletedCycleLengths(periodDays)).toEqual([29, 27, 28]);
+
+    const summary = buildCycleSummary({
+      today: "2026-06-24",
+      periodDays,
+      completedCycleLengths: getCompletedCycleLengths(periodDays),
+    });
+
+    expect(summary.fertileWindow).toEqual({ start: -5, end: 1 });
+  });
+
+  it("widens by a whole day only once cycle-length spread reaches a full day", () => {
+    // Cycles 26/28/30 days apart: SD ≈ 1.6 days -> one day of widening each side.
+    const summary = buildCycleSummary({
+      today: "2026-04-04",
+      periodDays: ["2026-04-02", "2026-04-03"],
+      completedCycleLengths: [26, 28, 30],
+    });
+
+    expect(summary.fertileWindow).toEqual({ start: -6, end: 2 });
+  });
+
   it("only counts recent cycles, dropping stale history beyond the window", () => {
     // Six recent 30-day cycles; a run of old 21-day cycles should not pull the
     // estimate down once they fall outside the recency window.
@@ -214,5 +255,26 @@ describe("buildCycleSummary", () => {
     expect(["menstrual", "follicular", "ovulation", "luteal"]).toContain(
       summary.phaseLabel,
     );
+  });
+});
+
+describe("getCycleStats", () => {
+  it("reports no variability until two cycles exist, then the recent spread", () => {
+    // One completed cycle: cyclesTracked 1, nothing to compare yet.
+    const one = getCycleStats(["2026-01-01", "2026-01-29"]);
+    expect(one.cyclesTracked).toBe(1);
+    expect(one.variabilityDays).toBeNull();
+
+    // Three cycle starts 28/30 days apart -> two completed cycles [28, 30],
+    // median-driven length and a small non-zero spread.
+    const many = getCycleStats(["2026-01-01", "2026-01-29", "2026-02-28"]);
+    expect(many.cyclesTracked).toBe(2);
+    expect(many.cycleLength).toBe(29);
+    expect(many.variabilityDays).toBeGreaterThan(0);
+  });
+
+  it("defaults to a 28-day cycle with no completed cycles", () => {
+    expect(getCycleStats([]).cycleLength).toBe(28);
+    expect(getCycleStats([]).cyclesTracked).toBe(0);
   });
 });
