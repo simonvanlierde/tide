@@ -3,6 +3,7 @@ import {
   buildCycleSummary,
   getAveragePeriodLength,
   getCompletedCycleLengths,
+  getPastOvulationDates,
   getPeriodDayNumbers,
 } from "../../src/domain/cycle";
 
@@ -34,6 +35,27 @@ describe("getCompletedCycleLengths", () => {
         "2026-06-30",
       ]),
     ).toEqual([28]);
+  });
+});
+
+describe("getPastOvulationDates", () => {
+  it("estimates ovulation 14 days before each following period start, one per completed cycle", () => {
+    // Two completed cycles: starts on 06-01, 06-29, 07-27. The last start is the
+    // in-progress cycle and has no following start, so it yields no ovulation.
+    expect(
+      getPastOvulationDates([
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-29",
+        "2026-06-30",
+        "2026-07-27",
+      ]),
+    ).toEqual(["2026-06-15", "2026-07-13"]);
+  });
+
+  it("returns nothing until at least one cycle has completed", () => {
+    expect(getPastOvulationDates([])).toEqual([]);
+    expect(getPastOvulationDates(["2026-06-01", "2026-06-02"])).toEqual([]);
   });
 });
 
@@ -142,6 +164,44 @@ describe("buildCycleSummary", () => {
     expect(summary.phaseLabel).toBe("unknown");
     expect(summary.nextPeriod.daysUntil).toBeNull();
     expect(summary.estimateMode).toBe("insufficient");
+  });
+
+  it("resists an outlier cycle via the median and widens the fertile window when irregular", () => {
+    // 45 is an anomalous cycle (illness/travel). A flat mean would drag the
+    // estimate to ~31; the median holds at 28.
+    const summary = buildCycleSummary({
+      today: "2026-04-04",
+      periodDays: ["2026-04-02", "2026-04-03"],
+      completedCycleLengths: [27, 28, 45, 28, 29],
+    });
+
+    expect(summary.cycleLength).toBe(28);
+    // Spread from the outlier widens the −5/+1 base window (capped at ±5).
+    expect(summary.fertileWindow.start).toBeLessThan(-5);
+    expect(summary.fertileWindow.end).toBeGreaterThan(1);
+    expect(summary.fertileWindow.start).toBeGreaterThanOrEqual(-10);
+  });
+
+  it("keeps the tight biological fertile window for a regular cycler", () => {
+    const summary = buildCycleSummary({
+      today: "2026-04-04",
+      periodDays: ["2026-04-02", "2026-04-03"],
+      completedCycleLengths: [28, 28, 28, 28],
+    });
+
+    expect(summary.fertileWindow).toEqual({ start: -5, end: 1 });
+  });
+
+  it("only counts recent cycles, dropping stale history beyond the window", () => {
+    // Six recent 30-day cycles; a run of old 21-day cycles should not pull the
+    // estimate down once they fall outside the recency window.
+    const summary = buildCycleSummary({
+      today: "2026-04-04",
+      periodDays: ["2026-04-02", "2026-04-03"],
+      completedCycleLengths: [21, 21, 21, 30, 30, 30, 30, 30, 30],
+    });
+
+    expect(summary.cycleLength).toBe(30);
   });
 
   it("uses the four user-facing phase names", () => {

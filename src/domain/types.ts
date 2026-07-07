@@ -14,6 +14,8 @@ export interface CycleSummary {
   phaseLabel: CyclePhase;
   fertile: boolean;
   ovulationDate: IsoDate | null;
+  /** Fertile-window day offsets from ovulation; widens with cycle irregularity. */
+  fertileWindow: { start: number; end: number };
   nextPeriod: {
     date: IsoDate | null;
     daysUntil: number | null;
@@ -23,6 +25,20 @@ export interface CycleSummary {
   /** Learned length of an expected period run, in days (clamped 3–5). */
   periodLength: number;
   estimateMode: CycleEstimateMode;
+}
+
+export interface CycleStats {
+  /** Current cycle-length estimate in days (median of recent cycles, or 28). */
+  cycleLength: number;
+  /** Current period-length estimate in days. */
+  periodLength: number;
+  /** Completed cycles observed so far — the history the estimate is built on. */
+  cyclesTracked: number;
+  /**
+   * Standard deviation of recent cycle lengths, in days: how much the cycle
+   * varies. Null until at least two cycles exist to compare.
+   */
+  variabilityDays: number | null;
 }
 
 export interface AppSettings {

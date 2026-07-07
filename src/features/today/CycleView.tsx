@@ -36,7 +36,10 @@ export function buildCycleSegments(
     summary.cycleDay !== null && summary.ovulationDate
       ? summary.cycleDay + differenceInDays(summary.ovulationDate, today)
       : null;
-  const fertileStart = ovulationDay !== null ? ovulationDay - 5 : null;
+  const fertileStart =
+    ovulationDay !== null ? ovulationDay + summary.fertileWindow.start : null;
+  const fertileEnd =
+    ovulationDay !== null ? ovulationDay + summary.fertileWindow.end : null;
 
   const loggedDays =
     cycleStartDate === null
@@ -63,9 +66,9 @@ export function buildCycleSegments(
       isFertile:
         showFertility &&
         fertileStart !== null &&
-        ovulationDay !== null &&
+        fertileEnd !== null &&
         dayNumber >= fertileStart &&
-        dayNumber <= ovulationDay + 1,
+        dayNumber <= fertileEnd,
       isOvulation: showFertility && ovulationDay === dayNumber,
     } satisfies CycleSegment;
   });

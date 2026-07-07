@@ -50,6 +50,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: "2026-04-28", daysUntil: 14 },
       cycleLength: 28,
       periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "learned",
     };
 
@@ -72,6 +73,61 @@ describe("history calendar helpers", () => {
     expect(markers.has("2026-04-08")).toBe(false);
   });
 
+  it("paints a retrospective fertile window for each past ovulation date", () => {
+    const summary: CycleSummary = {
+      cycleDay: 10,
+      phaseLabel: "follicular",
+      fertile: false,
+      ovulationDate: "2026-04-14",
+      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
+      cycleLength: 28,
+      periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
+      estimateMode: "learned",
+    };
+
+    // A past cycle's ovulation on 2026-03-17 gets the same window as the
+    // forecast: 03-12..03-18, ovulation on its own day.
+    const markers = buildCalendarMarkers(
+      summary,
+      true,
+      "2026-03-01",
+      "2026-04-05",
+      ["2026-03-17"],
+    );
+
+    expect(markers.get("2026-03-12")).toBe("fertile");
+    expect(markers.get("2026-03-17")).toBe("ovulation");
+    expect(markers.get("2026-03-18")).toBe("fertile");
+    expect(markers.has("2026-03-11")).toBe(false);
+  });
+
+  it("omits retrospective fertile windows when fertility is hidden", () => {
+    const summary: CycleSummary = {
+      cycleDay: 10,
+      phaseLabel: "follicular",
+      fertile: false,
+      ovulationDate: "2026-04-14",
+      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
+      cycleLength: 28,
+      periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
+      estimateMode: "learned",
+    };
+
+    const markers = buildCalendarMarkers(
+      summary,
+      false,
+      "2026-03-01",
+      "2026-04-05",
+      ["2026-03-17"],
+    );
+
+    expect([...markers.values()].some((m) => m !== "predicted-period")).toBe(
+      false,
+    );
+  });
+
   it("repeats the expected period every cycle across the window", () => {
     const summary: CycleSummary = {
       cycleDay: 10,
@@ -81,6 +137,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: "2026-04-28", daysUntil: 14 },
       cycleLength: 28,
       periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "learned",
     };
 
@@ -107,6 +164,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: "2026-04-28", daysUntil: 14 },
       cycleLength: 28,
       periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "learned",
     };
 
@@ -131,6 +189,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: "2026-04-28", daysUntil: 14 },
       cycleLength: 28,
       periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "learned",
     };
 
@@ -156,6 +215,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: "2026-04-29", daysUntil: 19 },
       cycleLength: 28,
       periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "learned",
     };
 
@@ -179,6 +239,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: null, daysUntil: null },
       cycleLength: 28,
       periodLength: 5,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "insufficient",
     };
 
@@ -196,6 +257,7 @@ describe("history calendar helpers", () => {
       nextPeriod: { date: null, daysUntil: null },
       cycleLength: 28,
       periodLength: 5,
+      fertileWindow: { start: -5, end: 1 },
       estimateMode: "insufficient",
     };
 

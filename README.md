@@ -33,6 +33,33 @@ Once installed it works offline, and all data stays on your device.
 - **Calendar**: month-by-month view with per-day period numbers and ovulation / next-period markers, for reviewing and logging days
 - **Private by design**: installable, offline-capable PWA; all data stays on the device; no accounts, no network, no analytics
 
+## How predictions work
+
+All estimates are computed on-device from the bleeding days you log. Nothing is
+sent anywhere, and no averages are shared across users.
+
+- **Cycles.** A gap of **10 or more days** between logged bleeding days starts a
+  new cycle; shorter gaps are treated as missed logs within the same period.
+- **Cycle length.** The **median of your last 6 completed cycles** (the days
+  between consecutive cycle starts). The median is used instead of the mean so a
+  single unusual cycle — illness, travel, a missed log — doesn't skew the
+  estimate, and only recent cycles count because cycle length drifts over time.
+  Before you've logged two cycles, a **28-day** fallback is used.
+- **Period length.** The average length of your past periods, clamped to the
+  **2–7 day** clinically normal band (ACOG). The current, possibly unfinished
+  period is excluded; the default before any history is 4 days.
+- **Next period.** Your most recent cycle start plus the estimated cycle length.
+- **Ovulation.** 14 days before the next predicted period — a fixed luteal
+  phase, which is the least variable part of the cycle. Calendar math alone
+  can't do better than this without temperature or LH-test input, which Tide
+  doesn't collect.
+- **Fertile window.** The 5 days before through 1 day after the estimated
+  ovulation (sperm survive ~5 days, the egg ~1). It **widens with how irregular
+  your recent cycles are** (by their standard deviation, capped at ±5 days): a
+  regular cycle shows a tight window, an unpredictable one an honestly wider one.
+
+Estimates are informational, not a form of birth control.
+
 ## Roadmap
 
 - Ring

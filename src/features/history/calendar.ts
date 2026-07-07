@@ -76,25 +76,63 @@ export function buildMonthDays(
   });
 }
 
+// Paints a fertile window at `ovulationDate` — offsets `window.start..end`
+// marked fertile, with the ovulation day itself set last so it wins its own
+// cell. Bounded to the visible window so out-of-view cycles cost nothing.
+function paintFertileWindow(
+  markers: Map<IsoDate, DayMarker>,
+  ovulationDate: IsoDate,
+  window: { start: number; end: number },
+  rangeStart: IsoDate,
+  rangeEnd: IsoDate,
+) {
+  for (let offset = window.start; offset <= window.end; offset++) {
+    const day = addDays(ovulationDate, offset);
+    if (day >= rangeStart && day <= rangeEnd) {
+      markers.set(day, "fertile");
+    }
+  }
+  if (ovulationDate >= rangeStart && ovulationDate <= rangeEnd) {
+    markers.set(ovulationDate, "ovulation");
+  }
+}
+
 // Predicted markers for the visible grid window [rangeStart, rangeEnd]: the
-// fertile window and ovulation for the next cycle, plus the expected period —
-// a `periodLength`-day run repeating every `cycleLength` days from the next
-// period onward, so the forecast continues indefinitely into the future. Later
-// dates win, so ovulation overrides the fertile day it sits on. Fertility
-// markers are omitted when the user has hidden them.
+// fertile window and ovulation for the next cycle plus every completed past
+// cycle (`pastOvulationDates`, estimated retrospectively from each logged next
+// period start), plus the expected period — a `periodLength`-day run repeating
+// every `cycleLength` days from the next period onward, so the forecast
+// continues indefinitely into the future. Later dates win, so ovulation
+// overrides the fertile day it sits on. Fertility markers are omitted when the
+// user has hidden them; logged days suppress markers at the grid layer.
 export function buildCalendarMarkers(
   summary: CycleSummary,
   showFertility: boolean,
   rangeStart: IsoDate,
   rangeEnd: IsoDate,
+  pastOvulationDates: IsoDate[] = [],
 ): Map<IsoDate, DayMarker> {
   const markers = new Map<IsoDate, DayMarker>();
 
-  if (showFertility && summary.ovulationDate) {
-    for (let offset = -5; offset <= 1; offset++) {
-      markers.set(addDays(summary.ovulationDate, offset), "fertile");
+  if (showFertility) {
+    for (const ovulationDate of pastOvulationDates) {
+      paintFertileWindow(
+        markers,
+        ovulationDate,
+        summary.fertileWindow,
+        rangeStart,
+        rangeEnd,
+      );
     }
-    markers.set(summary.ovulationDate, "ovulation");
+    if (summary.ovulationDate) {
+      paintFertileWindow(
+        markers,
+        summary.ovulationDate,
+        summary.fertileWindow,
+        rangeStart,
+        rangeEnd,
+      );
+    }
   }
 
   if (summary.nextPeriod.date && summary.cycleLength > 0) {

@@ -1,5 +1,5 @@
 import { startTransition, useMemo, useRef, useState } from "react";
-import { getPeriodDayNumbers } from "../../domain/cycle";
+import { getPastOvulationDates, getPeriodDayNumbers } from "../../domain/cycle";
 import { DEFAULT_FLOW, getPredictionDays } from "../../domain/flow";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
 import {
@@ -57,6 +57,12 @@ export function useHistoryCalendar(today: IsoDate) {
   );
   const showFertility = state.settings.showFertility;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
+  // Ovulation for each completed past cycle, so their fertile windows show the
+  // same as the forecast does for the current cycle.
+  const pastOvulationDates = useMemo(
+    () => getPastOvulationDates(state.periodDays),
+    [state.periodDays],
+  );
   const cycleMarkers = useMemo(
     () =>
       buildCalendarMarkers(
@@ -64,8 +70,9 @@ export function useHistoryCalendar(today: IsoDate) {
         showFertility,
         monthDays[0]?.value ?? visibleMonth,
         monthDays.at(-1)?.value ?? visibleMonth,
+        pastOvulationDates,
       ),
-    [summary, showFertility, monthDays, visibleMonth],
+    [summary, showFertility, monthDays, visibleMonth, pastOvulationDates],
   );
   // Fills every non-logged day of the current cycle with its cycle-day number,
   // so the calendar shows a running count up to the next expected period.
