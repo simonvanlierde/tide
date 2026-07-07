@@ -783,7 +783,10 @@
     background: transparent;
     border: 2px dashed var(--bleed);
     color: var(--bleed-strong);
-    opacity: 1;
+    /* Each successive day of the expected run fades further, so the dotted
+       forecast reads as more tentative the deeper into the period it goes.
+       Floored so later days stay legible. */
+    opacity: max(0.5, calc(1 - var(--forecast-step, 0) * 0.24));
   }
 
   .calendar-grid__day.is-logged {

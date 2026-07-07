@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
 import { parseIsoDate } from "../../utils/date";
 import {
@@ -54,7 +55,11 @@ export function HistoryCalendarGrid({
         ))}
       </div>
       <div className="calendar-grid__week">
-        {monthDays.map((day) => {
+        {/* Days render in date order, so consecutive predicted-period cells
+            belong to the same run — track the offset to fade each day of the
+            expected period a little more. A run clipped by the visible window's
+            start restarts at 0, which is only cosmetic. */}
+        {monthDays.map((day, index) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
           // Logged days keep their per-period number; other days show the
@@ -70,6 +75,23 @@ export function HistoryCalendarGrid({
             ? (dayIntensity.get(value) ?? "medium")
             : undefined;
           const marker = isLogged ? undefined : cycleMarkers.get(value);
+          // Count the predicted-period days immediately before this one so each
+          // day of the expected run fades a step further than the last.
+          const isPredictedPeriod = marker === "predicted-period";
+          let forecastStep = 0;
+          if (isPredictedPeriod) {
+            for (let i = index - 1; i >= 0; i--) {
+              const prev = monthDays[i]?.value;
+              if (
+                !prev ||
+                loggedDays.has(prev) ||
+                cycleMarkers.get(prev) !== "predicted-period"
+              ) {
+                break;
+              }
+              forecastStep++;
+            }
+          }
           const isSelected = value === selectedDay;
           const className = [
             "calendar-grid__day",
@@ -93,6 +115,11 @@ export function HistoryCalendarGrid({
               key={day.key}
               type="button"
               className={className}
+              style={
+                isPredictedPeriod
+                  ? ({ "--forecast-step": forecastStep } as CSSProperties)
+                  : undefined
+              }
               disabled={day.isFuture}
               aria-label={
                 marker ? `${dateLabel}, ${MARKER_LABEL[marker]}` : dateLabel
