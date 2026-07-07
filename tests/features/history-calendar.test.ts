@@ -155,6 +155,64 @@ describe("history calendar helpers", () => {
     expect(markers.get("2026-07-21" as never)).toBeUndefined();
   });
 
+  it("repeats a short learned cycle every cycleLength days, not 28", () => {
+    const summary: CycleSummary = {
+      cycleDay: 6,
+      phaseLabel: "follicular",
+      fertile: false,
+      ovulationDate: "2026-06-11",
+      nextPeriod: { date: "2026-06-25", daysUntil: 19 },
+      cycleLength: 24,
+      periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
+      estimateMode: "learned",
+    };
+
+    const markers = buildCalendarMarkers(
+      summary,
+      false,
+      "2026-06-01",
+      "2026-08-01",
+    );
+
+    // Runs repeat every 24 days: 2026-06-25, then 2026-07-19.
+    expect(markers.get("2026-06-25")).toBe("predicted-period");
+    expect(markers.get("2026-07-19")).toBe("predicted-period");
+    // Not 28 days later (2026-06-25 + 28 = 2026-07-23 would be the 28-day case).
+    expect(markers.has("2026-07-23")).toBe(false);
+  });
+
+  it("paints the overdue expected period on its past dates without rolling forward", () => {
+    // Cycle started 2026-03-13, cycleLength 28 -> predicted 2026-04-10, but today
+    // is 2026-04-18 (8 days late). The prediction stays on its original dates.
+    const summary: CycleSummary = {
+      cycleDay: 37,
+      phaseLabel: "luteal",
+      fertile: false,
+      ovulationDate: "2026-03-27",
+      nextPeriod: { date: "2026-04-10", daysUntil: -8 },
+      cycleLength: 28,
+      periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
+      estimateMode: "learned",
+    };
+
+    const markers = buildCalendarMarkers(
+      summary,
+      false,
+      "2026-04-01",
+      "2026-04-30",
+    );
+
+    // The overdue run sits on the days it was expected (2026-04-10..13), painted
+    // in the past rather than moved to today.
+    expect(markers.get("2026-04-10")).toBe("predicted-period");
+    expect(markers.get("2026-04-13")).toBe("predicted-period");
+    expect(markers.has("2026-04-14")).toBe(false);
+    // Nothing painted before the (overdue) start.
+    expect(markers.has("2026-04-09")).toBe(false);
+  });
+
   it("shows no expected period in months before it starts", () => {
     const summary: CycleSummary = {
       cycleDay: 10,
