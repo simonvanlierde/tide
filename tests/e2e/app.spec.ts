@@ -62,7 +62,7 @@ test("deep links reload correctly for the static app paths", async ({
   await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
   await page.reload();
   await expect(
-    page.getByText(/everything stays on this device/i),
+    page.getByText(/your data never leaves this device/i),
   ).toBeVisible();
 });
 

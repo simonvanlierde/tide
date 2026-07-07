@@ -114,8 +114,10 @@ test.describe("theme segmented control", () => {
     expect(await labelWidth(page)).toBeLessThanOrEqual(2);
   });
 
-  test("shows text labels on normal phone widths", async ({ page }) => {
-    await page.setViewportSize({ width: 375, height: 667 });
+  test("shows text labels once the shell is wide enough", async ({ page }) => {
+    // The label/control row keeps text only while the shell (the container) is
+    // wider than the 410px icon-only breakpoint — i.e. large phones and up.
+    await page.setViewportSize({ width: 440, height: 780 });
     expect(await labelWidth(page)).toBeGreaterThan(10);
   });
 });
