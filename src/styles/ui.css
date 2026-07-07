@@ -275,9 +275,9 @@
   .text-action,
   .chip-button,
   .calendar-grid__day,
-  .history-calendar__nav,
-  .history-calendar__today,
-  .history-calendar__month-button {
+  .calendar__nav,
+  .calendar__today,
+  .calendar__month-button {
     transition:
       background-color 160ms ease,
       border-color 160ms ease,
@@ -315,9 +315,9 @@
   .secondary-action:hover,
   .chip-button:hover,
   .calendar-grid__day:not(:disabled):not(.is-logged):hover,
-  .history-calendar__nav:hover,
-  .history-calendar__today:hover,
-  .history-calendar__month-button:hover {
+  .calendar__nav:hover,
+  .calendar__today:hover,
+  .calendar__month-button:hover {
     border-color: var(--tide);
     color: var(--tide-strong);
     background: var(--tide-tint);
@@ -356,9 +356,9 @@
   .text-action:focus-visible,
   .chip-button:focus-visible,
   .calendar-grid__day:focus-visible,
-  .history-calendar__nav:focus-visible,
-  .history-calendar__today:focus-visible,
-  .history-calendar__month-button:focus-visible,
+  .calendar__nav:focus-visible,
+  .calendar__today:focus-visible,
+  .calendar__month-button:focus-visible,
   .calendar-picker-button:focus-visible {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
@@ -517,9 +517,9 @@
 
   .chip-button,
   .calendar-grid__day,
-  .history-calendar__nav,
-  .history-calendar__today,
-  .history-calendar__month-button,
+  .calendar__nav,
+  .calendar__today,
+  .calendar__month-button,
   .calendar-picker-button {
     border: 1px solid var(--surface-border);
     background: var(--surface);
@@ -764,7 +764,7 @@
     outline-offset: 2px;
   }
 
-  /* Utility cards (settings + history) */
+  /* Utility cards (settings + calendar) */
   .utility-card {
     display: grid;
     gap: 14px;
@@ -788,7 +788,7 @@
   }
 
   /* Swipe surface: follows the finger horizontally, lets vertical scroll pass.
-     The inline transform/transition is driven from HistoryScreen. */
+     The inline transform/transition is driven from CalendarScreen. */
   .calendar-swipe {
     touch-action: pan-y;
   }
@@ -946,14 +946,14 @@
     }
   }
 
-  .history-calendar__nav,
-  .history-calendar__today,
-  .history-calendar__month-button {
+  .calendar__nav,
+  .calendar__today,
+  .calendar__month-button {
     min-height: 44px;
     border-radius: 999px;
   }
 
-  .history-calendar__nav {
+  .calendar__nav {
     display: inline-grid;
     place-items: center;
     width: 44px;
@@ -961,14 +961,14 @@
     color: var(--ink);
   }
 
-  .history-calendar__today {
+  .calendar__today {
     padding: 0 16px;
     color: var(--ink);
     min-width: 88px;
     font-weight: 500;
   }
 
-  .history-calendar__month-button {
+  .calendar__month-button {
     padding: 0 18px;
     color: var(--ink);
     font-size: 1rem;

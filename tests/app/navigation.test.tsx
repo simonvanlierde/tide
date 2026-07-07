@@ -4,7 +4,7 @@ import { getAppScreen } from "../../src/app/navigation";
 describe("app navigation", () => {
   it("resolves the known Tide screen paths", () => {
     expect(getAppScreen("/").title).toBe("Today");
-    expect(getAppScreen("/history").title).toBe("Calendar");
+    expect(getAppScreen("/calendar").title).toBe("Calendar");
     expect(getAppScreen("/settings").title).toBe("Settings");
   });
 
@@ -16,7 +16,7 @@ describe("app navigation", () => {
   });
 
   it("builds an element for each screen's render()", () => {
-    for (const path of ["/", "/history", "/settings"]) {
+    for (const path of ["/", "/calendar", "/settings"]) {
       expect(getAppScreen(path).render()).toBeTruthy();
     }
   });

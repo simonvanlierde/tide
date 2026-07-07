@@ -2,10 +2,10 @@ import type { CSSProperties } from "react";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
 import { parseIsoDate } from "../../utils/date";
 import {
+  CALENDAR_WEEKDAY_LABELS,
   type CalendarDay,
   type DayMarker,
   formatDayButtonLabel,
-  HISTORY_WEEKDAY_LABELS,
 } from "./calendar";
 
 const MARKER_CLASS: Record<DayMarker, string> = {
@@ -20,7 +20,7 @@ const MARKER_LABEL: Record<DayMarker, string> = {
   "predicted-period": "expected period",
 };
 
-interface HistoryCalendarGridProps {
+interface CalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
   dayIntensity: Map<IsoDate, FlowIntensity>;
@@ -33,7 +33,7 @@ interface HistoryCalendarGridProps {
   onSelectDay: (day: IsoDate) => void;
 }
 
-export function HistoryCalendarGrid({
+export function CalendarGrid({
   monthDays,
   loggedDays,
   dayIntensity,
@@ -44,7 +44,7 @@ export function HistoryCalendarGrid({
   selectedDay,
   justLoggedDay,
   onSelectDay,
-}: HistoryCalendarGridProps) {
+}: CalendarGridProps) {
   // Days render in date order, so consecutive predicted-period cells belong to
   // the same run. One forward pass gives each its offset within the run, so each
   // day of the expected period fades a step further than the last. A run clipped
@@ -60,9 +60,9 @@ export function HistoryCalendarGrid({
   }
 
   return (
-    <section className="calendar-grid" aria-label="History calendar">
+    <section className="calendar-grid" aria-label="Calendar">
       <div className="calendar-grid__header">
-        {HISTORY_WEEKDAY_LABELS.map((day) => (
+        {CALENDAR_WEEKDAY_LABELS.map((day) => (
           <div key={day} className="calendar-grid__weekday">
             {day}
           </div>

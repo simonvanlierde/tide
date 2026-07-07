@@ -19,7 +19,7 @@ import {
   formatMonthLabel,
 } from "./calendar";
 
-export function useHistoryCalendar(today: IsoDate) {
+export function useCalendar(today: IsoDate) {
   const state = useAppState();
   const actions = useAppStateActions();
   const summary = useCycleSummary(today);

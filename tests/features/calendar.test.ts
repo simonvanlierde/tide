@@ -4,9 +4,9 @@ import {
   buildCalendarMarkers,
   buildCycleDayNumbers,
   buildMonthDays,
-} from "../../src/features/history/calendar";
+} from "../../src/features/calendar/calendar";
 
-describe("history calendar helpers", () => {
+describe("calendar helpers", () => {
   it("builds a full month grid with adjacent-month days and future metadata", () => {
     const days = buildMonthDays("2026-04-18", "2026-04-21");
 

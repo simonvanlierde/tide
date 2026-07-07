@@ -11,7 +11,7 @@ const SIZES = [
   { name: "short 360x500", width: 360, height: 500 },
 ] as const;
 
-const ROUTES = ["/", "/history", "/settings"] as const;
+const ROUTES = ["/", "/calendar", "/settings"] as const;
 
 // Seed a fresh cycle so every screen renders real content (a dial with a day, a
 // calendar with logged/predicted days) — empty screens can't overflow.

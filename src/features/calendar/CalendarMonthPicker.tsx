@@ -13,7 +13,7 @@ const MONTH_NAMES = [
   "December",
 ];
 
-export interface HistoryMonthPickerProps {
+export interface CalendarMonthPickerProps {
   isPickerOpen: boolean;
   year: number;
   monthIndex: number;
@@ -21,29 +21,29 @@ export interface HistoryMonthPickerProps {
   onSelect: (year: number, monthIndex: number) => void;
 }
 
-export function HistoryMonthPicker({
+export function CalendarMonthPicker({
   isPickerOpen,
   year,
   monthIndex,
   years,
   onSelect,
-}: HistoryMonthPickerProps) {
+}: CalendarMonthPickerProps) {
   if (!isPickerOpen) {
     return null;
   }
 
   return (
     <div
-      id="history-month-picker"
-      className="calendar-picker-panel history-calendar__picker"
+      id="calendar-month-picker"
+      className="calendar-picker-panel calendar__picker"
     >
-      <span className="settings-label history-calendar__picker-label">
+      <span className="settings-label calendar__picker-label">
         Jump to month
       </span>
-      <div className="history-calendar__picker-selects">
+      <div className="calendar__picker-selects">
         <select
           aria-label="Month"
-          className="history-calendar__picker-input"
+          className="calendar__picker-input"
           value={monthIndex}
           onChange={(event) => onSelect(year, Number(event.target.value))}
         >
@@ -55,7 +55,7 @@ export function HistoryMonthPicker({
         </select>
         <select
           aria-label="Year"
-          className="history-calendar__picker-input"
+          className="calendar__picker-input"
           value={year}
           onChange={(event) => onSelect(Number(event.target.value), monthIndex)}
         >

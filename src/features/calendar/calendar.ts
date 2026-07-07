@@ -29,7 +29,7 @@ export interface CalendarDay {
   isToday: boolean;
 }
 
-export const HISTORY_WEEKDAY_LABELS = [
+export const CALENDAR_WEEKDAY_LABELS = [
   "Mon",
   "Tue",
   "Wed",

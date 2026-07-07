@@ -29,7 +29,7 @@ export function getPeriodDays(
 
 // Days that count toward cycle-start detection, day numbering and predictions.
 // Spotting is recorded and shown, but excluded here — it is often not the true
-// period start. Both the cycle summary and the history calendar derive from this
+// period start. Both the cycle summary and the calendar derive from this
 // single filter so they can never number the same period differently.
 export function getPredictionDays(
   intensityByDay: Record<IsoDate, FlowIntensity>,

@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
-import { useHistoryCalendar } from "../../src/features/history/useHistoryCalendar";
+import { useCalendar } from "../../src/features/calendar/useCalendar";
 import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, createLearnedCycleState } from "../support/app";
 
@@ -13,9 +13,9 @@ function wrapper({ children }: { children: ReactNode }) {
   );
 }
 
-describe("useHistoryCalendar", () => {
+describe("useCalendar", () => {
   it("closes the flow picker by clearing the selected day", () => {
-    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+    const { result } = renderHook(() => useCalendar("2026-04-18"), {
       wrapper,
     });
 
@@ -27,7 +27,7 @@ describe("useHistoryCalendar", () => {
   });
 
   it("jumps to a month and year selected from the picker", () => {
-    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+    const { result } = renderHook(() => useCalendar("2026-04-18"), {
       wrapper,
     });
 
@@ -37,7 +37,7 @@ describe("useHistoryCalendar", () => {
   });
 
   it("offers a buffered window around the logged and current years", () => {
-    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+    const { result } = renderHook(() => useCalendar("2026-04-18"), {
       wrapper,
     });
 
@@ -47,7 +47,7 @@ describe("useHistoryCalendar", () => {
   });
 
   it("reaches back to the earliest logged year plus a buffer", () => {
-    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+    const { result } = renderHook(() => useCalendar("2026-04-18"), {
       wrapper: ({ children }) => (
         <AppStateProvider
           initialState={createAppState({
@@ -66,7 +66,7 @@ describe("useHistoryCalendar", () => {
   });
 
   it("widens the year window to include a month browsed outside it", () => {
-    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+    const { result } = renderHook(() => useCalendar("2026-04-18"), {
       wrapper,
     });
 

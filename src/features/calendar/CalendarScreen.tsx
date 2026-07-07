@@ -2,19 +2,19 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
+import { CalendarGrid } from "./CalendarGrid";
+import { CalendarMonthPicker } from "./CalendarMonthPicker";
 import { DayFlowPicker } from "./DayFlowPicker";
-import { HistoryCalendarGrid } from "./HistoryCalendarGrid";
-import { HistoryMonthPicker } from "./HistoryMonthPicker";
-import { useHistoryCalendar } from "./useHistoryCalendar";
+import { useCalendar } from "./useCalendar";
 
-interface HistoryScreenProps {
+interface CalendarScreenProps {
   today?: IsoDate;
 }
 
-export function HistoryScreen({
+export function CalendarScreen({
   today = getTodayIsoDate(),
-}: HistoryScreenProps) {
-  const model = useHistoryCalendar(today);
+}: CalendarScreenProps) {
+  const model = useCalendar(today);
   const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wantPinpoint = useRef(false);
@@ -107,16 +107,13 @@ export function HistoryScreen({
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: PageUp/PageDown month paging is a keyboard convenience layered over the buttons below; the calendar stays fully operable via those focusable controls. */}
       <article
         ref={articleRef}
-        className="utility-card history-calendar"
+        className="utility-card calendar"
         onKeyDown={handleKeyDown}
       >
-        <div
-          className="history-calendar__header"
-          data-testid="history-calendar-header"
-        >
+        <div className="calendar__header" data-testid="calendar-header">
           <button
             type="button"
-            className="history-calendar__nav"
+            className="calendar__nav"
             aria-label="Previous month"
             onClick={model.goToPreviousMonth}
           >
@@ -124,29 +121,29 @@ export function HistoryScreen({
           </button>
           <button
             type="button"
-            className="calendar-picker-button history-calendar__month-button"
+            className="calendar-picker-button calendar__month-button"
             aria-expanded={model.isPickerOpen}
-            aria-controls="history-month-picker"
+            aria-controls="calendar-month-picker"
             onClick={model.openPicker}
           >
             {model.monthLabel}
           </button>
           <button
             type="button"
-            className="history-calendar__nav"
+            className="calendar__nav"
             aria-label="Next month"
             onClick={model.goToNextMonth}
           >
             <ChevronRight aria-hidden="true" size={18} />
           </button>
         </div>
-        <HistoryMonthPicker {...model.monthPicker} />
+        <CalendarMonthPicker {...model.monthPicker} />
         <div
           className="calendar-swipe"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          <HistoryCalendarGrid
+          <CalendarGrid
             monthDays={model.monthDays}
             loggedDays={model.loggedDays}
             dayIntensity={model.dayIntensity}
@@ -171,7 +168,7 @@ export function HistoryScreen({
             onClose={model.closePicker}
           />
         ) : (
-          <p className="supporting-note history-calendar__help">
+          <p className="supporting-note calendar__help">
             Tap a day to log or edit bleeding.
           </p>
         )}
@@ -179,7 +176,7 @@ export function HistoryScreen({
         {model.isCurrentMonth ? null : (
           <button
             type="button"
-            className="history-calendar__today"
+            className="calendar__today"
             aria-label="Go to current month"
             onClick={handleGoToToday}
           >

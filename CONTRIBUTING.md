@@ -32,7 +32,7 @@ Cycle logic is kept pure and isolated from React and the browser, so it can be t
 - `src/domain`: pure cycle and reminder logic (no React, storage, or browser APIs)
 - `src/data`: defaults, validation, and normalization at the `localStorage` boundary
 - `src/state`: reducer and selectors, separate from the React provider
-- `src/app`: app shell and pathname-based routing (`/`, `/history`, `/settings`)
+- `src/app`: app shell and pathname-based routing (`/`, `/calendar`, `/settings`)
 - `src/features`: screen components and presentation helpers
 - `src/ui`: reusable UI primitives
 - `src/styles`: design tokens and shared styling
@@ -47,7 +47,7 @@ The core design decision, keeping all data on-device with no backend, is recorde
 Two automated checks run in CI:
 
 - **Static lint:** Biome's `a11y` rules (`biome.json`) run as part of `pnpm lint` / `pnpm check`.
-- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/history`, and `/settings`; both themes, with overlays open, tagged `wcag2a`/`wcag2aa`, failing on any *moderate*+ violation. Run with `pnpm test:e2e`.
+- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/calendar`, and `/settings`; both themes, with overlays open, tagged `wcag2a`/`wcag2aa`, failing on any *moderate*+ violation. Run with `pnpm test:e2e`.
 
 ## Deployment
 

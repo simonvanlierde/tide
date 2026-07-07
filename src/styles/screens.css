@@ -219,35 +219,35 @@
     background: var(--cycle-ovulation);
   }
 
-  /* History calendar */
-  .history-calendar {
+  /* Calendar */
+  .calendar {
     display: grid;
     gap: 14px;
   }
 
-  .history-calendar__header {
+  .calendar__header {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
     gap: 10px;
     align-items: center;
   }
 
-  .history-calendar__month-button {
+  .calendar__month-button {
     width: 100%;
   }
 
-  .history-calendar__help {
+  .calendar__help {
     margin: 0;
     text-align: center;
   }
 
-  .history-calendar__today {
+  .calendar__today {
     width: fit-content;
     max-width: 100%;
     justify-self: center;
   }
 
-  .history-calendar__picker {
+  .calendar__picker {
     display: grid;
     gap: 8px;
     padding: 14px;
@@ -262,14 +262,14 @@
   }
 
   /* Month takes the wider share; year needs only four digits. */
-  .history-calendar__picker-selects {
+  .calendar__picker-selects {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     gap: 8px;
     margin-top: 6px;
   }
 
-  .history-calendar__picker-input {
+  .calendar__picker-input {
     width: 100%;
     min-height: 46px;
     padding: 0 14px;
@@ -279,7 +279,7 @@
     color: var(--ink);
   }
 
-  .history-calendar__picker-input:focus-visible {
+  .calendar__picker-input:focus-visible {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
   }
