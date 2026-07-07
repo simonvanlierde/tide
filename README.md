@@ -27,46 +27,27 @@ Once installed it works offline, and all data stays on your device.
 ## Features
 
 - **Log bleeding days**: add or remove with one tap
-- **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual / follicular / ovulation / luteal), with key cycle dates and a scrub preview
+- **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual / follicular / ovulation / luteal) and a scrub preview
 - **Predictions**: next period learned from your history (28-day fallback), plus an approximate fertile window and ovulation estimate
 - **Log reminders**: a one-tap prompt in the days around your predicted period
 - **Calendar**: month-by-month view with per-day period numbers and ovulation / next-period markers, for reviewing and logging days
 - **Private by design**: installable, offline-capable PWA; all data stays on the device; no accounts, no network, no analytics
 
-## How predictions work
+### How predictions work
 
-All estimates are computed on-device from the bleeding days you log. Nothing is
-sent anywhere, and no averages are shared across users.
+Every estimate is computed on-device from the bleeding days you log. Nothing leaves your device.
 
-- **Cycles.** A gap of **10 or more days** between logged bleeding days starts a
-  new cycle; shorter gaps are treated as missed logs within the same period.
-- **Cycle length.** The **median of your last 6 completed cycles** (the days
-  between consecutive cycle starts). The median is used instead of the mean so a
-  single unusual cycle — illness, travel, a missed log — doesn't skew the
-  estimate, and only recent cycles count because cycle length drifts over time.
-  Before you've logged two cycles, a **28-day** fallback is used.
-- **Period length.** The average length of your past periods, clamped to the
-  **2–7 day** clinically normal band (ACOG). The current, possibly unfinished
-  period is excluded; the default before any history is 4 days.
-- **Next period.** Your most recent cycle start plus the estimated cycle length.
-- **Ovulation.** 14 days before the next predicted period — a fixed luteal
-  phase, which is the least variable part of the cycle. Calendar math alone
-  can't do better than this without temperature or LH-test input, which Tide
-  doesn't collect.
-- **Fertile window.** The 5 days before through 1 day after the estimated
-  ovulation (sperm survive ~5 days, the egg ~1). It **widens with how irregular
-  your recent cycles are** (by their standard deviation, capped at ±5 days): a
-  regular cycle shows a tight window, an unpredictable one an honestly wider one.
+- **Cycles.** A gap of **10+ days** between logged bleeding days starts a new cycle; shorter gaps are missed logs within the same period.
+- **Cycle length.** The **median of your last 6 completed cycles** (days between starts). Median so one odd cycle doesn't skew it; recent cycles only, since cycle length drifts. Falls back to **28 days** until you've logged two cycles.
+- **Period length.** Average of past periods, clamped to the **2–7 day** normal band (ACOG). Ignores the current, unfinished period; defaults to **4 days** with no history.
+- **Next period.** Most recent cycle start plus the estimated cycle length.
+- **Ovulation.** **14 days before** the next predicted period — the luteal phase is the cycle's least variable part. Calendar math can't do better without temperature or LH-test input, which Tide doesn't collect.
+- **Fertile window.** The 5 days before through 1 day after ovulation (sperm survive ~5 days, the egg ~1). It **widens with the standard deviation of your recent cycles** (capped at ±5 days): tight for regular cycles, wider for irregular ones.
 
 Estimates are informational, not a form of birth control.
 
 ## Roadmap
 
-- Ring
-  - Add subtle day markers
-  - More contrast between ring and background
-  - Add expected period thingy within end of ring
-  - no floating key date labels
 - Next up: insights and stats
 - Improved onboarding UI / UX
 - Multi-language support
@@ -86,6 +67,15 @@ pnpm dev
 | `pnpm test` | Unit and UI tests |
 | `pnpm test:e2e` | Playwright smoke tests |
 | `pnpm build` | Production build to `dist/` |
+
+### Deployment
+
+**[tide.duinlab.nl](https://tide.duinlab.nl)** is hosted on Cloudflare Pages via its Git
+integration: a push to `main` triggers a build (`pnpm build`) that publishes `dist/`. The build
+command and preview settings live in the Cloudflare dashboard; the repo only pins the output
+directory in [`wrangler.jsonc`](wrangler.jsonc).
+
+To deploy from a local checkout: `pnpm deploy` (`wrangler pages deploy`).
 
 ### Accessibility
 
@@ -110,15 +100,6 @@ Cycle logic is kept pure and isolated from React and the browser, so it can be t
 Tests mirror this layering, with a thin Playwright e2e layer covering routing, persistence across reloads, and PWA smoke.
 
 The core design decision — keeping all data on-device with no backend — is recorded in [docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md). Releases are tracked in [CHANGELOG.md](CHANGELOG.md).
-
-## Deployment
-
-**[tide.duinlab.nl](https://tide.duinlab.nl)** is hosted on Cloudflare Pages via its Git
-integration: a push to `main` triggers a build (`pnpm build`) that publishes `dist/`. The build
-command and preview settings live in the Cloudflare dashboard; the repo only pins the output
-directory in [`wrangler.jsonc`](wrangler.jsonc).
-
-To deploy from a local checkout: `pnpm deploy` (`wrangler pages deploy`).
 
 ## License
 
