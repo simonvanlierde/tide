@@ -89,6 +89,7 @@ export function appStateReducer(
         },
       };
 
+    // biome-ignore lint/security/noSecrets: an action type name, not a credential
     case "setShowCycleDayNumbers":
       return {
         ...state,

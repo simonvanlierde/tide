@@ -37,6 +37,12 @@ export function useHistoryCalendar(today: IsoDate) {
     () => getPeriodDays(state.intensityByDay),
     [state.intensityByDay],
   );
+  // Spotting-filtered days: the same set the cycle summary predicts from, so
+  // cycle-start detection (numbering, past ovulation) can't diverge from it.
+  const predictionDays = useMemo(
+    () => getPredictionDays(state.intensityByDay),
+    [state.intensityByDay],
+  );
   const loggedDays = useMemo(() => new Set(periodDays), [periodDays]);
   const dayIntensity = useMemo(
     () =>
@@ -48,16 +54,16 @@ export function useHistoryCalendar(today: IsoDate) {
   const periodDayNumbers = useMemo(
     // Number days from the same spotting-filtered set the cycle summary uses, so
     // the calendar and the Today dial agree on "day N" of a period.
-    () => getPeriodDayNumbers(getPredictionDays(state.intensityByDay)),
-    [state.intensityByDay],
+    () => getPeriodDayNumbers(predictionDays),
+    [predictionDays],
   );
   const showFertility = state.settings.showFertility;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
   // Ovulation for each completed past cycle, so their fertile windows show the
   // same as the forecast does for the current cycle.
   const pastOvulationDates = useMemo(
-    () => getPastOvulationDates(periodDays),
-    [periodDays],
+    () => getPastOvulationDates(predictionDays),
+    [predictionDays],
   );
   const cycleMarkers = useMemo(
     () =>
@@ -76,10 +82,11 @@ export function useHistoryCalendar(today: IsoDate) {
     () =>
       buildCycleDayNumbers(
         summary,
+        today,
         monthDays[0]?.value ?? visibleMonth,
         monthDays.at(-1)?.value ?? visibleMonth,
       ),
-    [summary, monthDays, visibleMonth],
+    [summary, today, monthDays, visibleMonth],
   );
   const monthLabel = useMemo(
     () => formatMonthLabel(visibleMonth),
@@ -175,23 +182,25 @@ export function useHistoryCalendar(today: IsoDate) {
   };
 }
 
-// How far back and forward the year dropdown reaches by default, so there's
-// always somewhere to jump even before much history exists.
-const YEARS_BACK = 1;
-const YEARS_FORWARD = 1;
+// Years padded on each side of the covered span, so a user who started logging
+// in January can still reach the year before, and there's always a year ahead.
+const YEAR_BUFFER = 1;
 
-// Years offered by the jump-to-month picker: a window around this year, widened
-// to cover any older logged period and the month currently on screen so the
-// year dropdown can always show its own value.
+// Years offered by the jump-to-month picker. The span always covers every logged
+// year, the current year, the month currently on screen, and the years between
+// them; YEAR_BUFFER pads each end. So an old backup spanning 2022–2024 in 2026
+// yields 2021–2027.
 function buildYearOptions(
   periodDays: IsoDate[],
   today: IsoDate,
   visibleMonth: IsoDate,
 ): number[] {
-  const todayYear = Number(today.slice(0, 4));
-  const visibleYear = Number(visibleMonth.slice(0, 4));
-  const loggedYears = periodDays.map((day) => Number(day.slice(0, 4)));
-  const min = Math.min(todayYear - YEARS_BACK, visibleYear, ...loggedYears);
-  const max = Math.max(todayYear + YEARS_FORWARD, visibleYear);
+  const years = [
+    Number(today.slice(0, 4)),
+    Number(visibleMonth.slice(0, 4)),
+    ...periodDays.map((day) => Number(day.slice(0, 4))),
+  ];
+  const min = Math.min(...years) - YEAR_BUFFER;
+  const max = Math.max(...years) + YEAR_BUFFER;
   return Array.from({ length: max - min + 1 }, (_, index) => min + index);
 }

@@ -128,6 +128,7 @@ export function useAppStateActions() {
         dispatch({ type: "setShowFertility", show });
       },
       setShowCycleDayNumbers(show: boolean) {
+        // biome-ignore lint/security/noSecrets: an action type name, not a credential
         dispatch({ type: "setShowCycleDayNumbers", show });
       },
       setTheme(theme: ThemePreference) {

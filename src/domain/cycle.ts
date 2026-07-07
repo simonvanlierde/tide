@@ -1,15 +1,18 @@
 import { addDays, differenceInDays } from "../utils/date";
 import type { CycleStats, CycleSummary, IsoDate } from "./types";
 
-const DEFAULT_CYCLE_LENGTH = 28;
-const DEFAULT_LUTEAL_LENGTH = 14;
+export const DEFAULT_CYCLE_LENGTH = 28;
+export const DEFAULT_LUTEAL_LENGTH = 14;
 // Expected-period run length, learned from past periods and clamped to ACOG's
 // normal-menstruation band (2–7 days) so a single stray log can't stretch or
 // shrink the prediction outside what's clinically typical. Default 4 (~median
 // tracked bleed length) applies only before any period is logged.
 const DEFAULT_PERIOD_LENGTH = 4;
-const MIN_PERIOD_LENGTH = 2;
-const MAX_PERIOD_LENGTH = 7;
+export const MIN_PERIOD_LENGTH = 2;
+export const MAX_PERIOD_LENGTH = 7;
+// Days without a logged (non-spotting) bleed after which the most recent period
+// is treated as finished rather than possibly ongoing.
+const MIN_DAYS_SINCE_BLEED = 5;
 // Gaps shorter than this are missed logging days within one period, not a new
 // cycle: real inter-cycle gaps are ~20+ days (cycle length minus period length).
 // NOTE: we use a fixed 10-day floor; a genuinely short (<~11-day) cycle would merge
@@ -20,14 +23,14 @@ const NEW_CYCLE_MIN_GAP_DAYS = 10;
 // (age, stress, meds), so a cycle from a year ago shouldn't count as much as
 // last month's. Median over this window also resists a single anomalous cycle
 // (illness, travel, a missed log) skewing the estimate the way a flat mean does.
-const RECENT_CYCLE_WINDOW = 6;
+export const RECENT_CYCLE_WINDOW = 6;
 // Fertile window as day offsets from predicted ovulation. Biological base is
 // −5..+1 (sperm survive ~5 days, egg ~1). We widen it by the spread of recent
 // cycle lengths: ovulation timing is only as predictable as cycle length, so an
 // irregular cycler gets a wider, honestly-hedged window and a regular one a
 // tight one. Capped so a chaotic history can't smear fertility across the cycle.
-const FERTILE_WINDOW_START = -5;
-const FERTILE_WINDOW_END = 1;
+export const FERTILE_WINDOW_START = -5;
+export const FERTILE_WINDOW_END = 1;
 const MAX_FERTILE_WIDENING = 5;
 
 interface BuildCycleSummaryInput {
@@ -76,10 +79,14 @@ export function getPeriodDayNumbers(
   return numbers;
 }
 
-// Average length of past periods, in days, clamped to [MIN, MAX]. The final
-// run is dropped when there's more than one, since the most recent period may
-// still be ongoing and would read as artificially short.
-export function getAveragePeriodLength(periodDays: IsoDate[]): number {
+// Average length of past periods, in days, clamped to [MIN, MAX]. The most
+// recent run is dropped only while it might still be bleeding — fewer than
+// MIN_DAYS_SINCE_BLEED days since its last logged day — so a genuinely finished
+// last period still counts. `periodDays` is expected spotting-filtered.
+export function getAveragePeriodLength(
+  periodDays: IsoDate[],
+  today: IsoDate,
+): number {
   const sortedDays = [...periodDays].sort();
   const starts = getCycleStarts(sortedDays);
   if (starts.length === 0) {
@@ -95,7 +102,12 @@ export function getAveragePeriodLength(periodDays: IsoDate[]): number {
     return differenceInDays(lastDay, start) + 1;
   });
 
-  const completed = lengths.length > 1 ? lengths.slice(0, -1) : lengths;
+  const lastLoggedDay = sortedDays.at(-1);
+  const lastRunOngoing =
+    lengths.length > 1 &&
+    lastLoggedDay !== undefined &&
+    differenceInDays(today, lastLoggedDay) < MIN_DAYS_SINCE_BLEED;
+  const completed = lastRunOngoing ? lengths.slice(0, -1) : lengths;
   const average = Math.round(
     completed.reduce((sum, value) => sum + value, 0) / completed.length,
   );
@@ -249,21 +261,20 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
       daysUntil: differenceInDays(nextPeriodDate, input.today),
     },
     cycleLength,
-    periodLength: getAveragePeriodLength(input.periodDays),
+    periodLength: getAveragePeriodLength(input.periodDays, input.today),
     estimateMode:
       input.completedCycleLengths.length > 0 ? "learned" : "fallback",
   };
 }
 
-// The numbers behind the estimate, for the insights view: the current cycle and
-// period estimates, how many completed cycles they're learned from, and how much
-// recent cycles vary (standard deviation, null until two cycles exist).
+// Extra numbers behind the estimate, for the insights view. Cycle and period
+// lengths already live on CycleSummary, so this only adds what the summary
+// lacks: how many completed cycles it's learned from, and how much recent cycles
+// vary (standard deviation, null until two cycles exist).
 export function getCycleStats(periodDays: IsoDate[]): CycleStats {
   const completed = getCompletedCycleLengths(periodDays);
   const recent = completed.slice(-RECENT_CYCLE_WINDOW);
   return {
-    cycleLength: estimateCycleLength(completed),
-    periodLength: getAveragePeriodLength(periodDays),
     cyclesTracked: completed.length,
     variabilityDays:
       recent.length >= 2

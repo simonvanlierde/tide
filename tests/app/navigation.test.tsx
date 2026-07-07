@@ -14,4 +14,10 @@ describe("app navigation", () => {
     expect(screen.path).toBe("/");
     expect(screen.title).toBe("Today");
   });
+
+  it("builds an element for each screen's render()", () => {
+    for (const path of ["/", "/history", "/settings"]) {
+      expect(getAppScreen(path).render()).toBeTruthy();
+    }
+  });
 });

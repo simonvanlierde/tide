@@ -104,6 +104,7 @@ export function HistoryScreen({
   return (
     <section className="utility-screen">
       <h1 className="visually-hidden">Calendar</h1>
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: PageUp/PageDown month paging is a keyboard convenience layered over the buttons below; the calendar stays fully operable via those focusable controls. */}
       <article
         ref={articleRef}
         className="utility-card history-calendar"
@@ -203,9 +204,9 @@ function prefersReducedMotion() {
 
 const LEGEND_ITEMS = [
   { key: "logged", label: "Logged" },
+  { key: "predicted", label: "Expected" },
   { key: "fertile", label: "Fertile", fertility: true },
   { key: "ovulation", label: "Ovulation", fertility: true },
-  { key: "predicted", label: "Expected" },
 ] as const;
 
 // The per-day buttons announce their own marker to screen readers, so the

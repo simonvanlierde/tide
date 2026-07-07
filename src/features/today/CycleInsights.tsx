@@ -1,8 +1,18 @@
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
-import type { CycleStats } from "../../domain/types";
+import {
+  DEFAULT_CYCLE_LENGTH,
+  DEFAULT_LUTEAL_LENGTH,
+  FERTILE_WINDOW_END,
+  FERTILE_WINDOW_START,
+  MAX_PERIOD_LENGTH,
+  MIN_PERIOD_LENGTH,
+  RECENT_CYCLE_WINDOW,
+} from "../../domain/cycle";
+import type { CycleStats, CycleSummary } from "../../domain/types";
 
 interface CycleInsightsProps {
+  summary: CycleSummary;
   stats: CycleStats;
   onClose: () => void;
 }
@@ -11,7 +21,7 @@ interface CycleInsightsProps {
 // worked out. A native <dialog> gives us the focus trap, Esc-to-close, and
 // backdrop for free. Mounted only while open, so it's shown on mount and a
 // native close (Esc, backdrop) unmounts it via onClose.
-export function CycleInsights({ stats, onClose }: CycleInsightsProps) {
+export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -50,14 +60,15 @@ export function CycleInsights({ stats, onClose }: CycleInsightsProps) {
       </div>
 
       <div className="insights__stats">
-        <Stat value={stats.cycleLength} unit="days" label="Cycle length" />
-        <Stat value={stats.periodLength} unit="days" label="Period length" />
+        <Stat value={summary.cycleLength} unit="days" label="Cycle length" />
+        <Stat value={summary.periodLength} unit="days" label="Period length" />
         <Stat value={stats.cyclesTracked} label="Cycles tracked" />
       </div>
 
       {stats.cyclesTracked === 0 ? (
         <p className="insights__note">
-          Based on a typical 28-day cycle until you’ve logged a full cycle.
+          Based on a typical {DEFAULT_CYCLE_LENGTH}-day cycle until you’ve
+          logged a full cycle.
         </p>
       ) : null}
 
@@ -88,20 +99,22 @@ export function CycleInsights({ stats, onClose }: CycleInsightsProps) {
             Everything is worked out on your device from the days you log.
           </li>
           <li>
-            Cycle length is the median of your last {6} cycles, so one odd month
-            doesn’t throw it off. Before two cycles, a typical 28-day cycle is
-            used.
+            Cycle length is the median of your last {RECENT_CYCLE_WINDOW}{" "}
+            cycles, so one odd month doesn’t throw it off. Before two cycles, a
+            typical {DEFAULT_CYCLE_LENGTH}-day cycle is used.
           </li>
           <li>
-            Period length is your recent average, kept to a normal 2–7 days.
+            Period length is your recent average, kept to a normal{" "}
+            {MIN_PERIOD_LENGTH}–{MAX_PERIOD_LENGTH} days.
           </li>
           <li>
             Your next period is your last start plus that cycle length;
-            ovulation is estimated 14 days before it.
+            ovulation is estimated {DEFAULT_LUTEAL_LENGTH} days before it.
           </li>
           <li>
-            The fertile window runs 5 days before to 1 day after ovulation, and
-            widens when your cycles vary more.
+            The fertile window runs {Math.abs(FERTILE_WINDOW_START)} days before
+            to {FERTILE_WINDOW_END} day after ovulation, and widens when your
+            cycles vary more.
           </li>
         </ul>
       </details>

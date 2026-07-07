@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
-import { formatShortDate } from "../../utils/date";
+import { addDays, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
 import {
   buildCycleSegments,
@@ -156,14 +156,14 @@ export function CycleDial({
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
 
-  // The predicted period is one extra scrubbable cell past the logged cycle
-  // (plus a decorative half-day tail drawn in the gradient). Modelled here, not
-  // in the segment data, so it can be previewed like any other day.
+  // The predicted period is a run of scrubbable cells past the logged cycle —
+  // periodLength days, the same expected length the calendar and insights show
+  // (plus a decorative tail drawn in the gradient). Modelled here, not in the
+  // segment data, so each day can be previewed like any other.
   const nextDate = summary.nextPeriod.date;
-  const predictedDate =
-    nextDate !== null && segments[0]?.date ? nextDate : null;
+  const hasPrediction = nextDate !== null && Boolean(segments[0]?.date);
   const cycleDayCount = segments.length;
-  const predictedCount = predictedDate !== null ? 1 : 0;
+  const predictedCount = hasPrediction ? summary.periodLength : 0;
   const totalCells = cycleDayCount + predictedCount;
 
   const rotation =
@@ -180,6 +180,11 @@ export function CycleDial({
     previewIndex !== null && previewIndex >= cycleDayCount;
   const preview =
     previewIndex === null || isPredictedPreview ? null : segments[previewIndex];
+  // Which day of the predicted run is under the pointer: nextPeriod + offset.
+  const predictedPreviewDate =
+    isPredictedPreview && nextDate
+      ? addDays(nextDate, (previewIndex ?? cycleDayCount) - cycleDayCount)
+      : null;
   const centerDay = isPredictedPreview
     ? (previewIndex ?? 0) + 1
     : (preview?.dayNumber ?? summary.cycleDay ?? "--");
@@ -189,12 +194,12 @@ export function CycleDial({
       ? getSegmentStatus(preview, summary) || phaseLabel
       : phaseLabel;
   const centerDate = isPredictedPreview
-    ? predictedDate
+    ? predictedPreviewDate
     : preview
       ? preview.date
       : today;
   const valueText = isPredictedPreview
-    ? `Day ${(previewIndex ?? 0) + 1}${predictedDate ? `, ${formatShortDate(predictedDate)}` : ""}, Period expected`
+    ? `Day ${(previewIndex ?? 0) + 1}${predictedPreviewDate ? `, ${formatShortDate(predictedPreviewDate)}` : ""}, Period expected`
     : preview
       ? `Day ${preview.dayNumber}${preview.date ? `, ${formatShortDate(preview.date)}` : ""}, ${getSegmentStatus(preview, summary) || phaseLabel}`
       : `Day ${summary.cycleDay ?? "unknown"}, ${formatShortDate(today)}, ${phaseLabel}`;

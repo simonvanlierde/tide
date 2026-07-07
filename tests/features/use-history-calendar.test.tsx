@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { useHistoryCalendar } from "../../src/features/history/useHistoryCalendar";
 import { AppStateProvider } from "../../src/state/provider";
-import { createLearnedCycleState } from "../support/app";
+import { createAppState, createLearnedCycleState } from "../support/app";
 
 function wrapper({ children }: { children: ReactNode }) {
   return (
@@ -36,12 +36,30 @@ describe("useHistoryCalendar", () => {
     expect(result.current.monthLabel).toBe("November 2025");
   });
 
-  it("offers a window of years by default, even with little history", () => {
+  it("offers a buffered window around the logged and current years", () => {
     const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
       wrapper,
     });
 
-    // Five years back through one ahead, regardless of how few days are logged.
+    // Fixture logs only 2026, so the span is just this year padded a year each
+    // side. An older backup widens the low end (see the next test).
+    expect(result.current.monthPicker.years).toEqual([2025, 2026, 2027]);
+  });
+
+  it("reaches back to the earliest logged year plus a buffer", () => {
+    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+      wrapper: ({ children }) => (
+        <AppStateProvider
+          initialState={createAppState({
+            periodDays: ["2022-05-01", "2024-08-10"],
+          })}
+        >
+          {children}
+        </AppStateProvider>
+      ),
+    });
+
+    // Logs span 2022–2024, today is 2026: cover 2022–2026, pad to 2021–2027.
     expect(result.current.monthPicker.years).toEqual([
       2021, 2022, 2023, 2024, 2025, 2026, 2027,
     ]);

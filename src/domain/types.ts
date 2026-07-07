@@ -28,10 +28,6 @@ export interface CycleSummary {
 }
 
 export interface CycleStats {
-  /** Current cycle-length estimate in days (median of recent cycles, or 28). */
-  cycleLength: number;
-  /** Current period-length estimate in days. */
-  periodLength: number;
   /** Completed cycles observed so far — the history the estimate is built on. */
   cyclesTracked: number;
   /**

@@ -163,6 +163,7 @@ export function buildCalendarMarkers(
 // separately (per-period) by getPeriodDayNumbers, so this fills the gaps.
 export function buildCycleDayNumbers(
   summary: CycleSummary,
+  today: IsoDate,
   rangeStart: IsoDate,
   rangeEnd: IsoDate,
 ): Map<IsoDate, number> {
@@ -173,10 +174,14 @@ export function buildCycleDayNumbers(
   }
 
   const cycleStart = addDays(nextPeriod, -summary.cycleLength);
+  // Normally stop before the next expected period (the next cycle's day 1). But
+  // when that prediction is already overdue, the current cycle is simply running
+  // long — keep counting through today so it doesn't leave a blank stretch.
+  const stopBefore = today >= nextPeriod ? addDays(today, 1) : nextPeriod;
   const from = cycleStart > rangeStart ? cycleStart : rangeStart;
   for (
     let day = from;
-    day <= rangeEnd && day < nextPeriod;
+    day <= rangeEnd && day < stopBefore;
     day = addDays(day, 1)
   ) {
     numbers.set(day, differenceInDays(day, cycleStart) + 1);

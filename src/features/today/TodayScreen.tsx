@@ -123,7 +123,11 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       </div>
 
       {insightsOpen ? (
-        <CycleInsights stats={stats} onClose={() => setInsightsOpen(false)} />
+        <CycleInsights
+          summary={summary}
+          stats={stats}
+          onClose={() => setInsightsOpen(false)}
+        />
       ) : null}
 
       {reminderState.shouldPrompt && reminderState.expectedDate ? (

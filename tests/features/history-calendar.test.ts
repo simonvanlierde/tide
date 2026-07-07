@@ -219,7 +219,12 @@ describe("history calendar helpers", () => {
       estimateMode: "learned",
     };
 
-    const numbers = buildCycleDayNumbers(summary, "2026-04-01", "2026-05-05");
+    const numbers = buildCycleDayNumbers(
+      summary,
+      "2026-04-10",
+      "2026-04-01",
+      "2026-05-05",
+    );
 
     expect(numbers.get("2026-04-01")).toBe(1);
     expect(numbers.get("2026-04-10")).toBe(10);
@@ -228,6 +233,35 @@ describe("history calendar helpers", () => {
     expect(numbers.has("2026-04-29")).toBe(false);
     // Days before the cycle start (outside the window's cycle) get nothing.
     expect(numbers.has("2026-03-31")).toBe(false);
+  });
+
+  it("keeps counting through today when the predicted period is overdue", () => {
+    // Cycle started 2026-03-13; the predicted next period (day 29, 2026-04-10)
+    // has already passed with no new log, so today is day 37.
+    const summary: CycleSummary = {
+      cycleDay: 37,
+      phaseLabel: "luteal",
+      fertile: false,
+      ovulationDate: "2026-03-27",
+      nextPeriod: { date: "2026-04-10", daysUntil: -8 },
+      cycleLength: 28,
+      periodLength: 4,
+      fertileWindow: { start: -5, end: 1 },
+      estimateMode: "learned",
+    };
+
+    const numbers = buildCycleDayNumbers(
+      summary,
+      "2026-04-18",
+      "2026-03-01",
+      "2026-05-05",
+    );
+
+    // The overdue predicted start and today both keep a running number.
+    expect(numbers.get("2026-04-10")).toBe(29);
+    expect(numbers.get("2026-04-18")).toBe(37);
+    // Nothing past today.
+    expect(numbers.has("2026-04-19")).toBe(false);
   });
 
   it("produces no cycle-day numbers before a cycle can be estimated", () => {
@@ -243,9 +277,10 @@ describe("history calendar helpers", () => {
       estimateMode: "insufficient",
     };
 
-    expect(buildCycleDayNumbers(summary, "2026-04-01", "2026-05-05").size).toBe(
-      0,
-    );
+    expect(
+      buildCycleDayNumbers(summary, "2026-04-18", "2026-04-01", "2026-05-05")
+        .size,
+    ).toBe(0);
   });
 
   it("produces no markers before a cycle can be estimated", () => {

@@ -45,6 +45,20 @@ export function HistoryCalendarGrid({
   justLoggedDay,
   onSelectDay,
 }: HistoryCalendarGridProps) {
+  // Days render in date order, so consecutive predicted-period cells belong to
+  // the same run. One forward pass gives each its offset within the run, so each
+  // day of the expected period fades a step further than the last. A run clipped
+  // by the visible window's start restarts at 0, which is only cosmetic.
+  const forecastSteps: number[] = [];
+  let forecastRun = 0;
+  for (const day of monthDays) {
+    const isPredicted =
+      !loggedDays.has(day.value) &&
+      cycleMarkers.get(day.value) === "predicted-period";
+    forecastSteps.push(isPredicted ? forecastRun : 0);
+    forecastRun = isPredicted ? forecastRun + 1 : 0;
+  }
+
   return (
     <section className="calendar-grid" aria-label="History calendar">
       <div className="calendar-grid__header">
@@ -55,10 +69,6 @@ export function HistoryCalendarGrid({
         ))}
       </div>
       <div className="calendar-grid__week">
-        {/* Days render in date order, so consecutive predicted-period cells
-            belong to the same run — track the offset to fade each day of the
-            expected period a little more. A run clipped by the visible window's
-            start restarts at 0, which is only cosmetic. */}
         {monthDays.map((day, index) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
@@ -75,23 +85,8 @@ export function HistoryCalendarGrid({
             ? (dayIntensity.get(value) ?? "medium")
             : undefined;
           const marker = isLogged ? undefined : cycleMarkers.get(value);
-          // Count the predicted-period days immediately before this one so each
-          // day of the expected run fades a step further than the last.
           const isPredictedPeriod = marker === "predicted-period";
-          let forecastStep = 0;
-          if (isPredictedPeriod) {
-            for (let i = index - 1; i >= 0; i--) {
-              const prev = monthDays[i]?.value;
-              if (
-                !prev ||
-                loggedDays.has(prev) ||
-                cycleMarkers.get(prev) !== "predicted-period"
-              ) {
-                break;
-              }
-              forecastStep++;
-            }
-          }
+          const forecastStep = forecastSteps[index] ?? 0;
           const isSelected = value === selectedDay;
           const className = [
             "calendar-grid__day",

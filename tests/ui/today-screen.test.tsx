@@ -111,9 +111,10 @@ describe("TodayScreen", () => {
       }) as DOMRect;
     dial.setPointerCapture = () => {};
 
-    // The learned cycle spans 28 logged days plus one predicted period cell.
-    // Points are derived from the dial geometry so they track gap/start tuning.
-    const totalCells = 29;
+    // The learned cycle spans 28 cycle days plus the predicted period run
+    // (periodLength = 2 for this fixture). Points are derived from the dial
+    // geometry so they track gap/start tuning.
+    const totalCells = 30;
     const ringPoint = (index: number) => {
       const a = (dayAngleDeg(index, totalCells) * Math.PI) / 180;
       return {

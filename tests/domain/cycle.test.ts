@@ -63,42 +63,71 @@ describe("getPastOvulationDates", () => {
 
 describe("getAveragePeriodLength", () => {
   it("defaults to 4 with no data and averages completed periods", () => {
-    expect(getAveragePeriodLength([])).toBe(4);
+    expect(getAveragePeriodLength([], "2026-03-01")).toBe(4);
 
-    // Two completed 4-day periods + an ongoing 1-day period (dropped): avg 4.
+    // Two completed 4-day periods + a last 1-day run that's still recent
+    // (dropped as possibly ongoing): avg 4. today is 1 day after the last log.
     expect(
-      getAveragePeriodLength([
-        "2026-01-01",
-        "2026-01-02",
-        "2026-01-03",
-        "2026-01-04",
-        "2026-01-29",
-        "2026-01-30",
-        "2026-01-31",
-        "2026-02-01",
-        "2026-02-26", // ongoing, dropped from the average
-      ]),
+      getAveragePeriodLength(
+        [
+          "2026-01-01",
+          "2026-01-02",
+          "2026-01-03",
+          "2026-01-04",
+          "2026-01-29",
+          "2026-01-30",
+          "2026-01-31",
+          "2026-02-01",
+          "2026-02-26", // still-recent last run, dropped from the average
+        ],
+        "2026-02-27",
+      ),
+    ).toBe(4);
+  });
+
+  it("counts the last run once it's finished (≥5 bleeding-free days)", () => {
+    // A 5-day then a 3-day period, last log 15 days ago: last run is over, so
+    // both count → avg 4. (The old rule dropped the last run and returned 5.)
+    expect(
+      getAveragePeriodLength(
+        [
+          "2026-01-01",
+          "2026-01-02",
+          "2026-01-03",
+          "2026-01-04",
+          "2026-01-05",
+          "2026-02-01",
+          "2026-02-02",
+          "2026-02-03",
+        ],
+        "2026-02-18",
+      ),
     ).toBe(4);
   });
 
   it("clamps to ACOG's 2–7 day normal band", () => {
     // A single 9-day run would average 9; clamp to 7.
     expect(
-      getAveragePeriodLength([
-        "2026-03-01",
-        "2026-03-02",
-        "2026-03-03",
-        "2026-03-04",
-        "2026-03-05",
-        "2026-03-06",
-        "2026-03-07",
-        "2026-03-08",
-        "2026-03-09",
-      ]),
+      getAveragePeriodLength(
+        [
+          "2026-03-01",
+          "2026-03-02",
+          "2026-03-03",
+          "2026-03-04",
+          "2026-03-05",
+          "2026-03-06",
+          "2026-03-07",
+          "2026-03-08",
+          "2026-03-09",
+        ],
+        "2026-04-01",
+      ),
     ).toBe(7);
 
     // Two 1-day periods average 1; clamp up to 2.
-    expect(getAveragePeriodLength(["2026-01-01", "2026-02-01"])).toBe(2);
+    expect(
+      getAveragePeriodLength(["2026-01-01", "2026-02-01"], "2026-03-01"),
+    ).toBe(2);
   });
 });
 
@@ -266,15 +295,14 @@ describe("getCycleStats", () => {
     expect(one.variabilityDays).toBeNull();
 
     // Three cycle starts 28/30 days apart -> two completed cycles [28, 30],
-    // median-driven length and a small non-zero spread.
+    // with a small non-zero spread. (Cycle length itself lives on the summary.)
     const many = getCycleStats(["2026-01-01", "2026-01-29", "2026-02-28"]);
     expect(many.cyclesTracked).toBe(2);
-    expect(many.cycleLength).toBe(29);
     expect(many.variabilityDays).toBeGreaterThan(0);
   });
 
-  it("defaults to a 28-day cycle with no completed cycles", () => {
-    expect(getCycleStats([]).cycleLength).toBe(28);
+  it("reports no tracked cycles with no completed cycles", () => {
     expect(getCycleStats([]).cyclesTracked).toBe(0);
+    expect(getCycleStats([]).variabilityDays).toBeNull();
   });
 });

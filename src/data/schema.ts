@@ -76,8 +76,18 @@ export function normalizeIntensityByDay(
 export function normalizeSettings(settings: unknown): AppSettings {
   const candidate =
     settings && typeof settings === "object"
-      ? (settings as Partial<AppSettings>)
+      ? (settings as Partial<AppSettings> & Record<string, unknown>)
       : {};
+
+  // Back-compat: earlier builds named this setting showPeriodDayNumbers. Read
+  // the old key when the new one is absent so an upgrade preserves a user who
+  // turned it off. TODO(remove-legacy-settings): drop once no old state remains.
+  // (dismissedFor was likewise renamed to dismissedOn, but it's transient
+  // same-day state that self-heals, so it's intentionally not migrated.)
+  const showDayNumbers =
+    typeof candidate.showCycleDayNumbers === "boolean"
+      ? candidate.showCycleDayNumbers
+      : candidate.showPeriodDayNumbers;
 
   return {
     dismissedOn: isIsoDate(candidate.dismissedOn)
@@ -88,8 +98,8 @@ export function normalizeSettings(settings: unknown): AppSettings {
         ? candidate.showFertility
         : defaultAppState.settings.showFertility,
     showCycleDayNumbers:
-      typeof candidate.showCycleDayNumbers === "boolean"
-        ? candidate.showCycleDayNumbers
+      typeof showDayNumbers === "boolean"
+        ? showDayNumbers
         : defaultAppState.settings.showCycleDayNumbers,
     theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
       ? (candidate.theme as ThemePreference)
