@@ -1,12 +1,19 @@
 import { useRef, useState } from "react";
 import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
-import { formatMonthDay, formatShortDate } from "../../utils/date";
+import { formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
 import {
   buildCycleSegments,
   type CycleSegment,
   getSegmentStatus,
 } from "./CycleView";
+import {
+  ARC_START_DEG,
+  ARC_SWEEP_DEG,
+  dayAngleDeg,
+  dayIndexFromPoint,
+  pointerAngleDeg,
+} from "./dialGeometry";
 
 interface CycleDialProps {
   summary: CycleSummary;
@@ -17,74 +24,111 @@ interface CycleDialProps {
   showFertility: boolean;
 }
 
-// The dial is a broken ring: a gap at 12 o'clock splits the previous period
-// start (just clockwise of the gap) from the predicted next period (just
-// counter-clockwise), so past and future no longer collide at the seam.
-const GAP_DEG = 24;
-const ARC_START_DEG = GAP_DEG / 2; // day 1 begins here, clockwise from top
-const ARC_SWEEP_DEG = 360 - GAP_DEG; // arc the whole cycle spans
+// Day-boundary tick, drawn on its own masked layer near the outer rim (see
+// .cycle-dial__ticks) so it reads as a little mark, not a line crossing the
+// whole ring.
+const TICK_DEG = 0.8;
+const TICK_COLOR = "color-mix(in srgb, var(--ink) 16%, transparent)";
+// The expected period is a ghosted coral fill — same hue as a logged period but
+// translucent and soft-edged, so it reads as a forecast that dissolves toward
+// the top seam.
+const PREDICTED_COLOR =
+  "color-mix(in srgb, var(--cycle-period) 60%, transparent)";
+const PREDICTED_FADE_DEG = 16; // how far the ghosted fill tapers toward the top
+const PREDICTED_TAIL_STEP = 1.25; // tail length past the arc, in day-widths
+// Neighbouring phase colors blend over a couple degrees instead of hard-cutting.
+const BLEND_DEG = 1.4;
+// The seam fade: day 1 fades in from the top gap, and with no predicted period
+// the last logged day fades out into it.
+const FADE_DEG = 8;
 
-// Center angle (deg, clockwise from 12 o'clock) of a day's segment.
-function dayAngleDeg(index: number, totalDays: number) {
-  return ARC_START_DEG + (ARC_SWEEP_DEG * (index + 0.5)) / totalDays;
+function phaseColor(segment: CycleSegment) {
+  return segment.flow
+    ? `var(--flow-${segment.flow})`
+    : segment.isOvulation
+      ? "var(--cycle-ovulation)"
+      : segment.isFertile
+        ? "var(--cycle-fertile)"
+        : "var(--cycle-idle)";
 }
 
-function getDialStyle(segments: CycleSegment[]) {
-  const stops = segments.map((segment, index) => {
-    const start = (ARC_SWEEP_DEG * index) / segments.length;
-    const end = (ARC_SWEEP_DEG * (index + 1)) / segments.length;
-    const color = segment.flow
-      ? `var(--flow-${segment.flow})`
-      : segment.isOvulation
-        ? "var(--cycle-ovulation)"
-        : segment.isFertile
-          ? "var(--cycle-fertile)"
-          : "var(--cycle-idle)";
+// The angular window over which the predicted period fades out toward the top.
+// Shared by the coral fill and the day ticks so they dissolve together.
+function predictedFade(total: number) {
+  const step = ARC_SWEEP_DEG / total;
+  const tailEnd = ARC_SWEEP_DEG + PREDICTED_TAIL_STEP * step;
+  const fadeStart = Math.max(tailEnd - PREDICTED_FADE_DEG, step * (total - 1));
+  return { fadeStart, tailEnd };
+}
 
-    return `${color} ${start}deg ${end}deg`;
+function getDialStyle(segments: CycleSegment[], predictedCount: number) {
+  const total = segments.length + predictedCount;
+  const step = ARC_SWEEP_DEG / total;
+  const stops: string[] = [];
+  segments.forEach((segment, i) => {
+    const isLast = i === segments.length - 1;
+    const color = phaseColor(segment);
+    // Day 1 fades in from the gap; interior boundaries blend a touch.
+    const start = i === 0 ? FADE_DEG : step * i + BLEND_DEG;
+    let end = step * (i + 1) - BLEND_DEG;
+    // The last logged day fades out into the gap only when no predicted period
+    // follows to carry the ring onward.
+    if (isLast && predictedCount === 0) {
+      end = step * (i + 1) - FADE_DEG;
+    }
+    stops.push(`${color} ${start}deg ${end}deg`);
   });
-  // The remaining arc stays transparent — the gap at the top of the ring.
-  stops.push(`transparent ${ARC_SWEEP_DEG}deg 360deg`);
+  if (predictedCount > 0) {
+    // Ghosted coral fill for the predicted days, tapering out toward the top.
+    const { fadeStart, tailEnd } = predictedFade(total);
+    const cellStart = step * segments.length + BLEND_DEG;
+    stops.push(
+      `${PREDICTED_COLOR} ${cellStart}deg ${Math.max(fadeStart, cellStart)}deg`,
+    );
+    stops.push(`transparent ${tailEnd}deg 360deg`);
+  } else {
+    stops.push(`transparent ${ARC_SWEEP_DEG}deg 360deg`);
+  }
 
   return {
     background: `conic-gradient(from ${ARC_START_DEG}deg, ${stops.join(", ")})`,
   };
 }
 
-function pointerAngleDeg(
-  x: number,
-  y: number,
-  rect: { left: number; top: number; width: number; height: number },
-): number {
-  const dx = x - (rect.left + rect.width / 2);
-  const dy = y - (rect.top + rect.height / 2);
-  // atan2(dx, -dy) puts 0deg at 12 o'clock, matching the conic gradient.
-  return ((Math.atan2(dx, -dy) * 180) / Math.PI + 360) % 360;
-}
-
-export function dayIndexFromPoint(
-  x: number,
-  y: number,
-  rect: { left: number; top: number; width: number; height: number },
-  totalDays: number,
-): number {
-  const relative = pointerAngleDeg(x, y, rect) - ARC_START_DEG;
-  const index = Math.floor((relative / ARC_SWEEP_DEG) * totalDays);
-  return Math.min(Math.max(index, 0), totalDays - 1);
-}
-
-// Distance of the angle-positioned labels from the dial center, as a fraction
-// of the frame size (0.5 is the ring's outer edge).
-const LABEL_RADIUS = 0.56;
-
-function getLabelPosition(dayIndex: number, totalDays: number) {
-  const angle = (dayAngleDeg(dayIndex, totalDays) * Math.PI) / 180;
-  const isRightHalf = Math.sin(angle) >= 0;
-
+// Little ticks at every day boundary, on a layer masked to a thin band at the
+// outer rim. Through the predicted period they carry on up toward the top,
+// fading out in step with the ghosted coral fill.
+function getTicksStyle(total: number, predictedCount: number) {
+  const step = ARC_SWEEP_DEG / total;
+  const fade = predictedCount > 0 ? predictedFade(total) : null;
+  const lastBoundary = fade ? 360 : ARC_SWEEP_DEG + TICK_DEG;
+  const stops = ["transparent 0deg"];
+  for (let i = 1; step * i < lastBoundary; i += 1) {
+    const boundary = step * i;
+    const alpha =
+      fade && boundary > fade.fadeStart
+        ? Math.max(
+            0,
+            (fade.tailEnd - boundary) / (fade.tailEnd - fade.fadeStart),
+          )
+        : 1;
+    if (alpha <= 0) {
+      continue;
+    }
+    const color =
+      alpha >= 1
+        ? TICK_COLOR
+        : `color-mix(in srgb, ${TICK_COLOR} ${Math.round(alpha * 100)}%, transparent)`;
+    stops.push(
+      `transparent ${boundary - TICK_DEG / 2}deg`,
+      `${color} ${boundary - TICK_DEG / 2}deg`,
+      `${color} ${boundary + TICK_DEG / 2}deg`,
+      `transparent ${boundary + TICK_DEG / 2}deg`,
+    );
+  }
+  stops.push("transparent 360deg");
   return {
-    left: `${50 + Math.sin(angle) * LABEL_RADIUS * 100}%`,
-    top: `${50 - Math.cos(angle) * LABEL_RADIUS * 100}%`,
-    transform: isRightHalf ? "translate(0, -50%)" : "translate(-100%, -50%)",
+    background: `conic-gradient(from ${ARC_START_DEG}deg, ${stops.join(", ")})`,
   };
 }
 
@@ -97,13 +141,10 @@ export function CycleDial({
   showFertility,
 }: CycleDialProps) {
   const frameRef = useRef<HTMLDivElement>(null);
-  // A number previews that cycle day; "next" previews the predicted next
-  // period, which sits one day past the last segment.
-  const [previewIndex, setPreviewIndex] = useState<number | "next" | null>(
-    null,
-  );
+  // The cycle day being previewed while scrubbing, or null for the live view.
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   // The exact pointer angle while scrubbing, so the ghost dot tracks the finger
-  // rather than snapping to the day center. Null for keyboard/label previews.
+  // rather than snapping to the day center. Null for keyboard previews.
   const [previewAngle, setPreviewAngle] = useState<number | null>(null);
 
   const segments = buildCycleSegments(
@@ -114,57 +155,67 @@ export function CycleDial({
     intensityByDay,
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
+
+  // The predicted period is one extra scrubbable cell past the logged cycle
+  // (plus a decorative half-day tail drawn in the gradient). Modelled here, not
+  // in the segment data, so it can be previewed like any other day.
+  const nextDate = summary.nextPeriod.date;
+  const predictedDate =
+    nextDate !== null && segments[0]?.date ? nextDate : null;
+  const cycleDayCount = segments.length;
+  const predictedCount = predictedDate !== null ? 1 : 0;
+  const totalCells = cycleDayCount + predictedCount;
+
   const rotation =
-    currentIndex >= 0 ? dayAngleDeg(currentIndex, segments.length) : 0;
+    currentIndex >= 0 ? dayAngleDeg(currentIndex, totalCells) : 0;
 
   // Ghost marker under the pointer: free-follows the finger while scrubbing,
-  // otherwise sits on the previewed day (keyboard, label press).
+  // otherwise sits on the previewed day (keyboard).
   const ghostAngle =
     previewIndex === null
       ? null
-      : previewAngle !== null
-        ? previewAngle
-        : previewIndex === "next"
-          ? ARC_START_DEG + ARC_SWEEP_DEG
-          : dayAngleDeg(previewIndex, segments.length);
+      : (previewAngle ?? dayAngleDeg(previewIndex, totalCells));
 
+  const isPredictedPreview =
+    previewIndex !== null && previewIndex >= cycleDayCount;
   const preview =
-    typeof previewIndex === "number" ? segments[previewIndex] : null;
-  const isNextPeriodPreview = previewIndex === "next";
-  const centerDay = isNextPeriodPreview
-    ? 1
+    previewIndex === null || isPredictedPreview ? null : segments[previewIndex];
+  const centerDay = isPredictedPreview
+    ? (previewIndex ?? 0) + 1
     : (preview?.dayNumber ?? summary.cycleDay ?? "--");
-  const centerStatus = isNextPeriodPreview
+  const centerStatus = isPredictedPreview
     ? "Period expected"
     : preview
       ? getSegmentStatus(preview, summary) || phaseLabel
       : phaseLabel;
-  const centerDate = isNextPeriodPreview
-    ? summary.nextPeriod.date
+  const centerDate = isPredictedPreview
+    ? predictedDate
     : preview
       ? preview.date
       : today;
-  const valueText = isNextPeriodPreview
-    ? `Next period expected${summary.nextPeriod.date ? `, ${formatShortDate(summary.nextPeriod.date)}` : ""}`
+  const valueText = isPredictedPreview
+    ? `Day ${(previewIndex ?? 0) + 1}${predictedDate ? `, ${formatShortDate(predictedDate)}` : ""}, Period expected`
     : preview
       ? `Day ${preview.dayNumber}${preview.date ? `, ${formatShortDate(preview.date)}` : ""}, ${getSegmentStatus(preview, summary) || phaseLabel}`
       : `Day ${summary.cycleDay ?? "unknown"}, ${formatShortDate(today)}, ${phaseLabel}`;
 
-  const cycleStartDate = segments[0]?.date ?? null;
-  const fertileStartIndex = segments.findIndex((segment) => segment.isFertile);
-  const ovulationIndex = segments.findIndex((segment) => segment.isOvulation);
-
   function updatePreview(event: React.PointerEvent<HTMLDivElement>) {
     const rect = frameRef.current?.getBoundingClientRect();
     if (rect) {
-      setPreviewIndex(
-        dayIndexFromPoint(event.clientX, event.clientY, rect, segments.length),
+      const index = dayIndexFromPoint(
+        event.clientX,
+        event.clientY,
+        rect,
+        totalCells,
       );
-      // Clamp the ghost to the track so it never floats into the top gap.
+      setPreviewIndex(index);
+      // The ghost free-follows the finger everywhere. On day 1 (against the top
+      // seam) it's floored to the cell centre so it can't perch on the seam —
+      // but only on the left side: past the centre it free-follows again, so the
+      // day 1↔2 border stays scrubbable.
       const angle = pointerAngleDeg(event.clientX, event.clientY, rect);
-      setPreviewAngle(
-        Math.min(Math.max(angle, ARC_START_DEG), ARC_START_DEG + ARC_SWEEP_DEG),
-      );
+      const day1Centre = dayAngleDeg(0, totalCells);
+      setPreviewAngle(index === 0 ? Math.max(angle, day1Centre) : angle);
     }
   }
 
@@ -182,27 +233,8 @@ export function CycleDial({
           : currentIndex >= 0
             ? currentIndex
             : 0;
-      return Math.min(Math.max(from + step, 0), segments.length - 1);
+      return Math.min(Math.max(from + step, 0), totalCells - 1);
     });
-  }
-
-  // Press/hover on a key-date label previews exactly that day, instead of the
-  // angle-derived one — on touch this is how the label meanings get seen.
-  function labelPreviewProps(target: number | "next") {
-    return {
-      onPointerDown: (event: React.PointerEvent) => {
-        event.stopPropagation();
-        setPreviewAngle(null);
-        setPreviewIndex(target);
-      },
-      onPointerMove: (event: React.PointerEvent) => {
-        event.stopPropagation();
-        if (event.buttons > 0 || event.pointerType === "mouse") {
-          setPreviewAngle(null);
-          setPreviewIndex(target);
-        }
-      },
-    };
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -225,10 +257,10 @@ export function CycleDial({
         role="slider"
         aria-label="Cycle days"
         aria-valuemin={1}
-        aria-valuemax={segments.length}
+        aria-valuemax={totalCells}
         aria-valuenow={
-          isNextPeriodPreview
-            ? segments.length
+          isPredictedPreview
+            ? (previewIndex ?? 0) + 1
             : (preview?.dayNumber ?? summary.cycleDay ?? 1)
         }
         aria-valuetext={valueText}
@@ -248,7 +280,10 @@ export function CycleDial({
         onKeyDown={handleKeyDown}
         onBlur={clearPreview}
       >
-        <div className="cycle-dial__ring" style={getDialStyle(segments)}>
+        <div
+          className="cycle-dial__ring"
+          style={getDialStyle(segments, predictedCount)}
+        >
           <div className="cycle-dial__inner">
             <span className="cycle-dial__eyebrow">Cycle day</span>
             <strong className="cycle-dial__day">{centerDay}</strong>
@@ -260,6 +295,11 @@ export function CycleDial({
             ) : null}
           </div>
         </div>
+        <div
+          className="cycle-dial__ticks"
+          style={getTicksStyle(totalCells, predictedCount)}
+          aria-hidden="true"
+        />
         <div
           className="cycle-dial__marker"
           style={{ transform: `rotate(${rotation}deg)` }}
@@ -275,66 +315,6 @@ export function CycleDial({
             <span className="cycle-dial__ghost-dot" />
           </div>
         ) : null}
-        <div className="cycle-dial__labels">
-          {cycleStartDate ? (
-            <span
-              className="cycle-dial__label cycle-dial__label--start"
-              title="Previous period start"
-              {...labelPreviewProps(0)}
-            >
-              <span
-                className="cycle-view__dot cycle-view__dot--period"
-                aria-hidden="true"
-              />
-              <span className="visually-hidden">Previous period start, </span>
-              {formatMonthDay(cycleStartDate)}
-            </span>
-          ) : null}
-          {summary.nextPeriod.date ? (
-            <span
-              className="cycle-dial__label cycle-dial__label--end"
-              title="Next period expected"
-              {...labelPreviewProps("next")}
-            >
-              <span
-                className="cycle-view__dot cycle-view__dot--predicted"
-                aria-hidden="true"
-              />
-              <span className="visually-hidden">Next period expected, </span>
-              {formatMonthDay(summary.nextPeriod.date)}
-            </span>
-          ) : null}
-          {fertileStartIndex >= 0 && segments[fertileStartIndex]?.date ? (
-            <span
-              className="cycle-dial__label"
-              style={getLabelPosition(fertileStartIndex, segments.length)}
-              title="Fertile window starts"
-              {...labelPreviewProps(fertileStartIndex)}
-            >
-              <span
-                className="cycle-view__dot cycle-view__dot--fertile"
-                aria-hidden="true"
-              />
-              <span className="visually-hidden">Fertile window starts, </span>
-              {formatMonthDay(segments[fertileStartIndex].date)}
-            </span>
-          ) : null}
-          {ovulationIndex >= 0 && segments[ovulationIndex]?.date ? (
-            <span
-              className="cycle-dial__label"
-              style={getLabelPosition(ovulationIndex, segments.length)}
-              title="Ovulation expected"
-              {...labelPreviewProps(ovulationIndex)}
-            >
-              <span
-                className="cycle-view__dot cycle-view__dot--ovulation"
-                aria-hidden="true"
-              />
-              <span className="visually-hidden">Ovulation expected, </span>
-              {formatMonthDay(segments[ovulationIndex].date)}
-            </span>
-          ) : null}
-        </div>
       </div>
       <CycleLegend
         className="cycle-dial__legend"

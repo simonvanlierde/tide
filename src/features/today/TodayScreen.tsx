@@ -192,11 +192,11 @@ function getFertilityEstimate(phaseLabel: CyclePhase, fertile: boolean) {
 
 function getLearningNote(estimateMode: CycleEstimateMode) {
   if (estimateMode === "fallback") {
-    return "Learning from recent logs. Using a typical 28-day cycle for now.";
+    return "Using a typical 28-day cycle until we learn your pattern.";
   }
 
   if (estimateMode === "insufficient") {
-    return "Log bleeding days to start an estimate.";
+    return "Log bleeding to start an estimate.";
   }
 
   return null;

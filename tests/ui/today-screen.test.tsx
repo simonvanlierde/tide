@@ -2,6 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import type { IsoDate } from "../../src/domain/types";
+import { dayAngleDeg } from "../../src/features/today/dialGeometry";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
 import {
   createAppState,
@@ -39,19 +40,11 @@ describe("TodayScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows key cycle dates on the dial with explanatory labels", () => {
+  it("draws the predicted next period as a coral fill on the dial", () => {
     renderToday("2026-04-18");
 
-    expect(screen.getByTitle("Previous period start")).toHaveTextContent(
-      "Apr 2",
-    );
-    expect(screen.getByTitle("Next period expected")).toHaveTextContent(
-      "Apr 30",
-    );
-    expect(screen.getByTitle("Fertile window starts")).toHaveTextContent(
-      "Apr 11",
-    );
-    expect(screen.getByTitle("Ovulation expected")).toHaveTextContent("Apr 16");
+    const ring = document.querySelector(".cycle-dial__ring");
+    expect(ring?.getAttribute("style")).toContain("var(--cycle-period)");
     expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument(); // today
   });
 
@@ -98,52 +91,28 @@ describe("TodayScreen", () => {
       }) as DOMRect;
     dial.setPointerCapture = () => {};
 
-    // The ring is broken by a gap at the top, so the cycle spans 336deg from
-    // 12deg clockwise of the top — 3 o'clock lands on day 7.
-    fireEvent.pointerDown(dial, {
-      pointerId: 1,
-      buttons: 1,
-      clientX: 280,
-      clientY: 140,
-    });
-    expect(dial).toHaveAttribute("aria-valuenow", "7");
+    // The learned cycle spans 28 logged days plus one predicted period cell.
+    // Points are derived from the dial geometry so they track gap/start tuning.
+    const totalCells = 29;
+    const ringPoint = (index: number) => {
+      const a = (dayAngleDeg(index, totalCells) * Math.PI) / 180;
+      return {
+        clientX: 140 + Math.sin(a) * 120,
+        clientY: 140 - Math.cos(a) * 120,
+      };
+    };
 
-    // Dragging to 6 o'clock lands on day 15, the expected ovulation day.
-    fireEvent.pointerMove(dial, {
-      pointerId: 1,
-      buttons: 1,
-      clientX: 140,
-      clientY: 280,
-    });
+    // Press on day 8.
+    fireEvent.pointerDown(dial, { pointerId: 1, buttons: 1, ...ringPoint(7) });
+    expect(dial).toHaveAttribute("aria-valuenow", "8");
+
+    // Drag to the expected ovulation day (day 15).
+    fireEvent.pointerMove(dial, { pointerId: 1, buttons: 1, ...ringPoint(14) });
     expect(dial).toHaveAttribute("aria-valuenow", "15");
     expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
 
     fireEvent.pointerUp(dial, { pointerId: 1 });
     expect(dial).toHaveAttribute("aria-valuenow", "17");
-  });
-
-  it("explains a key date label in the center while pressed", () => {
-    renderToday("2026-04-18");
-
-    const dial = screen.getByRole("slider", { name: /cycle days/i });
-    const nextPeriodLabel = screen.getByTitle("Next period expected");
-
-    fireEvent.pointerDown(nextPeriodLabel, { pointerId: 1, buttons: 1 });
-    expect(screen.getByText("Period expected")).toBeInTheDocument();
-    expect(dial.getAttribute("aria-valuetext")).toBe(
-      "Next period expected, Thu, Apr 30",
-    );
-
-    fireEvent.pointerUp(nextPeriodLabel, { pointerId: 1 });
-    expect(dial).toHaveAttribute("aria-valuenow", "17");
-
-    // The ovulation label previews the ovulation day itself.
-    fireEvent.pointerDown(screen.getByTitle("Ovulation expected"), {
-      pointerId: 1,
-      buttons: 1,
-    });
-    expect(dial).toHaveAttribute("aria-valuenow", "15");
-    expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
   });
 
   it("words the ovulation estimate for the day itself", () => {
@@ -183,11 +152,6 @@ describe("TodayScreen", () => {
     expect(
       screen.queryByLabelText(/show fertility disclaimer/i),
     ).not.toBeInTheDocument();
-    // ...and the fertile/ovulation markers vanish from the central dial too.
-    expect(
-      screen.queryByTitle("Fertile window starts"),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByTitle("Ovulation expected")).not.toBeInTheDocument();
   });
 
   it("logs a bleeding day from the primary action", async () => {
@@ -218,7 +182,7 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
     expect(screen.getByText(/^not enough data yet$/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/log bleeding days to start an estimate/i),
+      screen.getByText(/log bleeding to start an estimate/i),
     ).toBeInTheDocument();
   });
 
@@ -228,30 +192,14 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/^expected today$/i)).toBeInTheDocument();
   });
 
-  it("previews a key date label on pointer move while pressed", () => {
-    renderToday("2026-04-18");
-
-    const dial = screen.getByRole("slider", { name: /cycle days/i });
-    fireEvent.pointerMove(screen.getByTitle("Ovulation expected"), {
-      pointerId: 1,
-      buttons: 1,
-    });
-
-    expect(dial).toHaveAttribute("aria-valuenow", "15");
-    expect(dial.getAttribute("aria-valuetext")).toContain("Ovulation expected");
-  });
-
   it("resets the preview when the pointer leaves, cancels, or the dial blurs", () => {
     renderToday("2026-04-18");
 
     const dial = screen.getByRole("slider", { name: /cycle days/i });
 
     for (const reset of ["pointerLeave", "pointerCancel", "blur"] as const) {
-      fireEvent.pointerMove(screen.getByTitle("Ovulation expected"), {
-        pointerId: 1,
-        buttons: 1,
-      });
-      expect(dial).toHaveAttribute("aria-valuenow", "15");
+      fireEvent.keyDown(dial, { key: "ArrowRight" });
+      expect(dial).toHaveAttribute("aria-valuenow", "18");
 
       fireEvent[reset](dial);
       expect(dial).toHaveAttribute("aria-valuenow", "17");
@@ -261,7 +209,9 @@ describe("TodayScreen", () => {
   it("shows a learning-state note when fallback predictions are in use", () => {
     renderToday("2026-04-21", createLearningCycleState());
 
-    expect(screen.getByText(/learning from recent logs/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/using a typical 28-day cycle until we learn/i),
+    ).toBeInTheDocument();
   });
 
   it("prompts to log inside the reminder window", () => {
