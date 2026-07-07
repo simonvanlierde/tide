@@ -5,7 +5,7 @@ const BASE = {
   today: "2026-04-28",
   nextPeriodDate: "2026-04-30",
   isTodayLogged: false,
-  dismissedFor: null,
+  dismissedOn: null,
 } as const;
 
 describe("getReminderState", () => {
@@ -19,7 +19,7 @@ describe("getReminderState", () => {
   });
 
   it("stays 'expected soon' even when dismissed or logged", () => {
-    const dismissed = getReminderState({ ...BASE, dismissedFor: "2026-04-28" });
+    const dismissed = getReminderState({ ...BASE, dismissedOn: "2026-04-28" });
     const logged = getReminderState({ ...BASE, isTodayLogged: true });
 
     expect(dismissed.shouldPrompt).toBe(false);
@@ -59,11 +59,11 @@ describe("getReminderState", () => {
   it("hides the prompt for the day it was dismissed", () => {
     const dismissedToday = getReminderState({
       ...BASE,
-      dismissedFor: "2026-04-28",
+      dismissedOn: "2026-04-28",
     });
     const dismissedEarlier = getReminderState({
       ...BASE,
-      dismissedFor: "2026-04-27",
+      dismissedOn: "2026-04-27",
     });
 
     expect(dismissedToday.shouldPrompt).toBe(false);

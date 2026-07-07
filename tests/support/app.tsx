@@ -1,7 +1,13 @@
 import { render } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { defaultAppState } from "../../src/data/schema";
-import type { AppSettings, AppState, IsoDate } from "../../src/domain/types";
+import { DEFAULT_FLOW } from "../../src/domain/flow";
+import type {
+  AppSettings,
+  AppState,
+  FlowIntensity,
+  IsoDate,
+} from "../../src/domain/types";
 import { AppStateProvider } from "../../src/state/provider";
 
 export const LEARNED_PERIOD_DAYS: IsoDate[] = [
@@ -21,17 +27,24 @@ export function createLearningCycleState() {
   return createAppState({ periodDays: LEARNING_PERIOD_DAYS });
 }
 
-type AppStateOverrides = Partial<Omit<AppState, "settings">> & {
+interface AppStateOverrides {
+  // Convenience: seed these days at the default (medium) flow. Explicit
+  // intensityByDay entries override the default for the same day.
+  periodDays?: IsoDate[];
+  intensityByDay?: Record<IsoDate, FlowIntensity>;
   settings?: Partial<AppSettings>;
-};
+}
 
 export function createAppState(overrides: AppStateOverrides = {}): AppState {
+  const { periodDays = [], intensityByDay = {}, settings } = overrides;
   return {
-    ...defaultAppState,
-    ...overrides,
+    intensityByDay: {
+      ...Object.fromEntries(periodDays.map((day) => [day, DEFAULT_FLOW])),
+      ...intensityByDay,
+    },
     settings: {
       ...defaultAppState.settings,
-      ...overrides.settings,
+      ...settings,
     },
   };
 }

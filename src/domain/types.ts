@@ -42,8 +42,9 @@ export interface CycleStats {
 }
 
 export interface AppSettings {
-  /** Day the reminder was dismissed with "Not yet"; hidden while it equals today. */
-  dismissedFor: IsoDate | null;
+  /** Day the reminder was dismissed with "Not yet"; suppresses the prompt only
+   * while it equals today. Transient UI state — persisted locally, not exported. */
+  dismissedOn: IsoDate | null;
   /** Show fertile-window and ovulation estimates on the home screen and calendar. */
   showFertility: boolean;
   /** Number the days of the current cycle (day 1, 2, 3…) on the calendar. */
@@ -52,11 +53,11 @@ export interface AppSettings {
 }
 
 export interface AppState {
-  periodDays: IsoDate[];
   /**
-   * Flow level per logged day. Sparse: days logged before this feature (or with
-   * a plain one-tap log) are absent and render at the default level. Keys are
-   * pruned to `periodDays`, so a key here is always a logged day.
+   * Flow level per logged day, keyed by ISO date — the single source of truth
+   * for which days are logged. A key here IS a logged day, and every logged day
+   * carries a flow (a one-tap log defaults to medium). Derive the sorted day
+   * list with getPeriodDays().
    */
   intensityByDay: Record<IsoDate, FlowIntensity>;
   settings: AppSettings;

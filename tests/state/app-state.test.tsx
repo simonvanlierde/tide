@@ -2,6 +2,7 @@ import { act, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
+import { getPeriodDays } from "../../src/domain/flow";
 import {
   AppStateProvider,
   useAppState,
@@ -21,10 +22,10 @@ function Probe({ label = "probe" }: { label?: string }) {
   return (
     <>
       <output aria-label={`period-days-${label}`}>
-        {state.periodDays.join(",")}
+        {getPeriodDays(state.intensityByDay).join(",")}
       </output>
       <output aria-label={`dismissed-for-${label}`}>
-        {state.settings.dismissedFor ?? ""}
+        {state.settings.dismissedOn ?? ""}
       </output>
       <button
         type="button"
@@ -91,7 +92,7 @@ describe("app state", () => {
       "2026-04-18",
     );
     expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
-      '"dismissedFor":"2026-04-18"',
+      '"dismissedOn":"2026-04-18"',
     );
   });
 

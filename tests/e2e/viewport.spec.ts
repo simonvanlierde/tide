@@ -25,7 +25,7 @@ function seedState() {
   }
   return {
     periodDays: days,
-    settings: { dismissedFor: null, theme: "system" },
+    settings: { dismissedOn: null, theme: "system" },
   };
 }
 

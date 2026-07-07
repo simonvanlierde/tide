@@ -13,7 +13,7 @@ interface ReminderStateInput {
   today: IsoDate;
   nextPeriodDate: IsoDate | null;
   isTodayLogged: boolean;
-  dismissedFor: IsoDate | null;
+  dismissedOn: IsoDate | null;
 }
 
 export interface ReminderState {
@@ -40,7 +40,7 @@ export function getReminderState(input: ReminderStateInput): ReminderState {
   const isExpectedSoon =
     daysUntil <= REMINDER_WINDOW_DAYS &&
     daysUntil >= -REMINDER_OVERDUE_GRACE_DAYS;
-  const isDismissed = input.dismissedFor === input.today;
+  const isDismissed = input.dismissedOn === input.today;
 
   return {
     isExpectedSoon,

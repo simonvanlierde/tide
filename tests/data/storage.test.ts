@@ -12,7 +12,7 @@ describe("local storage", () => {
     const state = createAppState({
       periodDays: ["2026-04-02"],
       settings: {
-        dismissedFor: "2026-04-01",
+        dismissedOn: "2026-04-01",
       },
     });
 
@@ -35,7 +35,7 @@ describe("local storage", () => {
       STORAGE_KEY,
       JSON.stringify({
         periodDays: ["2026-04-02"],
-        settings: { dismissedFor: null },
+        settings: { dismissedOn: null },
       }),
     );
 
@@ -43,7 +43,7 @@ describe("local storage", () => {
       createAppState({
         periodDays: ["2026-04-02"],
         settings: {
-          dismissedFor: null,
+          dismissedOn: null,
         },
       }),
     );
@@ -55,7 +55,7 @@ describe("local storage", () => {
       JSON.stringify({
         periodDays: ["2026-04-02", "bad-date", "2026-04-02", "2026-03-20", 123],
         settings: {
-          dismissedFor: "nope",
+          dismissedOn: "nope",
         },
       }),
     );
@@ -64,7 +64,7 @@ describe("local storage", () => {
       createAppState({
         periodDays: ["2026-03-20", "2026-04-02"],
         settings: {
-          dismissedFor: null,
+          dismissedOn: null,
         },
       }),
     );
