@@ -25,6 +25,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   app styling.
 - Period days are now derived from the daily flow-intensity map.
 - Documentation now explains how local cycle predictions are calculated.
+- Renamed the internal History feature to Calendar (module, components, CSS classes, and the `/history` route is now `/calendar`) to match the UI label.
 
 ### Fixed
 
