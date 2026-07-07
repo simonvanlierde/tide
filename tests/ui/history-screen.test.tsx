@@ -256,14 +256,13 @@ describe("HistoryScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("leaves month input keyboard handling to the picker", async () => {
+  it("leaves picker keyboard handling to the dropdowns", async () => {
     const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-18" />);
 
     await user.click(screen.getByRole("button", { name: /april 2026/i }));
-    fireEvent.keyDown(screen.getByLabelText(/select month and year/i), {
-      key: "PageDown",
-    });
+    // PageDown on the month dropdown moves its own options, not the calendar.
+    fireEvent.keyDown(screen.getByLabelText("Month"), { key: "PageDown" });
 
     expect(
       screen.getByRole("button", { name: /april 2026/i }),
@@ -279,11 +278,9 @@ describe("HistoryScreen", () => {
     });
 
     await user.click(screen.getByRole("button", { name: /april 2026/i }));
-    // Native <input type="month"> — set directly with fireEvent; userEvent
-    // cannot reliably type into date/month inputs in jsdom.
-    fireEvent.change(screen.getByLabelText(/select month and year/i), {
-      target: { value: "2025-03" },
-    });
+    // The panel stays open across both picks so month and year can be set apart.
+    await user.selectOptions(screen.getByLabelText("Year"), "2025");
+    await user.selectOptions(screen.getByLabelText("Month"), "March");
 
     expect(screen.getByText(/march 2025/i)).toBeInTheDocument();
   });
@@ -296,16 +293,25 @@ describe("HistoryScreen", () => {
       }),
     });
 
+    // On the current month, the Today reset would be a no-op, so it's hidden.
+    expect(
+      screen.queryByRole("button", { name: /go to current month/i }),
+    ).not.toBeInTheDocument();
+
     await user.click(screen.getByRole("button", { name: /previous month/i }));
     expect(
       screen.getByRole("button", { name: /march 2026/i }),
     ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /next month/i }));
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+    expect(
+      screen.getByRole("button", { name: /may 2026/i }),
+    ).toBeInTheDocument();
+
     await user.click(
       screen.getByRole("button", { name: /go to current month/i }),
     );
-
     expect(
       screen.getByRole("button", { name: /april 2026/i }),
     ).toBeInTheDocument();
@@ -319,6 +325,8 @@ describe("HistoryScreen", () => {
       animate as typeof HTMLElement.prototype.animate;
     renderWithAppState(<HistoryScreen today="2026-04-21" />);
 
+    // The Today button only appears once you've left the current month.
+    await user.click(screen.getByRole("button", { name: /previous month/i }));
     await user.click(
       screen.getByRole("button", { name: /go to current month/i }),
     );
@@ -341,6 +349,8 @@ describe("HistoryScreen", () => {
       animate as typeof HTMLElement.prototype.animate;
     renderWithAppState(<HistoryScreen today="2026-04-21" />);
 
+    // The Today button only appears once you've left the current month.
+    await user.click(screen.getByRole("button", { name: /previous month/i }));
     await user.click(
       screen.getByRole("button", { name: /go to current month/i }),
     );
@@ -399,13 +409,15 @@ describe("HistoryScreen", () => {
     expect(headerButtons[2]).toHaveAccessibleName(/next month/i);
   });
 
-  it("places helper copy and the today action below the calendar grid", () => {
+  it("places helper copy and the today action below the calendar grid", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<HistoryScreen today="2026-04-21" />);
 
+    // Leave the current month so the Today reset button is shown.
+    await user.click(screen.getByRole("button", { name: /previous month/i }));
+
     const grid = screen.getByLabelText(/history calendar/i);
-    const helper = screen.getByText(
-      /tap a day to log bleeding\. tap a logged day to change or remove it/i,
-    );
+    const helper = screen.getByText(/tap a day to log or edit bleeding/i);
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
     });

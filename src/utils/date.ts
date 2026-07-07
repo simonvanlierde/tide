@@ -33,14 +33,6 @@ export function addMonths(value: IsoDate, amount: number): IsoDate {
   return formatIsoDate(date);
 }
 
-export function formatMonthInputValue(value: IsoDate): `${number}-${number}` {
-  return value.slice(0, 7) as `${number}-${number}`;
-}
-
-export function parseMonthInputValue(value: string): IsoDate {
-  return `${value}-01` as IsoDate;
-}
-
 export function differenceInDays(left: IsoDate, right: IsoDate): number {
   return Math.round(
     (parseIsoDate(left).getTime() - parseIsoDate(right).getTime()) / DAY_IN_MS,

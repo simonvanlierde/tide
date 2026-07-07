@@ -1,24 +1,23 @@
-import { startTransition, useMemo, useRef, useState } from "react";
+import { startTransition, useMemo, useState } from "react";
 import { getPastOvulationDates, getPeriodDayNumbers } from "../../domain/cycle";
-import { DEFAULT_FLOW, getPredictionDays } from "../../domain/flow";
+import {
+  DEFAULT_FLOW,
+  getPeriodDays,
+  getPredictionDays,
+} from "../../domain/flow";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
 import {
   useAppState,
   useAppStateActions,
   useCycleSummary,
 } from "../../state/provider";
-import {
-  addMonths,
-  formatMonthInputValue,
-  parseMonthInputValue,
-} from "../../utils/date";
+import { addMonths } from "../../utils/date";
 import {
   buildCalendarMarkers,
   buildCycleDayNumbers,
   buildMonthDays,
   formatMonthLabel,
 } from "./calendar";
-import { openNativeMonthPicker } from "./monthPicker";
 
 export function useHistoryCalendar(today: IsoDate) {
   const state = useAppState();
@@ -29,16 +28,16 @@ export function useHistoryCalendar(today: IsoDate) {
   const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
   // The day just logged by a one-tap; drives its one-shot "tap to edit" pulse.
   const [justLoggedDay, setJustLoggedDay] = useState<IsoDate | null>(null);
-  const monthInputRef = useRef<HTMLInputElement | null>(null);
 
   const monthDays = useMemo(
     () => buildMonthDays(visibleMonth, today),
     [visibleMonth, today],
   );
-  const loggedDays = useMemo(
-    () => new Set(state.periodDays),
-    [state.periodDays],
+  const periodDays = useMemo(
+    () => getPeriodDays(state.intensityByDay),
+    [state.intensityByDay],
   );
+  const loggedDays = useMemo(() => new Set(periodDays), [periodDays]);
   const dayIntensity = useMemo(
     () =>
       new Map<IsoDate, FlowIntensity>(
@@ -49,19 +48,16 @@ export function useHistoryCalendar(today: IsoDate) {
   const periodDayNumbers = useMemo(
     // Number days from the same spotting-filtered set the cycle summary uses, so
     // the calendar and the Today dial agree on "day N" of a period.
-    () =>
-      getPeriodDayNumbers(
-        getPredictionDays(state.periodDays, state.intensityByDay),
-      ),
-    [state.periodDays, state.intensityByDay],
+    () => getPeriodDayNumbers(getPredictionDays(state.intensityByDay)),
+    [state.intensityByDay],
   );
   const showFertility = state.settings.showFertility;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
   // Ovulation for each completed past cycle, so their fertile windows show the
   // same as the forecast does for the current cycle.
   const pastOvulationDates = useMemo(
-    () => getPastOvulationDates(state.periodDays),
-    [state.periodDays],
+    () => getPastOvulationDates(periodDays),
+    [periodDays],
   );
   const cycleMarkers = useMemo(
     () =>
@@ -90,10 +86,14 @@ export function useHistoryCalendar(today: IsoDate) {
     [visibleMonth],
   );
 
-  function setMonth(nextMonth: IsoDate) {
+  // keepPickerOpen lets the month/year dropdowns change one field at a time
+  // without the panel closing between picks; chevrons and "Today" close it.
+  function setMonth(nextMonth: IsoDate, keepPickerOpen = false) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
-      setIsPickerOpen(false);
+      if (!keepPickerOpen) {
+        setIsPickerOpen(false);
+      }
       // Close the flow picker too: it edits a specific day, which the new month
       // no longer shows.
       setSelectedDay(null);
@@ -102,18 +102,15 @@ export function useHistoryCalendar(today: IsoDate) {
   }
 
   function openPicker() {
-    setIsPickerOpen(true);
-
-    // The input mounts only after isPickerOpen flips, so defer the ref read to
-    // the next tick; on the first open the ref is still null right now.
-    window.setTimeout(() => {
-      openNativeMonthPicker(monthInputRef.current);
-    }, 0);
+    setIsPickerOpen((open) => !open);
   }
 
   return {
-    periodDays: state.periodDays,
+    periodDays,
     isPickerOpen,
+    // Same year-month as today → the "Today" reset would be a no-op, so the
+    // screen hides it. IsoDate is YYYY-MM-DD, so the first 7 chars are the month.
+    isCurrentMonth: visibleMonth.slice(0, 7) === today.slice(0, 7),
     monthLabel,
     monthDays,
     loggedDays,
@@ -167,15 +164,34 @@ export function useHistoryCalendar(today: IsoDate) {
     },
     monthPicker: {
       isPickerOpen,
-      monthInputRef,
-      monthInputValue: formatMonthInputValue(visibleMonth),
-      onNativeMonthChange(value: string) {
-        if (!value) {
-          return;
-        }
-
-        setMonth(parseMonthInputValue(value));
+      year: Number(visibleMonth.slice(0, 4)),
+      monthIndex: Number(visibleMonth.slice(5, 7)) - 1,
+      years: buildYearOptions(periodDays, today, visibleMonth),
+      onSelect(year: number, monthIndex: number) {
+        const month = String(monthIndex + 1).padStart(2, "0");
+        setMonth(`${year}-${month}-01` as IsoDate, true);
       },
     },
   };
+}
+
+// How far back and forward the year dropdown reaches by default, so there's
+// always somewhere to jump even before much history exists.
+const YEARS_BACK = 1;
+const YEARS_FORWARD = 1;
+
+// Years offered by the jump-to-month picker: a window around this year, widened
+// to cover any older logged period and the month currently on screen so the
+// year dropdown can always show its own value.
+function buildYearOptions(
+  periodDays: IsoDate[],
+  today: IsoDate,
+  visibleMonth: IsoDate,
+): number[] {
+  const todayYear = Number(today.slice(0, 4));
+  const visibleYear = Number(visibleMonth.slice(0, 4));
+  const loggedYears = periodDays.map((day) => Number(day.slice(0, 4)));
+  const min = Math.min(todayYear - YEARS_BACK, visibleYear, ...loggedYears);
+  const max = Math.max(todayYear + YEARS_FORWARD, visibleYear);
+  return Array.from({ length: max - min + 1 }, (_, index) => min + index);
 }

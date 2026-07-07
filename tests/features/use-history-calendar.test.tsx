@@ -26,13 +26,33 @@ describe("useHistoryCalendar", () => {
     expect(result.current.selectedDay).toBeNull();
   });
 
-  it("ignores a cleared native month input without changing the visible month", () => {
+  it("jumps to a month and year selected from the picker", () => {
     const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
       wrapper,
     });
 
-    const before = result.current.monthLabel;
-    act(() => result.current.monthPicker.onNativeMonthChange(""));
-    expect(result.current.monthLabel).toBe(before);
+    // monthIndex is 0-based: 10 → November.
+    act(() => result.current.monthPicker.onSelect(2025, 10));
+    expect(result.current.monthLabel).toBe("November 2025");
+  });
+
+  it("offers a window of years by default, even with little history", () => {
+    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+      wrapper,
+    });
+
+    // Five years back through one ahead, regardless of how few days are logged.
+    expect(result.current.monthPicker.years).toEqual([
+      2021, 2022, 2023, 2024, 2025, 2026, 2027,
+    ]);
+  });
+
+  it("widens the year window to include a month browsed outside it", () => {
+    const { result } = renderHook(() => useHistoryCalendar("2026-04-18"), {
+      wrapper,
+    });
+
+    act(() => result.current.monthPicker.onSelect(2030, 0));
+    expect(result.current.monthPicker.years).toContain(2030);
   });
 });

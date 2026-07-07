@@ -1,11 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import {
-  type KeyboardEvent,
-  type TouchEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
 import type { IsoDate } from "../../domain/types";
 import { getTodayIsoDate } from "../../utils/date";
 import { DayFlowPicker } from "./DayFlowPicker";
@@ -23,12 +17,18 @@ export function HistoryScreen({
   const model = useHistoryCalendar(today);
   const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const [pinpointNonce, setPinpointNonce] = useState(0);
+  const wantPinpoint = useRef(false);
 
-  // Pop the today cell so people see exactly where they are after "Today".
-  // Web Animations replays on every press; skip it under reduced motion.
+  // Pop the today cell so people see exactly where they landed after "Today".
+  // goToToday changes the month inside a transition, so wait for the current
+  // month to actually render (isCurrentMonth flips true) before reaching for the
+  // cell. Skip the pop under reduced motion, but still clear the request.
   useEffect(() => {
-    if (pinpointNonce === 0 || prefersReducedMotion()) {
+    if (!wantPinpoint.current || !model.isCurrentMonth) {
+      return;
+    }
+    wantPinpoint.current = false;
+    if (prefersReducedMotion()) {
       return;
     }
     const cell = articleRef.current?.querySelector<HTMLElement>(
@@ -44,11 +44,11 @@ export function HistoryScreen({
         { duration: 460, easing: "ease-out" },
       );
     }
-  }, [pinpointNonce]);
+  }, [model.isCurrentMonth]);
 
   function handleGoToToday() {
+    wantPinpoint.current = true;
     model.goToToday();
-    setPinpointNonce((nonce) => nonce + 1);
   }
 
   function handleTouchStart(event: TouchEvent) {
@@ -83,10 +83,13 @@ export function HistoryScreen({
   }
 
   // PageUp/PageDown change month (the ARIA date-grid convention). Arrow keys are
-  // left alone — the flow gauge is a radiogroup that owns them. Skip the month
-  // input, which handles its own keys.
+  // left alone — the flow gauge is a radiogroup that owns them. Skip the picker's
+  // month/year dropdowns, which handle their own keys.
   function handleKeyDown(event: KeyboardEvent) {
-    if (event.target instanceof HTMLInputElement) {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLSelectElement
+    ) {
       return;
     }
     if (event.key === "PageUp") {
@@ -168,18 +171,20 @@ export function HistoryScreen({
           />
         ) : (
           <p className="supporting-note history-calendar__help">
-            Tap a day to log bleeding. Tap a logged day to change or remove it.
+            Tap a day to log or edit bleeding.
           </p>
         )}
         <CalendarLegend showFertility={model.showFertility} />
-        <button
-          type="button"
-          className="history-calendar__today"
-          aria-label="Go to current month"
-          onClick={handleGoToToday}
-        >
-          Today
-        </button>
+        {model.isCurrentMonth ? null : (
+          <button
+            type="button"
+            className="history-calendar__today"
+            aria-label="Go to current month"
+            onClick={handleGoToToday}
+          >
+            Today
+          </button>
+        )}
       </article>
       {model.periodDays.length === 0 ? (
         <article className="utility-card">
