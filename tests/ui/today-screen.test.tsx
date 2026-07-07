@@ -136,6 +136,39 @@ describe("TodayScreen", () => {
     expect(dial).toHaveAttribute("aria-valuenow", "17");
   });
 
+  it("caps scrubbing the predicted nub at the whole first expected day", () => {
+    renderToday("2026-04-18");
+
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    dial.getBoundingClientRect = () =>
+      ({
+        left: 0,
+        top: 0,
+        width: 280,
+        height: 280,
+        right: 280,
+        bottom: 280,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }) as DOMRect;
+    dial.setPointerCapture = () => {};
+
+    // 28 cycle days + a 1.5-day nub: the ring ends fractionally, but dragging to
+    // the very end must land on the whole first expected day (29), not 29.5.
+    const totalCells = 29.5;
+    const endAngle = (dayAngleDeg(29, totalCells) * Math.PI) / 180;
+    fireEvent.pointerDown(dial, {
+      pointerId: 1,
+      buttons: 1,
+      clientX: 140 + Math.sin(endAngle) * 120,
+      clientY: 140 - Math.cos(endAngle) * 120,
+    });
+
+    expect(dial).toHaveAttribute("aria-valuenow", "29");
+    expect(dial.getAttribute("aria-valuetext")).toContain("Period expected");
+  });
+
   it("words the ovulation estimate for the day itself", () => {
     renderToday("2026-04-16");
     expect(screen.getByText(/ovulation today/i)).toBeInTheDocument();

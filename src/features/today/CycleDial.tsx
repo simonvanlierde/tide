@@ -170,6 +170,10 @@ export function CycleDial({
   const cycleDayCount = segments.length;
   const predictedCount = hasPrediction ? PREDICTED_SPAN_DAYS : 0;
   const totalCells = cycleDayCount + predictedCount;
+  // Last scrubbable cell: the first expected-period day, or the final logged day
+  // with no forecast. The 1.5-day nub is a visual hint, so scrubbing must stop
+  // at this whole cell rather than the fractional end of the ring.
+  const maxIndex = hasPrediction ? cycleDayCount : cycleDayCount - 1;
 
   const rotation =
     currentIndex >= 0 ? dayAngleDeg(currentIndex, totalCells) : 0;
@@ -212,11 +216,9 @@ export function CycleDial({
   function updatePreview(event: React.PointerEvent<HTMLDivElement>) {
     const rect = frameRef.current?.getBoundingClientRect();
     if (rect) {
-      const index = dayIndexFromPoint(
-        event.clientX,
-        event.clientY,
-        rect,
-        totalCells,
+      const index = Math.min(
+        dayIndexFromPoint(event.clientX, event.clientY, rect, totalCells),
+        maxIndex,
       );
       setPreviewIndex(index);
       // The ghost free-follows the finger everywhere. On day 1 (against the top
@@ -243,7 +245,7 @@ export function CycleDial({
           : currentIndex >= 0
             ? currentIndex
             : 0;
-      return Math.min(Math.max(from + step, 0), totalCells - 1);
+      return Math.min(Math.max(from + step, 0), maxIndex);
     });
   }
 
@@ -267,7 +269,7 @@ export function CycleDial({
         role="slider"
         aria-label="Cycle days"
         aria-valuemin={1}
-        aria-valuemax={totalCells}
+        aria-valuemax={maxIndex + 1}
         aria-valuenow={
           isPredictedPreview
             ? (previewIndex ?? 0) + 1
