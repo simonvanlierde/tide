@@ -5,10 +5,10 @@
 
 ## Context
 
-Tide tracks menstrual cycles — among the most sensitive data a person can
+Tide tracks menstrual cycles,  among the most sensitive data a person can
 record, and in several jurisdictions a legal liability for whoever holds it. The
 usual architecture (accounts, server, database) puts that data in someone else's
-custody — subpoena-able, breachable, and an operational duty a solo project
+custody, subpoena-able, breachable, and an operational duty a solo project
 cannot credibly staff. The counter-pull: a backend is what normally provides
 sync, cloud backup, and multi-user features.
 
@@ -24,14 +24,14 @@ persisted state is validated and normalized. Nothing reaches for the network.
 
 ## Consequences
 
-Good:
+**Good**:
 
-- The privacy claim is structural, not a policy promise — there is no server to
+- The privacy claim is structural, not a policy promise; there is no server to
   subpoena, breach, or bill for.
 - Works fully offline; hosting is a static bucket.
 - The pure `domain` layer is trivially testable as plain functions.
 
-Costs / limits, accepted:
+**Costs / limits, accepted:**
 
 - No sync across devices and no cloud backup. Clearing browser storage or
   losing the device loses the data. A future explicit export/import (a local
@@ -42,8 +42,8 @@ Costs / limits, accepted:
 
 ## Alternatives considered
 
-- **Backend with accounts** — rejected: reintroduces the exact data-custody
+- **Backend with accounts**: rejected: reintroduces the exact data-custody
   liability this project exists to avoid.
-- **End-to-end-encrypted cloud sync** — deferred: restores sync without readable
+- **End-to-end-encrypted cloud sync**: deferred: restores sync without readable
   server-side data, but the key-management and recovery UX isn't justified for a
   single-device tracker today.
