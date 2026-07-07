@@ -8,9 +8,8 @@ export function AboutSection() {
     <article className="utility-card">
       <h2 className="section-title">About</h2>
       <div className="settings-group settings-group--compact">
-        <p>{INFORMATION_COPY.logging}</p>
+        <p>{INFORMATION_COPY.privacy}</p>
         <p className="supporting-note">{INFORMATION_COPY.fertility}</p>
-        <p className="supporting-note">{INFORMATION_COPY.privacy}</p>
         <p className="colophon">
           <span className="colophon__copyright">
             © {new Date().getFullYear()} Simon van Lierde

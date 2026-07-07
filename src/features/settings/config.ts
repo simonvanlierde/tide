@@ -6,9 +6,11 @@ export const THEME_OPTIONS: { value: ThemePreference; label: string }[] = [
   { value: "dark", label: "Dark" },
 ];
 export const INFORMATION_COPY = {
-  logging: "Log the days you had menstrual bleeding.",
-  fertility: "Estimates are informational, not birth control.",
-  privacy: "Everything stays on this device.",
+  privacy: "Your data never leaves this device.",
+  fertility:
+    "Fertility estimates are informational, not a birth control method.",
+  fertilityMethod:
+    "Higher around your predicted ovulation. Estimated from your recent cycle lengths.",
 } as const;
 
 // Helper copy that lives behind an info popover next to its control.

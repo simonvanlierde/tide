@@ -15,8 +15,15 @@ export function ThemeSection() {
   const current = state.settings.theme;
 
   return (
-    <fieldset className="chip-fieldset theme-field">
-      <legend className="settings-label theme-field__legend">Theme</legend>
+    // biome-ignore lint/a11y/useSemanticElements: a labelled div group is intentional here; <fieldset> brings unwanted default styling.
+    <div
+      className="settings-row theme-field"
+      role="group"
+      aria-labelledby="theme-label"
+    >
+      <span className="settings-label" id="theme-label">
+        Theme
+      </span>
       <div className="segmented">
         {THEME_OPTIONS.map((option) => (
           <button
@@ -38,6 +45,6 @@ export function ThemeSection() {
           </button>
         ))}
       </div>
-    </fieldset>
+    </div>
   );
 }
