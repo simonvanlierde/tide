@@ -36,6 +36,10 @@ const PREDICTED_COLOR =
   "color-mix(in srgb, var(--cycle-period) 60%, transparent)";
 const PREDICTED_FADE_DEG = 16; // how far the ghosted fill tapers toward the top
 const PREDICTED_TAIL_STEP = 1.25; // tail length past the arc, in day-widths
+// How many day-widths the expected-period nub occupies. A period runs longer
+// than this, but the dial only hints at the next start — a fuller run would eat
+// too much of the ring — so it shows a compact 1.5-day forecast, not periodLength.
+const PREDICTED_SPAN_DAYS = 1.5;
 // Neighbouring phase colors blend over a couple degrees instead of hard-cutting.
 const BLEND_DEG = 1.4;
 // The seam fade: day 1 fades in from the top gap, and with no predicted period
@@ -156,14 +160,15 @@ export function CycleDial({
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
 
-  // The predicted period is a run of scrubbable cells past the logged cycle —
-  // periodLength days, the same expected length the calendar and insights show
-  // (plus a decorative tail drawn in the gradient). Modelled here, not in the
-  // segment data, so each day can be previewed like any other.
+  // A compact expected-period nub past the logged cycle (plus a decorative tail
+  // drawn in the gradient). Kept to PREDICTED_SPAN_DAYS so it hints at the next
+  // start without eating the ring; the floor in dayIndexFromPoint means this
+  // still yields a single scrubbable "period expected" cell. Modelled here, not
+  // in the segment data, so it can be previewed like any other day.
   const nextDate = summary.nextPeriod.date;
   const hasPrediction = nextDate !== null && Boolean(segments[0]?.date);
   const cycleDayCount = segments.length;
-  const predictedCount = hasPrediction ? summary.periodLength : 0;
+  const predictedCount = hasPrediction ? PREDICTED_SPAN_DAYS : 0;
   const totalCells = cycleDayCount + predictedCount;
 
   const rotation =
