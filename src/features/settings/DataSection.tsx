@@ -1,14 +1,14 @@
 import { Download, Upload } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
 import { downloadAppState, parseImportedState } from "../../data/transfer";
-import { useAppState, useAppStateActions } from "../../state/provider";
+import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
-import { SETTINGS_HELP } from "./config";
 import { InfoPopover } from "./InfoPopover";
 
 export function DataSection() {
   const state = useAppState();
   const actions = useAppStateActions();
+  const t = useT();
   const fileInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,16 +24,16 @@ export function DataSection() {
       actions.importState(parseImportedState(await file.text()));
       setError(null);
     } catch {
-      setError("That file isn't a valid Tide backup.");
+      setError(t("settings.importError"));
     }
   }
 
   return (
     <article className="utility-card utility-card--slim">
       <div className="section-heading-row">
-        <h2 className="section-title">Data</h2>
-        <InfoPopover label="About import and export">
-          {SETTINGS_HELP.data}
+        <h2 className="section-title">{t("settings.data")}</h2>
+        <InfoPopover label={t("settings.dataInfo")}>
+          {t("settings.dataHelp")}
         </InfoPopover>
       </div>
       <div className="settings-group settings-group--compact">
@@ -41,27 +41,27 @@ export function DataSection() {
           <button
             type="button"
             className="chip-button"
-            aria-label="Export"
+            aria-label={t("settings.export")}
             onClick={() => downloadAppState(state)}
           >
             <AppIcon icon={Download} className="chip-button__icon" />
-            <span className="chip-button__label">Export</span>
+            <span className="chip-button__label">{t("settings.export")}</span>
           </button>
           <button
             type="button"
             className="chip-button"
-            aria-label="Import"
+            aria-label={t("settings.import")}
             onClick={() => fileInput.current?.click()}
           >
             <AppIcon icon={Upload} className="chip-button__icon" />
-            <span className="chip-button__label">Import</span>
+            <span className="chip-button__label">{t("settings.import")}</span>
           </button>
         </div>
         <input
           ref={fileInput}
           type="file"
           accept="application/json,.json"
-          aria-label="Import data file"
+          aria-label={t("settings.importFile")}
           className="visually-hidden"
           onChange={handleImport}
         />

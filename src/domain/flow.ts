@@ -12,13 +12,6 @@ export const FLOW_INTENSITIES: FlowIntensity[] = [
 // refine down to spotting explicitly, so a careless tap never under-reports.
 export const DEFAULT_FLOW: FlowIntensity = "medium";
 
-export const FLOW_LABELS: Record<FlowIntensity, string> = {
-  spotting: "Spotting",
-  light: "Light",
-  medium: "Medium",
-  heavy: "Heavy",
-};
-
 // The logged period days, sorted. A key in intensityByDay IS a logged day
 // (every logged day carries a flow), so its keys are the single source of truth.
 export function getPeriodDays(

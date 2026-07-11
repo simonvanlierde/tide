@@ -10,6 +10,8 @@ import {
   RECENT_CYCLE_WINDOW,
 } from "../../domain/cycle";
 import type { CycleStats, CycleSummary } from "../../domain/types";
+import type { MessageKey } from "../../i18n";
+import { useT } from "../../state/provider";
 
 interface CycleInsightsProps {
   summary: CycleSummary;
@@ -23,12 +25,14 @@ interface CycleInsightsProps {
 // native close (Esc, backdrop) unmounts it via onClose.
 export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const t = useT();
 
   useEffect(() => {
     dialogRef.current?.showModal();
   }, []);
 
   const regularity = getRegularity(stats.variabilityDays);
+  const regularityLabel = t(regularity.labelKey);
 
   // Close through the native dialog so the browser restores focus to the trigger
   // before onClose unmounts us. Unmounting an open <dialog> directly (Esc aside)
@@ -52,12 +56,12 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
     >
       <div className="insights__head">
         <h2 id="insights-title" className="insights__title">
-          Cycle insights
+          {t("insights.title")}
         </h2>
         <button
           type="button"
           className="insights__close"
-          aria-label="Close"
+          aria-label={t("common.close")}
           onClick={requestClose}
         >
           <X aria-hidden="true" size={18} />
@@ -65,24 +69,33 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
       </div>
 
       <div className="insights__stats">
-        <Stat value={summary.cycleLength} unit="days" label="Cycle length" />
-        <Stat value={summary.periodLength} unit="days" label="Period length" />
-        <Stat value={stats.cyclesTracked} label="Cycles tracked" />
+        <Stat
+          value={summary.cycleLength}
+          unit={t("common.days")}
+          label={t("insights.cycleLength")}
+        />
+        <Stat
+          value={summary.periodLength}
+          unit={t("common.days")}
+          label={t("insights.periodLength")}
+        />
+        <Stat value={stats.cyclesTracked} label={t("insights.cyclesTracked")} />
       </div>
 
       {stats.cyclesTracked === 0 ? (
         <p className="insights__note">
-          Based on a typical {DEFAULT_CYCLE_LENGTH}-day cycle until you’ve
-          logged a full cycle.
+          {t("insights.basedOn", { cycle: DEFAULT_CYCLE_LENGTH })}
         </p>
       ) : null}
 
       <div className="insights__regularity">
-        <span className="insights__regularity-label">Cycle regularity</span>
+        <span className="insights__regularity-label">
+          {t("insights.regularity")}
+        </span>
         <span
           className="insights__meter"
           role="img"
-          aria-label={`Cycle regularity: ${regularity.label}`}
+          aria-label={t("insights.regularityAria", { label: regularityLabel })}
         >
           {[1, 2, 3, 4].map((step) => (
             <span
@@ -92,34 +105,31 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
             />
           ))}
         </span>
-        <span className="insights__regularity-word">{regularity.label}</span>
+        <span className="insights__regularity-word">{regularityLabel}</span>
       </div>
 
       <details className="insights__how">
-        <summary className="insights__how-summary">
-          How predictions work
-        </summary>
+        <summary className="insights__how-summary">{t("insights.how")}</summary>
         <ul className="insights__how-list">
+          <li>{t("insights.how1")}</li>
           <li>
-            Everything is worked out on your device from the days you log.
+            {t("insights.how2", {
+              recent: RECENT_CYCLE_WINDOW,
+              cycle: DEFAULT_CYCLE_LENGTH,
+            })}
           </li>
           <li>
-            Cycle length is the median of your last {RECENT_CYCLE_WINDOW}{" "}
-            cycles, so one odd month doesn’t throw it off. Before two cycles, a
-            typical {DEFAULT_CYCLE_LENGTH}-day cycle is used.
+            {t("insights.how3", {
+              min: MIN_PERIOD_LENGTH,
+              max: MAX_PERIOD_LENGTH,
+            })}
           </li>
+          <li>{t("insights.how4", { luteal: DEFAULT_LUTEAL_LENGTH })}</li>
           <li>
-            Period length is your recent average, kept to a normal{" "}
-            {MIN_PERIOD_LENGTH}–{MAX_PERIOD_LENGTH} days.
-          </li>
-          <li>
-            Your next period is your last start plus that cycle length;
-            ovulation is estimated {DEFAULT_LUTEAL_LENGTH} days before it.
-          </li>
-          <li>
-            The fertile window runs {Math.abs(FERTILE_WINDOW_START)} days before
-            to {FERTILE_WINDOW_END} day after ovulation, and widens when your
-            cycles vary more.
+            {t("insights.how5", {
+              before: Math.abs(FERTILE_WINDOW_START),
+              after: FERTILE_WINDOW_END,
+            })}
           </li>
         </ul>
       </details>
@@ -145,18 +155,21 @@ function Stat({ value, label, unit }: StatProps) {
 
 // Map cycle-length spread (standard deviation, in days) to a 0–4 meter and a
 // word. Null means fewer than two cycles — nothing to compare yet.
-function getRegularity(variabilityDays: number | null) {
+function getRegularity(variabilityDays: number | null): {
+  level: number;
+  labelKey: MessageKey;
+} {
   if (variabilityDays === null) {
-    return { level: 0, label: "Not enough data yet" };
+    return { level: 0, labelKey: "regularity.none" };
   }
   if (variabilityDays <= 1) {
-    return { level: 4, label: "Very regular" };
+    return { level: 4, labelKey: "regularity.veryRegular" };
   }
   if (variabilityDays <= 2) {
-    return { level: 3, label: "Regular" };
+    return { level: 3, labelKey: "regularity.regular" };
   }
   if (variabilityDays <= 4) {
-    return { level: 2, label: "Somewhat variable" };
+    return { level: 2, labelKey: "regularity.somewhatVariable" };
   }
-  return { level: 1, label: "Variable" };
+  return { level: 1, labelKey: "regularity.variable" };
 }

@@ -609,6 +609,21 @@
     gap: 8px;
   }
 
+  /* Native language dropdown: matches the calendar month/year picker inputs. */
+  .settings-select {
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--surface-border);
+    background: var(--surface);
+    color: var(--ink);
+  }
+
+  .settings-select:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
   /* Card heading paired with an info affordance on the right. */
   .section-heading-row {
     display: flex;

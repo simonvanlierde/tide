@@ -1,12 +1,13 @@
-import type { CSSProperties } from "react";
+import { type CSSProperties, useMemo } from "react";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
-import { parseIsoDate } from "../../utils/date";
+import type { MessageKey } from "../../i18n";
+import { useLocale, useT } from "../../state/provider";
 import {
-  CALENDAR_WEEKDAY_LABELS,
-  type CalendarDay,
-  type DayMarker,
-  formatDayButtonLabel,
-} from "./calendar";
+  formatLongDate,
+  getWeekdayLabels,
+  parseIsoDate,
+} from "../../utils/date";
+import type { CalendarDay, DayMarker } from "./calendar";
 
 const MARKER_CLASS: Record<DayMarker, string> = {
   fertile: "is-fertile",
@@ -14,10 +15,10 @@ const MARKER_CLASS: Record<DayMarker, string> = {
   "predicted-period": "is-predicted-period",
 };
 
-const MARKER_LABEL: Record<DayMarker, string> = {
-  fertile: "fertile window",
-  ovulation: "likely ovulation",
-  "predicted-period": "expected period",
+const MARKER_LABEL_KEY: Record<DayMarker, MessageKey> = {
+  fertile: "marker.fertile",
+  ovulation: "marker.ovulation",
+  "predicted-period": "marker.predictedPeriod",
 };
 
 interface CalendarGridProps {
@@ -45,6 +46,9 @@ export function CalendarGrid({
   justLoggedDay,
   onSelectDay,
 }: CalendarGridProps) {
+  const t = useT();
+  const locale = useLocale();
+  const weekdayLabels = useMemo(() => getWeekdayLabels(locale), [locale]);
   // Days render in date order, so consecutive predicted-period cells belong to
   // the same run. One forward pass gives each its offset within the run, so each
   // day of the expected period fades a step further than the last. A run clipped
@@ -60,9 +64,9 @@ export function CalendarGrid({
   }
 
   return (
-    <section className="calendar-grid" aria-label="Calendar">
+    <section className="calendar-grid" aria-label={t("calendar.title")}>
       <div className="calendar-grid__header">
-        {CALENDAR_WEEKDAY_LABELS.map((day) => (
+        {weekdayLabels.map((day) => (
           <div key={day} className="calendar-grid__weekday">
             {day}
           </div>
@@ -101,9 +105,10 @@ export function CalendarGrid({
           ]
             .filter(Boolean)
             .join(" ");
+          const dayLabel = `${t(isLogged ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
           const dateLabel = day.isFuture
-            ? `${formatDayButtonLabel(value, isLogged)} unavailable`
-            : formatDayButtonLabel(value, isLogged);
+            ? t("calendar.dayUnavailable", { label: dayLabel })
+            : dayLabel;
 
           return (
             <button
@@ -117,7 +122,12 @@ export function CalendarGrid({
               }
               disabled={day.isFuture}
               aria-label={
-                marker ? `${dateLabel}, ${MARKER_LABEL[marker]}` : dateLabel
+                marker
+                  ? t("calendar.dayWithMarker", {
+                      label: dateLabel,
+                      marker: t(MARKER_LABEL_KEY[marker]),
+                    })
+                  : dateLabel
               }
               aria-pressed={isSelected}
               onClick={() => onSelectDay(value)}

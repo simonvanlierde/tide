@@ -3,16 +3,16 @@ import { getAppScreen } from "../../src/app/navigation";
 
 describe("app navigation", () => {
   it("resolves the known Tide screen paths", () => {
-    expect(getAppScreen("/").title).toBe("Today");
-    expect(getAppScreen("/calendar").title).toBe("Calendar");
-    expect(getAppScreen("/settings").title).toBe("Settings");
+    expect(getAppScreen("/").labelKey).toBe("nav.today");
+    expect(getAppScreen("/calendar").labelKey).toBe("nav.calendar");
+    expect(getAppScreen("/settings").labelKey).toBe("nav.settings");
   });
 
   it("falls back to the home screen for unknown paths", () => {
     const screen = getAppScreen("/does-not-exist");
 
     expect(screen.path).toBe("/");
-    expect(screen.title).toBe("Today");
+    expect(screen.labelKey).toBe("nav.today");
   });
 
   it("builds an element for each screen's render()", () => {

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
+import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
 import {
@@ -144,6 +145,13 @@ export function CycleDial({
   today,
   showFertility,
 }: CycleDialProps) {
+  const t = useT();
+  const locale = useLocale();
+  // Resolve a segment's status key to text, falling back to the phase line.
+  const statusText = (segment: CycleSegment) => {
+    const key = getSegmentStatus(segment, summary);
+    return key ? t(key) : phaseLabel;
+  };
   const frameRef = useRef<HTMLDivElement>(null);
   // The cycle day being previewed while scrubbing, or null for the live view.
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
@@ -203,20 +211,40 @@ export function CycleDial({
     ? (previewIndex ?? 0) + 1
     : (preview?.dayNumber ?? summary.cycleDay ?? "--");
   const centerStatus = isPredictedPreview
-    ? "Period expected"
+    ? t("status.periodExpected")
     : preview
-      ? getSegmentStatus(preview, summary) || phaseLabel
+      ? statusText(preview)
       : phaseLabel;
   const centerDate = isPredictedPreview
     ? predictedPreviewDate
     : preview
       ? preview.date
       : today;
+  // Screen-reader value: "Day N, <date>, <status>" — the date is dropped when
+  // there isn't one, and the pieces are joined with commas in every language.
   const valueText = isPredictedPreview
-    ? `Day ${(previewIndex ?? 0) + 1}${predictedPreviewDate ? `, ${formatShortDate(predictedPreviewDate)}` : ""}, Period expected`
+    ? [
+        t("dial.day", { n: (previewIndex ?? 0) + 1 }),
+        predictedPreviewDate
+          ? formatShortDate(predictedPreviewDate, locale)
+          : "",
+        t("status.periodExpected"),
+      ]
+        .filter(Boolean)
+        .join(", ")
     : preview
-      ? `Day ${preview.dayNumber}${preview.date ? `, ${formatShortDate(preview.date)}` : ""}, ${getSegmentStatus(preview, summary) || phaseLabel}`
-      : `Day ${summary.cycleDay ?? "unknown"}, ${formatShortDate(today)}, ${phaseLabel}`;
+      ? [
+          t("dial.day", { n: preview.dayNumber }),
+          preview.date ? formatShortDate(preview.date, locale) : "",
+          statusText(preview),
+        ]
+          .filter(Boolean)
+          .join(", ")
+      : [
+          t("dial.day", { n: summary.cycleDay ?? t("common.unknown") }),
+          formatShortDate(today, locale),
+          phaseLabel,
+        ].join(", ");
 
   function updatePreview(event: React.PointerEvent<HTMLDivElement>) {
     const rect = frameRef.current?.getBoundingClientRect();
@@ -302,12 +330,12 @@ export function CycleDial({
           style={getDialStyle(segments, predictedCount)}
         >
           <div className="cycle-dial__inner">
-            <span className="cycle-dial__eyebrow">Cycle day</span>
+            <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
             <strong className="cycle-dial__day">{centerDay}</strong>
             <span className="cycle-dial__phase">{centerStatus}</span>
             {centerDate ? (
               <span className="cycle-dial__date">
-                {formatShortDate(centerDate)}
+                {formatShortDate(centerDate, locale)}
               </span>
             ) : null}
           </div>

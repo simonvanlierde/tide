@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
 import type { IsoDate } from "../../domain/types";
+import type { MessageKey } from "../../i18n";
+import { useT } from "../../state/provider";
 import { getTodayIsoDate } from "../../utils/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarMonthPicker } from "./CalendarMonthPicker";
@@ -15,6 +17,7 @@ export function CalendarScreen({
   today = getTodayIsoDate(),
 }: CalendarScreenProps) {
   const model = useCalendar(today);
+  const t = useT();
   const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wantPinpoint = useRef(false);
@@ -103,7 +106,7 @@ export function CalendarScreen({
 
   return (
     <section className="utility-screen">
-      <h1 className="visually-hidden">Calendar</h1>
+      <h1 className="visually-hidden">{t("calendar.title")}</h1>
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: PageUp/PageDown month paging is a keyboard convenience layered over the buttons below; the calendar stays fully operable via those focusable controls. */}
       <article
         ref={articleRef}
@@ -114,7 +117,7 @@ export function CalendarScreen({
           <button
             type="button"
             className="calendar__nav"
-            aria-label="Previous month"
+            aria-label={t("calendar.previousMonth")}
             onClick={model.goToPreviousMonth}
           >
             <ChevronLeft aria-hidden="true" size={18} />
@@ -131,7 +134,7 @@ export function CalendarScreen({
           <button
             type="button"
             className="calendar__nav"
-            aria-label="Next month"
+            aria-label={t("calendar.nextMonth")}
             onClick={model.goToNextMonth}
           >
             <ChevronRight aria-hidden="true" size={18} />
@@ -169,7 +172,7 @@ export function CalendarScreen({
           />
         ) : (
           <p className="supporting-note calendar__help">
-            Tap a day to log or edit bleeding.
+            {t("calendar.tapHelp")}
           </p>
         )}
         <CalendarLegend showFertility={model.showFertility} />
@@ -177,16 +180,16 @@ export function CalendarScreen({
           <button
             type="button"
             className="calendar__today"
-            aria-label="Go to current month"
+            aria-label={t("calendar.goToCurrentMonth")}
             onClick={handleGoToToday}
           >
-            Today
+            {t("calendar.today")}
           </button>
         )}
       </article>
       {model.periodDays.length === 0 ? (
         <article className="utility-card">
-          <p>No bleeding days logged yet.</p>
+          <p>{t("calendar.noDays")}</p>
         </article>
       ) : null}
     </section>
@@ -200,15 +203,20 @@ function prefersReducedMotion() {
 }
 
 const LEGEND_ITEMS = [
-  { key: "logged", label: "Logged" },
-  { key: "predicted", label: "Expected" },
-  { key: "fertile", label: "Fertile", fertility: true },
-  { key: "ovulation", label: "Ovulation", fertility: true },
-] as const;
+  { key: "logged", labelKey: "calendar.legend.logged" },
+  { key: "predicted", labelKey: "calendar.legend.predicted" },
+  { key: "fertile", labelKey: "calendar.legend.fertile", fertility: true },
+  { key: "ovulation", labelKey: "calendar.legend.ovulation", fertility: true },
+] as const satisfies readonly {
+  key: string;
+  labelKey: MessageKey;
+  fertility?: boolean;
+}[];
 
 // The per-day buttons announce their own marker to screen readers, so the
 // visual legend is decorative here.
 function CalendarLegend({ showFertility }: { showFertility: boolean }) {
+  const t = useT();
   const items = showFertility
     ? LEGEND_ITEMS
     : LEGEND_ITEMS.filter((item) => !("fertility" in item));
@@ -220,7 +228,7 @@ function CalendarLegend({ showFertility }: { showFertility: boolean }) {
           <span
             className={`calendar-legend__swatch calendar-legend__swatch--${item.key}`}
           />
-          {item.label}
+          {t(item.labelKey)}
         </span>
       ))}
     </div>
