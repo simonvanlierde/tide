@@ -34,7 +34,7 @@ describe("local storage", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        periodDays: ["2026-04-02"],
+        intensityByDay: { "2026-04-02": "medium" },
         settings: { dismissedOn: null },
       }),
     );
@@ -53,7 +53,11 @@ describe("local storage", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        periodDays: ["2026-04-02", "bad-date", "2026-04-02", "2026-03-20", 123],
+        intensityByDay: {
+          "2026-04-02": "medium",
+          "bad-date": "medium",
+          "2026-03-20": "medium",
+        },
         settings: {
           dismissedOn: "nope",
         },
@@ -70,23 +74,21 @@ describe("local storage", () => {
     );
   });
 
-  it("keeps only valid flow levels for days that are actually logged", () => {
+  it("keeps only valid flow levels for logged days", () => {
     window.localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({
-        periodDays: ["2026-04-02", "2026-04-03"],
         intensityByDay: {
-          "2026-04-02": "heavy", // valid, logged -> kept
+          "2026-04-02": "heavy", // valid -> kept
           "2026-04-03": "torrential", // invalid level -> dropped
-          "2026-04-09": "light", // not a logged day -> pruned
+          "2026-04-09": "light", // valid -> kept
         },
       }),
     );
 
     expect(loadAppState()).toEqual(
       createAppState({
-        periodDays: ["2026-04-02", "2026-04-03"],
-        intensityByDay: { "2026-04-02": "heavy" },
+        intensityByDay: { "2026-04-02": "heavy", "2026-04-09": "light" },
       }),
     );
   });

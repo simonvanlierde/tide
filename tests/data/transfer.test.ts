@@ -25,26 +25,6 @@ describe("parseImportedState", () => {
     );
   });
 
-  it("migrates the older periodDays + intensityByDay shape on import", () => {
-    const parsed = parseImportedState(
-      JSON.stringify({
-        periodDays: ["2026-04-02", "2026-04-03"],
-        intensityByDay: { "2026-04-02": "heavy" },
-        settings: { dismissedFor: "2026-04-02", theme: "dark" },
-      }),
-    );
-
-    // Legacy periodDays are authoritative: a logged day with no level defaults
-    // to medium, and the retired dismissedFor key is dropped.
-    expect(parsed).toEqual(
-      createAppState({
-        periodDays: ["2026-04-02", "2026-04-03"],
-        intensityByDay: { "2026-04-02": "heavy" },
-        settings: { theme: "dark" },
-      }),
-    );
-  });
-
   it("round-trips a state through export and back, dropping only transient dismiss state", () => {
     const state = createAppState({
       periodDays: ["2026-04-02", "2026-04-03"],
@@ -82,7 +62,10 @@ describe("parseImportedState", () => {
 
   it("drops malformed fields instead of corrupting state", () => {
     const parsed = parseImportedState(
-      JSON.stringify({ periodDays: ["nope", 5], settings: "bad" }),
+      JSON.stringify({
+        days: { nope: "heavy", "2026-04-02": 5 },
+        settings: "bad",
+      }),
     );
 
     expect(parsed).toEqual(defaultAppState);
