@@ -6,7 +6,7 @@ export const REMINDER_WINDOW_DAYS = 2;
 // A prediction this many days overdue with nothing logged is stale (the user
 // stopped tracking), so stop treating it as expected — otherwise it nags every
 // day forever with no escape but logging a period that isn't happening.
-// ponytail: fixed grace; learn a per-user threshold from cycle history if needed.
+// NOTE: fixed grace; learn a per-user threshold from cycle history if needed.
 export const REMINDER_OVERDUE_GRACE_DAYS = 10;
 
 interface ReminderStateInput {

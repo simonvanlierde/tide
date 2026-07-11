@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
-import { FLOW_INTENSITIES, FLOW_LABELS } from "../../domain/flow";
+import { FLOW_INTENSITIES } from "../../domain/flow";
 import type { FlowIntensity } from "../../domain/types";
+import { useT } from "../../state/provider";
 
 interface FlowGaugeProps {
   /** Currently selected level, or undefined for a day with no chosen level. */
@@ -22,6 +23,7 @@ export function FlowGauge({
   autoFocus = false,
 }: FlowGaugeProps) {
   const levelsRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   useEffect(() => {
     if (!autoFocus) {
@@ -36,7 +38,7 @@ export function FlowGauge({
 
   return (
     <fieldset className="flow-gauge">
-      <legend className="flow-gauge__legend">Flow</legend>
+      <legend className="flow-gauge__legend">{t("flow.legend")}</legend>
       <div className="flow-gauge__levels" ref={levelsRef}>
         {FLOW_INTENSITIES.map((level) => (
           <label
@@ -52,7 +54,7 @@ export function FlowGauge({
               onChange={() => onSelect(level)}
             />
             <span className="flow-gauge__swatch" aria-hidden="true" />
-            <span className="flow-gauge__label">{FLOW_LABELS[level]}</span>
+            <span className="flow-gauge__label">{t(`flow.${level}`)}</span>
           </label>
         ))}
       </div>

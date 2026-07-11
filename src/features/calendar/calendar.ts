@@ -8,44 +8,12 @@ import {
 
 export type DayMarker = "fertile" | "ovulation" | "predicted-period";
 
-const MONTH_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
-const DAY_LABEL_FORMAT = new Intl.DateTimeFormat("en-US", {
-  month: "long",
-  day: "numeric",
-  year: "numeric",
-  timeZone: "UTC",
-});
-
 export interface CalendarDay {
   key: string;
   value: IsoDate;
   isOutsideMonth: boolean;
   isFuture: boolean;
   isToday: boolean;
-}
-
-export const CALENDAR_WEEKDAY_LABELS = [
-  "Mon",
-  "Tue",
-  "Wed",
-  "Thu",
-  "Fri",
-  "Sat",
-  "Sun",
-] as const;
-
-export function formatMonthLabel(value: IsoDate) {
-  return MONTH_LABEL_FORMAT.format(parseIsoDate(value));
-}
-
-export function formatDayButtonLabel(value: IsoDate, isLogged = false) {
-  const verb = isLogged ? "Edit" : "Log";
-  return `${verb} ${DAY_LABEL_FORMAT.format(parseIsoDate(value))}`;
 }
 
 export function buildMonthDays(

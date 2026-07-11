@@ -1,20 +1,20 @@
-import { useAppState, useAppStateActions } from "../../state/provider";
-import { SETTINGS_HELP } from "./config";
+import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { InfoPopover } from "./InfoPopover";
 
 export function FertilitySection() {
   const state = useAppState();
   const actions = useAppStateActions();
+  const t = useT();
   const current = state.settings.showFertility;
 
   return (
     <div className="settings-row">
       <span className="settings-label" id="fertility-label">
-        Show fertility estimates
+        {t("settings.showFertility")}
       </span>
       <div className="settings-row__controls">
-        <InfoPopover label="About fertility estimates">
-          {SETTINGS_HELP.fertility}
+        <InfoPopover label={t("settings.fertilityInfo")}>
+          {t("settings.fertilityHelp")}
         </InfoPopover>
         <button
           type="button"

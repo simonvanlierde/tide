@@ -1,20 +1,20 @@
-import { useAppState, useAppStateActions } from "../../state/provider";
-import { SETTINGS_HELP } from "./config";
+import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { InfoPopover } from "./InfoPopover";
 
 export function CycleNumbersSection() {
   const state = useAppState();
   const actions = useAppStateActions();
+  const t = useT();
   const current = state.settings.showCycleDayNumbers;
 
   return (
     <div className="settings-row">
       <span className="settings-label" id="cycle-numbers-label">
-        Show cycle day numbers
+        {t("settings.showCycleNumbers")}
       </span>
       <div className="settings-row__controls">
-        <InfoPopover label="About cycle day numbers">
-          {SETTINGS_HELP.cycleDayNumbers}
+        <InfoPopover label={t("settings.cycleNumbersInfo")}>
+          {t("settings.cycleNumbersHelp")}
         </InfoPopover>
         <button
           type="button"

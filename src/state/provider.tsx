@@ -12,8 +12,10 @@ import type {
   AppState,
   FlowIntensity,
   IsoDate,
+  LanguagePreference,
   ThemePreference,
 } from "../domain/types";
+import { type MessageKey, resolveLanguage, translate } from "../i18n";
 import { getTodayIsoDate } from "../utils/date";
 import {
   type AppStateAction,
@@ -47,6 +49,7 @@ export function AppStateProvider({
   }, [state]);
 
   useThemePreference(state.settings.theme);
+  useLanguagePreference(state.settings.language);
 
   return (
     <AppStateContext.Provider value={state}>
@@ -88,6 +91,44 @@ function useThemePreference(theme: ThemePreference) {
     media.addEventListener("change", apply);
     return () => media.removeEventListener("change", apply);
   }, [theme]);
+}
+
+// Reflect the resolved language onto <html lang> so the browser, screen
+// readers, and CSS :lang() selectors know what they're reading.
+function useLanguagePreference(language: LanguagePreference) {
+  useEffect(() => {
+    document.documentElement.lang = resolveLanguage(language);
+  }, [language]);
+}
+
+// The bound translator returned by useT — pass it to module-level helpers that
+// need to build localized strings.
+export type Translate = (
+  key: MessageKey,
+  vars?: Record<string, string | number>,
+) => string;
+
+// The stored language preference, or "system" when rendered outside a provider
+// (isolated component tests, Storybook) so leaf components stay self-sufficient.
+function useLanguage() {
+  return useContext(AppStateContext)?.settings.language ?? "system";
+}
+
+// Bound translator for the current language. Components call `const t = useT()`
+// then `t("settings.theme")`.
+export function useT(): Translate {
+  const language = useLanguage();
+  return useMemo(() => {
+    const lang = resolveLanguage(language);
+    return (key: MessageKey, vars?: Record<string, string | number>) =>
+      translate(lang, key, vars);
+  }, [language]);
+}
+
+// The resolved BCP-47 locale for date/number formatting (Intl). Read from state
+// during render so dates re-format the instant the language changes.
+export function useLocale() {
+  return resolveLanguage(useLanguage());
 }
 
 export function useAppState() {
@@ -133,6 +174,9 @@ export function useAppStateActions() {
       },
       setTheme(theme: ThemePreference) {
         dispatch({ type: "setTheme", theme });
+      },
+      setLanguage(language: LanguagePreference) {
+        dispatch({ type: "setLanguage", language });
       },
       importState(state: AppState) {
         dispatch({ type: "importState", state });

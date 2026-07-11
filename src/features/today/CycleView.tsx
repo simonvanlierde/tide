@@ -1,5 +1,6 @@
 import { DEFAULT_FLOW } from "../../domain/flow";
 import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
+import type { MessageKey } from "../../i18n";
 import { addDays, differenceInDays } from "../../utils/date";
 
 export interface CycleSegment {
@@ -77,20 +78,22 @@ export function buildCycleSegments(
   });
 }
 
+// Returns the message key for the segment's status (localized by the caller),
+// or "" when there's nothing to show.
 export function getSegmentStatus(
   segment: CycleSegment,
   summary: CycleSummary,
-): string {
+): MessageKey | "" {
   if (segment.isPeriod) {
-    return "Period";
+    return "status.period";
   }
 
   if (segment.isOvulation) {
-    return "Ovulation expected";
+    return "status.ovulationExpected";
   }
 
   if (segment.isFertile) {
-    return "Fertile window";
+    return "status.fertileWindow";
   }
 
   if (
@@ -98,13 +101,13 @@ export function getSegmentStatus(
     summary.nextPeriod.date !== null &&
     segment.date >= summary.nextPeriod.date
   ) {
-    return "Period expected";
+    return "status.periodExpected";
   }
 
   if (segment.date !== null && summary.ovulationDate !== null) {
     return differenceInDays(segment.date, summary.ovulationDate) > 0
-      ? "Luteal"
-      : "Follicular";
+      ? "phase.luteal"
+      : "phase.follicular";
   }
 
   return "";

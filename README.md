@@ -49,7 +49,6 @@ Estimates are informational, not a form of birth control.
 
 ## Roadmap
 
-- Next up: insights and stats
 - Improved onboarding UI / UX
 - Multi-language support
 

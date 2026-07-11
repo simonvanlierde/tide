@@ -1,4 +1,5 @@
 import { type MouseEvent, startTransition, useEffect, useState } from "react";
+import { useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
 import {
   appScreens,
@@ -38,6 +39,8 @@ interface TabBarProps {
 }
 
 function TabBar({ activePath, onNavigate }: TabBarProps) {
+  const t = useT();
+
   function handleClick(event: MouseEvent<HTMLAnchorElement>, nextPath: string) {
     if (!shouldHandleAppNavigation(event)) {
       return;
@@ -48,7 +51,7 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
   }
 
   return (
-    <nav aria-label="Primary navigation" className="tab-bar">
+    <nav aria-label={t("app.primaryNav")} className="tab-bar">
       {appScreens.map((screen) => (
         <a
           key={screen.path}
@@ -62,7 +65,7 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
           <span aria-hidden="true">
             <AppIcon icon={screen.icon} className="tab-item__glyph" />
           </span>
-          <span className="tab-item__label">{screen.navLabel}</span>
+          <span className="tab-item__label">{t(screen.labelKey)}</span>
         </a>
       ))}
     </nav>
@@ -72,15 +75,16 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
 export function App() {
   const { pathname, navigate } = usePathname();
   const activeScreen = getAppScreen(pathname);
+  const t = useT();
 
   return (
     <div className="app-shell">
       <a href="#main" className="skip-link">
-        Skip to content
+        {t("app.skipToContent")}
       </a>
       <header className="app-header">
         <span className="app-wordmark">tide</span>
-        <span className="app-header__title">{activeScreen.title}</span>
+        <span className="app-header__title">{t(activeScreen.labelKey)}</span>
       </header>
       <main id="main" className="app-main" tabIndex={-1}>
         {activeScreen.render()}

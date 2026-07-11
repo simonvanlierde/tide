@@ -1,15 +1,21 @@
-import { DEFAULT_FLOW, FLOW_INTENSITIES } from "../domain/flow";
+import { FLOW_INTENSITIES } from "../domain/flow";
 import type {
   AppSettings,
   AppState,
   FlowIntensity,
   IsoDate,
+  LanguagePreference,
   ThemePreference,
 } from "../domain/types";
+import { SUPPORTED_LANGUAGES } from "../i18n";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
+const LANGUAGE_PREFERENCES: LanguagePreference[] = [
+  "system",
+  ...SUPPORTED_LANGUAGES,
+];
 
 export const defaultAppState: AppState = {
   intensityByDay: {},
@@ -18,6 +24,7 @@ export const defaultAppState: AppState = {
     showFertility: true,
     showCycleDayNumbers: true,
     theme: "system",
+    language: "system",
   },
 };
 
@@ -31,38 +38,19 @@ function isIsoDate(value: unknown): value is IsoDate {
   );
 }
 
-export function normalizePeriodDays(periodDays: unknown): IsoDate[] {
-  if (!Array.isArray(periodDays)) {
-    return [];
-  }
-
-  return [...new Set(periodDays.filter(isIsoDate))].sort();
-}
-
 const isFlow = (value: unknown): value is FlowIntensity =>
   FLOW_INTENSITIES.includes(value as FlowIntensity);
 
-// Normalize the logged days into the single date -> flow map. Two input shapes:
-// current state/backups pass just the map (its keys are the logged days); older
-// backups also pass a legacy periodDays list, which is authoritative for *which*
-// days are logged — the map only supplies levels, defaulting any missing one.
+// Normalize the logged days into the single date -> flow map. Its keys are the
+// logged days and its values their flow levels; any invalid entry is dropped.
 export function normalizeIntensityByDay(
   intensityByDay: unknown,
-  legacyPeriodDays?: unknown,
 ): Record<IsoDate, FlowIntensity> {
   const levels =
     intensityByDay && typeof intensityByDay === "object"
       ? (intensityByDay as Record<string, unknown>)
       : {};
   const result: Record<IsoDate, FlowIntensity> = {};
-
-  if (Array.isArray(legacyPeriodDays)) {
-    for (const day of normalizePeriodDays(legacyPeriodDays)) {
-      const level = levels[day];
-      result[day] = isFlow(level) ? level : DEFAULT_FLOW;
-    }
-    return result;
-  }
 
   for (const [day, level] of Object.entries(levels)) {
     if (isIsoDate(day) && isFlow(level)) {
@@ -76,18 +64,8 @@ export function normalizeIntensityByDay(
 export function normalizeSettings(settings: unknown): AppSettings {
   const candidate =
     settings && typeof settings === "object"
-      ? (settings as Partial<AppSettings> & Record<string, unknown>)
+      ? (settings as Partial<AppSettings>)
       : {};
-
-  // Back-compat: earlier builds named this setting showPeriodDayNumbers. Read
-  // the old key when the new one is absent so an upgrade preserves a user who
-  // turned it off. TODO(remove-legacy-settings): drop once no old state remains.
-  // (dismissedFor was likewise renamed to dismissedOn, but it's transient
-  // same-day state that self-heals, so it's intentionally not migrated.)
-  const showDayNumbers =
-    typeof candidate.showCycleDayNumbers === "boolean"
-      ? candidate.showCycleDayNumbers
-      : candidate.showPeriodDayNumbers;
 
   return {
     dismissedOn: isIsoDate(candidate.dismissedOn)
@@ -98,12 +76,17 @@ export function normalizeSettings(settings: unknown): AppSettings {
         ? candidate.showFertility
         : defaultAppState.settings.showFertility,
     showCycleDayNumbers:
-      typeof showDayNumbers === "boolean"
-        ? showDayNumbers
+      typeof candidate.showCycleDayNumbers === "boolean"
+        ? candidate.showCycleDayNumbers
         : defaultAppState.settings.showCycleDayNumbers,
     theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
       ? (candidate.theme as ThemePreference)
       : defaultAppState.settings.theme,
+    language: LANGUAGE_PREFERENCES.includes(
+      candidate.language as LanguagePreference,
+    )
+      ? (candidate.language as LanguagePreference)
+      : defaultAppState.settings.language,
   };
 }
 
@@ -118,14 +101,12 @@ export function normalizeAppState(state: unknown): AppState {
     "state" in state && state.state && typeof state.state === "object"
       ? state.state
       : state
-  ) as Partial<AppState> & { days?: unknown; periodDays?: unknown };
+  ) as Partial<AppState> & { days?: unknown };
 
-  // Backups use `days`; current state uses `intensityByDay`; legacy state also
-  // carries a `periodDays` list, which migrates on import (see normalizeIntensityByDay).
+  // Backups use `days`; current state uses `intensityByDay`.
   return {
     intensityByDay: normalizeIntensityByDay(
       candidate.days ?? candidate.intensityByDay,
-      candidate.periodDays,
     ),
     settings: normalizeSettings(candidate.settings),
   };

@@ -1,5 +1,5 @@
 import { Monitor, Moon, Sun } from "lucide-react";
-import { useAppState, useAppStateActions } from "../../state/provider";
+import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { THEME_OPTIONS } from "./config";
 
@@ -12,6 +12,7 @@ const THEME_ICONS = {
 export function ThemeSection() {
   const state = useAppState();
   const actions = useAppStateActions();
+  const t = useT();
   const current = state.settings.theme;
 
   return (
@@ -22,7 +23,7 @@ export function ThemeSection() {
       aria-labelledby="theme-label"
     >
       <span className="settings-label" id="theme-label">
-        Theme
+        {t("settings.theme")}
       </span>
       <div className="segmented">
         {THEME_OPTIONS.map((option) => (
@@ -41,7 +42,7 @@ export function ThemeSection() {
               icon={THEME_ICONS[option.value]}
               className="segmented__icon"
             />
-            <span className="segmented__label">{option.label}</span>
+            <span className="segmented__label">{t(option.labelKey)}</span>
           </button>
         ))}
       </div>

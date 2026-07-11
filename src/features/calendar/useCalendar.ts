@@ -10,13 +10,13 @@ import {
   useAppState,
   useAppStateActions,
   useCycleSummary,
+  useLocale,
 } from "../../state/provider";
-import { addMonths } from "../../utils/date";
+import { addMonths, formatMonthLabel } from "../../utils/date";
 import {
   buildCalendarMarkers,
   buildCycleDayNumbers,
   buildMonthDays,
-  formatMonthLabel,
 } from "./calendar";
 
 export function useCalendar(today: IsoDate) {
@@ -88,9 +88,10 @@ export function useCalendar(today: IsoDate) {
       ),
     [summary, today, monthDays, visibleMonth],
   );
+  const locale = useLocale();
   const monthLabel = useMemo(
-    () => formatMonthLabel(visibleMonth),
-    [visibleMonth],
+    () => formatMonthLabel(visibleMonth, locale),
+    [visibleMonth, locale],
   );
 
   // keepPickerOpen lets the month/year dropdowns change one field at a time

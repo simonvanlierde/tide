@@ -1,9 +1,12 @@
+import { useT } from "../../state/provider";
+
 interface CycleLegendProps {
   className: string;
   showFertility: boolean;
 }
 
 export function CycleLegend({ className, showFertility }: CycleLegendProps) {
+  const t = useT();
   return (
     <div className={className}>
       <span className="cycle-view__legend-item">
@@ -11,7 +14,7 @@ export function CycleLegend({ className, showFertility }: CycleLegendProps) {
           className="cycle-view__dot cycle-view__dot--period"
           aria-hidden="true"
         />
-        Period
+        {t("legend.period")}
       </span>
       {showFertility ? (
         <>
@@ -20,14 +23,14 @@ export function CycleLegend({ className, showFertility }: CycleLegendProps) {
               className="cycle-view__dot cycle-view__dot--fertile"
               aria-hidden="true"
             />
-            Fertile window
+            {t("legend.fertileWindow")}
           </span>
           <span className="cycle-view__legend-item">
             <span
               className="cycle-view__dot cycle-view__dot--ovulation"
               aria-hidden="true"
             />
-            Ovulation
+            {t("legend.ovulation")}
           </span>
         </>
       ) : null}

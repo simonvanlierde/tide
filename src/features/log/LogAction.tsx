@@ -1,5 +1,6 @@
 import { DropletOff, Droplets } from "lucide-react";
 import type { FlowIntensity } from "../../domain/types";
+import { useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { FlowGauge } from "./FlowGauge";
 
@@ -21,6 +22,7 @@ export function LogAction({
   onSelectIntensity,
   variant = "primary",
 }: LogActionProps) {
+  const t = useT();
   return (
     <div className="log-action">
       <button
@@ -33,7 +35,7 @@ export function LogAction({
             icon={isLogged ? DropletOff : Droplets}
             className="button-icon"
           />
-          <span>{isLogged ? "Remove bleeding log" : "Log bleeding today"}</span>
+          <span>{isLogged ? t("log.remove") : t("log.add")}</span>
         </span>
       </button>
       {isLogged && onSelectIntensity ? (

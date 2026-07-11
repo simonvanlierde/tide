@@ -1,6 +1,7 @@
 import { DropletOff, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
+import { useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { formatShortDate } from "../../utils/date";
 import { FlowGauge } from "../log/FlowGauge";
@@ -25,6 +26,8 @@ export function DayFlowPicker({
   onClose,
 }: DayFlowPickerProps) {
   const pickerRef = useRef<HTMLDivElement>(null);
+  const t = useT();
+  const locale = useLocale();
 
   // Close when interacting outside the picker. Day buttons are left alone —
   // tapping one is already handled by the calendar's own selection logic.
@@ -46,11 +49,13 @@ export function DayFlowPicker({
   return (
     <div className="day-flow-picker" ref={pickerRef}>
       <div className="day-flow-picker__head">
-        <span className="day-flow-picker__date">{formatShortDate(day)}</span>
+        <span className="day-flow-picker__date">
+          {formatShortDate(day, locale)}
+        </span>
         <button
           type="button"
           className="day-flow-picker__close"
-          aria-label="Close"
+          aria-label={t("common.close")}
           onClick={onClose}
         >
           <X aria-hidden="true" size={18} />
@@ -65,7 +70,7 @@ export function DayFlowPicker({
       {isLogged ? (
         <button type="button" className="text-action" onClick={onRemove}>
           <AppIcon icon={DropletOff} className="text-action__icon" />
-          Not bleeding that day
+          {t("calendar.notBleeding")}
         </button>
       ) : null}
     </div>

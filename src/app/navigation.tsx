@@ -3,11 +3,11 @@ import type { MouseEvent, ReactElement } from "react";
 import { CalendarScreen } from "../features/calendar/CalendarScreen";
 import { SettingsScreen } from "../features/settings/SettingsScreen";
 import { TodayScreen } from "../features/today/TodayScreen";
+import type { MessageKey } from "../i18n";
 
 export interface AppScreen {
   path: "/" | "/calendar" | "/settings";
-  title: string;
-  navLabel: string;
+  labelKey: MessageKey;
   icon: typeof House;
   render: () => ReactElement;
 }
@@ -15,22 +15,19 @@ export interface AppScreen {
 export const appScreens = [
   {
     path: "/",
-    title: "Today",
-    navLabel: "Today",
+    labelKey: "nav.today",
     icon: House,
     render: () => <TodayScreen />,
   },
   {
     path: "/calendar",
-    title: "Calendar",
-    navLabel: "Calendar",
+    labelKey: "nav.calendar",
     icon: CalendarDays,
     render: () => <CalendarScreen />,
   },
   {
     path: "/settings",
-    title: "Settings",
-    navLabel: "Settings",
+    labelKey: "nav.settings",
     icon: Settings2,
     render: () => <SettingsScreen />,
   },

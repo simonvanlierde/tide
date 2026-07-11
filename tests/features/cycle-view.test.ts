@@ -71,7 +71,9 @@ describe("buildCycleSegments", () => {
     expect(segments.at(-1)?.date).toBe("2026-06-24");
     expect(summary.nextPeriod.date).toBe("2026-06-25");
     expect(
-      segments.some((s) => getSegmentStatus(s, summary) === "Period expected"),
+      segments.some(
+        (s) => getSegmentStatus(s, summary) === "status.periodExpected",
+      ),
     ).toBe(false);
   });
 
@@ -150,11 +152,11 @@ describe("getSegmentStatus", () => {
   }
 
   it("labels each kind of cycle day", () => {
-    expect(statusOf(1)).toBe("Period");
-    expect(statusOf(5)).toBe("Follicular");
-    expect(statusOf(10)).toBe("Fertile window");
-    expect(statusOf(15)).toBe("Ovulation expected");
-    expect(statusOf(20)).toBe("Luteal");
+    expect(statusOf(1)).toBe("status.period");
+    expect(statusOf(5)).toBe("phase.follicular");
+    expect(statusOf(10)).toBe("status.fertileWindow");
+    expect(statusOf(15)).toBe("status.ovulationExpected");
+    expect(statusOf(20)).toBe("phase.luteal");
   });
 
   it("marks overdue days past the predicted period start", () => {
@@ -174,7 +176,7 @@ describe("getSegmentStatus", () => {
     const lastSegment = overdueSegments.at(-1);
     expect(lastSegment?.date).toBe(overdueToday);
     expect(lastSegment && getSegmentStatus(lastSegment, overdueSummary)).toBe(
-      "Period expected",
+      "status.periodExpected",
     );
   });
 

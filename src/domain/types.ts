@@ -1,3 +1,6 @@
+import type { LanguagePreference } from "../i18n";
+
+export type { LanguagePreference } from "../i18n";
 export type IsoDate = `${number}-${number}-${number}`;
 export type CyclePhase =
   | "menstrual"
@@ -46,6 +49,8 @@ export interface AppSettings {
   /** Number the days of the current cycle (day 1, 2, 3…) on the calendar. */
   showCycleDayNumbers: boolean;
   theme: ThemePreference;
+  /** UI language; "system" follows the browser locale. */
+  language: LanguagePreference;
 }
 
 export interface AppState {
