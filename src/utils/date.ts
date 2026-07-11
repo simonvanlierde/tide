@@ -39,25 +39,66 @@ export function differenceInDays(left: IsoDate, right: IsoDate): number {
   );
 }
 
-const SHORT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-});
+// Intl.DateTimeFormat construction isn't free, so cache one per locale+shape.
+// Callers pass the resolved UI locale (see useLocale); it defaults to en-US so
+// non-UI callers and unit tests keep the original English formatting.
+const formatterCache = new Map<string, Intl.DateTimeFormat>();
 
-const MONTH_DAY_FORMAT = new Intl.DateTimeFormat("en-US", {
-  month: "short",
-  day: "numeric",
-  timeZone: "UTC",
-});
+// Named formatter shapes, so the cache key is a cheap `locale|shape` string and
+// no per-call JSON.stringify is needed on the hot path (the calendar formats
+// dozens of cells per render).
+const FORMATTER_SHAPES = {
+  short: { weekday: "short", month: "short", day: "numeric" },
+  monthLabel: { month: "long", year: "numeric" },
+  long: { month: "long", day: "numeric", year: "numeric" },
+  monthName: { month: "long" },
+  weekday: { weekday: "short" },
+} as const satisfies Record<string, Intl.DateTimeFormatOptions>;
 
-export function formatShortDate(value: IsoDate): string {
-  return SHORT_DATE_FORMAT.format(parseIsoDate(value));
+function dateFormatter(
+  locale: string,
+  shape: keyof typeof FORMATTER_SHAPES,
+): Intl.DateTimeFormat {
+  const key = `${locale}|${shape}`;
+  let formatter = formatterCache.get(key);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      timeZone: "UTC",
+      ...FORMATTER_SHAPES[shape],
+    });
+    formatterCache.set(key, formatter);
+  }
+  return formatter;
 }
 
-export function formatMonthDay(value: IsoDate): string {
-  return MONTH_DAY_FORMAT.format(parseIsoDate(value));
+export function formatShortDate(value: IsoDate, locale = "en-US"): string {
+  return dateFormatter(locale, "short").format(parseIsoDate(value));
+}
+
+export function formatMonthLabel(value: IsoDate, locale = "en-US"): string {
+  return dateFormatter(locale, "monthLabel").format(parseIsoDate(value));
+}
+
+// Full "Month D, YYYY" date used in the calendar's day-button labels.
+export function formatLongDate(value: IsoDate, locale = "en-US"): string {
+  return dateFormatter(locale, "long").format(parseIsoDate(value));
+}
+
+// Localized full month/weekday names for the calendar picker and grid header,
+// generated from Intl so they translate for free. Weekdays start on Monday.
+export function getMonthNames(locale = "en-US"): string[] {
+  const format = dateFormatter(locale, "monthName").format;
+  return Array.from({ length: 12 }, (_, month) =>
+    format(new Date(Date.UTC(2021, month, 1))),
+  );
+}
+
+export function getWeekdayLabels(locale = "en-US"): string[] {
+  const format = dateFormatter(locale, "weekday").format;
+  // 2024-01-01 is a Monday.
+  return Array.from({ length: 7 }, (_, day) =>
+    format(new Date(Date.UTC(2024, 0, 1 + day))),
+  );
 }
 
 export function getTodayIsoDate(): IsoDate {

@@ -4,12 +4,18 @@ import type {
   AppState,
   FlowIntensity,
   IsoDate,
+  LanguagePreference,
   ThemePreference,
 } from "../domain/types";
+import { SUPPORTED_LANGUAGES } from "../i18n";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
+const LANGUAGE_PREFERENCES: LanguagePreference[] = [
+  "system",
+  ...SUPPORTED_LANGUAGES,
+];
 
 export const defaultAppState: AppState = {
   intensityByDay: {},
@@ -18,6 +24,7 @@ export const defaultAppState: AppState = {
     showFertility: true,
     showCycleDayNumbers: true,
     theme: "system",
+    language: "system",
   },
 };
 
@@ -75,6 +82,11 @@ export function normalizeSettings(settings: unknown): AppSettings {
     theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
       ? (candidate.theme as ThemePreference)
       : defaultAppState.settings.theme,
+    language: LANGUAGE_PREFERENCES.includes(
+      candidate.language as LanguagePreference,
+    )
+      ? (candidate.language as LanguagePreference)
+      : defaultAppState.settings.language,
   };
 }
 

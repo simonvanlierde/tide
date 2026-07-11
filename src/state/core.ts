@@ -8,6 +8,7 @@ import type {
   AppState,
   FlowIntensity,
   IsoDate,
+  LanguagePreference,
   ThemePreference,
 } from "../domain/types";
 
@@ -23,6 +24,7 @@ export type AppStateAction =
   | { type: "setShowFertility"; show: boolean }
   | { type: "setShowCycleDayNumbers"; show: boolean }
   | { type: "setTheme"; theme: ThemePreference }
+  | { type: "setLanguage"; language: LanguagePreference }
   | { type: "importState"; state: AppState };
 
 export function appStateReducer(
@@ -105,6 +107,15 @@ export function appStateReducer(
         settings: {
           ...state.settings,
           theme: action.theme,
+        },
+      };
+
+    case "setLanguage":
+      return {
+        ...state,
+        settings: {
+          ...state.settings,
+          language: action.language,
         },
       };
 

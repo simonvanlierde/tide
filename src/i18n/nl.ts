@@ -1,0 +1,158 @@
+import type { Dictionary } from "./en";
+
+export const nl: Dictionary = {
+  "nav.today": "Vandaag",
+  "nav.calendar": "Kalender",
+  "nav.settings": "Instellingen",
+  "app.skipToContent": "Naar inhoud",
+  "app.primaryNav": "Hoofdnavigatie",
+
+  "today.srCycleDay": "Cyclusdag {day}, {phase}",
+  "today.nextPeriod": "Volgende menstruatie",
+  "today.fertility": "Vruchtbaarheid",
+  "today.fertilityInfoLabel": "Hoe vruchtbaarheid wordt geschat",
+  "today.cycleInsights": "Cyclusinzichten",
+  "today.notEnoughData": "Nog niet genoeg gegevens",
+  "today.daysAgo.one": "{n} dag geleden",
+  "today.daysAgo.other": "{n} dagen geleden",
+  "today.expectedToday": "Vandaag verwacht",
+  "today.inDays.one": "Over {n} dag",
+  "today.inDays.other": "Over {n} dagen",
+  "today.higherToday": "Vandaag hoger",
+  "today.lowerToday": "Vandaag lager",
+  "today.ovulationDaysAgo.one": "Eisprong {n} dag geleden",
+  "today.ovulationDaysAgo.other": "Eisprong {n} dagen geleden",
+  "today.ovulationToday": "Eisprong vandaag",
+  "today.ovulationInDays.one": "Eisprong over {n} dag",
+  "today.ovulationInDays.other": "Eisprong over {n} dagen",
+  "today.learningFallback":
+    "We gaan uit van een gemiddelde cyclus van 28 dagen totdat we je patroon kennen.",
+  "today.learningInsufficient":
+    "Registreer bloedverlies om een schatting te starten.",
+
+  "phase.menstrual": "Menstruatie",
+  "phase.follicular": "Folliculair",
+  "phase.ovulation": "Eisprong",
+  "phase.luteal": "Luteaal",
+  "phase.learning": "Leren",
+  "phaseLine.menstrual": "Menstruatiefase",
+  "phaseLine.follicular": "Folliculaire fase",
+  "phaseLine.ovulation": "Ovulatiefase",
+  "phaseLine.luteal": "Luteale fase",
+  "phaseLine.learning": "Leren",
+
+  "dial.cycleDay": "Cyclusdag",
+  "dial.day": "Dag {n}",
+  "status.period": "Menstruatie",
+  "status.ovulationExpected": "Eisprong verwacht",
+  "status.fertileWindow": "Vruchtbare periode",
+  "status.periodExpected": "Menstruatie verwacht",
+
+  "insights.title": "Cyclusinzichten",
+  "insights.cycleLength": "Cycluslengte",
+  "insights.periodLength": "Menstruatieduur",
+  "insights.cyclesTracked": "Gevolgde cycli",
+  "insights.basedOn":
+    "Gebaseerd op een gemiddelde cyclus van {cycle} dagen totdat je een volledige cyclus hebt geregistreerd.",
+  "insights.regularity": "Cyclusregelmaat",
+  "insights.regularityAria": "Cyclusregelmaat: {label}",
+  "regularity.none": "Nog niet genoeg gegevens",
+  "regularity.veryRegular": "Zeer regelmatig",
+  "regularity.regular": "Regelmatig",
+  "regularity.somewhatVariable": "Enigszins wisselend",
+  "regularity.variable": "Wisselend",
+  "insights.how": "Hoe voorspellingen werken",
+  "insights.how1":
+    "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
+  "insights.how2":
+    "De cycluslengte is de mediaan van je laatste {recent} cycli, zodat één afwijkende maand het beeld niet verstoort. Vóór twee cycli wordt een gemiddelde cyclus van {cycle} dagen gebruikt.",
+  "insights.how3":
+    "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
+  "insights.how4":
+    "Je volgende menstruatie is je laatste start plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
+  "insights.how5":
+    "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
+
+  "legend.period": "Menstruatie",
+  "legend.fertileWindow": "Vruchtbare periode",
+  "legend.ovulation": "Eisprong",
+
+  "flow.legend": "Bloedverlies",
+  "flow.spotting": "Spotting",
+  "flow.light": "Licht",
+  "flow.medium": "Gemiddeld",
+  "flow.heavy": "Zwaar",
+
+  "log.remove": "Bloedverlies verwijderen",
+  "log.add": "Bloedverlies registreren",
+  "reminder.messageOverdue":
+    "Je menstruatie werd verwacht op {date}. Begonnen?",
+  "reminder.messageUpcoming":
+    "Je menstruatie wordt verwacht op {date}. Begonnen?",
+  "reminder.dismiss": "Nog niet — herinner me later",
+
+  "calendar.title": "Kalender",
+  "calendar.previousMonth": "Vorige maand",
+  "calendar.nextMonth": "Volgende maand",
+  "calendar.jumpToMonth": "Ga naar maand",
+  "calendar.month": "Maand",
+  "calendar.year": "Jaar",
+  "calendar.tapHelp":
+    "Tik op een dag om bloedverlies te registreren of te wijzigen.",
+  "calendar.today": "Vandaag",
+  "calendar.goToCurrentMonth": "Ga naar huidige maand",
+  "calendar.noDays": "Nog geen dagen met bloedverlies geregistreerd.",
+  "calendar.legend.logged": "Geregistreerd",
+  "calendar.legend.predicted": "Verwacht",
+  "calendar.legend.fertile": "Vruchtbaar",
+  "calendar.legend.ovulation": "Eisprong",
+  "calendar.log": "Registreren",
+  "calendar.edit": "Wijzigen",
+  "calendar.dayUnavailable": "{label} niet beschikbaar",
+  "calendar.dayWithMarker": "{label}, {marker}",
+  "marker.fertile": "vruchtbare periode",
+  "marker.ovulation": "waarschijnlijke eisprong",
+  "marker.predictedPeriod": "verwachte menstruatie",
+  "calendar.notBleeding": "Geen bloedverlies die dag",
+
+  "common.unknown": "onbekend",
+  "common.close": "Sluiten",
+  "common.days": "dagen",
+
+  "settings.title": "Instellingen",
+  "settings.preferences": "Voorkeuren",
+  "settings.theme": "Thema",
+  "theme.system": "Systeem",
+  "theme.light": "Licht",
+  "theme.dark": "Donker",
+  "settings.language": "Taal",
+  "language.system": "Systeem",
+  "language.en": "English",
+  "language.nl": "Nederlands",
+  "language.de": "Deutsch",
+  "language.fr": "Français",
+  "language.es": "Español",
+  "settings.showFertility": "Vruchtbaarheidsschattingen tonen",
+  "settings.fertilityInfo": "Over vruchtbaarheidsschattingen",
+  "settings.fertilityHelp":
+    "Toont schattingen van de vruchtbare periode en eisprong op het startscherm en de kalender.",
+  "settings.showCycleNumbers": "Cyclusdagnummers tonen",
+  "settings.cycleNumbersInfo": "Over cyclusdagnummers",
+  "settings.cycleNumbersHelp":
+    "Nummert de dagen van je huidige cyclus (1, 2, 3, ...) op de kalender, tot je volgende verwachte menstruatie.",
+  "settings.about": "Over",
+  "settings.privacy": "Je gegevens verlaten dit apparaat nooit.",
+  "settings.fertilityDisclaimer":
+    "Vruchtbaarheidsschattingen zijn informatief, geen anticonceptiemethode.",
+  "settings.fertilityMethod":
+    "Hoger rond je voorspelde eisprong. Geschat op basis van je recente cycluslengtes.",
+  "settings.sourceCode": "Broncode (v{version}), opent in een nieuw tabblad",
+  "settings.data": "Gegevens",
+  "settings.dataInfo": "Over importeren en exporteren",
+  "settings.dataHelp":
+    "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een back-up.",
+  "settings.export": "Exporteren",
+  "settings.import": "Importeren",
+  "settings.importFile": "Gegevensbestand importeren",
+  "settings.importError": "Dat bestand is geen geldige Tide-back-up.",
+};
