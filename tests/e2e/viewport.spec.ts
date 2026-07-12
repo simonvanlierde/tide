@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { seedAppState } from "./seed";
 
 // Widths we commit to supporting, plus one short-height case for the fixed tab
 // bar. 320x568 is the hard floor (iPhone SE 1st gen); 280 is the foldable
@@ -13,33 +14,12 @@ const SIZES = [
 
 const ROUTES = ["/", "/calendar", "/settings"] as const;
 
-// Seed a fresh cycle so every screen renders real content (a dial with a day, a
-// calendar with logged/predicted days) — empty screens can't overflow.
-function seedState() {
-  const today = new Date();
-  const days: string[] = [];
-  for (let offset = 4; offset >= 0; offset -= 1) {
-    const day = new Date(today);
-    day.setDate(today.getDate() - offset);
-    days.push(day.toISOString().slice(0, 10));
-  }
-  return {
-    periodDays: days,
-    settings: { dismissedOn: null, theme: "system" },
-  };
-}
-
 for (const size of SIZES) {
   test.describe(size.name, () => {
     test.use({ viewport: { width: size.width, height: size.height } });
 
     test.beforeEach(async ({ page }) => {
-      await page.addInitScript((state) => {
-        localStorage.setItem(
-          "tide.period-tracker.state",
-          JSON.stringify(state),
-        );
-      }, seedState());
+      await seedAppState(page);
     });
 
     for (const path of ROUTES) {

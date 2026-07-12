@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+import { seedAppState } from "./seed";
 
 const ROUTES = ["/", "/calendar", "/settings"];
 
@@ -22,22 +23,6 @@ async function openOverlays(page: Page, path: string) {
   }
 }
 
-// Seed a fresh cycle relative to the real "today" so every screen renders real
-// content — a dial with a day, and a calendar with logged and predicted days.
-function seedScript() {
-  const today = new Date();
-  const days: string[] = [];
-  for (let offset = 4; offset >= 0; offset -= 1) {
-    const day = new Date(today);
-    day.setDate(today.getDate() - offset);
-    days.push(day.toISOString().slice(0, 10));
-  }
-  return {
-    periodDays: days,
-    settings: { dismissedOn: null, theme: "system" },
-  };
-}
-
 for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`accessibility (${colorScheme})`, () => {
     test.use({ colorScheme });
@@ -46,12 +31,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       test(`${path} has no serious accessibility violations`, async ({
         page,
       }) => {
-        await page.addInitScript((state) => {
-          localStorage.setItem(
-            "tide.period-tracker.state",
-            JSON.stringify(state),
-          );
-        }, seedScript());
+        await seedAppState(page);
 
         await page.goto(path);
         await expect(
