@@ -1,3 +1,4 @@
+// biome-ignore-all lint/security/noSecrets: the German language is full of high-entropy strings :)
 import type { Dictionary } from "./en";
 
 export const de: Dictionary = {
