@@ -1,6 +1,10 @@
 @layer screens {
-  .today-screen {
+  /* Single column capped at the shell: a wide child wraps, it never widens
+     the page (matters at 200% text on a narrow phone). */
+  .today-screen,
+  .utility-screen {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
 
@@ -65,11 +69,6 @@
     outline-offset: 2px;
   }
 
-  .utility-screen {
-    display: grid;
-    gap: 16px;
-  }
-
   /* Tidal dial — the signature */
   .cycle-dial {
     display: grid;
@@ -80,7 +79,11 @@
 
   .cycle-dial__frame {
     position: relative;
-    width: min(280px, 64vw);
+    /* rem-led so the dial grows with large text, capped by the viewport. The
+       frame is a container: the text inside sizes against the disc (cqw), so
+       when the cap wins the type still fits. */
+    container-type: inline-size;
+    width: min(17.5rem, 64vw);
     aspect-ratio: 1;
     border-radius: 50%;
     touch-action: none;
@@ -96,7 +99,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    padding: 30px;
+    padding: min(30px, 11cqw);
     box-sizing: border-box;
     box-shadow: var(--shadow-soft);
   }
@@ -136,14 +139,14 @@
   }
 
   .cycle-dial__eyebrow {
-    font-size: 0.7rem;
+    font-size: min(0.7rem, 5cqw);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
 
   .cycle-dial__day {
-    font-size: 3.5rem;
+    font-size: min(3.5rem, 22cqw);
     line-height: 0.86;
     font-weight: 600;
     color: var(--ink);
@@ -151,13 +154,13 @@
   }
 
   .cycle-dial__phase {
-    font-size: 1.1rem;
+    font-size: min(1.1rem, 7cqw);
     font-weight: 500;
     color: var(--tide-strong);
   }
 
   .cycle-dial__date {
-    font-size: 1.1rem;
+    font-size: min(1.1rem, 7cqw);
     color: var(--ink-muted);
   }
 
@@ -240,6 +243,9 @@
   /* Calendar */
   .calendar {
     display: grid;
+    /* minmax(0, 1fr), not auto: a wide child (the legend at 200% text) must
+       wrap inside the card rather than widen the column past it. */
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
 
@@ -252,6 +258,11 @@
 
   .calendar__month-button {
     width: 100%;
+    /* A long month name at large text wraps inside the pill instead of
+       pushing the seven-column grid past the card. */
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .calendar__help {
@@ -302,22 +313,14 @@
     outline-offset: 2px;
   }
 
-  /* Two-column key on narrow shells: one row when fertility is off (2 items), a
-     balanced 2x2 when it's on (4 items) — never an orphaned trailing item. */
+  /* The key wraps to whatever fits: one row of four on most phones, two
+     rows on narrow shells or at large text. Centred so a short last row
+     doesn't hang left. */
   .calendar-legend {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 8px 12px;
-  }
-
-  /* Once the shell is wide enough to hold all four items, lay the key out on a
-     single row. Keyed to the shell's container width (the shell sets
-     container-type), so it tracks the real card width instead of the viewport. */
-  @container (min-width: 380px) {
-    .calendar-legend {
-      grid-template-columns: repeat(4, auto);
-    }
+    gap: 8px 14px;
   }
 
   .calendar-legend__item {
@@ -352,13 +355,23 @@
     border: 2px dashed var(--bleed);
   }
 
-  @media (max-width: 400px) {
+  /* Narrow shells: tighter gaps and card padding buy the day cells width.
+     Seven 44px targets never fit in 320px; this gets them to ~34px with the
+     full 46px height, and the weekday label stays above the 11px floor. */
+  @container (max-width: 400px) {
     .calendar-grid {
       gap: 6px;
     }
 
-    .calendar-grid__weekday {
-      font-size: 0.68rem;
+    .calendar-grid__header,
+    .calendar-grid__week {
+      gap: 5px;
+    }
+  }
+
+  @container (max-width: 350px) {
+    .calendar.utility-card {
+      padding-inline: 12px;
     }
   }
 }

@@ -12,6 +12,10 @@
     color: var(--ink);
     /* Background is painted on :root (themed in tokens.css); let it show through. */
     background: transparent;
+    /* Five languages, some with long compounds ("Fruchtbarkeitsschätzungen"):
+       a word that can't fit its box breaks rather than widening the page. */
+    overflow-wrap: break-word;
+    hyphens: auto;
   }
 
   button,

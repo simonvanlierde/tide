@@ -143,6 +143,11 @@
     padding: 12px 0;
   }
 
+  .fact > * {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .fact + .fact {
     border-top: 1px solid var(--surface-border);
   }
@@ -179,6 +184,7 @@
   }
 
   .info-popover__trigger {
+    position: relative;
     list-style: none;
     display: inline-flex;
     align-items: center;
@@ -194,6 +200,16 @@
 
   .info-popover__trigger::-webkit-details-marker {
     display: none;
+  }
+
+  /* The visible disc stays small; the hit area is 44px. */
+  .info-popover__trigger::before {
+    content: "";
+    position: absolute;
+    inset: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
   }
 
   .info-popover__trigger:hover,
@@ -595,7 +611,9 @@
   .chip-button {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    min-height: 44px;
     padding: 9px 15px;
     border-radius: 999px;
     font-size: 0.94rem;
@@ -673,6 +691,21 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    /* Stays on the right even when a long label (de, fr) makes the row wrap. */
+    margin-inline-start: auto;
+  }
+
+  /* The label wraps to a second line before the controls leave the right edge. */
+  .settings-row > .settings-label {
+    /* Zero basis: the label takes whatever the controls leave and wraps
+       inside it (a rem basis would become the row's minimum at large text). */
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  /* Grid items default to min-width: auto; keep every row inside the card. */
+  .settings-group > * {
+    min-width: 0;
   }
 
   /* Native language dropdown: matches the calendar month/year picker inputs. */
@@ -698,13 +731,9 @@
     gap: 12px;
   }
 
-  /* Theme picker: label on the left, segmented control on the right. As width
-     shrinks it degrades in order — the control shrinks, its labels drop to icons
-     (the @container rules below), then it shrinks to the icon-only minimum, and
-     only when even that can't fit beside the label does it stack underneath.
-     nowrap keeps the shrink phase alive (flex-wrap would break the line at the
-     control's basis size, before it ever shrinks); the stack is a separate
-     container query at the width where the icon-only control stops fitting. */
+  /* Theme picker: label on the left, segmented control on the right while it
+     fits (nowrap, so the control shrinks before the row would break); below
+     410px of shell width a container query stacks it under the label. */
   .theme-field {
     flex-wrap: nowrap;
   }
@@ -776,33 +805,18 @@
     flex: none;
   }
 
-  /* Below this the labelled segmented no longer fits beside the "Theme" label,
-     so drop the options to icon-only rather than let the row stack. They stay in
-     the DOM so each option keeps its accessible name. */
+  /* Below ~410px of shell width the three worded options no longer fit
+     beside the "Theme" label, so the control stacks underneath and spans the
+     row. The words stay: a monitor icon alone doesn't say "follow system". */
   @container (max-width: 410px) {
-    .segmented__label {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-  }
-
-  /* Last resort: even the icon-only control no longer fits beside the "Theme"
-     label, so stack it underneath and let it span the row. */
-  @container (max-width: 260px) {
     .theme-field {
       flex-direction: column;
       align-items: stretch;
     }
   }
 
-  /* On/off switch: a coral-free teal toggle with a sliding knob. */
+  /* On/off switch: a coral-free teal toggle with a sliding knob. The pill is
+     46x28; the hit area is extended to 44px tall. */
   .switch {
     position: relative;
     flex: 0 0 auto;
@@ -815,6 +829,12 @@
     transition:
       background-color 160ms ease,
       border-color 160ms ease;
+  }
+
+  .switch::before {
+    content: "";
+    position: absolute;
+    inset: -8px 0;
   }
 
   .switch::after {
@@ -871,6 +891,9 @@
   /* Swipe surface: follows the finger horizontally, lets vertical scroll pass.
      The inline transform/transition is driven from CalendarScreen. */
   .calendar-swipe {
+    /* A grid item defaults to min-width: auto and would grow to the seven
+       cells' min-content; 0 lets the columns shrink instead. */
+    min-width: 0;
     touch-action: pan-y;
   }
 
@@ -882,6 +905,8 @@
   }
 
   .calendar-grid__weekday {
+    min-width: 0;
+    overflow: hidden;
     text-align: center;
     font-size: 0.72rem;
     letter-spacing: 0.06em;
@@ -890,8 +915,12 @@
   .calendar-grid__day {
     position: relative;
     min-height: 46px;
+    /* No horizontal padding and min-width 0: the cell is allowed to be as
+       narrow as its column, so seven of them never push the card wider than
+       the screen, even at 200% text. */
+    min-width: 0;
     border-radius: 14px;
-    padding: 8px 4px;
+    padding: 8px 0;
     color: var(--ink);
     background: var(--surface-soft);
     font-variant-numeric: tabular-nums;
