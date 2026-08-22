@@ -9,7 +9,7 @@ interface BackupFile {
   days: Record<IsoDate, FlowIntensity>;
   settings: Pick<
     AppState["settings"],
-    "showFertility" | "showCycleDayNumbers" | "theme"
+    "showFertility" | "showCycleDayNumbers" | "theme" | "language"
   >;
 }
 
@@ -22,6 +22,7 @@ function toBackupFile(state: AppState): BackupFile {
       showFertility: state.settings.showFertility,
       showCycleDayNumbers: state.settings.showCycleDayNumbers,
       theme: state.settings.theme,
+      language: state.settings.language,
     },
   };
 }
@@ -36,7 +37,8 @@ export function downloadAppState(state: AppState) {
   link.href = url;
   link.download = EXPORT_FILENAME;
   link.click();
-  URL.revokeObjectURL(url);
+  // Safari can cancel the download if the URL is revoked before it starts.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 // Parse an exported backup back into a valid AppState. Throws on unparseable

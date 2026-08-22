@@ -126,7 +126,11 @@ export function appStateReducer(
 }
 
 export function selectCycleSummary(state: AppState, today: IsoDate) {
-  const predictionDays = getPredictionDays(state.intensityByDay);
+  // Future-dated days (imported, or left by a clock that moved back) must not
+  // feed the cycle-length history either.
+  const predictionDays = getPredictionDays(state.intensityByDay).filter(
+    (day) => day <= today,
+  );
 
   return buildCycleSummary({
     today,

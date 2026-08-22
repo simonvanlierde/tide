@@ -141,4 +141,15 @@ describe("app state core selectors", () => {
       estimateMode: "learned",
     });
   });
+
+  it("ignores a future-dated day so one bad import entry can't poison the forecast", () => {
+    const state = createAppState({
+      periodDays: ["2026-08-01", "2026-08-02", "2026-08-03", "2099-01-01"],
+    });
+    const summary = selectCycleSummary(state, "2026-08-22");
+
+    expect(summary.cycleDay).toBe(22);
+    expect(summary.cycleLength).toBe(28);
+    expect(summary.nextPeriod.date).toBe("2026-08-29");
+  });
 });

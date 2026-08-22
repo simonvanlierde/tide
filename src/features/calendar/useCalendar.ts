@@ -96,7 +96,13 @@ export function useCalendar(today: IsoDate) {
 
   // keepPickerOpen lets the month/year dropdowns change one field at a time
   // without the panel closing between picks; chevrons and "Today" close it.
-  function setMonth(nextMonth: IsoDate, keepPickerOpen = false) {
+  // Takes an updater so held PageUp/PageDown and fast swipes step from the
+  // latest month, not the last committed one — inside a transition several
+  // pages can arrive before a commit.
+  function setMonth(
+    nextMonth: IsoDate | ((current: IsoDate) => IsoDate),
+    keepPickerOpen = false,
+  ) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
       if (!keepPickerOpen) {
@@ -139,10 +145,10 @@ export function useCalendar(today: IsoDate) {
     isSelectedLogged: selectedDay ? loggedDays.has(selectedDay) : false,
     openPicker,
     goToPreviousMonth() {
-      setMonth(addMonths(visibleMonth, -1));
+      setMonth((current) => addMonths(current, -1));
     },
     goToNextMonth() {
-      setMonth(addMonths(visibleMonth, 1));
+      setMonth((current) => addMonths(current, 1));
     },
     goToToday() {
       setMonth(today);

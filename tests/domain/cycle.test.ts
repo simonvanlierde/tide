@@ -64,6 +64,8 @@ describe("getPastOvulationDates", () => {
 describe("getAveragePeriodLength", () => {
   it("defaults to 4 with no data and averages completed periods", () => {
     expect(getAveragePeriodLength([], "2026-03-01")).toBe(4);
+    // A first period that may still be bleeding is not measured yet.
+    expect(getAveragePeriodLength(["2026-03-01"], "2026-03-02")).toBe(4);
 
     // Two completed 4-day periods + a last 1-day run that's still recent
     // (dropped as possibly ongoing): avg 4. today is 1 day after the last log.
@@ -132,6 +134,31 @@ describe("getAveragePeriodLength", () => {
 });
 
 describe("buildCycleSummary", () => {
+  it("ignores future-dated days when picking the current cycle start", () => {
+    const summary = buildCycleSummary({
+      today: "2026-08-22",
+      periodDays: ["2026-08-01", "2026-08-02", "2026-08-03", "2099-01-01"],
+      completedCycleLengths: [],
+    });
+
+    expect(summary.cycleDay).toBe(22);
+    expect(summary.nextPeriod.date).toBe("2026-08-29");
+  });
+
+  it("stops forecasting once the expected period is long overdue", () => {
+    const summary = buildCycleSummary({
+      today: "2026-08-22",
+      periodDays: ["2025-08-01", "2025-08-02"],
+      completedCycleLengths: [28],
+    });
+
+    expect(summary.estimateMode).toBe("insufficient");
+    expect(summary.cycleDay).toBeNull();
+    expect(summary.nextPeriod.date).toBeNull();
+    // Learned history survives for the insights view.
+    expect(summary.cycleLength).toBe(28);
+  });
+
   it("does not treat a missed logging day inside a period as a new cycle start", () => {
     const periodDays = [
       "2026-06-01",

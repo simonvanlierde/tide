@@ -31,11 +31,13 @@ export const defaultAppState: AppState = {
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function isIsoDate(value: unknown): value is IsoDate {
-  return (
-    typeof value === "string" &&
-    ISO_DATE_RE.test(value) &&
-    !Number.isNaN(Date.parse(`${value}T00:00:00.000Z`))
-  );
+  if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
+    return false;
+  }
+  // Round-trip so an overflowing day ("2023-02-29") is rejected rather than
+  // rolled over by Date.parse into a date that never matches its own key.
+  const time = Date.parse(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(time) && new Date(time).toISOString().startsWith(value);
 }
 
 const isFlow = (value: unknown): value is FlowIntensity =>

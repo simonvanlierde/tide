@@ -121,6 +121,7 @@ describe("SettingsScreen", () => {
         showFertility: true,
         showCycleDayNumbers: true,
         theme: "system",
+        language: "system",
       },
     });
     expect(blob.type).toBe("application/json");
