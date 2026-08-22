@@ -20,6 +20,7 @@ export const nl: Dictionary = {
   "today.inDays.other": "Over {n} dagen",
   "today.higherToday": "Vandaag hoger",
   "today.lowerToday": "Vandaag lager",
+  "today.privacy": "Alleen op dit apparaat opgeslagen.",
   "today.periodLate": "Menstruatie",
   "today.daysLate.one": "{n} dag te laat",
   "today.daysLate.other": "{n} dagen te laat",
@@ -91,6 +92,8 @@ export const nl: Dictionary = {
   "flow.heavy": "Zwaar",
 
   "log.remove": "Bloedverlies verwijderen",
+  "log.logged": "Vandaag gelogd",
+  "log.loggedWith": "Vandaag gelogd · {flow}",
   "log.add": "Bloedverlies registreren",
   "reminder.messageOverdue":
     "Je menstruatie werd verwacht op {date}. Begonnen?",

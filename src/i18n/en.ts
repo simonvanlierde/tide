@@ -25,6 +25,7 @@ export const en = {
   "today.inDays.other": "In {n} days",
   "today.higherToday": "Higher today",
   "today.lowerToday": "Lower today",
+  "today.privacy": "Stored only on this device.",
   "today.periodLate": "Period",
   "today.daysLate.one": "{n} day late",
   "today.daysLate.other": "{n} days late",
@@ -101,6 +102,8 @@ export const en = {
 
   // Log action + reminder
   "log.remove": "Remove bleeding log",
+  "log.logged": "Logged today",
+  "log.loggedWith": "Logged today · {flow}",
   "log.add": "Log bleeding today",
   "reminder.messageOverdue": "Your period was expected {date}. Started?",
   "reminder.messageUpcoming": "Your period is expected {date}. Started?",

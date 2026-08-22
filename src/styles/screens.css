@@ -11,6 +11,14 @@
     line-height: 1.45;
   }
 
+  /* The privacy promise, stated where the data is made: one quiet line. */
+  .today-screen__privacy {
+    margin: 0;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 0.82rem;
+  }
+
   .reminder-prompt {
     display: grid;
     gap: 14px;

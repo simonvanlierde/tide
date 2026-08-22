@@ -318,7 +318,9 @@ export function CycleDial({
           updatePreview(event);
         }}
         onPointerMove={(event) => {
-          if (event.buttons > 0 || event.pointerType === "mouse") {
+          // Only a pressed pointer scrubs; a stray mouse pass shouldn't
+          // rewrite the screen's headline number.
+          if (event.buttons > 0) {
             updatePreview(event);
           }
         }}
@@ -366,7 +368,9 @@ export function CycleDial({
       </div>
       <CycleLegend
         className="cycle-dial__legend"
-        showFertility={showFertility}
+        // No ovulation estimate yet means no sand or amber on the ring, so the
+        // key shouldn't promise them either.
+        showFertility={showFertility && summary.ovulationDate !== null}
       />
     </section>
   );

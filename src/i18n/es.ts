@@ -20,6 +20,7 @@ export const es: Dictionary = {
   "today.inDays.other": "en {n} días",
   "today.higherToday": "Más alta hoy",
   "today.lowerToday": "Más baja hoy",
+  "today.privacy": "Guardado solo en este dispositivo.",
   "today.periodLate": "Regla",
   "today.daysLate.one": "{n} día de retraso",
   "today.daysLate.other": "{n} días de retraso",
@@ -91,6 +92,8 @@ export const es: Dictionary = {
   "flow.heavy": "Abundante",
 
   "log.remove": "Eliminar registro de sangrado",
+  "log.logged": "Registrado hoy",
+  "log.loggedWith": "Registrado hoy · {flow}",
   "log.add": "Registrar sangrado de hoy",
   "reminder.messageOverdue":
     "Tu período estaba previsto el {date}. ¿Ha comenzado?",

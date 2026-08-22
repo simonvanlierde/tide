@@ -236,10 +236,18 @@ describe("TodayScreen", () => {
       screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^not enough data yet$/i)).toBeInTheDocument();
+    // Both the next-period and the fertility rows decline to guess.
+    expect(screen.getAllByText(/^not enough data yet$/i)).toHaveLength(2);
+    expect(screen.queryByText(/lower today/i)).not.toBeInTheDocument();
+    // No ovulation estimate, so the ring has no sand or amber to explain.
+    expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
     expect(
       screen.getByText(/log bleeding to start an estimate/i),
     ).toBeInTheDocument();
+    // With nothing logged, logging is the one thing to do: keep it prominent.
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveClass("primary-action");
   });
 
   it("says the period is expected today when it lands on today", () => {
@@ -342,10 +350,12 @@ describe("TodayScreen", () => {
     expect(
       screen.queryByText(/your period is expected/i),
     ).not.toBeInTheDocument();
-    // Undoing a log is a calm secondary action, not a loud orange CTA.
+    // Undoing a log is a quiet text action, not a loud orange CTA, and the
+    // day ends on a confirmation rather than on "Remove".
     expect(
       screen.getByRole("button", { name: /remove bleeding log/i }),
-    ).toHaveClass("secondary-action");
+    ).toHaveClass("text-action");
+    expect(screen.getByRole("status")).toHaveTextContent(/logged today/i);
   });
 
   it("keeps a calm log action and no prompt outside the window", () => {

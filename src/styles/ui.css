@@ -393,17 +393,56 @@
     gap: 14px;
   }
 
+  /* The logged state is a card: confirmation on top, gauge, then the undo. */
+  .log-action--logged {
+    padding: 18px;
+    border-radius: 20px;
+    background: var(--surface);
+    border: 1px solid var(--surface-border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .log-action__status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--ink);
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+
+  .log-action__status-icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    color: var(--bleed);
+  }
+
+  .log-action__remove {
+    align-self: flex-start;
+    color: var(--ink-soft);
+  }
+
+  .log-action__remove:hover {
+    color: var(--tide-strong);
+  }
+
   .flow-gauge {
     margin: 0;
     padding: 0;
     border: 0;
   }
 
+  /* Same eyebrow voice as every other section label. */
   .flow-gauge__legend {
     padding: 0;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: var(--ink-muted);
-    font-size: 0.82rem;
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .flow-gauge__levels {

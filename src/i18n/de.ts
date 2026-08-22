@@ -21,6 +21,7 @@ export const de: Dictionary = {
   "today.inDays.other": "in {n} Tagen",
   "today.higherToday": "Heute höher",
   "today.lowerToday": "Heute niedriger",
+  "today.privacy": "Nur auf diesem Gerät gespeichert.",
   "today.periodLate": "Periode",
   "today.daysLate.one": "{n} Tag überfällig",
   "today.daysLate.other": "{n} Tage überfällig",
@@ -92,6 +93,8 @@ export const de: Dictionary = {
   "flow.heavy": "Stark",
 
   "log.remove": "Blutungseintrag entfernen",
+  "log.logged": "Heute protokolliert",
+  "log.loggedWith": "Heute protokolliert · {flow}",
   "log.add": "Blutung heute erfassen",
   "reminder.messageOverdue":
     "Deine Periode wurde am {date} erwartet. Angefangen?",

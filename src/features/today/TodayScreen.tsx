@@ -55,9 +55,14 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
   // today is logged it drops to calm: "Remove" is a secondary, undo-style action.
   const isOverdue =
     summary.nextPeriod.daysUntil !== null && summary.nextPeriod.daysUntil < 0;
+  // Prominent when a fresh bleed is plausible, and on first run: with nothing
+  // logged, the log button is the only thing to do, so it must read as the
+  // one action. Once today is logged the whole block turns calm.
   const logVariant =
     !isTodayLogged &&
-    (summary.phaseLabel === "menstrual" || reminderState.isExpectedSoon)
+    (summary.phaseLabel === "menstrual" ||
+      reminderState.isExpectedSoon ||
+      summary.estimateMode === "insufficient")
       ? "primary"
       : "quiet";
 
@@ -122,17 +127,27 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
                 </InfoPopover>
               </dt>
               <dd className="fact__value">
-                <span>
-                  {getFertilityEstimate(t, summary.phaseLabel, summary.fertile)}
-                </span>
                 {summary.ovulationDate ? (
-                  <span className="fact__meta">
-                    {getOvulationPhrase(
-                      t,
-                      differenceInDays(summary.ovulationDate, today),
-                    )}
-                  </span>
-                ) : null}
+                  <>
+                    <span>
+                      {getFertilityEstimate(
+                        t,
+                        summary.phaseLabel,
+                        summary.fertile,
+                      )}
+                    </span>
+                    <span className="fact__meta">
+                      {getOvulationPhrase(
+                        t,
+                        differenceInDays(summary.ovulationDate, today),
+                      )}
+                    </span>
+                  </>
+                ) : (
+                  // No ovulation estimate means no fertility claim, rather
+                  // than a confident "lower" from zero data.
+                  <span>{t("today.notEnoughData")}</span>
+                )}
               </dd>
             </div>
           ) : null}
@@ -174,6 +189,7 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
           }
         />
       )}
+      <p className="today-screen__privacy">{t("today.privacy")}</p>
     </section>
   );
 }
