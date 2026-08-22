@@ -5,25 +5,8 @@ import {
   getCompletedCycleLengths,
   getCycleStats,
   getPastOvulationDates,
-  getPeriodDayNumbers,
 } from "../../src/domain/cycle";
 import type { IsoDate } from "../../src/domain/types";
-
-describe("getPeriodDayNumbers", () => {
-  it("counts calendar days since the period start, so skipped days still count and a new period resets", () => {
-    const numbers = getPeriodDayNumbers([
-      "2026-06-01",
-      "2026-06-05", // gap of 4 -> same period, calendar day 5
-      "2026-06-29", // gap of 24 -> new period, day 1
-      "2026-06-30",
-    ]);
-
-    expect(numbers.get("2026-06-01")).toBe(1);
-    expect(numbers.get("2026-06-05")).toBe(5);
-    expect(numbers.get("2026-06-29")).toBe(1);
-    expect(numbers.get("2026-06-30")).toBe(2);
-  });
-});
 
 describe("getCompletedCycleLengths", () => {
   it("ignores gaps from missed logging days when computing completed cycle lengths", () => {

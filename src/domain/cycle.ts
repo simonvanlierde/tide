@@ -52,34 +52,6 @@ function getCycleStarts(periodDays: IsoDate[]) {
   });
 }
 
-// Per logged day, its 1-based position within its period: calendar days since
-// that period's start + 1, so skipped days still count (matching cycleDay). A
-// gap >= NEW_CYCLE_MIN_GAP_DAYS opens a new period and resets the count.
-export function getPeriodDayNumbers(
-  periodDays: IsoDate[],
-): Map<IsoDate, number> {
-  const sortedDays = [...periodDays].sort();
-  const numbers = new Map<IsoDate, number>();
-  let start: IsoDate | undefined;
-
-  for (let index = 0; index < sortedDays.length; index++) {
-    const day = sortedDays[index];
-    if (!day) continue;
-    const previous = sortedDays[index - 1];
-
-    if (
-      start === undefined ||
-      differenceInDays(day, previous ?? day) >= NEW_CYCLE_MIN_GAP_DAYS
-    ) {
-      start = day;
-    }
-
-    numbers.set(day, differenceInDays(day, start) + 1);
-  }
-
-  return numbers;
-}
-
 // Average length of past periods, in days, clamped to [MIN, MAX]. The most
 // recent run is dropped only while it might still be bleeding — fewer than
 // MIN_DAYS_SINCE_BLEED days since its last logged day — so a genuinely finished

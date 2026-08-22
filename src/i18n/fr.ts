@@ -111,7 +111,12 @@ export const fr: Dictionary = {
     "Touchez un jour pour enregistrer ou modifier un saignement.",
   "calendar.today": "Aujourd’hui",
   "calendar.goToCurrentMonth": "Aller au mois actuel",
-  "calendar.noDays": "Aucun jour de saignement enregistré.",
+  "calendar.justLogged": "{date} enregistré comme moyen.",
+  "calendar.undo": "Annuler",
+  "calendar.emptyHelp":
+    "Touchez un jour passé pour enregistrer votre premier jour de saignement.",
+  "calendar.futureHelp":
+    "Les jours à venir ne peuvent pas encore être enregistrés.",
   "calendar.legend.logged": "Enregistré",
   "calendar.legend.predicted": "Prévu",
   "calendar.legend.fertile": "Fertile",

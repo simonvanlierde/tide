@@ -130,8 +130,8 @@ export function buildCalendarMarkers(
 // Running cycle-day number for every day of the CURRENT cycle: 1 on the last
 // period's start, counting up to — but not into — the next expected period,
 // which is the next cycle's day 1. Bounded to the visible window. Empty when
-// there's no period history to anchor day 1. Logged days are numbered
-// separately (per-period) by getPeriodDayNumbers, so this fills the gaps.
+// there is no period history to anchor day 1. The grid hides it on logged
+// days (the coral run says which period day they are) and on future days.
 export function buildCycleDayNumbers(
   summary: CycleSummary,
   today: IsoDate,

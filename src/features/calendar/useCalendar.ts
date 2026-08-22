@@ -1,5 +1,5 @@
-import { startTransition, useMemo, useState } from "react";
-import { getPastOvulationDates, getPeriodDayNumbers } from "../../domain/cycle";
+import { startTransition, useEffect, useMemo, useState } from "react";
+import { getPastOvulationDates } from "../../domain/cycle";
 import {
   DEFAULT_FLOW,
   getPeriodDays,
@@ -13,6 +13,7 @@ import {
   useLocale,
 } from "../../state/provider";
 import { addMonths, formatMonthLabel } from "../../utils/date";
+import type { LegendKey } from "./CalendarScreen";
 import {
   buildCalendarMarkers,
   buildCycleDayNumbers,
@@ -51,12 +52,6 @@ export function useCalendar(today: IsoDate) {
       ),
     [state.intensityByDay],
   );
-  const periodDayNumbers = useMemo(
-    // Number days from the same spotting-filtered set the cycle summary uses, so
-    // the calendar and the Today dial agree on "day N" of a period.
-    () => getPeriodDayNumbers(predictionDays),
-    [predictionDays],
-  );
   const showFertility = state.settings.showFertility;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
   // Ovulation for each completed past cycle, so their fertile windows show the
@@ -88,6 +83,31 @@ export function useCalendar(today: IsoDate) {
       ),
     [summary, today, monthDays, visibleMonth],
   );
+  // Which legend entries this month actually needs.
+  const presentMarkers = useMemo(() => {
+    const present = new Set<LegendKey>();
+    for (const day of monthDays) {
+      if (loggedDays.has(day.value)) {
+        present.add("logged");
+        continue;
+      }
+      const marker = cycleMarkers.get(day.value);
+      if (marker === "predicted-period") present.add("predicted");
+      else if (marker === "ovulation") present.add("ovulation");
+      else if (marker === "fertile") present.add("fertile");
+    }
+    return present;
+  }, [monthDays, loggedDays, cycleMarkers]);
+  const isWholeMonthFuture = (monthDays[0]?.value ?? visibleMonth) > today;
+
+  // The "Logged <date> · Undo" status is transient: it steps aside after a
+  // few seconds, or as soon as the next tap makes it stale.
+  useEffect(() => {
+    if (!justLoggedDay) return;
+    const timer = setTimeout(() => setJustLoggedDay(null), 6000);
+    return () => clearTimeout(timer);
+  }, [justLoggedDay]);
+
   const locale = useLocale();
   const monthLabel = useMemo(
     () => formatMonthLabel(visibleMonth, locale),
@@ -129,7 +149,8 @@ export function useCalendar(today: IsoDate) {
     monthDays,
     loggedDays,
     dayIntensity,
-    periodDayNumbers,
+    presentMarkers,
+    isWholeMonthFuture,
     cycleDayNumbers,
     cycleMarkers,
     showFertility,
@@ -168,6 +189,12 @@ export function useCalendar(today: IsoDate) {
     },
     closePicker() {
       setSelectedDay(null);
+    },
+    undoJustLogged() {
+      if (justLoggedDay && loggedDays.has(justLoggedDay)) {
+        actions.togglePeriodDay(justLoggedDay, today);
+      }
+      setJustLoggedDay(null);
     },
     setDayIntensity(day: IsoDate, intensity: FlowIntensity) {
       actions.setDayIntensity(day, intensity, today);

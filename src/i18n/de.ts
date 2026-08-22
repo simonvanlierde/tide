@@ -113,7 +113,11 @@ export const de: Dictionary = {
     "Tippe auf einen Tag, um eine Blutung zu erfassen oder zu bearbeiten.",
   "calendar.today": "Heute",
   "calendar.goToCurrentMonth": "Zum aktuellen Monat",
-  "calendar.noDays": "Noch keine Blutungstage erfasst.",
+  "calendar.justLogged": "{date} als mittel erfasst.",
+  "calendar.undo": "Rückgängig",
+  "calendar.emptyHelp":
+    "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
+  "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",
   "calendar.legend.logged": "Erfasst",
   "calendar.legend.predicted": "Erwartet",
   "calendar.legend.fertile": "Fruchtbar",

@@ -897,31 +897,25 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Subtle "day N of this period" bubble in the corner of a logged bleeding
-     day. Light disc + inherited dark ink-on-fill text, matching the fills. */
+  /* Running cycle-day count in the corner of a day that has happened. Opaque
+     disc + hairline so it reads on the soft surface and on fertile/ovulation
+     fills alike, and quieter than the day number so it never competes. */
   .calendar-grid__period-day {
     position: absolute;
     top: -4px;
     right: -4px;
     display: inline-grid;
     place-items: center;
-    min-width: 14px;
-    height: 14px;
+    min-width: 15px;
+    height: 15px;
     padding: 0 3px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.8);
-    font-size: 0.58rem;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Running cycle-day count on non-logged days: quieter than the logged-day
-     bubble so the coral days stay the focal point. Opaque disc + hairline so
-     it reads on the soft surface and on fertile/ovulation fills alike. */
-  .calendar-grid__period-day--cycle {
     background: var(--surface);
     color: var(--ink-muted);
     box-shadow: inset 0 0 0 1px var(--surface-border);
+    font-size: 0.62rem;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
   }
 
   /* Today: a quiet "you are here" underscore centered under the number. Drawn

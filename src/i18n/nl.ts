@@ -112,7 +112,11 @@ export const nl: Dictionary = {
     "Tik op een dag om bloedverlies te registreren of te wijzigen.",
   "calendar.today": "Vandaag",
   "calendar.goToCurrentMonth": "Ga naar huidige maand",
-  "calendar.noDays": "Nog geen dagen met bloedverlies geregistreerd.",
+  "calendar.justLogged": "{date} gelogd als gemiddeld.",
+  "calendar.undo": "Ongedaan maken",
+  "calendar.emptyHelp":
+    "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
+  "calendar.futureHelp": "Toekomstige dagen kun je nog niet loggen.",
   "calendar.legend.logged": "Geregistreerd",
   "calendar.legend.predicted": "Verwacht",
   "calendar.legend.fertile": "Vruchtbaar",

@@ -111,7 +111,11 @@ export const es: Dictionary = {
   "calendar.tapHelp": "Toca un día para registrar o editar el sangrado.",
   "calendar.today": "Hoy",
   "calendar.goToCurrentMonth": "Ir al mes actual",
-  "calendar.noDays": "Aún no hay días de sangrado registrados.",
+  "calendar.justLogged": "{date} registrado como medio.",
+  "calendar.undo": "Deshacer",
+  "calendar.emptyHelp":
+    "Toca un día pasado para registrar tu primer día de sangrado.",
+  "calendar.futureHelp": "Los días futuros aún no se pueden registrar.",
   "calendar.legend.logged": "Registrado",
   "calendar.legend.predicted": "Previsto",
   "calendar.legend.fertile": "Fértil",

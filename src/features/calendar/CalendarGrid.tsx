@@ -25,7 +25,6 @@ interface CalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
   dayIntensity: Map<IsoDate, FlowIntensity>;
-  periodDayNumbers: Map<IsoDate, number>;
   cycleDayNumbers: Map<IsoDate, number>;
   showCycleDayNumbers: boolean;
   cycleMarkers: Map<IsoDate, DayMarker>;
@@ -38,7 +37,6 @@ export function CalendarGrid({
   monthDays,
   loggedDays,
   dayIntensity,
-  periodDayNumbers,
   cycleDayNumbers,
   showCycleDayNumbers,
   cycleMarkers,
@@ -76,13 +74,13 @@ export function CalendarGrid({
         {monthDays.map((day, index) => {
           const value = day.value;
           const isLogged = loggedDays.has(value);
-          // Logged days keep their per-period number; other days show the
-          // running cycle-day count. Both hide when the setting is off.
-          const dayNumber = showCycleDayNumbers
-            ? isLogged
-              ? periodDayNumbers.get(value)
-              : cycleDayNumbers.get(value)
-            : undefined;
+          // One series only: the running cycle-day count, on days that have
+          // happened. The coral run already says which period day a logged
+          // cell is, and a number on a future cell would read as a fact.
+          const dayNumber =
+            showCycleDayNumbers && !isLogged && !day.isFuture
+              ? cycleDayNumbers.get(value)
+              : undefined;
           // Logged days take the coral fill, deepened by flow level; a
           // prediction only shows on days that aren't already logged.
           const flow = isLogged
@@ -143,14 +141,7 @@ export function CalendarGrid({
             >
               {parseIsoDate(value).getUTCDate()}
               {dayNumber ? (
-                <span
-                  className={
-                    isLogged
-                      ? "calendar-grid__period-day"
-                      : "calendar-grid__period-day calendar-grid__period-day--cycle"
-                  }
-                  aria-hidden="true"
-                >
+                <span className="calendar-grid__period-day" aria-hidden="true">
                   {dayNumber}
                 </span>
               ) : null}
