@@ -72,12 +72,21 @@ export function InfoPopover({
   }, [reposition]);
 
   return (
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Escape dismisses; the summary stays the operable toggle.
     <details
       ref={detailsRef}
       className={
         align === "start" ? "info-popover info-popover--start" : "info-popover"
       }
       onToggle={reposition}
+      onKeyDown={(event) => {
+        const details = detailsRef.current;
+        if (event.key === "Escape" && details?.open) {
+          event.stopPropagation();
+          details.open = false;
+          details.querySelector("summary")?.focus();
+        }
+      }}
     >
       <summary className="info-popover__trigger" aria-label={label}>
         <AppIcon icon={Info} className="info-popover__icon" />

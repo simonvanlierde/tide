@@ -106,9 +106,18 @@ export function CalendarGrid({
             .filter(Boolean)
             .join(" ");
           const dayLabel = `${t(isLogged ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
-          const dateLabel = day.isFuture
+          // A logged future day (clock moved back, or imported) stays
+          // removable; only logging a new future day is blocked.
+          const isUnavailable = day.isFuture && !isLogged;
+          const dateLabel = isUnavailable
             ? t("calendar.dayUnavailable", { label: dayLabel })
             : dayLabel;
+          // Flow is otherwise colour-only, so name it for screen readers.
+          const detail = flow
+            ? t(`flow.${flow}`)
+            : marker
+              ? t(MARKER_LABEL_KEY[marker])
+              : undefined;
 
           return (
             <button
@@ -120,12 +129,12 @@ export function CalendarGrid({
                   ? ({ "--forecast-step": forecastStep } as CSSProperties)
                   : undefined
               }
-              disabled={day.isFuture}
+              disabled={isUnavailable}
               aria-label={
-                marker
+                detail
                   ? t("calendar.dayWithMarker", {
                       label: dateLabel,
-                      marker: t(MARKER_LABEL_KEY[marker]),
+                      marker: detail,
                     })
                   : dateLabel
               }

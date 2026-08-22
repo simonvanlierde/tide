@@ -41,6 +41,8 @@ export const fr: Dictionary = {
   "phaseLine.luteal": "Phase lutéale",
   "phaseLine.learning": "Apprentissage",
 
+  "dial.overview": "Aperçu du cycle",
+  "dial.days": "Jours du cycle",
   "dial.cycleDay": "Jour du cycle",
   "dial.day": "Jour {n}",
   "status.period": "Règles",
@@ -155,4 +157,9 @@ export const fr: Dictionary = {
   "settings.import": "Importer",
   "settings.importFile": "Importer un fichier de données",
   "settings.importError": "Ce fichier n’est pas une sauvegarde Tide valide.",
+  "settings.importConfirm":
+    "L’import remplace tout ce qui est enregistré sur cet appareil. Continuer ?",
+  "settings.reset": "Supprimer toutes les données",
+  "settings.resetConfirm":
+    "Supprimer chaque jour enregistré et réinitialiser les réglages sur cet appareil ? Cette action est irréversible.",
 };

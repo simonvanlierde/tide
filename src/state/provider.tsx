@@ -7,7 +7,13 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { loadAppState, saveAppState } from "../data/storage";
+import { defaultAppState } from "../data/schema";
+import {
+  clearAppState,
+  loadAppState,
+  STORAGE_KEY,
+  saveAppState,
+} from "../data/storage";
 import type {
   AppState,
   FlowIntensity,
@@ -47,6 +53,19 @@ export function AppStateProvider({
   useEffect(() => {
     saveAppState(state);
   }, [state]);
+
+  // Another tab (or the installed PWA window) saved: adopt its state instead
+  // of overwriting it with ours on our next change. The event only fires for
+  // writes from other documents, so this can't loop on our own save above.
+  useEffect(() => {
+    function handleStorage(event: StorageEvent) {
+      if (event.key === STORAGE_KEY) {
+        dispatch({ type: "importState", state: loadAppState() });
+      }
+    }
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   useThemePreference(state.settings.theme);
   useLanguagePreference(state.settings.language);
@@ -180,6 +199,12 @@ export function useAppStateActions() {
       },
       importState(state: AppState) {
         dispatch({ type: "importState", state });
+      },
+      // Wipe every logged day and the orphaned corrupt-blob backup, so the
+      // device holds no history afterwards. Settings reset too.
+      resetState() {
+        clearAppState();
+        dispatch({ type: "importState", state: defaultAppState });
       },
     }),
     [dispatch],

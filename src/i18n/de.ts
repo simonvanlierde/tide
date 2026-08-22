@@ -42,6 +42,8 @@ export const de: Dictionary = {
   "phaseLine.luteal": "Lutealphase",
   "phaseLine.learning": "Lernen",
 
+  "dial.overview": "Zyklusübersicht",
+  "dial.days": "Zyklustage",
   "dial.cycleDay": "Zyklustag",
   "dial.day": "Tag {n}",
   "status.period": "Periode",
@@ -156,4 +158,9 @@ export const de: Dictionary = {
   "settings.import": "Importieren",
   "settings.importFile": "Datendatei importieren",
   "settings.importError": "Diese Datei ist keine gültige Tide-Sicherung.",
+  "settings.importConfirm":
+    "Der Import ersetzt alles, was auf diesem Gerät protokolliert wurde. Fortfahren?",
+  "settings.reset": "Alle Daten löschen",
+  "settings.resetConfirm":
+    "Jeden protokollierten Tag löschen und die Einstellungen auf diesem Gerät zurücksetzen? Das kann nicht rückgängig gemacht werden.",
 };

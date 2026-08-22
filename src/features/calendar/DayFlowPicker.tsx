@@ -26,8 +26,21 @@ export function DayFlowPicker({
   onClose,
 }: DayFlowPickerProps) {
   const pickerRef = useRef<HTMLDivElement>(null);
+  // The day button that opened the picker still has focus during the first
+  // render (the gauge's autoFocus only lands on commit), so capture it here to
+  // hand focus back on an explicit close.
+  const openerRef = useRef(
+    typeof document === "undefined"
+      ? null
+      : (document.activeElement as HTMLElement | null),
+  );
   const t = useT();
   const locale = useLocale();
+
+  function closeAndRestoreFocus() {
+    onClose();
+    openerRef.current?.focus();
+  }
 
   // Close when interacting outside the picker. Day buttons are left alone —
   // tapping one is already handled by the calendar's own selection logic.
@@ -47,7 +60,18 @@ export function DayFlowPicker({
   }, [onClose]);
 
   return (
-    <div className="day-flow-picker" ref={pickerRef}>
+    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Escape is a dismiss shortcut layered over the close button below, which stays the operable control.
+    // biome-ignore lint/a11y/noStaticElementInteractions: same.
+    <div
+      className="day-flow-picker"
+      ref={pickerRef}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.stopPropagation();
+          closeAndRestoreFocus();
+        }
+      }}
+    >
       <div className="day-flow-picker__head">
         <span className="day-flow-picker__date">
           {formatShortDate(day, locale)}
@@ -56,7 +80,7 @@ export function DayFlowPicker({
           type="button"
           className="day-flow-picker__close"
           aria-label={t("common.close")}
-          onClick={onClose}
+          onClick={closeAndRestoreFocus}
         >
           <X aria-hidden="true" size={18} />
         </button>

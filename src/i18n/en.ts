@@ -47,6 +47,8 @@ export const en = {
   "phaseLine.learning": "Learning",
 
   // Cycle dial + segment status (shown in the dial centre and read aloud)
+  "dial.overview": "Cycle overview",
+  "dial.days": "Cycle days",
   "dial.cycleDay": "Cycle day",
   "dial.day": "Day {n}",
   "status.period": "Period",
@@ -166,6 +168,11 @@ export const en = {
   "settings.import": "Import",
   "settings.importFile": "Import data file",
   "settings.importError": "That file isn't a valid Tide backup.",
+  "settings.importConfirm":
+    "Importing replaces everything logged on this device. Continue?",
+  "settings.reset": "Delete all data",
+  "settings.resetConfirm":
+    "Delete every logged day and reset settings on this device? This cannot be undone.",
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -41,6 +41,8 @@ export const nl: Dictionary = {
   "phaseLine.luteal": "Luteale fase",
   "phaseLine.learning": "Leren",
 
+  "dial.overview": "Cyclusoverzicht",
+  "dial.days": "Cyclusdagen",
   "dial.cycleDay": "Cyclusdag",
   "dial.day": "Dag {n}",
   "status.period": "Menstruatie",
@@ -155,4 +157,9 @@ export const nl: Dictionary = {
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError": "Dat bestand is geen geldige Tide-back-up.",
+  "settings.importConfirm":
+    "Importeren vervangt alles wat op dit apparaat is gelogd. Doorgaan?",
+  "settings.reset": "Alle gegevens wissen",
+  "settings.resetConfirm":
+    "Elke gelogde dag wissen en de instellingen op dit apparaat herstellen? Dit kan niet ongedaan worden gemaakt.",
 };

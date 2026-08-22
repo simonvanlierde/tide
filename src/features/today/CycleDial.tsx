@@ -295,12 +295,15 @@ export function CycleDial({
   }
 
   return (
-    <section aria-label="Cycle overview" className="cycle-dial">
+    <section aria-label={t("dial.overview")} className="cycle-dial">
+      {/* Arrow keys scrub a preview of each day; nothing is set, so the
+          slider is read-only and the preview reverts on blur/Escape. */}
       <div
         ref={frameRef}
         className="cycle-dial__frame"
         role="slider"
-        aria-label="Cycle days"
+        aria-label={t("dial.days")}
+        aria-readonly="true"
         aria-valuemin={1}
         aria-valuemax={maxIndex + 1}
         aria-valuenow={
