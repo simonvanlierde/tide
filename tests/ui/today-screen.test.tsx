@@ -292,6 +292,21 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.getByText(/your period was expected/i)).toBeInTheDocument();
+    // The reassurance line only appears once the period is late.
+    expect(screen.getByText(/variation is common/i)).toBeInTheDocument();
+    // The fact row stops claiming a "next" period in the past.
+    expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
+    expect(
+      screen.getAllByText(/^period$/i).some((el) => el.tagName === "DT"),
+    ).toBe(true);
+    expect(screen.getByText(/1 day late/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, el) =>
+          el?.classList.contains("fact__meta") === true &&
+          /^Expected /.test(el.textContent ?? ""),
+      ),
+    ).toBeInTheDocument();
   });
 
   it("dismisses the prompt for the day with 'Not yet'", async () => {

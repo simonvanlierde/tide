@@ -20,6 +20,10 @@ export const nl: Dictionary = {
   "today.inDays.other": "Over {n} dagen",
   "today.higherToday": "Vandaag hoger",
   "today.lowerToday": "Vandaag lager",
+  "today.periodLate": "Menstruatie",
+  "today.daysLate.one": "{n} dag te laat",
+  "today.daysLate.other": "{n} dagen te laat",
+  "today.expectedOn": "Verwacht {date}",
   "today.ovulationDaysAgo.one": "Eisprong {n} dag geleden",
   "today.ovulationDaysAgo.other": "Eisprong {n} dagen geleden",
   "today.ovulationToday": "Eisprong vandaag",
@@ -40,6 +44,7 @@ export const nl: Dictionary = {
   "phaseLine.ovulation": "Ovulatiefase",
   "phaseLine.luteal": "Luteale fase",
   "phaseLine.learning": "Leren",
+  "phaseLine.late": "Menstruatie verwacht",
 
   "dial.overview": "Cyclusoverzicht",
   "dial.days": "Cyclusdagen",
@@ -92,6 +97,7 @@ export const nl: Dictionary = {
   "reminder.messageUpcoming":
     "Je menstruatie wordt verwacht op {date}. Begonnen?",
   "reminder.dismiss": "Nog niet — herinner me later",
+  "reminder.reassure": "Een paar dagen variatie is normaal.",
 
   "calendar.title": "Kalender",
   "calendar.previousMonth": "Vorige maand",
@@ -157,6 +163,8 @@ export const nl: Dictionary = {
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError": "Dat bestand is geen geldige Tide-back-up.",
+  "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
+  "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",
   "settings.importConfirm":
     "Importeren vervangt alles wat op dit apparaat is gelogd. Doorgaan?",
   "settings.reset": "Alle gegevens wissen",

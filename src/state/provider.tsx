@@ -94,10 +94,14 @@ function useThemePreference(theme: ThemePreference) {
         window.matchMedia(DARK_MEDIA_QUERY).matches;
       const dark = theme === "dark" || (theme === "system" && prefersDark);
       root.dataset.theme = dark ? "dark" : "light";
-      // Keep the browser chrome (address bar / PWA status bar) in step.
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", dark ? "#0e1a1e" : "#f5f9f9");
+      // Keep the browser chrome (address bar / PWA status bar) in step. Read
+      // the ground colour from the tokens so the CSS stays the one source.
+      const ground = getComputedStyle(root).getPropertyValue("--bg-top").trim();
+      if (ground) {
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", ground);
+      }
     }
 
     apply();

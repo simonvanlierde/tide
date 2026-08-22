@@ -128,7 +128,7 @@ describe("SettingsScreen", () => {
     expect(click).toHaveBeenCalledOnce();
     expect(click.mock.contexts[0]).toMatchObject({
       href: "blob:tide-backup",
-      download: "tide-backup.json",
+      download: expect.stringMatching(/^tide-backup-\d{4}-\d{2}-\d{2}\.json$/),
     });
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:tide-backup");
   });
@@ -159,6 +159,9 @@ describe("SettingsScreen", () => {
       "2026-04-02",
     ]);
     expect(loadAppState().intensityByDay).toEqual({ "2026-04-02": "heavy" });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 1 logged day\./i,
+    );
   });
 
   it("opens the hidden file picker from the import action", async () => {

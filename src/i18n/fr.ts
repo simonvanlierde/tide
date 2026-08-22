@@ -20,6 +20,10 @@ export const fr: Dictionary = {
   "today.inDays.other": "dans {n} jours",
   "today.higherToday": "Plus élevée aujourd’hui",
   "today.lowerToday": "Plus faible aujourd’hui",
+  "today.periodLate": "Règles",
+  "today.daysLate.one": "{n} jour de retard",
+  "today.daysLate.other": "{n} jours de retard",
+  "today.expectedOn": "Attendues {date}",
   "today.ovulationDaysAgo.one": "Ovulation il y a {n} jour",
   "today.ovulationDaysAgo.other": "Ovulation il y a {n} jours",
   "today.ovulationToday": "Ovulation aujourd’hui",
@@ -40,6 +44,7 @@ export const fr: Dictionary = {
   "phaseLine.ovulation": "Phase d’ovulation",
   "phaseLine.luteal": "Phase lutéale",
   "phaseLine.learning": "Apprentissage",
+  "phaseLine.late": "Règles attendues",
 
   "dial.overview": "Aperçu du cycle",
   "dial.days": "Jours du cycle",
@@ -91,6 +96,7 @@ export const fr: Dictionary = {
     "Vos règles étaient prévues le {date}. Commencées ?",
   "reminder.messageUpcoming": "Vos règles sont prévues le {date}. Commencées ?",
   "reminder.dismiss": "Pas encore — me le rappeler plus tard",
+  "reminder.reassure": "Quelques jours de variation, c’est courant.",
 
   "calendar.title": "Calendrier",
   "calendar.previousMonth": "Mois précédent",
@@ -157,6 +163,8 @@ export const fr: Dictionary = {
   "settings.import": "Importer",
   "settings.importFile": "Importer un fichier de données",
   "settings.importError": "Ce fichier n’est pas une sauvegarde Tide valide.",
+  "settings.importSuccess.one": "{n} jour enregistré importé.",
+  "settings.importSuccess.other": "{n} jours enregistrés importés.",
   "settings.importConfirm":
     "L’import remplace tout ce qui est enregistré sur cet appareil. Continuer ?",
   "settings.reset": "Supprimer toutes les données",

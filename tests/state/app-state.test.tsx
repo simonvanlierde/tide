@@ -183,6 +183,9 @@ describe("system theme preference", () => {
     const meta = document.createElement("meta");
     meta.setAttribute("name", "theme-color");
     document.head.appendChild(meta);
+    // The provider reads the ground colour from the --bg-top token; jsdom
+    // doesn't apply the stylesheet, so supply it inline.
+    document.documentElement.style.setProperty("--bg-top", "#0e1a1e");
 
     try {
       renderWithAppState(<output>probe</output>, {
@@ -192,6 +195,7 @@ describe("system theme preference", () => {
       expect(meta.getAttribute("content")).toBe("#0e1a1e");
     } finally {
       meta.remove();
+      document.documentElement.style.removeProperty("--bg-top");
     }
   });
 });

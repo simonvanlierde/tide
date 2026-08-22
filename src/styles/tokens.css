@@ -28,6 +28,9 @@
     /* Coral — the bleeding signal only: the log action and period days. */
     --bleed: #e26d5a;
     --bleed-strong: #cf5741;
+    /* Coral as text on light surfaces: deep enough for AA (5.3:1 on white,
+       4.9:1 on the soft surface). --bleed-strong itself is only 4.1:1. */
+    --bleed-ink: #b8452f;
 
     /* Flow-intensity ramp: a rising coral tide, spotting → heavy. Medium is
        the base coral; the ends bracket it lighter and deeper. */
@@ -85,6 +88,7 @@
 
     --bleed: #e8785f;
     --bleed-strong: #f0917a;
+    --bleed-ink: #f0917a;
 
     /* Same rising tide as light mode — pale rose to deep coral, spotting →
        heavy — retuned for the dark ground: every step stays light enough to

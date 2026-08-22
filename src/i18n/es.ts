@@ -20,6 +20,10 @@ export const es: Dictionary = {
   "today.inDays.other": "en {n} días",
   "today.higherToday": "Más alta hoy",
   "today.lowerToday": "Más baja hoy",
+  "today.periodLate": "Regla",
+  "today.daysLate.one": "{n} día de retraso",
+  "today.daysLate.other": "{n} días de retraso",
+  "today.expectedOn": "Prevista {date}",
   "today.ovulationDaysAgo.one": "Ovulación hace {n} día",
   "today.ovulationDaysAgo.other": "Ovulación hace {n} días",
   "today.ovulationToday": "Ovulación hoy",
@@ -40,6 +44,7 @@ export const es: Dictionary = {
   "phaseLine.ovulation": "Fase de ovulación",
   "phaseLine.luteal": "Fase lútea",
   "phaseLine.learning": "Aprendiendo",
+  "phaseLine.late": "Regla prevista",
 
   "dial.overview": "Resumen del ciclo",
   "dial.days": "Días del ciclo",
@@ -92,6 +97,7 @@ export const es: Dictionary = {
   "reminder.messageUpcoming":
     "Tu período está previsto el {date}. ¿Ha comenzado?",
   "reminder.dismiss": "Todavía no — recordármelo más tarde",
+  "reminder.reassure": "Unos días de variación es normal.",
 
   "calendar.title": "Calendario",
   "calendar.previousMonth": "Mes anterior",
@@ -158,6 +164,8 @@ export const es: Dictionary = {
   "settings.importFile": "Importar archivo de datos",
   "settings.importError":
     "Ese archivo no es una copia de seguridad de Tide válida.",
+  "settings.importSuccess.one": "{n} día registrado importado.",
+  "settings.importSuccess.other": "{n} días registrados importados.",
   "settings.importConfirm":
     "Importar reemplaza todo lo registrado en este dispositivo. ¿Continuar?",
   "settings.reset": "Borrar todos los datos",

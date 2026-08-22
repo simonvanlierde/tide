@@ -30,6 +30,9 @@ export function ReminderPrompt({
         <strong>{expectedLabel}</strong>
         {after}
       </p>
+      {isOverdue ? (
+        <p className="reminder-prompt__reassure">{t("reminder.reassure")}</p>
+      ) : null}
       <LogAction isLogged={false} onToggle={onLog} />
       <button
         type="button"

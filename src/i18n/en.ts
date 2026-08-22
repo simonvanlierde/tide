@@ -25,6 +25,10 @@ export const en = {
   "today.inDays.other": "In {n} days",
   "today.higherToday": "Higher today",
   "today.lowerToday": "Lower today",
+  "today.periodLate": "Period",
+  "today.daysLate.one": "{n} day late",
+  "today.daysLate.other": "{n} days late",
+  "today.expectedOn": "Expected {date}",
   "today.ovulationDaysAgo.one": "Ovulation {n} day ago",
   "today.ovulationDaysAgo.other": "Ovulation {n} days ago",
   "today.ovulationToday": "Ovulation today",
@@ -45,6 +49,7 @@ export const en = {
   "phaseLine.ovulation": "Ovulation phase",
   "phaseLine.luteal": "Luteal phase",
   "phaseLine.learning": "Learning",
+  "phaseLine.late": "Period expected",
 
   // Cycle dial + segment status (shown in the dial centre and read aloud)
   "dial.overview": "Cycle overview",
@@ -100,6 +105,7 @@ export const en = {
   "reminder.messageOverdue": "Your period was expected {date}. Started?",
   "reminder.messageUpcoming": "Your period is expected {date}. Started?",
   "reminder.dismiss": "Not yet — remind me later",
+  "reminder.reassure": "A few days of variation is common.",
 
   // Calendar
   "calendar.title": "Calendar",
@@ -168,6 +174,8 @@ export const en = {
   "settings.import": "Import",
   "settings.importFile": "Import data file",
   "settings.importError": "That file isn't a valid Tide backup.",
+  "settings.importSuccess.one": "Imported {n} logged day.",
+  "settings.importSuccess.other": "Imported {n} logged days.",
   "settings.importConfirm":
     "Importing replaces everything logged on this device. Continue?",
   "settings.reset": "Delete all data",

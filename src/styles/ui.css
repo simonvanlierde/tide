@@ -19,6 +19,23 @@
     line-height: 1.5;
   }
 
+  /* A problem, not a caption: full ink, leading icon. No coral (that's the
+     bleeding signal), so the weight comes from ink and the icon. */
+  .utility-card .supporting-note--error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--ink);
+  }
+
+  .supporting-note__icon {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    margin-top: 2px;
+    color: var(--ink-soft);
+  }
+
   /* Colophon — version, source link, copyright as one quiet credit. Scoped
      under .utility-card so it outranks the `.utility-card p` color/size above. */
   .utility-card .colophon {
@@ -181,9 +198,13 @@
 
   .info-popover__trigger:hover,
   .info-popover__trigger:focus-visible {
-    outline: none;
     border-color: var(--tide);
     color: var(--tide-strong);
+  }
+
+  .info-popover__trigger:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
   }
 
   .info-popover__icon {
@@ -196,7 +217,7 @@
     inset-inline-end: 0;
     top: calc(100% + 8px);
     z-index: 2;
-    width: min(280px, 82vw);
+    width: min(280px, 100vw - 16px);
     padding: 12px 14px;
     border-radius: 14px;
     border: 1px solid var(--surface-border);
@@ -387,7 +408,9 @@
 
   .flow-gauge__levels {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* minmax(0, …) so a long label (de "Schmierblutung") wraps instead of
+       pushing the grid past the card. */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 
@@ -443,6 +466,9 @@
   .flow-gauge__label {
     font-size: 0.78rem;
     color: var(--ink-muted);
+    text-align: center;
+    overflow-wrap: anywhere;
+    hyphens: auto;
   }
 
   .flow-gauge__level[data-selected="true"] .flow-gauge__label {
@@ -905,12 +931,17 @@
 
   .calendar-grid__day.is-predicted-period {
     background: transparent;
-    border: 2px dashed var(--bleed);
-    color: var(--bleed-strong);
-    /* Each successive day of the expected run fades further, so the dotted
-       forecast reads as more tentative the deeper into the period it goes.
-       Floored so later days stay legible. */
-    opacity: max(0.5, calc(1 - var(--forecast-step, 0) * 0.24));
+    /* Each successive day of the expected run fades its outline further, so
+       the forecast reads as more tentative the deeper into the period it goes.
+       Only the dash fades: the day number stays at full AA contrast. */
+    border: 2px dashed
+      color-mix(
+        in srgb,
+        var(--bleed) max(55%, calc(100% - var(--forecast-step, 0) * 18%)),
+        transparent
+      );
+    color: var(--bleed-ink);
+    opacity: 1;
   }
 
   .calendar-grid__day.is-logged {

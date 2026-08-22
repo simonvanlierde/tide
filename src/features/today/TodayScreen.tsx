@@ -53,6 +53,8 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
   // today is logged it drops to calm: "Remove" is a secondary, undo-style action.
+  const isOverdue =
+    summary.nextPeriod.daysUntil !== null && summary.nextPeriod.daysUntil < 0;
   const logVariant =
     !isTodayLogged &&
     (summary.phaseLabel === "menstrual" || reminderState.isExpectedSoon)
@@ -69,7 +71,9 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
       </h1>
       <CycleDial
         summary={summary}
-        phaseLabel={getPhaseLine(t, summary.phaseLabel)}
+        phaseLabel={
+          isOverdue ? t("phaseLine.late") : getPhaseLine(t, summary.phaseLabel)
+        }
         periodDays={getPeriodDays(state.intensityByDay)}
         intensityByDay={state.intensityByDay}
         today={today}
@@ -82,15 +86,24 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
 
       <div className="fact-list">
         <dl className="fact-list__rows">
+          {/* Once the forecast date has passed, "next period" with a date in
+              the past contradicts itself; the row becomes "Period · N days
+              late · Expected <date>". */}
           <div className="fact">
-            <dt className="fact__label">{t("today.nextPeriod")}</dt>
+            <dt className="fact__label">
+              {t(isOverdue ? "today.periodLate" : "today.nextPeriod")}
+            </dt>
             <dd className="fact__value">
               <span>
                 {getNextPeriodPhrase(t, summary.nextPeriod.daysUntil)}
               </span>
               {summary.nextPeriod.date ? (
                 <span className="fact__meta">
-                  {formatShortDate(summary.nextPeriod.date, locale)}
+                  {isOverdue
+                    ? t("today.expectedOn", {
+                        date: formatShortDate(summary.nextPeriod.date, locale),
+                      })
+                    : formatShortDate(summary.nextPeriod.date, locale)}
                 </span>
               ) : null}
             </dd>
@@ -174,8 +187,8 @@ function getNextPeriodPhrase(
   }
 
   if (daysUntil < 0) {
-    const daysAgo = Math.abs(daysUntil);
-    return t(plural("today.daysAgo", daysAgo), { n: daysAgo });
+    const daysLate = Math.abs(daysUntil);
+    return t(plural("today.daysLate", daysLate), { n: daysLate });
   }
 
   if (daysUntil === 0) {

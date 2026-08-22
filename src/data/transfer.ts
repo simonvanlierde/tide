@@ -1,7 +1,9 @@
 import type { AppState, FlowIntensity, IsoDate } from "../domain/types";
 import { normalizeAppState } from "./schema";
 
-const EXPORT_FILENAME = "tide-backup.json";
+// Dated so repeated backups don't overwrite each other in Downloads.
+const exportFilename = () =>
+  `tide-backup-${new Date().toISOString().slice(0, 10)}.json`;
 
 interface BackupFile {
   // The logged days and their flow — its keys are the period days, so they
@@ -35,7 +37,7 @@ export function downloadAppState(state: AppState) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = EXPORT_FILENAME;
+  link.download = exportFilename();
   link.click();
   // Safari can cancel the download if the URL is revoked before it starts.
   setTimeout(() => URL.revokeObjectURL(url), 0);
