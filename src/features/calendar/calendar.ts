@@ -23,6 +23,9 @@ export function buildMonthDays(
   const current = parseIsoDate(visibleMonth);
   const year = current.getUTCFullYear();
   const monthIndex = current.getUTCMonth();
+  // Weeks start on Monday (ISO 8601) for every locale, by design: one grid
+  // shape everywhere, and getWeekdayLabels matches. Intentionally not
+  // region-dependent.
   const firstWeekday =
     (new Date(Date.UTC(year, monthIndex, 1)).getUTCDay() + 6) % 7;
   const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();

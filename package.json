@@ -13,7 +13,7 @@
     "check": "pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm build && pnpm bundle:check",
     "dev": "vite",
     "typecheck": "tsc -b --pretty false",
-    "build": "vite build",
+    "build": "vite build && node scripts/writeCspHeaders.mjs",
     "bundle:check": "node scripts/checkBundleBudget.mjs",
     "lint": "biome check .",
     "format": "biome check --write .",
