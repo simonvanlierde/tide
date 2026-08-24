@@ -315,40 +315,27 @@
   /* The key wraps to whatever fits: one row of four on most phones, two
      rows on narrow shells or at large text. Centred so a short last row
      doesn't hang left. */
+  /* A caption under the grid, not a row of chips. Compact enough to hold every
+     marker on one line at phone width, and left-aligned so the wrap at 320 px
+     reads as a list continuing rather than a stray centred item. */
   .calendar-legend {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 14px;
+    gap: 6px 10px;
+    padding-inline: 2px;
   }
 
   .calendar-legend__item {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--ink-soft);
-    font-size: var(--text-sm);
-  }
-
-  /* The cycle-day key: the corner bubble itself, at legend size. */
-  .calendar-legend__bubble {
-    display: inline-grid;
-    place-items: center;
-    min-width: 16px;
-    height: 16px;
-    padding: 0 3px;
-    border-radius: var(--radius-pill);
-    background: var(--surface);
-    box-shadow: inset 0 0 0 1px var(--surface-border);
     color: var(--ink-muted);
     font-size: var(--text-xs);
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
   }
 
   .calendar-legend__swatch {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     flex: 0 0 auto;
     border-radius: var(--radius-swatch);
   }
@@ -365,9 +352,11 @@
     background: var(--cycle-ovulation);
   }
 
+  /* A 2 px dash only fits three segments on a swatch this small, which reads
+     as a broken ring; thinner keeps the dashed-square pattern of the day. */
   .calendar-legend__swatch--predicted {
     background: transparent;
-    border: 2px dashed var(--bleed);
+    border: 1.5px dashed var(--bleed);
   }
 
   /* Narrow shells: tighter gaps and card padding buy the day cells width.

@@ -1063,30 +1063,25 @@
   }
 
   /* Neighbouring-month days keep their marker at half voice: they belong to
-     the month either side. Only the fill lightens — the day number keeps its
-     own contrast, unlike an opacity fade. */
+     the month either side. Only the fill softens — the day number keeps its
+     own contrast, unlike an opacity fade. Mixed toward transparent, not toward
+     a surface: on the dark ground, mixing coral into charcoal turns it brown,
+     while letting the card show through keeps the hue and only drops its
+     intensity. One formulation, correct in both themes. */
   .calendar-grid__day.is-outside-month.is-logged,
   .calendar-grid__day.is-outside-month.is-flow-spotting,
   .calendar-grid__day.is-outside-month.is-flow-light,
   .calendar-grid__day.is-outside-month.is-flow-medium,
   .calendar-grid__day.is-outside-month.is-flow-heavy {
-    background: color-mix(in srgb, var(--bleed) 40%, var(--surface-soft));
+    background: color-mix(in srgb, var(--bleed) 45%, transparent);
   }
 
   .calendar-grid__day.is-outside-month.is-fertile {
-    background: color-mix(
-      in srgb,
-      var(--cycle-fertile) 45%,
-      var(--surface-soft)
-    );
+    background: color-mix(in srgb, var(--cycle-fertile) 45%, transparent);
   }
 
   .calendar-grid__day.is-outside-month.is-ovulation {
-    background: color-mix(
-      in srgb,
-      var(--cycle-ovulation) 45%,
-      var(--surface-soft)
-    );
+    background: color-mix(in srgb, var(--cycle-ovulation) 45%, transparent);
   }
 
   .calendar-grid__day.is-outside-month {

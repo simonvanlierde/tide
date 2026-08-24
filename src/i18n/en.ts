@@ -133,7 +133,6 @@ export const en = {
   "calendar.legend.predicted": "Expected",
   "calendar.legend.fertile": "Fertile",
   "calendar.legend.ovulation": "Ovulation",
-  "calendar.legend.cycleDay": "Cycle day",
   "calendar.log": "Log",
   "calendar.edit": "Edit",
   "calendar.dayUnavailable": "{label} unavailable",

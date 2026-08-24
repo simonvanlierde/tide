@@ -126,7 +126,6 @@ export const nl: Dictionary = {
   "calendar.legend.predicted": "Verwacht",
   "calendar.legend.fertile": "Vruchtbaar",
   "calendar.legend.ovulation": "Eisprong",
-  "calendar.legend.cycleDay": "Cyclusdag",
   "calendar.log": "Registreren",
   "calendar.edit": "Wijzigen",
   "calendar.dayUnavailable": "{label} niet beschikbaar",

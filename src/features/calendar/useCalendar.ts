@@ -95,16 +95,6 @@ export function useCalendar(today: IsoDate) {
     return present;
   }, [monthDays, loggedDays, cycleMarkers]);
   const isWholeMonthFuture = (monthDays[0]?.value ?? visibleMonth) > today;
-  // Whether any corner number is actually drawn this month — the grid hides
-  // them on logged and future days, so the setting alone doesn't answer it.
-  const showsCycleDayNumbers =
-    showCycleDayNumbers &&
-    monthDays.some(
-      (day) =>
-        !day.isFuture &&
-        !loggedDays.has(day.value) &&
-        cycleDayNumbers.has(day.value),
-    );
 
   // A log can move the next-period date (a big enough gap starts a new cycle),
   // which repaints every forecast fill in the month. Say so rather than letting
@@ -169,7 +159,6 @@ export function useCalendar(today: IsoDate) {
     cycleMarkers,
     showFertility,
     showCycleDayNumbers,
-    showsCycleDayNumbers,
     selectedDay,
     justLoggedDay,
     forecastMoved,

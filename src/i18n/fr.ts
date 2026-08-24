@@ -126,7 +126,6 @@ export const fr: Dictionary = {
   "calendar.legend.predicted": "Prévu",
   "calendar.legend.fertile": "Fertile",
   "calendar.legend.ovulation": "Ovulation",
-  "calendar.legend.cycleDay": "Jour du cycle",
   "calendar.log": "Enregistrer",
   "calendar.edit": "Modifier",
   "calendar.dayUnavailable": "{label} indisponible",

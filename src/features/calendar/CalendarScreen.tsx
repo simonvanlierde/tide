@@ -164,6 +164,7 @@ export function CalendarScreen({
             onSelectDay={model.selectDay}
           />
         </div>
+        <CalendarLegend present={model.presentMarkers} />
         {model.selectedDay ? (
           <DayFlowPicker
             day={model.selectedDay}
@@ -203,10 +204,6 @@ export function CalendarScreen({
             )}
           </p>
         )}
-        <CalendarLegend
-          present={model.presentMarkers}
-          showCycleDay={model.showsCycleDayNumbers}
-        />
         {model.isCurrentMonth ? null : (
           <button
             type="button"
@@ -240,16 +237,10 @@ export type LegendKey = (typeof LEGEND_ITEMS)[number]["key"];
 // Only the markers actually on screen this month get a key entry; a legend
 // for things that aren't there is noise. The per-day buttons announce their
 // own marker to screen readers, so the visual legend is decorative here.
-function CalendarLegend({
-  present,
-  showCycleDay,
-}: {
-  present: ReadonlySet<LegendKey>;
-  showCycleDay: boolean;
-}) {
+function CalendarLegend({ present }: { present: ReadonlySet<LegendKey> }) {
   const t = useT();
   const items = LEGEND_ITEMS.filter((item) => present.has(item.key));
-  if (items.length === 0 && !showCycleDay) {
+  if (items.length === 0) {
     return null;
   }
 
@@ -263,14 +254,6 @@ function CalendarLegend({
           {t(item.labelKey)}
         </span>
       ))}
-      {/* The corner numbers are the one marker that isn't a colour, so the key
-          shows the bubble itself rather than a swatch. */}
-      {showCycleDay ? (
-        <span className="calendar-legend__item">
-          <span className="calendar-legend__bubble">1</span>
-          {t("calendar.legend.cycleDay")}
-        </span>
-      ) : null}
     </div>
   );
 }

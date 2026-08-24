@@ -127,7 +127,6 @@ export const de: Dictionary = {
   "calendar.legend.predicted": "Erwartet",
   "calendar.legend.fertile": "Fruchtbar",
   "calendar.legend.ovulation": "Eisprung",
-  "calendar.legend.cycleDay": "Zyklustag",
   "calendar.log": "Erfassen",
   "calendar.edit": "Bearbeiten",
   "calendar.dayUnavailable": "{label} nicht verfügbar",
