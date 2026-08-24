@@ -102,6 +102,21 @@ test.describe("theme segmented control", () => {
     expect(await isStacked(page)).toBe(true);
   });
 
+  test("keeps its label visible beside the control on wide shells", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/settings");
+    const label = await page.locator("#theme-label").boundingBox();
+    const control = await page.locator(".theme-field .segmented").boundingBox();
+    // A zero-width label means it collapsed and its text is under the control.
+    expect(label?.width ?? 0).toBeGreaterThan(20);
+    expect(label?.x ?? 0).toBeLessThan(control?.x ?? 0);
+    expect((label?.x ?? 0) + (label?.width ?? 0)).toBeLessThanOrEqual(
+      (control?.x ?? 0) + 1,
+    );
+  });
+
   test("sits beside its label once the shell is wide enough", async ({
     page,
   }) => {

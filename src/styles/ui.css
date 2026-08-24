@@ -791,14 +791,6 @@
     margin-inline-start: auto;
   }
 
-  /* The label wraps to a second line before the controls leave the right edge. */
-  .settings-row > .settings-label {
-    /* Zero basis: the label takes whatever the controls leave and wraps
-       inside it (a rem basis would become the row's minimum at large text). */
-    flex: 1 1 0;
-    min-width: 0;
-  }
-
   /* Grid items default to min-width: auto; keep every row inside the card. */
   .settings-group > * {
     min-width: 0;
@@ -932,10 +924,21 @@
 
   /* Foldable cover screens: shave the option padding so three worded options
      still fit in a 280px shell. */
+  /* Too narrow for three worded options side by side — at 200% text that is
+     any phone. Stack them instead of ellipsising: "S…" says nothing, and the
+     words were the point of stacking the control under its label. */
   @container (max-width: 19em) {
+    .segmented {
+      grid-auto-flow: row;
+    }
+
     .segmented__option {
       gap: 4px;
       padding: 6px 4px;
+    }
+
+    .segmented__label {
+      white-space: normal;
     }
   }
 
