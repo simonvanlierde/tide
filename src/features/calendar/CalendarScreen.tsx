@@ -1,9 +1,9 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
 import type { IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
-import { useT } from "../../state/provider";
-import { getTodayIsoDate } from "../../utils/date";
+import { useLocale, useT } from "../../state/provider";
+import { formatShortDate, getTodayIsoDate } from "../../utils/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarMonthPicker } from "./CalendarMonthPicker";
 import { DayFlowPicker } from "./DayFlowPicker";
@@ -18,6 +18,7 @@ export function CalendarScreen({
 }: CalendarScreenProps) {
   const model = useCalendar(today);
   const t = useT();
+  const locale = useLocale();
   const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wantPinpoint = useRef(false);
@@ -130,6 +131,11 @@ export function CalendarScreen({
             onClick={model.openPicker}
           >
             {model.monthLabel}
+            <ChevronDown
+              aria-hidden="true"
+              size={16}
+              className="calendar__month-caret"
+            />
           </button>
           <button
             type="button"
@@ -150,7 +156,6 @@ export function CalendarScreen({
             monthDays={model.monthDays}
             loggedDays={model.loggedDays}
             dayIntensity={model.dayIntensity}
-            periodDayNumbers={model.periodDayNumbers}
             cycleDayNumbers={model.cycleDayNumbers}
             showCycleDayNumbers={model.showCycleDayNumbers}
             cycleMarkers={model.cycleMarkers}
@@ -159,6 +164,7 @@ export function CalendarScreen({
             onSelectDay={model.selectDay}
           />
         </div>
+        <CalendarLegend present={model.presentMarkers} />
         {model.selectedDay ? (
           <DayFlowPicker
             day={model.selectedDay}
@@ -170,12 +176,34 @@ export function CalendarScreen({
             onRemove={() => model.removeDay(model.selectedDay as IsoDate)}
             onClose={model.closePicker}
           />
+        ) : model.justLoggedDay ? (
+          // A one-tap log wrote data; say what, and make undo one tap too.
+          <p className="supporting-note calendar__help" role="status">
+            {t(
+              model.forecastMoved
+                ? "calendar.justLoggedForecast"
+                : "calendar.justLogged",
+              { date: formatShortDate(model.justLoggedDay, locale) },
+            )}{" "}
+            <button
+              type="button"
+              className="text-action calendar__undo"
+              onClick={model.undoJustLogged}
+            >
+              {t("calendar.undo")}
+            </button>
+          </p>
         ) : (
           <p className="supporting-note calendar__help">
-            {t("calendar.tapHelp")}
+            {t(
+              model.periodDays.length === 0
+                ? "calendar.emptyHelp"
+                : model.isWholeMonthFuture
+                  ? "calendar.futureHelp"
+                  : "calendar.tapHelp",
+            )}
           </p>
         )}
-        <CalendarLegend showFertility={model.showFertility} />
         {model.isCurrentMonth ? null : (
           <button
             type="button"
@@ -187,11 +215,6 @@ export function CalendarScreen({
           </button>
         )}
       </article>
-      {model.periodDays.length === 0 ? (
-        <article className="utility-card">
-          <p>{t("calendar.noDays")}</p>
-        </article>
-      ) : null}
     </section>
   );
 }
@@ -205,21 +228,21 @@ function prefersReducedMotion() {
 const LEGEND_ITEMS = [
   { key: "logged", labelKey: "calendar.legend.logged" },
   { key: "predicted", labelKey: "calendar.legend.predicted" },
-  { key: "fertile", labelKey: "calendar.legend.fertile", fertility: true },
-  { key: "ovulation", labelKey: "calendar.legend.ovulation", fertility: true },
-] as const satisfies readonly {
-  key: string;
-  labelKey: MessageKey;
-  fertility?: boolean;
-}[];
+  { key: "fertile", labelKey: "calendar.legend.fertile" },
+  { key: "ovulation", labelKey: "calendar.legend.ovulation" },
+] as const satisfies readonly { key: string; labelKey: MessageKey }[];
 
-// The per-day buttons announce their own marker to screen readers, so the
-// visual legend is decorative here.
-function CalendarLegend({ showFertility }: { showFertility: boolean }) {
+export type LegendKey = (typeof LEGEND_ITEMS)[number]["key"];
+
+// Only the markers actually on screen this month get a key entry; a legend
+// for things that aren't there is noise. The per-day buttons announce their
+// own marker to screen readers, so the visual legend is decorative here.
+function CalendarLegend({ present }: { present: ReadonlySet<LegendKey> }) {
   const t = useT();
-  const items = showFertility
-    ? LEGEND_ITEMS
-    : LEGEND_ITEMS.filter((item) => !("fertility" in item));
+  const items = LEGEND_ITEMS.filter((item) => present.has(item.key));
+  if (items.length === 0) {
+    return null;
+  }
 
   return (
     <div className="calendar-legend" aria-hidden="true">

@@ -1,4 +1,10 @@
-import { type MouseEvent, startTransition, useEffect, useState } from "react";
+import {
+  type MouseEvent,
+  startTransition,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
 import {
@@ -76,6 +82,19 @@ export function App() {
   const { pathname, navigate } = usePathname();
   const activeScreen = getAppScreen(pathname);
   const t = useT();
+  const mainRef = useRef<HTMLElement>(null);
+  const isFirstRender = useRef(true);
+
+  // Move focus to the new screen's content so assistive tech announces the
+  // change instead of staying on the now-stale tab. Skipped on initial load.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on every pathname change is the point.
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    mainRef.current?.focus({ preventScroll: true });
+  }, [pathname]);
 
   return (
     <div className="app-shell">
@@ -86,7 +105,7 @@ export function App() {
         <span className="app-wordmark">tide</span>
         <span className="app-header__title">{t(activeScreen.labelKey)}</span>
       </header>
-      <main id="main" className="app-main" tabIndex={-1}>
+      <main id="main" ref={mainRef} className="app-main" tabIndex={-1}>
         {activeScreen.render()}
       </main>
       <TabBar activePath={activeScreen.path} onNavigate={navigate} />

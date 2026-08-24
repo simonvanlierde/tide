@@ -88,16 +88,42 @@ test.describe("theme segmented control", () => {
     return box?.width ?? 0;
   }
 
-  test("collapses to icon-only on very narrow viewports", async ({ page }) => {
+  async function isStacked(page: import("@playwright/test").Page) {
+    const label = await page.locator("#theme-label").boundingBox();
+    const control = await page.locator(".theme-field .segmented").boundingBox();
+    return (control?.y ?? 0) >= (label?.y ?? 0) + (label?.height ?? 0);
+  }
+
+  test("stacks under its label on very narrow viewports, words intact", async ({
+    page,
+  }) => {
     await page.setViewportSize({ width: 320, height: 568 });
-    // Labels are clipped to 1px (kept in the DOM for the accessible name).
-    expect(await labelWidth(page)).toBeLessThanOrEqual(2);
+    expect(await labelWidth(page)).toBeGreaterThan(10);
+    expect(await isStacked(page)).toBe(true);
   });
 
-  test("shows text labels once the shell is wide enough", async ({ page }) => {
-    // The label/control row keeps text only while the shell (the container) is
-    // wider than the 410px icon-only breakpoint — i.e. large phones and up.
+  test("keeps its label visible beside the control on wide shells", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto("/settings");
+    const label = await page.locator("#theme-label").boundingBox();
+    const control = await page.locator(".theme-field .segmented").boundingBox();
+    // A zero-width label means it collapsed and its text is under the control.
+    expect(label?.width ?? 0).toBeGreaterThan(20);
+    expect(label?.x ?? 0).toBeLessThan(control?.x ?? 0);
+    expect((label?.x ?? 0) + (label?.width ?? 0)).toBeLessThanOrEqual(
+      (control?.x ?? 0) + 1,
+    );
+  });
+
+  test("sits beside its label once the shell is wide enough", async ({
+    page,
+  }) => {
+    // Side by side only while the shell (the container) is wider than 410px,
+    // i.e. large phones and up.
     await page.setViewportSize({ width: 440, height: 780 });
     expect(await labelWidth(page)).toBeGreaterThan(10);
+    expect(await isStacked(page)).toBe(false);
   });
 });

@@ -11,11 +11,11 @@ export function CycleNumbersSection() {
     <div className="settings-row">
       <span className="settings-label" id="cycle-numbers-label">
         {t("settings.showCycleNumbers")}
-      </span>
-      <div className="settings-row__controls">
-        <InfoPopover label={t("settings.cycleNumbersInfo")}>
+        <InfoPopover label={t("settings.cycleNumbersInfo")} align="start">
           {t("settings.cycleNumbersHelp")}
         </InfoPopover>
+      </span>
+      <div className="settings-row__controls">
         <button
           type="button"
           role="switch"

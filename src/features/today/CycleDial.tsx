@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
+import { useMemo, useRef, useState } from "react";
+import type { CycleSummary, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
@@ -20,7 +20,7 @@ interface CycleDialProps {
   summary: CycleSummary;
   phaseLabel: string;
   periodDays: IsoDate[];
-  intensityByDay: Record<IsoDate, FlowIntensity>;
+  intensityByDay: Record<IsoDate, LoggedFlow>;
   today: IsoDate;
   showFertility: boolean;
 }
@@ -48,13 +48,16 @@ const BLEND_DEG = 1.4;
 const FADE_DEG = 8;
 
 function phaseColor(segment: CycleSegment) {
-  return segment.flow
-    ? `var(--flow-${segment.flow})`
-    : segment.isOvulation
-      ? "var(--cycle-ovulation)"
-      : segment.isFertile
-        ? "var(--cycle-fertile)"
-        : "var(--cycle-idle)";
+  // isPeriod first: a day logged without a level still belongs to the period
+  // arc, in base coral, rather than falling through to fertile or idle.
+  if (segment.isPeriod) {
+    return segment.flow ? `var(--flow-${segment.flow})` : "var(--bleed)";
+  }
+  return segment.isOvulation
+    ? "var(--cycle-ovulation)"
+    : segment.isFertile
+      ? "var(--cycle-fertile)"
+      : "var(--cycle-idle)";
 }
 
 // The angular window over which the predicted period fades out toward the top.
@@ -154,17 +157,30 @@ export function CycleDial({
   };
   const frameRef = useRef<HTMLDivElement>(null);
   // The cycle day being previewed while scrubbing, or null for the live view.
-  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
-  // The exact pointer angle while scrubbing, so the ghost dot tracks the finger
-  // rather than snapping to the day center. Null for keyboard previews.
-  const [previewAngle, setPreviewAngle] = useState<number | null>(null);
+  // The cycle day being previewed while scrubbing (null: the live view) and
+  // the exact pointer angle, so the ghost dot tracks the finger rather than
+  // snapping to the day centre (null for keyboard previews). One state object:
+  // a pointermove updates both in a single render.
+  const [previewState, setPreviewState] = useState<{
+    index: number | null;
+    angle: number | null;
+  }>({ index: null, angle: null });
+  const previewIndex = previewState.index;
+  const previewAngle = previewState.angle;
+  // The ring's geometry is constant for the length of a drag; measure once on
+  // pointerdown instead of forcing layout on every move.
+  const dragRect = useRef<DOMRect | null>(null);
 
-  const segments = buildCycleSegments(
-    summary,
-    periodDays,
-    today,
-    showFertility,
-    intensityByDay,
+  const segments = useMemo(
+    () =>
+      buildCycleSegments(
+        summary,
+        periodDays,
+        today,
+        showFertility,
+        intensityByDay,
+      ),
+    [summary, periodDays, today, showFertility, intensityByDay],
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
 
@@ -183,6 +199,16 @@ export function CycleDial({
   const cycleDayCount = segments.length;
   const predictedCount = hasPrediction ? PREDICTED_SPAN_DAYS : 0;
   const totalCells = cycleDayCount + predictedCount;
+  // Two conic gradients with up to ~40 stops each: rebuilt only when the data
+  // changes, not on every scrub frame.
+  const dialStyle = useMemo(
+    () => getDialStyle(segments, predictedCount),
+    [segments, predictedCount],
+  );
+  const ticksStyle = useMemo(
+    () => getTicksStyle(totalCells, predictedCount),
+    [totalCells, predictedCount],
+  );
   // Last scrubbable cell: the first expected-period day, or the final logged day
   // with no forecast. The 1.5-day nub is a visual hint, so scrubbing must stop
   // at this whole cell rather than the fractional end of the ring.
@@ -247,38 +273,45 @@ export function CycleDial({
         ].join(", ");
 
   function updatePreview(event: React.PointerEvent<HTMLDivElement>) {
-    const rect = frameRef.current?.getBoundingClientRect();
+    if (!dragRect.current) {
+      dragRect.current = frameRef.current?.getBoundingClientRect() ?? null;
+    }
+    const rect = dragRect.current;
     if (rect) {
       const index = Math.min(
         dayIndexFromPoint(event.clientX, event.clientY, rect, totalCells),
         maxIndex,
       );
-      setPreviewIndex(index);
       // The ghost free-follows the finger everywhere. On day 1 (against the top
       // seam) it's floored to the cell centre so it can't perch on the seam —
       // but only on the left side: past the centre it free-follows again, so the
       // day 1↔2 border stays scrubbable.
       const angle = pointerAngleDeg(event.clientX, event.clientY, rect);
       const day1Centre = dayAngleDeg(0, totalCells);
-      setPreviewAngle(index === 0 ? Math.max(angle, day1Centre) : angle);
+      setPreviewState({
+        index,
+        angle: index === 0 ? Math.max(angle, day1Centre) : angle,
+      });
     }
   }
 
   function clearPreview() {
-    setPreviewIndex(null);
-    setPreviewAngle(null);
+    dragRect.current = null;
+    setPreviewState({ index: null, angle: null });
   }
 
   function stepPreview(step: number) {
-    setPreviewAngle(null);
-    setPreviewIndex((index) => {
+    setPreviewState(({ index }) => {
       const from =
         typeof index === "number"
           ? index
           : currentIndex >= 0
             ? currentIndex
             : 0;
-      return Math.min(Math.max(from + step, 0), maxIndex);
+      return {
+        index: Math.min(Math.max(from + step, 0), maxIndex),
+        angle: null,
+      };
     });
   }
 
@@ -295,12 +328,15 @@ export function CycleDial({
   }
 
   return (
-    <section aria-label="Cycle overview" className="cycle-dial">
+    <section aria-label={t("dial.overview")} className="cycle-dial">
+      {/* Arrow keys scrub a preview of each day; nothing is set, so the
+          slider is read-only and the preview reverts on blur/Escape. */}
       <div
         ref={frameRef}
         className="cycle-dial__frame"
         role="slider"
-        aria-label="Cycle days"
+        aria-label={t("dial.days")}
+        aria-readonly="true"
         aria-valuemin={1}
         aria-valuemax={maxIndex + 1}
         aria-valuenow={
@@ -312,10 +348,13 @@ export function CycleDial({
         tabIndex={0}
         onPointerDown={(event) => {
           event.currentTarget.setPointerCapture(event.pointerId);
+          dragRect.current = event.currentTarget.getBoundingClientRect();
           updatePreview(event);
         }}
         onPointerMove={(event) => {
-          if (event.buttons > 0 || event.pointerType === "mouse") {
+          // Only a pressed pointer scrubs; a stray mouse pass shouldn't
+          // rewrite the screen's headline number.
+          if (event.buttons > 0) {
             updatePreview(event);
           }
         }}
@@ -325,10 +364,7 @@ export function CycleDial({
         onKeyDown={handleKeyDown}
         onBlur={clearPreview}
       >
-        <div
-          className="cycle-dial__ring"
-          style={getDialStyle(segments, predictedCount)}
-        >
+        <div className="cycle-dial__ring" style={dialStyle}>
           <div className="cycle-dial__inner">
             <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
             <strong className="cycle-dial__day">{centerDay}</strong>
@@ -342,7 +378,7 @@ export function CycleDial({
         </div>
         <div
           className="cycle-dial__ticks"
-          style={getTicksStyle(totalCells, predictedCount)}
+          style={ticksStyle}
           aria-hidden="true"
         />
         <div
@@ -363,7 +399,12 @@ export function CycleDial({
       </div>
       <CycleLegend
         className="cycle-dial__legend"
-        showFertility={showFertility}
+        // The key only names colours the ring actually shows: no coral dot
+        // over an all-grey first-run ring, no sand or amber without an
+        // ovulation estimate.
+        showPeriod={periodDays.length > 0}
+        showExpected={hasPrediction}
+        showFertility={showFertility && summary.ovulationDate !== null}
       />
     </section>
   );

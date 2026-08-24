@@ -32,7 +32,9 @@ describe("buildCycleSegments", () => {
       date: "2026-04-02",
       isCurrent: false,
       isPeriod: true,
-      flow: "medium",
+      // No level recorded for the day: the ring still paints it as period
+      // (base coral), it just doesn't claim an intensity.
+      flow: null,
       isFertile: false,
       isOvulation: false,
     });

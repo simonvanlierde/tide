@@ -89,7 +89,18 @@ describe("CalendarScreen", () => {
 
     expect(
       screen.getByRole("button", { name: /edit april 5, 2026/i }),
-    ).toHaveClass("is-logged", "is-flow-medium");
+    ).toHaveClass("is-logged");
+    // One tap records the day, not a flow level it never asked about.
+    expect(
+      screen.getByRole("button", { name: /edit april 5, 2026/i }).className,
+    ).not.toMatch(/is-flow-/);
+    // The tap wrote data: say so, and offer a one-tap undo.
+    expect(screen.getByRole("status")).toHaveTextContent(/logged .*apr 5/i);
+    await user.click(screen.getByRole("button", { name: /^undo$/i }));
+    expect(
+      screen.getByRole("button", { name: /log april 5, 2026/i }),
+    ).not.toHaveClass("is-logged");
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
   it("refines a logged day's flow from the picker on a second tap", async () => {
@@ -417,7 +428,7 @@ describe("CalendarScreen", () => {
     await user.click(screen.getByRole("button", { name: /previous month/i }));
 
     const grid = screen.getByLabelText(/calendar/i);
-    const helper = screen.getByText(/tap a day to log or edit bleeding/i);
+    const helper = screen.getByText(/tap a past day to log your first/i);
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
     });
@@ -453,15 +464,58 @@ describe("CalendarScreen", () => {
     ).toHaveLength(0);
   });
 
-  it("shows a quiet empty state when no logs exist", () => {
-    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
-      state: createAppState({
-        periodDays: [],
-      }),
-    });
+  it("tells a first-timer what to tap, and shows no legend for markers that aren't there", () => {
+    const { container } = renderWithAppState(
+      <CalendarScreen today="2026-04-18" />,
+      { state: createAppState({ periodDays: [] }) },
+    );
 
     expect(
-      screen.getByText(/no bleeding days logged yet/i),
+      screen.getByText(/tap a past day to log your first bleeding day/i),
+    ).toBeInTheDocument();
+    expect(container.querySelector(".calendar-legend")).toBeNull();
+  });
+
+  it("is one tab stop, with arrow keys walking the grid", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    });
+
+    // Only today carries the tab stop; every other day is skipped by Tab.
+    const today = screen.getByRole("button", { name: /log april 18, 2026/i });
+    const neighbour = screen.getByRole("button", {
+      name: /log april 17, 2026/i,
+    });
+    expect(today).toHaveAttribute("tabindex", "0");
+    expect(neighbour).toHaveAttribute("tabindex", "-1");
+
+    today.focus();
+    await user.keyboard("{ArrowLeft}");
+    expect(neighbour).toHaveFocus();
+    await user.keyboard("{ArrowUp}");
+    expect(
+      screen.getByRole("button", { name: /log april 10, 2026/i }),
+    ).toHaveFocus();
+
+    // Arrows refuse to walk into days that can't be logged yet.
+    screen.getByRole("button", { name: /log april 18, 2026/i }).focus();
+    await user.keyboard("{ArrowRight}");
+    expect(
+      screen.getByRole("button", { name: /log april 18, 2026/i }),
+    ).toHaveFocus();
+  });
+
+  it("explains that a fully future month can't be logged", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    });
+
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+
+    expect(
+      screen.getByText(/future days can't be logged yet/i),
     ).toBeInTheDocument();
   });
 });

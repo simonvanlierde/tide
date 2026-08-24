@@ -1,21 +1,33 @@
 @layer screens {
-  .today-screen {
+  /* Single column capped at the shell: a wide child wraps, it never widens
+     the page (matters at 200% text on a narrow phone). */
+  .today-screen,
+  .utility-screen {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 16px;
   }
 
   .today-screen__note {
     margin: 0;
     color: var(--ink-muted);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     line-height: 1.45;
+  }
+
+  /* The privacy promise, stated where the data is made: one quiet line. */
+  .today-screen__privacy {
+    margin: 0;
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
   }
 
   .reminder-prompt {
     display: grid;
     gap: 14px;
     padding: 18px;
-    border-radius: 18px;
+    border-radius: var(--radius-prompt);
     border: 1px solid var(--tide-soft);
     background: var(--tide-tint);
   }
@@ -23,8 +35,18 @@
   .reminder-prompt__message {
     margin: 0;
     color: var(--tide-strong);
-    font-size: 1.05rem;
+    font-size: var(--text-lg);
     line-height: 1.4;
+    text-align: center;
+  }
+
+  /* Overdue is the highest-anxiety moment on the screen: one calm line,
+     quieter than the question, before the actions. */
+  .reminder-prompt__reassure {
+    margin: -6px 0 0;
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    line-height: 1.45;
     text-align: center;
   }
 
@@ -34,7 +56,7 @@
     border: 0;
     background: transparent;
     color: var(--tide-strong);
-    font-size: 0.95rem;
+    font-size: var(--text-md);
     font-weight: 500;
   }
 
@@ -47,11 +69,6 @@
     outline-offset: 2px;
   }
 
-  .utility-screen {
-    display: grid;
-    gap: 16px;
-  }
-
   /* Tidal dial — the signature */
   .cycle-dial {
     display: grid;
@@ -62,7 +79,11 @@
 
   .cycle-dial__frame {
     position: relative;
-    width: min(280px, 64vw);
+    /* rem-led so the dial grows with large text, capped by the viewport. The
+       frame is a container: the text inside sizes against the disc (cqw), so
+       when the cap wins the type still fits. */
+    container-type: inline-size;
+    width: min(17.5rem, 64vw);
     aspect-ratio: 1;
     border-radius: 50%;
     touch-action: none;
@@ -78,7 +99,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    padding: 30px;
+    padding: min(30px, 11cqw);
     box-sizing: border-box;
     box-shadow: var(--shadow-soft);
   }
@@ -118,14 +139,14 @@
   }
 
   .cycle-dial__eyebrow {
-    font-size: 0.7rem;
+    font-size: min(var(--text-xs), 5cqw);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
 
   .cycle-dial__day {
-    font-size: 3.5rem;
+    font-size: min(var(--text-display), 22cqw);
     line-height: 0.86;
     font-weight: 600;
     color: var(--ink);
@@ -133,13 +154,13 @@
   }
 
   .cycle-dial__phase {
-    font-size: 1.1rem;
+    font-size: min(var(--text-lg), 7cqw);
     font-weight: 500;
     color: var(--tide-strong);
   }
 
   .cycle-dial__date {
-    font-size: 1.1rem;
+    font-size: min(var(--text-lg), 7cqw);
     color: var(--ink-muted);
   }
 
@@ -156,10 +177,10 @@
     width: 20px;
     height: 20px;
     margin-top: 3px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--ink);
     border: 3px solid var(--surface);
-    box-shadow: 0 2px 6px rgba(20, 48, 58, 0.3);
+    box-shadow: var(--shadow-knob);
   }
 
   /* Follows the pointer while scrubbing, so the finger's spot on the ring stays
@@ -177,10 +198,10 @@
     width: 20px;
     height: 20px;
     margin-top: 3px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--surface);
     border: 2.5px solid var(--tide);
-    box-shadow: 0 1px 4px rgba(20, 48, 58, 0.2);
+    box-shadow: var(--shadow-knob);
   }
 
   .cycle-dial__legend {
@@ -195,7 +216,7 @@
     align-items: center;
     gap: 6px;
     color: var(--ink-soft);
-    font-size: 0.86rem;
+    font-size: var(--text-md);
     line-height: 1.2;
   }
 
@@ -203,12 +224,17 @@
     width: 9px;
     height: 9px;
     flex: 0 0 auto;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--cycle-idle);
   }
 
   .cycle-view__dot--period {
     background: var(--cycle-period);
+  }
+
+  /* The ghosted nub on the ring: coral at the same weight the gradient uses. */
+  .cycle-view__dot--expected {
+    background: color-mix(in srgb, var(--cycle-period) 60%, transparent);
   }
 
   .cycle-view__dot--fertile {
@@ -222,6 +248,9 @@
   /* Calendar */
   .calendar {
     display: grid;
+    /* minmax(0, 1fr), not auto: a wide child (the legend at 200% text) must
+       wrap inside the card rather than widen the column past it. */
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
 
@@ -234,6 +263,20 @@
 
   .calendar__month-button {
     width: 100%;
+    /* A long month name at large text wraps inside the pill instead of
+       pushing the seven-column grid past the card. */
+    min-width: 0;
+    white-space: normal;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  /* Says the month name opens something, without shouting it. */
+  .calendar__month-caret {
+    flex: none;
+    margin-inline-start: 6px;
+    color: var(--ink-muted);
+    vertical-align: -3px;
   }
 
   .calendar__help {
@@ -250,10 +293,6 @@
   .calendar__picker {
     display: grid;
     gap: 8px;
-    padding: 14px;
-    border-radius: 16px;
-    background: var(--surface-soft);
-    border: 1px solid var(--surface-border);
   }
 
   .calendar-picker-field {
@@ -271,50 +310,34 @@
 
   .calendar__picker-input {
     width: 100%;
-    min-height: 46px;
-    padding: 0 14px;
-    border-radius: 12px;
-    border: 1px solid var(--surface-border);
-    background: var(--surface);
-    color: var(--ink);
   }
 
-  .calendar__picker-input:focus-visible {
-    outline: 2px solid var(--tide);
-    outline-offset: 2px;
-  }
-
-  /* Two-column key on narrow shells: one row when fertility is off (2 items), a
-     balanced 2x2 when it's on (4 items) — never an orphaned trailing item. */
+  /* The key wraps to whatever fits: one row of four on most phones, two
+     rows on narrow shells or at large text. Centred so a short last row
+     doesn't hang left. */
+  /* A caption under the grid, not a row of chips. Compact enough to hold every
+     marker on one line at phone width, and left-aligned so the wrap at 320 px
+     reads as a list continuing rather than a stray centred item. */
   .calendar-legend {
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    justify-content: center;
-    gap: 8px 12px;
-  }
-
-  /* Once the shell is wide enough to hold all four items, lay the key out on a
-     single row. Keyed to the shell's container width (the shell sets
-     container-type), so it tracks the real card width instead of the viewport. */
-  @container (min-width: 380px) {
-    .calendar-legend {
-      grid-template-columns: repeat(4, auto);
-    }
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding-inline: 2px;
   }
 
   .calendar-legend__item {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: var(--ink-soft);
-    font-size: 0.82rem;
+    color: var(--ink-muted);
+    font-size: var(--text-xs);
   }
 
   .calendar-legend__swatch {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     flex: 0 0 auto;
-    border-radius: 5px;
+    border-radius: var(--radius-swatch);
   }
 
   .calendar-legend__swatch--logged {
@@ -329,18 +352,30 @@
     background: var(--cycle-ovulation);
   }
 
+  /* A 2 px dash only fits three segments on a swatch this small, which reads
+     as a broken ring; thinner keeps the dashed-square pattern of the day. */
   .calendar-legend__swatch--predicted {
     background: transparent;
-    border: 2px dashed var(--bleed);
+    border: 1.5px dashed var(--bleed);
   }
 
-  @media (max-width: 400px) {
+  /* Narrow shells: tighter gaps and card padding buy the day cells width.
+     Seven 44px targets never fit in 320px; this gets them to ~34px with the
+     full 46px height, and the weekday label stays above the 11px floor. */
+  @container (max-width: 400px) {
     .calendar-grid {
       gap: 6px;
     }
 
-    .calendar-grid__weekday {
-      font-size: 0.68rem;
+    .calendar-grid__header,
+    .calendar-grid__week {
+      gap: 5px;
+    }
+  }
+
+  @container (max-width: 350px) {
+    .calendar.utility-card {
+      padding-inline: 12px;
     }
   }
 }

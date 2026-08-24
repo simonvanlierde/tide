@@ -29,7 +29,11 @@ describe("parseImportedState", () => {
     const state = createAppState({
       periodDays: ["2026-04-02", "2026-04-03"],
       intensityByDay: { "2026-04-02": "heavy" },
-      settings: { dismissedOn: "2026-04-02", showFertility: false },
+      settings: {
+        dismissedOn: "2026-04-02",
+        showFertility: false,
+        language: "de",
+      },
     });
     const click = vi
       .spyOn(HTMLAnchorElement.prototype, "click")
@@ -96,6 +100,7 @@ describe("downloadAppState", () => {
             showFertility: true,
             showCycleDayNumbers: true,
             theme: "system",
+            language: "system",
           },
         },
         null,
@@ -106,8 +111,10 @@ describe("downloadAppState", () => {
     expect(click).toHaveBeenCalledOnce();
     expect(click.mock.contexts[0]).toMatchObject({
       href: "blob:tide-backup",
-      download: "tide-backup.json",
+      download: expect.stringMatching(/^tide-backup-\d{4}-\d{2}-\d{2}\.json$/),
     });
+    // Revocation is deferred a tick so the download has started first.
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:tide-backup");
   });
 });

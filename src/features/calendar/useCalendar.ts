@@ -1,11 +1,7 @@
-import { startTransition, useMemo, useState } from "react";
-import { getPastOvulationDates, getPeriodDayNumbers } from "../../domain/cycle";
-import {
-  DEFAULT_FLOW,
-  getPeriodDays,
-  getPredictionDays,
-} from "../../domain/flow";
-import type { FlowIntensity, IsoDate } from "../../domain/types";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { getPastOvulationDates } from "../../domain/cycle";
+import { getPeriodDays, getPredictionDays } from "../../domain/flow";
+import type { FlowIntensity, IsoDate, LoggedFlow } from "../../domain/types";
 import {
   useAppState,
   useAppStateActions,
@@ -13,6 +9,7 @@ import {
   useLocale,
 } from "../../state/provider";
 import { addMonths, formatMonthLabel } from "../../utils/date";
+import type { LegendKey } from "./CalendarScreen";
 import {
   buildCalendarMarkers,
   buildCycleDayNumbers,
@@ -46,16 +43,10 @@ export function useCalendar(today: IsoDate) {
   const loggedDays = useMemo(() => new Set(periodDays), [periodDays]);
   const dayIntensity = useMemo(
     () =>
-      new Map<IsoDate, FlowIntensity>(
-        Object.entries(state.intensityByDay) as [IsoDate, FlowIntensity][],
+      new Map<IsoDate, LoggedFlow>(
+        Object.entries(state.intensityByDay) as [IsoDate, LoggedFlow][],
       ),
     [state.intensityByDay],
-  );
-  const periodDayNumbers = useMemo(
-    // Number days from the same spotting-filtered set the cycle summary uses, so
-    // the calendar and the Today dial agree on "day N" of a period.
-    () => getPeriodDayNumbers(predictionDays),
-    [predictionDays],
   );
   const showFertility = state.settings.showFertility;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
@@ -88,6 +79,38 @@ export function useCalendar(today: IsoDate) {
       ),
     [summary, today, monthDays, visibleMonth],
   );
+  // Which legend entries this month actually needs.
+  const presentMarkers = useMemo(() => {
+    const present = new Set<LegendKey>();
+    for (const day of monthDays) {
+      if (loggedDays.has(day.value)) {
+        present.add("logged");
+        continue;
+      }
+      const marker = cycleMarkers.get(day.value);
+      if (marker === "predicted-period") present.add("predicted");
+      else if (marker === "ovulation") present.add("ovulation");
+      else if (marker === "fertile") present.add("fertile");
+    }
+    return present;
+  }, [monthDays, loggedDays, cycleMarkers]);
+  const isWholeMonthFuture = (monthDays[0]?.value ?? visibleMonth) > today;
+
+  // A log can move the next-period date (a big enough gap starts a new cycle),
+  // which repaints every forecast fill in the month. Say so rather than letting
+  // the grid change under the user's hand. No timer on the status line: it
+  // stands until the next tap, month change, or undo makes it stale, so Undo is
+  // never snatched away mid-read.
+  const previousForecast = useRef(summary.nextPeriod.date);
+  const [forecastMoved, setForecastMoved] = useState(false);
+  useEffect(() => {
+    const moved = previousForecast.current !== summary.nextPeriod.date;
+    previousForecast.current = summary.nextPeriod.date;
+    if (moved && justLoggedDay) {
+      setForecastMoved(true);
+    }
+  }, [summary.nextPeriod.date, justLoggedDay]);
+
   const locale = useLocale();
   const monthLabel = useMemo(
     () => formatMonthLabel(visibleMonth, locale),
@@ -96,7 +119,13 @@ export function useCalendar(today: IsoDate) {
 
   // keepPickerOpen lets the month/year dropdowns change one field at a time
   // without the panel closing between picks; chevrons and "Today" close it.
-  function setMonth(nextMonth: IsoDate, keepPickerOpen = false) {
+  // Takes an updater so held PageUp/PageDown and fast swipes step from the
+  // latest month, not the last committed one — inside a transition several
+  // pages can arrive before a commit.
+  function setMonth(
+    nextMonth: IsoDate | ((current: IsoDate) => IsoDate),
+    keepPickerOpen = false,
+  ) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
       if (!keepPickerOpen) {
@@ -106,6 +135,7 @@ export function useCalendar(today: IsoDate) {
       // no longer shows.
       setSelectedDay(null);
       setJustLoggedDay(null);
+      setForecastMoved(false);
     });
   }
 
@@ -123,26 +153,28 @@ export function useCalendar(today: IsoDate) {
     monthDays,
     loggedDays,
     dayIntensity,
-    periodDayNumbers,
+    presentMarkers,
+    isWholeMonthFuture,
     cycleDayNumbers,
     cycleMarkers,
     showFertility,
     showCycleDayNumbers,
     selectedDay,
     justLoggedDay,
-    // Mirror the grid: a logged day with no stored level reads as the default
-    // flow, so the picker's gauge matches the day's coral fill.
+    forecastMoved,
+    // A day logged without a level leaves the gauge unselected: it is a
+    // question to answer, not a choice already made on the user's behalf.
     selectedIntensity:
       selectedDay && loggedDays.has(selectedDay)
-        ? (state.intensityByDay[selectedDay] ?? DEFAULT_FLOW)
+        ? state.intensityByDay[selectedDay]
         : undefined,
     isSelectedLogged: selectedDay ? loggedDays.has(selectedDay) : false,
     openPicker,
     goToPreviousMonth() {
-      setMonth(addMonths(visibleMonth, -1));
+      setMonth((current) => addMonths(current, -1));
     },
     goToNextMonth() {
-      setMonth(addMonths(visibleMonth, 1));
+      setMonth((current) => addMonths(current, 1));
     },
     goToToday() {
       setMonth(today);
@@ -153,15 +185,24 @@ export function useCalendar(today: IsoDate) {
       if (!loggedDays.has(day)) {
         actions.togglePeriodDay(day, today);
         setJustLoggedDay(day);
+        setForecastMoved(false);
         // Selection follows the tap: close any picker left open on another day.
         setSelectedDay(null);
         return;
       }
       setJustLoggedDay(null);
+      setForecastMoved(false);
       setSelectedDay((current) => (current === day ? null : day));
     },
     closePicker() {
       setSelectedDay(null);
+    },
+    undoJustLogged() {
+      if (justLoggedDay && loggedDays.has(justLoggedDay)) {
+        actions.togglePeriodDay(justLoggedDay, today);
+      }
+      setJustLoggedDay(null);
+      setForecastMoved(false);
     },
     setDayIntensity(day: IsoDate, intensity: FlowIntensity) {
       actions.setDayIntensity(day, intensity, today);

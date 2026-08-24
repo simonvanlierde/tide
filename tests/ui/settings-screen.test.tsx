@@ -15,13 +15,21 @@ describe("SettingsScreen", () => {
     vi.restoreAllMocks();
   });
 
-  it("shows the privacy notice inside the About card", () => {
+  it("makes the privacy promise where the data controls are", () => {
     renderSettings();
     expect(
       screen.getByRole("heading", { level: 2, name: /about/i }),
     ).toBeInTheDocument();
+
+    // The promise belongs beside export, import and delete — not adrift in About.
+    const dataCard = screen
+      .getByRole("heading", { level: 2, name: /^data$/i })
+      .closest("article");
+    expect(dataCard).not.toBeNull();
     expect(
-      screen.getByText(/your data never leaves this device/i),
+      within(dataCard as HTMLElement).getByText(
+        /your data never leaves this device/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -121,13 +129,14 @@ describe("SettingsScreen", () => {
         showFertility: true,
         showCycleDayNumbers: true,
         theme: "system",
+        language: "system",
       },
     });
     expect(blob.type).toBe("application/json");
     expect(click).toHaveBeenCalledOnce();
     expect(click.mock.contexts[0]).toMatchObject({
       href: "blob:tide-backup",
-      download: "tide-backup.json",
+      download: expect.stringMatching(/^tide-backup-\d{4}-\d{2}-\d{2}\.json$/),
     });
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:tide-backup");
   });
@@ -158,6 +167,91 @@ describe("SettingsScreen", () => {
       "2026-04-02",
     ]);
     expect(loadAppState().intensityByDay).toEqual({ "2026-04-02": "heavy" });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 1 logged day\./i,
+    );
+  });
+
+  it("asks before an import overwrites existing days, and says what it will cost", async () => {
+    const user = userEvent.setup();
+    const imported = createAppState({
+      periodDays: ["2026-04-02", "2026-04-03"],
+    });
+    renderSettings(createAppState({ periodDays: ["2026-03-01"] }));
+
+    const upload = () =>
+      user.upload(
+        screen.getByLabelText(/import data file/i),
+        new File([JSON.stringify(imported)], "tide.json", {
+          type: "application/json",
+        }),
+      );
+
+    await upload();
+    // Both sides of the trade are named before anything is replaced.
+    const dialog = screen.getByRole("dialog");
+    expect(
+      within(dialog).getByText(/holds 2 logged days/i),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(/replaces the 1 day logged on this device/i),
+    ).toBeInTheDocument();
+    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+      "2026-03-01",
+    ]);
+
+    // Backing out keeps what's here.
+    await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
+    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+      "2026-03-01",
+    ]);
+
+    await upload();
+    await user.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: /^replace$/i,
+      }),
+    );
+    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+      "2026-04-02",
+      "2026-04-03",
+    ]);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 2 logged days\./i,
+    );
+  });
+
+  it("asks before deleting everything, and only then deletes", async () => {
+    const user = userEvent.setup();
+    renderSettings(createAppState({ periodDays: ["2026-03-01"] }));
+
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    await user.click(screen.getByRole("button", { name: /cancel/i }));
+    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+      "2026-03-01",
+    ]);
+
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    await user.click(
+      within(screen.getByRole("dialog")).getByRole("button", {
+        name: /^delete$/i,
+      }),
+    );
+    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([]);
+  });
+
+  it("confirms an export instead of letting the download happen in silence", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(
+      () => undefined,
+    );
+    renderSettings(createAppState({ periodDays: ["2026-03-01"] }));
+
+    await user.click(screen.getByRole("button", { name: /export/i }));
+
+    expect(screen.getByRole("status")).toHaveTextContent(/backup saved/i);
   });
 
   it("opens the hidden file picker from the import action", async () => {

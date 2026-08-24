@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { defaultAppState } from "../../src/data/schema";
-import { DEFAULT_FLOW } from "../../src/domain/flow";
+
 import type {
   AppSettings,
   AppState,
@@ -39,7 +39,8 @@ export function createAppState(overrides: AppStateOverrides = {}): AppState {
   const { periodDays = [], intensityByDay = {}, settings } = overrides;
   return {
     intensityByDay: {
-      ...Object.fromEntries(periodDays.map((day) => [day, DEFAULT_FLOW])),
+      // Seeded days carry an explicit level; a one-tap log in the app stores null.
+      ...Object.fromEntries(periodDays.map((day) => [day, "medium"])),
       ...intensityByDay,
     },
     settings: {

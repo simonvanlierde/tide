@@ -28,13 +28,18 @@
     /* Coral — the bleeding signal only: the log action and period days. */
     --bleed: #e26d5a;
     --bleed-strong: #cf5741;
+    /* Coral as text on light surfaces: deep enough for AA (5.3:1 on white,
+       4.9:1 on the soft surface). --bleed-strong itself is only 4.1:1. */
+    --bleed-ink: #b8452f;
 
     /* Flow-intensity ramp: a rising coral tide, spotting → heavy. Medium is
        the base coral; the ends bracket it lighter and deeper. */
     --flow-spotting: #f0c1b6;
     --flow-light: #e89a88;
     --flow-medium: var(--bleed);
-    --flow-heavy: var(--bleed-strong);
+    /* Not --bleed-strong: that is 4.34:1 under the near-black day number;
+       this clears AA (4.6:1) and still reads as the deepest step. */
+    --flow-heavy: #d45d47;
 
     /* Cycle phases */
     --cycle-period: var(--bleed);
@@ -48,6 +53,31 @@
 
     --shadow-soft: 0 18px 44px rgba(20, 48, 58, 0.1);
     --shadow-card: 0 10px 28px rgba(20, 48, 58, 0.06);
+    /* The dial ring only, and the coral glow under the primary log button. */
+    --shadow-glow: 0 10px 24px rgba(226, 109, 90, 0.26);
+    --shadow-knob: 0 1px 3px rgba(20, 48, 58, 0.25);
+    --scrim: rgba(8, 17, 19, 0.42);
+
+    /* Type ramp. Eight steps; every font-size in the app is one of these. */
+    --text-xs: 0.7rem;
+    --text-sm: 0.78rem;
+    --text-md: 0.9rem;
+    --text-base: 1rem;
+    --text-lg: 1.1rem;
+    --text-xl: 1.25rem;
+    --text-2xl: 2rem;
+    --text-display: 3.5rem;
+
+    /* Radius scale: the corner grows with the block. */
+    --radius-swatch: 5px;
+    --radius-control: 10px;
+    --radius-field: 12px;
+    --radius-segment: 14px;
+    --radius-button: 16px;
+    --radius-prompt: 18px;
+    --radius-card: 20px;
+    --radius-card-lg: 22px;
+    --radius-pill: 999px;
 
     color-scheme: light;
     color: var(--ink);
@@ -85,6 +115,7 @@
 
     --bleed: #e8785f;
     --bleed-strong: #f0917a;
+    --bleed-ink: #f0917a;
 
     /* Same rising tide as light mode — pale rose to deep coral, spotting →
        heavy — retuned for the dark ground: every step stays light enough to
@@ -104,6 +135,9 @@
 
     --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
     --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);
+    --shadow-glow: 0 10px 24px rgba(232, 120, 95, 0.3);
+    --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --scrim: rgba(0, 0, 0, 0.55);
 
     color-scheme: dark;
     background:

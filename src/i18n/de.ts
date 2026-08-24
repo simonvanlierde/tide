@@ -21,6 +21,12 @@ export const de: Dictionary = {
   "today.inDays.other": "in {n} Tagen",
   "today.higherToday": "Heute höher",
   "today.lowerToday": "Heute niedriger",
+  "today.privacy": "Nur auf diesem Gerät gespeichert.",
+  "today.fertilityUnclear": "Unklar bei Verspätung",
+  "today.periodLate": "Periode",
+  "today.daysLate.one": "{n} Tag überfällig",
+  "today.daysLate.other": "{n} Tage überfällig",
+  "today.expectedOn": "Erwartet {date}",
   "today.ovulationDaysAgo.one": "Eisprung vor {n} Tag",
   "today.ovulationDaysAgo.other": "Eisprung vor {n} Tagen",
   "today.ovulationToday": "Eisprung heute",
@@ -41,7 +47,10 @@ export const de: Dictionary = {
   "phaseLine.ovulation": "Ovulationsphase",
   "phaseLine.luteal": "Lutealphase",
   "phaseLine.learning": "Lernen",
+  "phaseLine.late": "Periode erwartet",
 
+  "dial.overview": "Zyklusübersicht",
+  "dial.days": "Zyklustage",
   "dial.cycleDay": "Zyklustag",
   "dial.day": "Tag {n}",
   "status.period": "Periode",
@@ -65,6 +74,8 @@ export const de: Dictionary = {
   "insights.how": "So funktionieren die Vorhersagen",
   "insights.how1":
     "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet.",
+  "insights.howCycleStart":
+    "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Tagen beginnt einen neuen Zyklus; kürzere Lücken gehören zur selben Periode.",
   "insights.how2":
     "Die Zykluslänge ist der Median deiner letzten {recent} Zyklen, damit ein einzelner ungewöhnlicher Monat sie nicht verfälscht. Vor zwei Zyklen wird ein typischer {cycle}-Tage-Zyklus verwendet.",
   "insights.how3":
@@ -75,6 +86,7 @@ export const de: Dictionary = {
     "Das fruchtbare Fenster reicht von {before} Tagen vor bis {after} Tag nach dem Eisprung und wird breiter, wenn deine Zyklen stärker schwanken.",
 
   "legend.period": "Periode",
+  "legend.expected": "Erwartet",
   "legend.fertileWindow": "Fruchtbares Fenster",
   "legend.ovulation": "Eisprung",
 
@@ -85,12 +97,15 @@ export const de: Dictionary = {
   "flow.heavy": "Stark",
 
   "log.remove": "Blutungseintrag entfernen",
+  "log.logged": "Heute protokolliert",
+  "log.loggedWith": "Heute protokolliert · {flow}",
   "log.add": "Blutung heute erfassen",
   "reminder.messageOverdue":
     "Deine Periode wurde am {date} erwartet. Angefangen?",
   "reminder.messageUpcoming":
     "Deine Periode wird am {date} erwartet. Angefangen?",
   "reminder.dismiss": "Noch nicht — später erinnern",
+  "reminder.reassure": "Ein paar Tage Abweichung sind normal.",
 
   "calendar.title": "Kalender",
   "calendar.previousMonth": "Voriger Monat",
@@ -102,7 +117,12 @@ export const de: Dictionary = {
     "Tippe auf einen Tag, um eine Blutung zu erfassen oder zu bearbeiten.",
   "calendar.today": "Heute",
   "calendar.goToCurrentMonth": "Zum aktuellen Monat",
-  "calendar.noDays": "Noch keine Blutungstage erfasst.",
+  "calendar.justLogged": "{date} erfasst.",
+  "calendar.justLoggedForecast": "{date} erfasst. Prognose aktualisiert.",
+  "calendar.undo": "Rückgängig",
+  "calendar.emptyHelp":
+    "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
+  "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",
   "calendar.legend.logged": "Erfasst",
   "calendar.legend.predicted": "Erwartet",
   "calendar.legend.fertile": "Fruchtbar",
@@ -118,6 +138,7 @@ export const de: Dictionary = {
 
   "common.unknown": "unbekannt",
   "common.close": "Schließen",
+  "common.cancel": "Abbrechen",
   "common.days": "Tage",
 
   "settings.title": "Einstellungen",
@@ -127,7 +148,7 @@ export const de: Dictionary = {
   "theme.light": "Hell",
   "theme.dark": "Dunkel",
   "settings.language": "Sprache",
-  "language.system": "System",
+  "language.system": "Gerätesprache",
   "language.en": "English",
   "language.nl": "Nederlands",
   "language.de": "Deutsch",
@@ -153,7 +174,24 @@ export const de: Dictionary = {
   "settings.dataHelp":
     "Der Export speichert deine Tage in einer Datei. Der Import ersetzt sie aus einer Sicherung.",
   "settings.export": "Exportieren",
+  "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.import": "Importieren",
   "settings.importFile": "Datendatei importieren",
-  "settings.importError": "Diese Datei ist keine gültige Tide-Sicherung.",
+  "settings.importError":
+    "Diese Datei ist keine gültige Tide-Sicherung. Nimm eine JSON-Datei, die aus Tide exportiert wurde.",
+  "settings.importSuccess.one": "{n} protokollierter Tag importiert.",
+  "settings.importSuccess.other": "{n} protokollierte Tage importiert.",
+  "settings.importConfirmTitle": "Deine Daten ersetzen?",
+  "settings.importConfirmAction": "Ersetzen",
+  "settings.importFileDays.one": "Diese Sicherung enthält {n} erfassten Tag.",
+  "settings.importFileDays.other": "Diese Sicherung enthält {n} erfasste Tage.",
+  "settings.importReplaces.one":
+    "Sie ersetzt den {n} auf diesem Gerät erfassten Tag und lässt sich nicht rückgängig machen.",
+  "settings.importReplaces.other":
+    "Sie ersetzt die {n} auf diesem Gerät erfassten Tage und lässt sich nicht rückgängig machen.",
+  "settings.reset": "Alle Daten löschen",
+  "settings.resetTitle": "Alle Daten löschen?",
+  "settings.resetAction": "Löschen",
+  "settings.resetConfirm":
+    "Alle erfassten Tage und Einstellungen auf diesem Gerät werden gelöscht. Das lässt sich nicht rückgängig machen.",
 };

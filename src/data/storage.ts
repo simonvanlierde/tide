@@ -26,6 +26,13 @@ export function saveAppState(state: AppState) {
   setItemSafely(STORAGE_KEY, JSON.stringify(state));
 }
 
+// Remove every copy of the user's data, including the corrupt-blob backup,
+// which nothing else ever surfaces.
+export function clearAppState() {
+  window.localStorage.removeItem(STORAGE_KEY);
+  window.localStorage.removeItem(BACKUP_KEY);
+}
+
 // Storage can be full or blocked (e.g. private browsing); losing persistence
 // must not crash the app.
 function setItemSafely(key: string, value: string) {

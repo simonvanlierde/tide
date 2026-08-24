@@ -20,6 +20,12 @@ export const es: Dictionary = {
   "today.inDays.other": "en {n} días",
   "today.higherToday": "Más alta hoy",
   "today.lowerToday": "Más baja hoy",
+  "today.privacy": "Guardado solo en este dispositivo.",
+  "today.fertilityUnclear": "Incierta con retraso",
+  "today.periodLate": "Regla",
+  "today.daysLate.one": "{n} día de retraso",
+  "today.daysLate.other": "{n} días de retraso",
+  "today.expectedOn": "Prevista {date}",
   "today.ovulationDaysAgo.one": "Ovulación hace {n} día",
   "today.ovulationDaysAgo.other": "Ovulación hace {n} días",
   "today.ovulationToday": "Ovulación hoy",
@@ -40,7 +46,10 @@ export const es: Dictionary = {
   "phaseLine.ovulation": "Fase de ovulación",
   "phaseLine.luteal": "Fase lútea",
   "phaseLine.learning": "Aprendiendo",
+  "phaseLine.late": "Regla prevista",
 
+  "dial.overview": "Resumen del ciclo",
+  "dial.days": "Días del ciclo",
   "dial.cycleDay": "Día del ciclo",
   "dial.day": "Día {n}",
   "status.period": "Período",
@@ -64,6 +73,8 @@ export const es: Dictionary = {
   "insights.how": "Cómo funcionan las predicciones",
   "insights.how1":
     "Todo se calcula en tu dispositivo a partir de los días que registras.",
+  "insights.howCycleStart":
+    "Un intervalo de {gap} días o más entre días registrados inicia un ciclo nuevo; los intervalos menores son la misma regla.",
   "insights.how2":
     "La duración del ciclo es la mediana de tus últimos {recent} ciclos, para que un mes atípico no la altere. Antes de dos ciclos, se usa un ciclo típico de {cycle} días.",
   "insights.how3":
@@ -74,6 +85,7 @@ export const es: Dictionary = {
     "La ventana fértil va de {before} días antes a {after} día después de la ovulación, y se amplía cuando tus ciclos varían más.",
 
   "legend.period": "Período",
+  "legend.expected": "Prevista",
   "legend.fertileWindow": "Ventana fértil",
   "legend.ovulation": "Ovulación",
 
@@ -84,12 +96,15 @@ export const es: Dictionary = {
   "flow.heavy": "Abundante",
 
   "log.remove": "Eliminar registro de sangrado",
+  "log.logged": "Registrado hoy",
+  "log.loggedWith": "Registrado hoy · {flow}",
   "log.add": "Registrar sangrado de hoy",
   "reminder.messageOverdue":
     "Tu período estaba previsto el {date}. ¿Ha comenzado?",
   "reminder.messageUpcoming":
     "Tu período está previsto el {date}. ¿Ha comenzado?",
   "reminder.dismiss": "Todavía no — recordármelo más tarde",
+  "reminder.reassure": "Unos días de variación es normal.",
 
   "calendar.title": "Calendario",
   "calendar.previousMonth": "Mes anterior",
@@ -100,7 +115,12 @@ export const es: Dictionary = {
   "calendar.tapHelp": "Toca un día para registrar o editar el sangrado.",
   "calendar.today": "Hoy",
   "calendar.goToCurrentMonth": "Ir al mes actual",
-  "calendar.noDays": "Aún no hay días de sangrado registrados.",
+  "calendar.justLogged": "{date} registrado.",
+  "calendar.justLoggedForecast": "{date} registrado. Previsión actualizada.",
+  "calendar.undo": "Deshacer",
+  "calendar.emptyHelp":
+    "Toca un día pasado para registrar tu primer día de sangrado.",
+  "calendar.futureHelp": "Los días futuros aún no se pueden registrar.",
   "calendar.legend.logged": "Registrado",
   "calendar.legend.predicted": "Previsto",
   "calendar.legend.fertile": "Fértil",
@@ -116,6 +136,7 @@ export const es: Dictionary = {
 
   "common.unknown": "desconocido",
   "common.close": "Cerrar",
+  "common.cancel": "Cancelar",
   "common.days": "días",
 
   "settings.title": "Ajustes",
@@ -125,7 +146,7 @@ export const es: Dictionary = {
   "theme.light": "Claro",
   "theme.dark": "Oscuro",
   "settings.language": "Idioma",
-  "language.system": "Sistema",
+  "language.system": "Idioma del dispositivo",
   "language.en": "English",
   "language.nl": "Nederlands",
   "language.de": "Deutsch",
@@ -152,8 +173,24 @@ export const es: Dictionary = {
   "settings.dataHelp":
     "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de seguridad.",
   "settings.export": "Exportar",
+  "settings.exportSuccess": "Copia guardada en tus descargas.",
   "settings.import": "Importar",
   "settings.importFile": "Importar archivo de datos",
   "settings.importError":
-    "Ese archivo no es una copia de seguridad de Tide válida.",
+    "Ese archivo no es una copia válida de Tide. Usa un archivo JSON exportado desde Tide.",
+  "settings.importSuccess.one": "{n} día registrado importado.",
+  "settings.importSuccess.other": "{n} días registrados importados.",
+  "settings.importConfirmTitle": "¿Reemplazar tus datos?",
+  "settings.importConfirmAction": "Reemplazar",
+  "settings.importFileDays.one": "Esta copia contiene {n} día registrado.",
+  "settings.importFileDays.other": "Esta copia contiene {n} días registrados.",
+  "settings.importReplaces.one":
+    "Reemplaza el {n} día registrado en este dispositivo y no se puede deshacer.",
+  "settings.importReplaces.other":
+    "Reemplaza los {n} días registrados en este dispositivo y no se puede deshacer.",
+  "settings.reset": "Borrar todos los datos",
+  "settings.resetTitle": "¿Eliminar todos los datos?",
+  "settings.resetAction": "Eliminar",
+  "settings.resetConfirm":
+    "Se borran todos los días registrados y los ajustes de este dispositivo. No se puede deshacer.",
 };

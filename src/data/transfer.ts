@@ -1,15 +1,17 @@
-import type { AppState, FlowIntensity, IsoDate } from "../domain/types";
+import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
 import { normalizeAppState } from "./schema";
 
-const EXPORT_FILENAME = "tide-backup.json";
+// Dated so repeated backups don't overwrite each other in Downloads.
+const exportFilename = () =>
+  `tide-backup-${new Date().toISOString().slice(0, 10)}.json`;
 
 interface BackupFile {
   // The logged days and their flow — its keys are the period days, so they
   // aren't listed a second time. This is the app's own state shape.
-  days: Record<IsoDate, FlowIntensity>;
+  days: Record<IsoDate, LoggedFlow>;
   settings: Pick<
     AppState["settings"],
-    "showFertility" | "showCycleDayNumbers" | "theme"
+    "showFertility" | "showCycleDayNumbers" | "theme" | "language"
   >;
 }
 
@@ -22,6 +24,7 @@ function toBackupFile(state: AppState): BackupFile {
       showFertility: state.settings.showFertility,
       showCycleDayNumbers: state.settings.showCycleDayNumbers,
       theme: state.settings.theme,
+      language: state.settings.language,
     },
   };
 }
@@ -34,9 +37,10 @@ export function downloadAppState(state: AppState) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = EXPORT_FILENAME;
+  link.download = exportFilename();
   link.click();
-  URL.revokeObjectURL(url);
+  // Safari can cancel the download if the URL is revoked before it starts.
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 // Parse an exported backup back into a valid AppState. Throws on unparseable

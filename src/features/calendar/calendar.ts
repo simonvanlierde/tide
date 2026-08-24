@@ -23,6 +23,9 @@ export function buildMonthDays(
   const current = parseIsoDate(visibleMonth);
   const year = current.getUTCFullYear();
   const monthIndex = current.getUTCMonth();
+  // Weeks start on Monday (ISO 8601) for every locale, by design: one grid
+  // shape everywhere, and getWeekdayLabels matches. Intentionally not
+  // region-dependent.
   const firstWeekday =
     (new Date(Date.UTC(year, monthIndex, 1)).getUTCDay() + 6) % 7;
   const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
@@ -127,8 +130,8 @@ export function buildCalendarMarkers(
 // Running cycle-day number for every day of the CURRENT cycle: 1 on the last
 // period's start, counting up to — but not into — the next expected period,
 // which is the next cycle's day 1. Bounded to the visible window. Empty when
-// there's no period history to anchor day 1. Logged days are numbered
-// separately (per-period) by getPeriodDayNumbers, so this fills the gaps.
+// there is no period history to anchor day 1. The grid hides it on logged
+// days (the coral run says which period day they are) and on future days.
 export function buildCycleDayNumbers(
   summary: CycleSummary,
   today: IsoDate,

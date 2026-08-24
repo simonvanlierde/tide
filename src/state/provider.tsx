@@ -7,7 +7,13 @@ import {
   useMemo,
   useReducer,
 } from "react";
-import { loadAppState, saveAppState } from "../data/storage";
+import { defaultAppState } from "../data/schema";
+import {
+  clearAppState,
+  loadAppState,
+  STORAGE_KEY,
+  saveAppState,
+} from "../data/storage";
 import type {
   AppState,
   FlowIntensity,
@@ -48,6 +54,19 @@ export function AppStateProvider({
     saveAppState(state);
   }, [state]);
 
+  // Another tab (or the installed PWA window) saved: adopt its state instead
+  // of overwriting it with ours on our next change. The event only fires for
+  // writes from other documents, so this can't loop on our own save above.
+  useEffect(() => {
+    function handleStorage(event: StorageEvent) {
+      if (event.key === STORAGE_KEY) {
+        dispatch({ type: "importState", state: loadAppState() });
+      }
+    }
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
   useThemePreference(state.settings.theme);
   useLanguagePreference(state.settings.language);
 
@@ -75,10 +94,14 @@ function useThemePreference(theme: ThemePreference) {
         window.matchMedia(DARK_MEDIA_QUERY).matches;
       const dark = theme === "dark" || (theme === "system" && prefersDark);
       root.dataset.theme = dark ? "dark" : "light";
-      // Keep the browser chrome (address bar / PWA status bar) in step.
-      document
-        .querySelector('meta[name="theme-color"]')
-        ?.setAttribute("content", dark ? "#0e1a1e" : "#f5f9f9");
+      // Keep the browser chrome (address bar / PWA status bar) in step. Read
+      // the ground colour from the tokens so the CSS stays the one source.
+      const ground = getComputedStyle(root).getPropertyValue("--bg-top").trim();
+      if (ground) {
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute("content", ground);
+      }
     }
 
     apply();
@@ -180,6 +203,12 @@ export function useAppStateActions() {
       },
       importState(state: AppState) {
         dispatch({ type: "importState", state });
+      },
+      // Wipe every logged day and the orphaned corrupt-blob backup, so the
+      // device holds no history afterwards. Settings reset too.
+      resetState() {
+        clearAppState();
+        dispatch({ type: "importState", state: defaultAppState });
       },
     }),
     [dispatch],

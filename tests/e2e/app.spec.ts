@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
 import { en } from "../../src/i18n/en";
+import { FIXED_NOW } from "./seed";
+
+// Pin "today" so every test sees the same date regardless of when CI runs.
+test.beforeEach(async ({ page }) => {
+  await page.clock.setFixedTime(FIXED_NOW);
+});
 
 test("app shell loads and primary navigation works", async ({ page }) => {
   await page.goto("/");
@@ -15,7 +21,9 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/calendar$/);
-  await expect(page.getByLabel(/calendar/i)).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: en["calendar.title"] }),
+  ).toBeVisible();
 });
 
 test("logging today persists across reload", async ({ page }) => {
@@ -50,10 +58,6 @@ test("logging today persists across reload", async ({ page }) => {
 test("deep links reload correctly for the static app paths", async ({
   page,
 }) => {
-  // Pin "today" so the calendar opens on a known month regardless of
-  // the real date the suite runs on.
-  await page.clock.setFixedTime(new Date("2026-04-15T12:00:00Z"));
-
   await page.goto("/calendar");
   await expect(page.getByLabel(/calendar/i)).toBeVisible();
   await page.reload();

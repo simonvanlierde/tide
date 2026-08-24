@@ -221,9 +221,12 @@ describe("TodayScreen", () => {
       screen.getByRole("button", { name: /remove bleeding log/i }),
     ).toBeInTheDocument();
 
-    // A fresh one-tap log defaults to Medium, and the tide gauge appears to
-    // refine it — picking Spotting selects that level.
-    expect(screen.getByRole("radio", { name: /medium/i })).toBeChecked();
+    // A fresh one-tap log picks no level; the gauge appears to ask for one.
+    for (const level of ["spotting", "light", "medium", "heavy"]) {
+      expect(
+        screen.getByRole("radio", { name: new RegExp(level, "i") }),
+      ).not.toBeChecked();
+    }
     await user.click(screen.getByRole("radio", { name: /spotting/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toBeChecked();
     expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
@@ -236,10 +239,18 @@ describe("TodayScreen", () => {
       screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^not enough data yet$/i)).toBeInTheDocument();
+    // Both the next-period and the fertility rows decline to guess.
+    expect(screen.getAllByText(/^not enough data yet$/i)).toHaveLength(2);
+    expect(screen.queryByText(/lower today/i)).not.toBeInTheDocument();
+    // No ovulation estimate, so the ring has no sand or amber to explain.
+    expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
     expect(
       screen.getByText(/log bleeding to start an estimate/i),
     ).toBeInTheDocument();
+    // With nothing logged, logging is the one thing to do: keep it prominent.
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveClass("primary-action");
   });
 
   it("says the period is expected today when it lands on today", () => {
@@ -292,6 +303,21 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.getByText(/your period was expected/i)).toBeInTheDocument();
+    // The reassurance line only appears once the period is late.
+    expect(screen.getByText(/variation is common/i)).toBeInTheDocument();
+    // The fact row stops claiming a "next" period in the past.
+    expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
+    expect(
+      screen.getAllByText(/^period$/i).some((el) => el.tagName === "DT"),
+    ).toBe(true);
+    expect(screen.getByText(/1 day late/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, el) =>
+          el?.classList.contains("fact__meta") === true &&
+          /^Expected /.test(el.textContent ?? ""),
+      ),
+    ).toBeInTheDocument();
   });
 
   it("dismisses the prompt for the day with 'Not yet'", async () => {
@@ -327,10 +353,13 @@ describe("TodayScreen", () => {
     expect(
       screen.queryByText(/your period is expected/i),
     ).not.toBeInTheDocument();
-    // Undoing a log is a calm secondary action, not a loud orange CTA.
+    // Undoing a log is a quiet text action, not a loud orange CTA, and the
+    // day ends on a confirmation rather than on "Remove".
     expect(
       screen.getByRole("button", { name: /remove bleeding log/i }),
-    ).toHaveClass("secondary-action");
+    ).toHaveClass("text-action");
+    // No level was chosen, so the confirmation claims none.
+    expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
   });
 
   it("keeps a calm log action and no prompt outside the window", () => {

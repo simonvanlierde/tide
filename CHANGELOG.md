@@ -4,6 +4,49 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-08-24
+
+### Added
+
+- Settings now has a "Delete all data" action, and both deleting and importing
+  ask for confirmation first, naming how many logged days are at stake.
+- Import and export now report what happened: a saved-backup confirmation, an
+  imported-day count, and a readable error for an unusable file.
+- Logging a day from the calendar can be undone straight from the confirmation.
+- A crash now shows a recovery screen instead of a blank page.
+- The build writes Content-Security-Policy and related security headers,
+  hashing the inline theme script into the policy.
+
+### Changed
+
+- A one-tap log no longer assumes a flow level. It records that you bled, not
+  how much; picking an intensity stays optional.
+- Redesigned the Today screen around what matters first: a clear first-run
+  state, a calm logged state, and explicit late-period wording.
+- The calendar legend is now a caption, and the calendar shows a single series
+  of day numbers.
+- The type ramp, radii, and shadows are now tokens, so the screens share one
+  scale.
+- Layouts hold up in narrow shells, in the longer locales, and at 200% text.
+- The language setting reads "Device language" instead of "System".
+
+### Fixed
+
+- An impossible date in a backup ("2023-02-29") is now rejected on import
+  instead of rolling over into a day that never matches its own entry.
+- Kept the theme label visible, and moved the privacy promise into the Data
+  card where the data actually lives.
+
+### Documented
+
+- Added DESIGN.md and PRODUCT.md, and corrected the README's features and
+  roadmap.
+
+### Tested
+
+- Added coverage for the confirmation dialogs, one-tap logging without a flow
+  level, date validation, and the redesigned Today and calendar screens.
+
 ## [0.3.0] - 2026-07-06
 
 ### Added
@@ -106,6 +149,7 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
+[0.4.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.4.0
 [0.3.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.3.0
 [0.2.1]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.1
 [0.2.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.0

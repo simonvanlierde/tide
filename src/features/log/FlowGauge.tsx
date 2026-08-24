@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { FLOW_INTENSITIES } from "../../domain/flow";
-import type { FlowIntensity } from "../../domain/types";
+import type { FlowIntensity, LoggedFlow } from "../../domain/types";
 import { useT } from "../../state/provider";
 
 interface FlowGaugeProps {
   /** Currently selected level, or undefined for a day with no chosen level. */
-  selected?: FlowIntensity;
+  selected?: LoggedFlow;
   onSelect: (intensity: FlowIntensity) => void;
   /** Radio group name — unique per gauge instance so multiple can coexist. */
   name?: string;

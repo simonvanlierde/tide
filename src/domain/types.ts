@@ -11,6 +11,12 @@ export type CyclePhase =
 export type CycleEstimateMode = "learned" | "fallback" | "insufficient";
 export type ThemePreference = "system" | "light" | "dark";
 export type FlowIntensity = "spotting" | "light" | "medium" | "heavy";
+/**
+ * What a logged day records: the flow level the user picked, or null when they
+ * only said "I bled today". Null is a logged day like any other — it just
+ * doesn't claim an intensity nobody entered.
+ */
+export type LoggedFlow = FlowIntensity | null;
 
 export interface CycleSummary {
   cycleDay: number | null;
@@ -25,7 +31,7 @@ export interface CycleSummary {
   };
   /** Average days between cycle starts; drives the repeating period forecast. */
   cycleLength: number;
-  /** Learned length of an expected period run, in days (clamped 3–5). */
+  /** Learned length of an expected period run, in days (clamped 2-7). */
   periodLength: number;
   estimateMode: CycleEstimateMode;
 }
@@ -60,6 +66,6 @@ export interface AppState {
    * carries a flow (a one-tap log defaults to medium). Derive the sorted day
    * list with getPeriodDays().
    */
-  intensityByDay: Record<IsoDate, FlowIntensity>;
+  intensityByDay: Record<IsoDate, LoggedFlow>;
   settings: AppSettings;
 }

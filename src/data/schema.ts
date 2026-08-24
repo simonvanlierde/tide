@@ -5,6 +5,7 @@ import type {
   FlowIntensity,
   IsoDate,
   LanguagePreference,
+  LoggedFlow,
   ThemePreference,
 } from "../domain/types";
 import { SUPPORTED_LANGUAGES } from "../i18n";
@@ -31,29 +32,35 @@ export const defaultAppState: AppState = {
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 function isIsoDate(value: unknown): value is IsoDate {
-  return (
-    typeof value === "string" &&
-    ISO_DATE_RE.test(value) &&
-    !Number.isNaN(Date.parse(`${value}T00:00:00.000Z`))
-  );
+  if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
+    return false;
+  }
+  // Round-trip so an overflowing day ("2023-02-29") is rejected rather than
+  // rolled over by Date.parse into a date that never matches its own key.
+  const time = Date.parse(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(time) && new Date(time).toISOString().startsWith(value);
 }
 
 const isFlow = (value: unknown): value is FlowIntensity =>
   FLOW_INTENSITIES.includes(value as FlowIntensity);
 
+// null is a logged day with no chosen level; any other non-flow value is junk.
+const isLoggedFlow = (value: unknown): value is LoggedFlow =>
+  value === null || isFlow(value);
+
 // Normalize the logged days into the single date -> flow map. Its keys are the
 // logged days and its values their flow levels; any invalid entry is dropped.
 export function normalizeIntensityByDay(
   intensityByDay: unknown,
-): Record<IsoDate, FlowIntensity> {
+): Record<IsoDate, LoggedFlow> {
   const levels =
     intensityByDay && typeof intensityByDay === "object"
       ? (intensityByDay as Record<string, unknown>)
       : {};
-  const result: Record<IsoDate, FlowIntensity> = {};
+  const result: Record<IsoDate, LoggedFlow> = {};
 
   for (const [day, level] of Object.entries(levels)) {
-    if (isIsoDate(day) && isFlow(level)) {
+    if (isIsoDate(day) && isLoggedFlow(level)) {
       result[day] = level;
     }
   }

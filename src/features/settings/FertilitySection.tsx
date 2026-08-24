@@ -11,11 +11,11 @@ export function FertilitySection() {
     <div className="settings-row">
       <span className="settings-label" id="fertility-label">
         {t("settings.showFertility")}
-      </span>
-      <div className="settings-row__controls">
-        <InfoPopover label={t("settings.fertilityInfo")}>
+        <InfoPopover label={t("settings.fertilityInfo")} align="start">
           {t("settings.fertilityHelp")}
         </InfoPopover>
+      </span>
+      <div className="settings-row__controls">
         <button
           type="button"
           role="switch"

@@ -1,0 +1,10 @@
+# Cloudflare Pages response headers. All cycle history lives in localStorage on
+# this origin, so keep the page unframeable and the network surface closed.
+# __INLINE_SCRIPT_HASHES__ is replaced at build time by scripts/writeCspHeaders.mjs
+# with the sha256 of the inline theme script in index.html.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' __INLINE_SCRIPT_HASHES__; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'; object-src 'none'
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()

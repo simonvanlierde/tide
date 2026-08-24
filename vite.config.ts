@@ -11,7 +11,6 @@ const manifest: Partial<ManifestOptions> = {
   start_url: "/",
   scope: "/",
   display: "standalone",
-  orientation: "portrait",
   theme_color: "#f5f9f9",
   background_color: "#f5f9f9",
   icons: [

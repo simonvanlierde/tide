@@ -28,10 +28,3 @@ tsconfig.tsbuildinfo
 coverage/
 playwright-report/
 test-results/
-
-### LLMs
-AGENTS.md
-.claude
-.codex
-.superpowers
-docs/superpowers
