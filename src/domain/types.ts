@@ -31,7 +31,7 @@ export interface CycleSummary {
   };
   /** Average days between cycle starts; drives the repeating period forecast. */
   cycleLength: number;
-  /** Learned length of an expected period run, in days (clamped 3–5). */
+  /** Learned length of an expected period run, in days (clamped 2-7). */
   periodLength: number;
   estimateMode: CycleEstimateMode;
 }
