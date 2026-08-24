@@ -37,6 +37,21 @@ export function DayFlowPicker({
   const t = useT();
   const locale = useLocale();
 
+  // The picker renders below the grid; on short viewports it can land under
+  // the tab bar. Bring it into view when it opens or moves to another day.
+  // rAF, not immediate: layout has to settle first. Instant under reduced
+  // motion via the a11y layer's scroll-behavior override.
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      // Optional call: jsdom has no scrollIntoView.
+      pickerRef.current?.scrollIntoView?.({
+        block: "nearest",
+        behavior: "smooth",
+      });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   function closeAndRestoreFocus() {
     onClose();
     openerRef.current?.focus();

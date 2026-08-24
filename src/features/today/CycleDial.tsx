@@ -396,8 +396,10 @@ export function CycleDial({
       </div>
       <CycleLegend
         className="cycle-dial__legend"
-        // No ovulation estimate yet means no sand or amber on the ring, so the
-        // key shouldn't promise them either.
+        // The key only names colours the ring actually shows: no coral dot
+        // over an all-grey first-run ring, no sand or amber without an
+        // ovulation estimate.
+        showPeriod={periodDays.length > 0 || hasPrediction}
         showFertility={showFertility && summary.ovulationDate !== null}
       />
     </section>

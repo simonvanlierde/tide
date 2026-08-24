@@ -279,6 +279,30 @@
     background: transparent;
   }
 
+  /* The privacy promise at the top of Settings: tide-tint pill, deep-tide
+     text, same family as the status chips but self-centred. */
+  .privacy-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-self: center;
+    max-width: 100%;
+    margin: 0;
+    padding: 10px 16px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--tide-soft);
+    background: var(--tide-tint);
+    color: var(--tide-strong);
+    font-size: var(--text-md);
+    line-height: 1.3;
+  }
+
+  .privacy-chip__icon {
+    width: 17px;
+    height: 17px;
+    flex: none;
+  }
+
   /* Status chips */
   .status-row {
     display: flex;
@@ -791,6 +815,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
+    min-width: 0;
     min-height: 38px;
     padding: 6px 8px;
     border: 0;
@@ -819,6 +844,13 @@
     outline-offset: 2px;
   }
 
+  .segmented__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .segmented__icon {
     width: 16px;
     height: 16px;
@@ -828,7 +860,9 @@
   /* Below ~410px of shell width the three worded options no longer fit
      beside the "Theme" label, so the control stacks underneath and spans the
      row. The words stay: a monitor icon alone doesn't say "follow system". */
-  @container (max-width: 410px) {
+  /* em, not px: at 200% text the em threshold doubles with it, so large-text
+     users get the stacked layout on widths where the worded row can't fit. */
+  @container (max-width: 26em) {
     .theme-field {
       flex-direction: column;
       align-items: stretch;
@@ -837,9 +871,8 @@
 
   /* Foldable cover screens: shave the option padding so three worded options
      still fit in a 280px shell. */
-  @container (max-width: 300px) {
+  @container (max-width: 19em) {
     .segmented__option {
-      min-width: 0;
       gap: 4px;
       padding: 6px 4px;
     }
