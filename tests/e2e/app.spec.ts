@@ -21,7 +21,9 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/calendar$/);
-  await expect(page.getByLabel(/calendar/i)).toBeVisible();
+  await expect(
+    page.getByRole("region", { name: en["calendar.title"] }),
+  ).toBeVisible();
 });
 
 test("logging today persists across reload", async ({ page }) => {

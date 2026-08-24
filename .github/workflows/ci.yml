@@ -7,7 +7,6 @@ on:
       - main
   workflow_dispatch:
 
-
 permissions:
   contents: read
 
@@ -47,9 +46,6 @@ jobs:
         uses: ./.github/actions/setup-node-pnpm
 
       - name: Run Playwright tests
-        run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            pnpm test:e2e tests/e2e/a11y.spec.ts
-          else
-            pnpm test:e2e
-          fi
+        shell: bash
+        run: pnpm test:e2e
+
