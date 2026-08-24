@@ -6,79 +6,75 @@ web
 
 ## Users
 
-Primary: people who menstruate and are leaving mainstream period-tracking apps (Flo, Clue and
-similar) because of data-privacy concerns. They arrive with history they want to keep, are
-sceptical of anything that looks like it phones home, and use Tide as an installed PWA on a phone:
-a few seconds a day to log bleeding, a glance at Today for "where am I in my cycle", occasional
-calendar review.
+People who menstruate and are leaving a mainstream period tracker (Flo, Clue and similar)
+over data privacy. They arrive with history they want to keep, and they distrust anything
+that looks like it phones home. Tide lives on the home screen and gets seconds at a time:
+log today, glance at the cycle day, look back through the calendar now and then.
 
-Secondary (confirmed by i18n): non-English speakers in nl, de, fr, es.
+Secondary: readers of Dutch, German, French and Spanish. The app ships all five languages.
 
 ## Product Purpose
 
-A privacy-first, local-first period tracker. Log bleeding days (with optional intensity:
-spotting / light / medium / heavy), see the current cycle day and phase, and get a next-period
-forecast, an ovulation estimate, and a fertile window computed entirely on-device.
+A privacy-first, local-first period tracker. You log the days you bleed, and optionally how
+heavily. It returns the current cycle day and phase, the next expected period, an ovulation
+estimate and a fertile window. It works out every number on the device.
 
-Success: the user trusts that nothing leaves their device, logs consistently because it is
-effortless, and finds the forecast reliable enough to plan around.
+Success: the user trusts that nothing leaves the device, logs consistently because it costs
+nothing, and finds the forecast good enough to plan around.
 
 ## Positioning
 
-No account, no network, no analytics, nothing in the bundle that could exfiltrate data. The
-full prediction model is documented in plain language in the README and in-app (cycle insights),
-so a user can check what the app is doing instead of trusting a black box. Import/export as a
-plain JSON file is the migration path in and the exit path out.
+No account, no network, no analytics, nothing in the bundle that could exfiltrate data.
+The prediction model is written out in plain language in the README and in the app, so a
+user can check the arithmetic instead of trusting a black box. A plain JSON file is both
+doors: import to bring history in, export to leave.
 
 ## Operating Context
 
-- Installed to the home screen on iOS Safari / Android Chrome / desktop Chromium; works offline.
+- Installs to the home screen as a progressive web app (PWA) on iOS Safari, Android Chrome
+  and desktop Chromium. Works offline.
 - Three screens behind a bottom tab bar: Today, Calendar, Settings.
-- Reminder prompt on Today when a period is expected or overdue and today is not logged.
-- Data lives in `localStorage` under `tide.period-tracker.state`; theme is resolved before first
-  paint to avoid a flash.
-- Deployed at <https://tide.duinlab.nl> (Cloudflare, see `wrangler.jsonc`).
+- Today prompts when a period is expected or overdue and the day is not yet logged.
+- State lives in `localStorage` under `tide.period-tracker.state`. The theme resolves
+  before first paint, so the app never flashes the wrong one.
+- Deployed at <https://tide.duinlab.nl> (Cloudflare; see `wrangler.jsonc`).
 
 ## Capabilities and Constraints
 
-- Cycle model (README "How predictions work"): 10-day gap starts a new cycle; cycle length is
-  the median of the last 6 completed cycles (28-day fallback); period length averaged and
-  clamped 2–7 days (4 default); ovulation 14 days before next period; fertile window −5/+1
-  days widened by cycle standard deviation (cap ±5).
-- Fertility display is optional (settings toggle). The disclaimer ("informational, not a form of
-  birth control") stays in the product; its prominence is design's call (soft guidance, not a
-  binding placement rule).
-- Five locales via typed dictionaries; dates and plurals through `Intl`. German and French strings
-  run long and must fit.
-- Light and dark themes; user override or system.
-- Budgets enforced in CI: bundle size (`scripts/checkBundleBudget.mjs`), axe accessibility in
-  Playwright e2e, coverage.
-- Terminology: "bleeding" / "period" for the logged event, "cycle day", "phase" (menstrual,
-  follicular, ovulation, luteal), "fertile window", "expected" for predicted days.
+- The cycle model lives in `src/domain/cycle.ts` and is explained in the README under "How
+  predictions work". Treat that pair as the source of truth; do not restate its numbers.
+- Every estimate is an estimate. Fertility sits behind a settings toggle, and the
+  disclaimer that it is informational and not birth control stays in the product.
+- Five locales as typed dictionaries, dates and plurals through `Intl`. German and French
+  run long and have to fit.
+- Light and dark themes, following the system or an override.
+- CI enforces bundle size, axe accessibility in the end-to-end tests, and coverage.
+- Terminology: "bleeding" or "period" for the logged event, "cycle day", "phase"
+  (menstrual, follicular, ovulation, luteal), "fertile window", "expected" for a
+  predicted day.
 
 ## Brand Commitments
 
-Only the name, Tide, is fixed. The current lowercase `tide` wordmark and the teal/coral tidal
-palette are incumbent, not binding: they may change if the work justifies it. No logo files
-beyond `public/icons/icon.svg`. Voice is plain, calm, and non-clinical.
+Only the name is fixed. The lowercase `tide` wordmark and the teal-and-coral palette are
+what exists today, not commitments. No logo files beyond `public/icons/icon.svg`. The
+voice is plain, calm and non-clinical.
 
 ## Evidence on Hand
 
-- Screenshots: `docs/screenshots/{today,calendar}-{light,dark}.png`.
-- No testimonials, user research, or usage data. Do not fabricate any.
-- Public repo: <https://github.com/simonvanlierde/tide> (MIT).
+Screenshots in `docs/screenshots/`. Public repository at
+<https://github.com/simonvanlierde/tide> (MIT). No testimonials, user research or usage
+data exist. Do not invent any.
 
 ## Product Principles
 
-1. Privacy is visible, not just true: the interface should make "nothing leaves this device"
-   legible without nagging.
-2. Logging is the whole job; every other screen serves the glance, not the session.
-3. Estimates look like estimates: predicted days are always visually distinct from logged facts.
+1. Privacy is visible, not just true: legible without nagging.
+2. Logging is the whole job; every other screen serves the glance.
+3. Estimates look like estimates, never like logged facts.
 4. Honest math beats confident math: show how a number was reached when it matters.
-5. Works the same in five languages and two themes; no locale or theme is second-class.
+5. No locale and no theme is second-class.
 
 ## Accessibility & Inclusion
 
-WCAG AA contrast is an established floor (tokens are annotated for it, axe runs in e2e).
-Reduced-motion is honoured globally. Inclusive phrasing: users are "people who menstruate", not
-assumed to be women.
+WCAG AA contrast is the floor, and axe runs against every screen in the end-to-end tests.
+Reduced motion is honoured globally. Users are "people who menstruate", never assumed to
+be women.
