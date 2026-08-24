@@ -40,13 +40,14 @@ describe("app state core selectors", () => {
     expect(getPeriodDays(nextState.intensityByDay)).toEqual(["2026-04-02"]);
   });
 
-  it("marks a one-tap log at the default medium flow and prunes it on removal", () => {
+  it("records a one-tap log with no flow level and prunes it on removal", () => {
     const logged = appStateReducer(createAppState(), {
       type: "togglePeriodDay",
       day: "2026-04-02",
       today: "2026-04-30",
     });
-    expect(logged.intensityByDay).toEqual({ "2026-04-02": "medium" });
+    // Null, not "medium": the tap said "I bled", not how much.
+    expect(logged.intensityByDay).toEqual({ "2026-04-02": null });
 
     const removed = appStateReducer(logged, {
       type: "togglePeriodDay",

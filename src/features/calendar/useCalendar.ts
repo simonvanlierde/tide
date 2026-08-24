@@ -1,11 +1,7 @@
-import { startTransition, useEffect, useMemo, useState } from "react";
+import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { getPastOvulationDates } from "../../domain/cycle";
-import {
-  DEFAULT_FLOW,
-  getPeriodDays,
-  getPredictionDays,
-} from "../../domain/flow";
-import type { FlowIntensity, IsoDate } from "../../domain/types";
+import { getPeriodDays, getPredictionDays } from "../../domain/flow";
+import type { FlowIntensity, IsoDate, LoggedFlow } from "../../domain/types";
 import {
   useAppState,
   useAppStateActions,
@@ -47,8 +43,8 @@ export function useCalendar(today: IsoDate) {
   const loggedDays = useMemo(() => new Set(periodDays), [periodDays]);
   const dayIntensity = useMemo(
     () =>
-      new Map<IsoDate, FlowIntensity>(
-        Object.entries(state.intensityByDay) as [IsoDate, FlowIntensity][],
+      new Map<IsoDate, LoggedFlow>(
+        Object.entries(state.intensityByDay) as [IsoDate, LoggedFlow][],
       ),
     [state.intensityByDay],
   );
@@ -99,14 +95,31 @@ export function useCalendar(today: IsoDate) {
     return present;
   }, [monthDays, loggedDays, cycleMarkers]);
   const isWholeMonthFuture = (monthDays[0]?.value ?? visibleMonth) > today;
+  // Whether any corner number is actually drawn this month — the grid hides
+  // them on logged and future days, so the setting alone doesn't answer it.
+  const showsCycleDayNumbers =
+    showCycleDayNumbers &&
+    monthDays.some(
+      (day) =>
+        !day.isFuture &&
+        !loggedDays.has(day.value) &&
+        cycleDayNumbers.has(day.value),
+    );
 
-  // The "Logged <date> · Undo" status is transient: it steps aside after a
-  // few seconds, or as soon as the next tap makes it stale.
+  // A log can move the next-period date (a big enough gap starts a new cycle),
+  // which repaints every forecast fill in the month. Say so rather than letting
+  // the grid change under the user's hand. No timer on the status line: it
+  // stands until the next tap, month change, or undo makes it stale, so Undo is
+  // never snatched away mid-read.
+  const previousForecast = useRef(summary.nextPeriod.date);
+  const [forecastMoved, setForecastMoved] = useState(false);
   useEffect(() => {
-    if (!justLoggedDay) return;
-    const timer = setTimeout(() => setJustLoggedDay(null), 6000);
-    return () => clearTimeout(timer);
-  }, [justLoggedDay]);
+    const moved = previousForecast.current !== summary.nextPeriod.date;
+    previousForecast.current = summary.nextPeriod.date;
+    if (moved && justLoggedDay) {
+      setForecastMoved(true);
+    }
+  }, [summary.nextPeriod.date, justLoggedDay]);
 
   const locale = useLocale();
   const monthLabel = useMemo(
@@ -132,6 +145,7 @@ export function useCalendar(today: IsoDate) {
       // no longer shows.
       setSelectedDay(null);
       setJustLoggedDay(null);
+      setForecastMoved(false);
     });
   }
 
@@ -155,13 +169,15 @@ export function useCalendar(today: IsoDate) {
     cycleMarkers,
     showFertility,
     showCycleDayNumbers,
+    showsCycleDayNumbers,
     selectedDay,
     justLoggedDay,
-    // Mirror the grid: a logged day with no stored level reads as the default
-    // flow, so the picker's gauge matches the day's coral fill.
+    forecastMoved,
+    // A day logged without a level leaves the gauge unselected: it is a
+    // question to answer, not a choice already made on the user's behalf.
     selectedIntensity:
       selectedDay && loggedDays.has(selectedDay)
-        ? (state.intensityByDay[selectedDay] ?? DEFAULT_FLOW)
+        ? state.intensityByDay[selectedDay]
         : undefined,
     isSelectedLogged: selectedDay ? loggedDays.has(selectedDay) : false,
     openPicker,
@@ -180,11 +196,13 @@ export function useCalendar(today: IsoDate) {
       if (!loggedDays.has(day)) {
         actions.togglePeriodDay(day, today);
         setJustLoggedDay(day);
+        setForecastMoved(false);
         // Selection follows the tap: close any picker left open on another day.
         setSelectedDay(null);
         return;
       }
       setJustLoggedDay(null);
+      setForecastMoved(false);
       setSelectedDay((current) => (current === day ? null : day));
     },
     closePicker() {
@@ -195,6 +213,7 @@ export function useCalendar(today: IsoDate) {
         actions.togglePeriodDay(justLoggedDay, today);
       }
       setJustLoggedDay(null);
+      setForecastMoved(false);
     },
     setDayIntensity(day: IsoDate, intensity: FlowIntensity) {
       actions.setDayIntensity(day, intensity, today);

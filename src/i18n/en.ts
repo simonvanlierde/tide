@@ -26,6 +26,7 @@ export const en = {
   "today.higherToday": "Higher today",
   "today.lowerToday": "Lower today",
   "today.privacy": "Stored only on this device.",
+  "today.fertilityUnclear": "Unclear while late",
   "today.periodLate": "Period",
   "today.daysLate.one": "{n} day late",
   "today.daysLate.other": "{n} days late",
@@ -79,6 +80,8 @@ export const en = {
   "insights.how": "How predictions work",
   "insights.how1":
     "Everything is worked out on your device from the days you log.",
+  "insights.howCycleStart":
+    "A gap of {gap} days or more between logged days starts a new cycle; shorter gaps are the same period.",
   "insights.how2":
     "Cycle length is the median of your last {recent} cycles, so one odd month doesn’t throw it off. Before two cycles, a typical {cycle}-day cycle is used.",
   "insights.how3":
@@ -90,6 +93,7 @@ export const en = {
 
   // Today-screen legend
   "legend.period": "Period",
+  "legend.expected": "Expected",
   "legend.fertileWindow": "Fertile window",
   "legend.ovulation": "Ovulation",
 
@@ -120,7 +124,8 @@ export const en = {
   "calendar.tapHelp": "Tap a day to log or edit bleeding.",
   "calendar.today": "Today",
   "calendar.goToCurrentMonth": "Go to current month",
-  "calendar.justLogged": "Logged {date} as medium.",
+  "calendar.justLogged": "Logged {date}.",
+  "calendar.justLoggedForecast": "Logged {date}. Forecast updated.",
   "calendar.undo": "Undo",
   "calendar.emptyHelp": "Tap a past day to log your first bleeding day.",
   "calendar.futureHelp": "Future days can't be logged yet.",
@@ -128,6 +133,7 @@ export const en = {
   "calendar.legend.predicted": "Expected",
   "calendar.legend.fertile": "Fertile",
   "calendar.legend.ovulation": "Ovulation",
+  "calendar.legend.cycleDay": "Cycle day",
   "calendar.log": "Log",
   "calendar.edit": "Edit",
   "calendar.dayUnavailable": "{label} unavailable",
@@ -140,6 +146,7 @@ export const en = {
   // Shared
   "common.unknown": "unknown",
   "common.close": "Close",
+  "common.cancel": "Cancel",
   "common.days": "days",
 
   // Settings
@@ -150,7 +157,7 @@ export const en = {
   "theme.light": "Light",
   "theme.dark": "Dark",
   "settings.language": "Language",
-  "language.system": "System",
+  "language.system": "Device language",
   // Language names are endonyms — identical in every dictionary.
   "language.en": "English",
   "language.nl": "Nederlands",
@@ -177,16 +184,26 @@ export const en = {
   "settings.dataHelp":
     "Export saves your days to a file. Import replaces them from a backup.",
   "settings.export": "Export",
+  "settings.exportSuccess": "Backup saved to your downloads.",
   "settings.import": "Import",
   "settings.importFile": "Import data file",
-  "settings.importError": "That file isn't a valid Tide backup.",
+  "settings.importError":
+    "That file isn't a valid Tide backup. Use a JSON file exported from Tide.",
   "settings.importSuccess.one": "Imported {n} logged day.",
   "settings.importSuccess.other": "Imported {n} logged days.",
-  "settings.importConfirm":
-    "Importing replaces everything logged on this device. Continue?",
+  "settings.importConfirmTitle": "Replace your data?",
+  "settings.importConfirmAction": "Replace",
+  "settings.importFileDays.one": "This backup holds {n} logged day.",
+  "settings.importFileDays.other": "This backup holds {n} logged days.",
+  "settings.importReplaces.one":
+    "It replaces the {n} day logged on this device, and cannot be undone.",
+  "settings.importReplaces.other":
+    "It replaces the {n} days logged on this device, and cannot be undone.",
   "settings.reset": "Delete all data",
+  "settings.resetTitle": "Delete all data?",
+  "settings.resetAction": "Delete",
   "settings.resetConfirm":
-    "Delete every logged day and reset settings on this device? This cannot be undone.",
+    "Every logged day and setting on this device is erased. This cannot be undone.",
 } as const;
 
 export type MessageKey = keyof typeof en;

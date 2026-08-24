@@ -3,7 +3,7 @@ import {
   getCompletedCycleLengths,
   getCycleStats,
 } from "../domain/cycle";
-import { DEFAULT_FLOW, getPredictionDays } from "../domain/flow";
+import { getPredictionDays } from "../domain/flow";
 import type {
   AppState,
   FlowIntensity,
@@ -41,13 +41,14 @@ export function appStateReducer(
         return state;
       }
 
-      // Log at the default flow; removing a day drops its entry (the map is the
-      // set of logged days, so no separate list to keep in sync).
+      // A one-tap log records the day with no flow level: the user said they
+      // bled, not how much. Removing drops the entry (the map is the set of
+      // logged days, so no separate list to keep in sync).
       const intensityByDay = { ...state.intensityByDay };
       if (hasLoggedDay) {
         delete intensityByDay[action.day];
       } else {
-        intensityByDay[action.day] = DEFAULT_FLOW;
+        intensityByDay[action.day] = null;
       }
 
       return {

@@ -21,6 +21,7 @@ export const fr: Dictionary = {
   "today.higherToday": "Plus élevée aujourd’hui",
   "today.lowerToday": "Plus faible aujourd’hui",
   "today.privacy": "Stocké uniquement sur cet appareil.",
+  "today.fertilityUnclear": "Incertaine en retard",
   "today.periodLate": "Règles",
   "today.daysLate.one": "{n} jour de retard",
   "today.daysLate.other": "{n} jours de retard",
@@ -72,6 +73,8 @@ export const fr: Dictionary = {
   "insights.how": "Comment les prévisions fonctionnent",
   "insights.how1":
     "Tout est calculé sur votre appareil à partir des jours que vous enregistrez.",
+  "insights.howCycleStart":
+    "Un écart de {gap} jours ou plus entre deux jours enregistrés commence un nouveau cycle ; en dessous, ce sont les mêmes règles.",
   "insights.how2":
     "La durée du cycle est la médiane de vos {recent} derniers cycles, pour qu’un mois inhabituel ne la fausse pas. Avant deux cycles, un cycle type de {cycle} jours est utilisé.",
   "insights.how3":
@@ -82,6 +85,7 @@ export const fr: Dictionary = {
     "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand vos cycles varient davantage.",
 
   "legend.period": "Règles",
+  "legend.expected": "Attendu",
   "legend.fertileWindow": "Fenêtre de fertilité",
   "legend.ovulation": "Ovulation",
 
@@ -111,7 +115,8 @@ export const fr: Dictionary = {
     "Touchez un jour pour enregistrer ou modifier un saignement.",
   "calendar.today": "Aujourd’hui",
   "calendar.goToCurrentMonth": "Aller au mois actuel",
-  "calendar.justLogged": "{date} enregistré comme moyen.",
+  "calendar.justLogged": "{date} enregistré.",
+  "calendar.justLoggedForecast": "{date} enregistré. Prévision mise à jour.",
   "calendar.undo": "Annuler",
   "calendar.emptyHelp":
     "Touchez un jour passé pour enregistrer votre premier jour de saignement.",
@@ -121,6 +126,7 @@ export const fr: Dictionary = {
   "calendar.legend.predicted": "Prévu",
   "calendar.legend.fertile": "Fertile",
   "calendar.legend.ovulation": "Ovulation",
+  "calendar.legend.cycleDay": "Jour du cycle",
   "calendar.log": "Enregistrer",
   "calendar.edit": "Modifier",
   "calendar.dayUnavailable": "{label} indisponible",
@@ -132,6 +138,7 @@ export const fr: Dictionary = {
 
   "common.unknown": "inconnu",
   "common.close": "Fermer",
+  "common.cancel": "Annuler",
   "common.days": "jours",
 
   "settings.title": "Réglages",
@@ -141,7 +148,7 @@ export const fr: Dictionary = {
   "theme.light": "Clair",
   "theme.dark": "Sombre",
   "settings.language": "Langue",
-  "language.system": "Système",
+  "language.system": "Langue de l’appareil",
   "language.en": "English",
   "language.nl": "Nederlands",
   "language.de": "Deutsch",
@@ -168,14 +175,26 @@ export const fr: Dictionary = {
   "settings.dataHelp":
     "L’export enregistre vos jours dans un fichier. L’import les remplace à partir d’une sauvegarde.",
   "settings.export": "Exporter",
+  "settings.exportSuccess": "Sauvegarde enregistrée dans vos téléchargements.",
   "settings.import": "Importer",
   "settings.importFile": "Importer un fichier de données",
-  "settings.importError": "Ce fichier n’est pas une sauvegarde Tide valide.",
+  "settings.importError":
+    "Ce fichier n’est pas une sauvegarde Tide valide. Utilisez un fichier JSON exporté depuis Tide.",
   "settings.importSuccess.one": "{n} jour enregistré importé.",
   "settings.importSuccess.other": "{n} jours enregistrés importés.",
-  "settings.importConfirm":
-    "L’import remplace tout ce qui est enregistré sur cet appareil. Continuer ?",
+  "settings.importConfirmTitle": "Remplacer vos données ?",
+  "settings.importConfirmAction": "Remplacer",
+  "settings.importFileDays.one":
+    "Cette sauvegarde contient {n} jour enregistré.",
+  "settings.importFileDays.other":
+    "Cette sauvegarde contient {n} jours enregistrés.",
+  "settings.importReplaces.one":
+    "Elle remplace le {n} jour enregistré sur cet appareil, sans retour possible.",
+  "settings.importReplaces.other":
+    "Elle remplace les {n} jours enregistrés sur cet appareil, sans retour possible.",
   "settings.reset": "Supprimer toutes les données",
+  "settings.resetTitle": "Supprimer toutes les données ?",
+  "settings.resetAction": "Supprimer",
   "settings.resetConfirm":
-    "Supprimer chaque jour enregistré et réinitialiser les réglages sur cet appareil ? Cette action est irréversible.",
+    "Tous les jours enregistrés et les réglages de cet appareil sont effacés, sans retour possible.",
 };

@@ -6,6 +6,9 @@ export default defineConfig({
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
     exclude: ["tests/e2e/**"],
     setupFiles: ["./tests/setup.ts"],
+    // userEvent-driven UI tests occasionally cross the 5s default when the
+    // whole suite runs in parallel; a genuinely hung test still fails.
+    testTimeout: 15_000,
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "lcov"],

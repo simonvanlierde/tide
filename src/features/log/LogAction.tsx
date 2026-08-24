@@ -1,5 +1,5 @@
 import { DropletOff, Droplets } from "lucide-react";
-import type { FlowIntensity } from "../../domain/types";
+import type { FlowIntensity, LoggedFlow } from "../../domain/types";
 import { useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { FlowGauge } from "./FlowGauge";
@@ -7,7 +7,7 @@ import { FlowGauge } from "./FlowGauge";
 interface LogActionProps {
   isLogged: boolean;
   /** Flow level of the logged day, or undefined for a plain (default) log. */
-  intensity?: FlowIntensity;
+  intensity?: LoggedFlow;
   onToggle: () => void;
   /** Omit when the gauge can't appear (e.g. the reminder's always-unlogged prompt). */
   onSelectIntensity?: (intensity: FlowIntensity) => void;

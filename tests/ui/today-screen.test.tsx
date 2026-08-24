@@ -221,9 +221,12 @@ describe("TodayScreen", () => {
       screen.getByRole("button", { name: /remove bleeding log/i }),
     ).toBeInTheDocument();
 
-    // A fresh one-tap log defaults to Medium, and the tide gauge appears to
-    // refine it — picking Spotting selects that level.
-    expect(screen.getByRole("radio", { name: /medium/i })).toBeChecked();
+    // A fresh one-tap log picks no level; the gauge appears to ask for one.
+    for (const level of ["spotting", "light", "medium", "heavy"]) {
+      expect(
+        screen.getByRole("radio", { name: new RegExp(level, "i") }),
+      ).not.toBeChecked();
+    }
     await user.click(screen.getByRole("radio", { name: /spotting/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toBeChecked();
     expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
@@ -355,7 +358,8 @@ describe("TodayScreen", () => {
     expect(
       screen.getByRole("button", { name: /remove bleeding log/i }),
     ).toHaveClass("text-action");
-    expect(screen.getByRole("status")).toHaveTextContent(/logged today/i);
+    // No level was chosen, so the confirmation claims none.
+    expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
   });
 
   it("keeps a calm log action and no prompt outside the window", () => {

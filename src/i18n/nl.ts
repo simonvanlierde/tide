@@ -21,6 +21,7 @@ export const nl: Dictionary = {
   "today.higherToday": "Vandaag hoger",
   "today.lowerToday": "Vandaag lager",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
+  "today.fertilityUnclear": "Onduidelijk bij vertraging",
   "today.periodLate": "Menstruatie",
   "today.daysLate.one": "{n} dag te laat",
   "today.daysLate.other": "{n} dagen te laat",
@@ -72,6 +73,8 @@ export const nl: Dictionary = {
   "insights.how": "Hoe voorspellingen werken",
   "insights.how1":
     "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
+  "insights.howCycleStart":
+    "Een gat van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere gaten horen bij dezelfde menstruatie.",
   "insights.how2":
     "De cycluslengte is de mediaan van je laatste {recent} cycli, zodat één afwijkende maand het beeld niet verstoort. Vóór twee cycli wordt een gemiddelde cyclus van {cycle} dagen gebruikt.",
   "insights.how3":
@@ -82,6 +85,7 @@ export const nl: Dictionary = {
     "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
 
   "legend.period": "Menstruatie",
+  "legend.expected": "Verwacht",
   "legend.fertileWindow": "Vruchtbare periode",
   "legend.ovulation": "Eisprong",
 
@@ -112,7 +116,8 @@ export const nl: Dictionary = {
     "Tik op een dag om bloedverlies te registreren of te wijzigen.",
   "calendar.today": "Vandaag",
   "calendar.goToCurrentMonth": "Ga naar huidige maand",
-  "calendar.justLogged": "{date} gelogd als gemiddeld.",
+  "calendar.justLogged": "{date} gelogd.",
+  "calendar.justLoggedForecast": "{date} gelogd. Voorspelling bijgewerkt.",
   "calendar.undo": "Ongedaan maken",
   "calendar.emptyHelp":
     "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
@@ -121,6 +126,7 @@ export const nl: Dictionary = {
   "calendar.legend.predicted": "Verwacht",
   "calendar.legend.fertile": "Vruchtbaar",
   "calendar.legend.ovulation": "Eisprong",
+  "calendar.legend.cycleDay": "Cyclusdag",
   "calendar.log": "Registreren",
   "calendar.edit": "Wijzigen",
   "calendar.dayUnavailable": "{label} niet beschikbaar",
@@ -132,6 +138,7 @@ export const nl: Dictionary = {
 
   "common.unknown": "onbekend",
   "common.close": "Sluiten",
+  "common.cancel": "Annuleren",
   "common.days": "dagen",
 
   "settings.title": "Instellingen",
@@ -141,7 +148,7 @@ export const nl: Dictionary = {
   "theme.light": "Licht",
   "theme.dark": "Donker",
   "settings.language": "Taal",
-  "language.system": "Systeem",
+  "language.system": "Taal van apparaat",
   "language.en": "English",
   "language.nl": "Nederlands",
   "language.de": "Deutsch",
@@ -167,14 +174,24 @@ export const nl: Dictionary = {
   "settings.dataHelp":
     "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een back-up.",
   "settings.export": "Exporteren",
+  "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
-  "settings.importError": "Dat bestand is geen geldige Tide-back-up.",
+  "settings.importError":
+    "Dat bestand is geen geldige Tide-back-up. Gebruik een JSON-bestand dat uit Tide is geëxporteerd.",
   "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
   "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",
-  "settings.importConfirm":
-    "Importeren vervangt alles wat op dit apparaat is gelogd. Doorgaan?",
+  "settings.importConfirmTitle": "Je gegevens vervangen?",
+  "settings.importConfirmAction": "Vervangen",
+  "settings.importFileDays.one": "Deze back-up bevat {n} gelogde dag.",
+  "settings.importFileDays.other": "Deze back-up bevat {n} gelogde dagen.",
+  "settings.importReplaces.one":
+    "Die vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.",
+  "settings.importReplaces.other":
+    "Die vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.",
   "settings.reset": "Alle gegevens wissen",
+  "settings.resetTitle": "Alle gegevens verwijderen?",
+  "settings.resetAction": "Verwijderen",
   "settings.resetConfirm":
-    "Elke gelogde dag wissen en de instellingen op dit apparaat herstellen? Dit kan niet ongedaan worden gemaakt.",
+    "Elke gelogde dag en instelling op dit apparaat wordt gewist. Dit kan niet ongedaan worden gemaakt.",
 };

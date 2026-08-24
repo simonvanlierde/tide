@@ -232,6 +232,11 @@
     background: var(--cycle-period);
   }
 
+  /* The ghosted nub on the ring: coral at the same weight the gradient uses. */
+  .cycle-view__dot--expected {
+    background: color-mix(in srgb, var(--cycle-period) 60%, transparent);
+  }
+
   .cycle-view__dot--fertile {
     background: var(--cycle-fertile);
   }
@@ -262,7 +267,16 @@
        pushing the seven-column grid past the card. */
     min-width: 0;
     white-space: normal;
-    overflow-wrap: anywhere;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  /* Says the month name opens something, without shouting it. */
+  .calendar__month-caret {
+    flex: none;
+    margin-inline-start: 6px;
+    color: var(--ink-muted);
+    vertical-align: -3px;
   }
 
   .calendar__help {
@@ -314,6 +328,22 @@
     gap: 6px;
     color: var(--ink-soft);
     font-size: var(--text-sm);
+  }
+
+  /* The cycle-day key: the corner bubble itself, at legend size. */
+  .calendar-legend__bubble {
+    display: inline-grid;
+    place-items: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--surface-border);
+    color: var(--ink-muted);
+    font-size: var(--text-xs);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
   }
 
   .calendar-legend__swatch {

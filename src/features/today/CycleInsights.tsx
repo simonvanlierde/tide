@@ -7,6 +7,7 @@ import {
   FERTILE_WINDOW_START,
   MAX_PERIOD_LENGTH,
   MIN_PERIOD_LENGTH,
+  NEW_CYCLE_MIN_GAP_DAYS,
   RECENT_CYCLE_WINDOW,
 } from "../../domain/cycle";
 import type { CycleStats, CycleSummary } from "../../domain/types";
@@ -112,6 +113,9 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
         <summary className="insights__how-summary">{t("insights.how")}</summary>
         <ul className="insights__how-list">
           <li>{t("insights.how1")}</li>
+          <li>
+            {t("insights.howCycleStart", { gap: NEW_CYCLE_MIN_GAP_DAYS })}
+          </li>
           <li>
             {t("insights.how2", {
               recent: RECENT_CYCLE_WINDOW,

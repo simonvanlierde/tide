@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
 import type { IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
@@ -131,6 +131,11 @@ export function CalendarScreen({
             onClick={model.openPicker}
           >
             {model.monthLabel}
+            <ChevronDown
+              aria-hidden="true"
+              size={16}
+              className="calendar__month-caret"
+            />
           </button>
           <button
             type="button"
@@ -173,9 +178,12 @@ export function CalendarScreen({
         ) : model.justLoggedDay ? (
           // A one-tap log wrote data; say what, and make undo one tap too.
           <p className="supporting-note calendar__help" role="status">
-            {t("calendar.justLogged", {
-              date: formatShortDate(model.justLoggedDay, locale),
-            })}{" "}
+            {t(
+              model.forecastMoved
+                ? "calendar.justLoggedForecast"
+                : "calendar.justLogged",
+              { date: formatShortDate(model.justLoggedDay, locale) },
+            )}{" "}
             <button
               type="button"
               className="text-action calendar__undo"
@@ -195,7 +203,10 @@ export function CalendarScreen({
             )}
           </p>
         )}
-        <CalendarLegend present={model.presentMarkers} />
+        <CalendarLegend
+          present={model.presentMarkers}
+          showCycleDay={model.showsCycleDayNumbers}
+        />
         {model.isCurrentMonth ? null : (
           <button
             type="button"
@@ -229,10 +240,16 @@ export type LegendKey = (typeof LEGEND_ITEMS)[number]["key"];
 // Only the markers actually on screen this month get a key entry; a legend
 // for things that aren't there is noise. The per-day buttons announce their
 // own marker to screen readers, so the visual legend is decorative here.
-function CalendarLegend({ present }: { present: ReadonlySet<LegendKey> }) {
+function CalendarLegend({
+  present,
+  showCycleDay,
+}: {
+  present: ReadonlySet<LegendKey>;
+  showCycleDay: boolean;
+}) {
   const t = useT();
   const items = LEGEND_ITEMS.filter((item) => present.has(item.key));
-  if (items.length === 0) {
+  if (items.length === 0 && !showCycleDay) {
     return null;
   }
 
@@ -246,6 +263,14 @@ function CalendarLegend({ present }: { present: ReadonlySet<LegendKey> }) {
           {t(item.labelKey)}
         </span>
       ))}
+      {/* The corner numbers are the one marker that isn't a colour, so the key
+          shows the bubble itself rather than a swatch. */}
+      {showCycleDay ? (
+        <span className="calendar-legend__item">
+          <span className="calendar-legend__bubble">1</span>
+          {t("calendar.legend.cycleDay")}
+        </span>
+      ) : null}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import type { CycleSummary, FlowIntensity, IsoDate } from "../../domain/types";
+import type { CycleSummary, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
@@ -20,7 +20,7 @@ interface CycleDialProps {
   summary: CycleSummary;
   phaseLabel: string;
   periodDays: IsoDate[];
-  intensityByDay: Record<IsoDate, FlowIntensity>;
+  intensityByDay: Record<IsoDate, LoggedFlow>;
   today: IsoDate;
   showFertility: boolean;
 }
@@ -48,13 +48,16 @@ const BLEND_DEG = 1.4;
 const FADE_DEG = 8;
 
 function phaseColor(segment: CycleSegment) {
-  return segment.flow
-    ? `var(--flow-${segment.flow})`
-    : segment.isOvulation
-      ? "var(--cycle-ovulation)"
-      : segment.isFertile
-        ? "var(--cycle-fertile)"
-        : "var(--cycle-idle)";
+  // isPeriod first: a day logged without a level still belongs to the period
+  // arc, in base coral, rather than falling through to fertile or idle.
+  if (segment.isPeriod) {
+    return segment.flow ? `var(--flow-${segment.flow})` : "var(--bleed)";
+  }
+  return segment.isOvulation
+    ? "var(--cycle-ovulation)"
+    : segment.isFertile
+      ? "var(--cycle-fertile)"
+      : "var(--cycle-idle)";
 }
 
 // The angular window over which the predicted period fades out toward the top.
@@ -399,7 +402,8 @@ export function CycleDial({
         // The key only names colours the ring actually shows: no coral dot
         // over an all-grey first-run ring, no sand or amber without an
         // ovulation estimate.
-        showPeriod={periodDays.length > 0 || hasPrediction}
+        showPeriod={periodDays.length > 0}
+        showExpected={hasPrediction}
         showFertility={showFertility && summary.ovulationDate !== null}
       />
     </section>

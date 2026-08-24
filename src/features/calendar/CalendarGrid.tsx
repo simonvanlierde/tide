@@ -1,5 +1,10 @@
-import { type CSSProperties, useMemo } from "react";
-import type { FlowIntensity, IsoDate } from "../../domain/types";
+import {
+  type CSSProperties,
+  type KeyboardEvent,
+  useMemo,
+  useState,
+} from "react";
+import type { IsoDate, LoggedFlow } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
 import {
@@ -24,7 +29,7 @@ const MARKER_LABEL_KEY: Record<DayMarker, MessageKey> = {
 interface CalendarGridProps {
   monthDays: CalendarDay[];
   loggedDays: Set<IsoDate>;
-  dayIntensity: Map<IsoDate, FlowIntensity>;
+  dayIntensity: Map<IsoDate, LoggedFlow>;
   cycleDayNumbers: Map<IsoDate, number>;
   showCycleDayNumbers: boolean;
   cycleMarkers: Map<IsoDate, DayMarker>;
@@ -47,6 +52,50 @@ export function CalendarGrid({
   const t = useT();
   const locale = useLocale();
   const weekdayLabels = useMemo(() => getWeekdayLabels(locale), [locale]);
+  // Roving tabindex: the grid is one tab stop, and arrow keys walk it. Tabbing
+  // through 35-42 day buttons to reach the controls below is not navigation,
+  // it is a wall. The stop is the selected day, else today, else the first
+  // loggable day.
+  const [focusedDay, setFocusedDay] = useState<IsoDate | null>(null);
+  const loggableDays = monthDays.filter(
+    (day) => !day.isFuture || loggedDays.has(day.value),
+  );
+  const tabStop =
+    [focusedDay, selectedDay].find(
+      (day) => day && loggableDays.some((entry) => entry.value === day),
+    ) ??
+    loggableDays.find((day) => day.isToday)?.value ??
+    loggableDays[0]?.value ??
+    null;
+
+  // Arrows move by a day, Home/End to the ends of the week. A disabled (future)
+  // cell can't take focus, so a move that lands on one is simply refused.
+  function moveFocus(event: KeyboardEvent<HTMLButtonElement>, index: number) {
+    const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 7, ArrowUp: -7 }[
+      event.key
+    ];
+    const target =
+      step !== undefined
+        ? index + step
+        : event.key === "Home"
+          ? index - (index % 7)
+          : event.key === "End"
+            ? index - (index % 7) + 6
+            : null;
+    if (target === null) {
+      return;
+    }
+    event.preventDefault();
+    const day = monthDays[target];
+    if (!day || (day.isFuture && !loggedDays.has(day.value))) {
+      return;
+    }
+    setFocusedDay(day.value);
+    event.currentTarget
+      .closest(".calendar-grid__week")
+      ?.querySelectorAll<HTMLButtonElement>(".calendar-grid__day")
+      [target]?.focus();
+  }
   // Days render in date order, so consecutive predicted-period cells belong to
   // the same run. One forward pass gives each its offset within the run, so each
   // day of the expected period fades a step further than the last. A run clipped
@@ -81,11 +130,10 @@ export function CalendarGrid({
             showCycleDayNumbers && !isLogged && !day.isFuture
               ? cycleDayNumbers.get(value)
               : undefined;
-          // Logged days take the coral fill, deepened by flow level; a
-          // prediction only shows on days that aren't already logged.
-          const flow = isLogged
-            ? (dayIntensity.get(value) ?? "medium")
-            : undefined;
+          // Logged days take the coral fill, deepened by flow level; without a
+          // chosen level the base .is-logged coral stands. A prediction only
+          // shows on days that aren't already logged.
+          const flow = isLogged ? (dayIntensity.get(value) ?? null) : null;
           const marker = isLogged ? undefined : cycleMarkers.get(value);
           const isPredictedPeriod = marker === "predicted-period";
           const forecastStep = forecastSteps[index] ?? 0;
@@ -128,6 +176,9 @@ export function CalendarGrid({
                   : undefined
               }
               disabled={isUnavailable}
+              tabIndex={value === tabStop ? 0 : -1}
+              onKeyDown={(event) => moveFocus(event, index)}
+              onFocus={() => setFocusedDay(value)}
               aria-label={
                 detail
                   ? t("calendar.dayWithMarker", {

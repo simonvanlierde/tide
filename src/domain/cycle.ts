@@ -19,7 +19,7 @@ const MIN_DAYS_SINCE_BLEED = 5;
 // NOTE: we use a fixed 10-day floor; a genuinely short (<~11-day) cycle would merge
 // into one run.
 // TODO: Learn a per-user threshold from cycle history if that matters.
-const NEW_CYCLE_MIN_GAP_DAYS = 10;
+export const NEW_CYCLE_MIN_GAP_DAYS = 10;
 // Cycle length is learned from recent history only — cycles drift over time
 // (age, stress, meds), so a cycle from a year ago shouldn't count as much as
 // last month's. Median over this window also resists a single anomalous cycle

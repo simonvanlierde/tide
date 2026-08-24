@@ -1,12 +1,17 @@
 import { CircleAlert, Download, Trash2, Upload } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
 import { downloadAppState, parseImportedState } from "../../data/transfer";
+import type { AppState } from "../../domain/types";
 import { plural } from "../../i18n";
 import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
+import { ConfirmDialog } from "./ConfirmDialog";
 import { InfoPopover } from "./InfoPopover";
 
 const MAX_IMPORT_BYTES = 5_000_000;
+
+/** What the last export or import did, so neither happens in silence. */
+type DataStatus = { kind: "imported"; days: number } | { kind: "exported" };
 
 export function DataSection() {
   const state = useAppState();
@@ -14,10 +19,20 @@ export function DataSection() {
   const t = useT();
   const fileInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
-  // Number of logged days the last successful import brought in; the only
-  // feedback the user gets that anything happened.
-  const [imported, setImported] = useState<number | null>(null);
-  const hasLoggedDays = Object.keys(state.intensityByDay).length > 0;
+  const [status, setStatus] = useState<DataStatus | null>(null);
+  // A parsed backup waiting for the user to agree to overwrite what's here.
+  const [pendingImport, setPendingImport] = useState<AppState | null>(null);
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const loggedDayCount = Object.keys(state.intensityByDay).length;
+
+  function applyImport(next: AppState) {
+    actions.importState(next);
+    setError(null);
+    setStatus({
+      kind: "imported",
+      days: Object.keys(next.intensityByDay).length,
+    });
+  }
 
   async function handleImport(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -30,42 +45,37 @@ export function DataSection() {
     // A real backup is a few KB; anything huge is the wrong file, and reading
     // it whole would hang the tab.
     if (file.size > MAX_IMPORT_BYTES) {
-      setImported(null);
+      setStatus(null);
       setError(t("settings.importError"));
       return;
     }
 
     try {
       const next = parseImportedState(await file.text());
-      // Import replaces everything and there is no undo, so confirm before
-      // overwriting an existing log.
-      // biome-ignore lint/suspicious/noAlert: native confirm is the right weight for a rare destructive action; no custom dialog to maintain.
-      if (hasLoggedDays && !window.confirm(t("settings.importConfirm"))) {
+      // Import replaces everything and there is no undo, so ask first — but
+      // only when there is something to lose.
+      if (loggedDayCount > 0) {
+        setPendingImport(next);
         return;
       }
-      actions.importState(next);
-      setError(null);
-      setImported(Object.keys(next.intensityByDay).length);
+      applyImport(next);
     } catch {
-      setImported(null);
+      setStatus(null);
       setError(t("settings.importError"));
     }
   }
 
-  function handleReset() {
-    // biome-ignore lint/suspicious/noAlert: see above.
-    if (window.confirm(t("settings.resetConfirm"))) {
-      actions.resetState();
-      setError(null);
-      setImported(null);
-    }
+  function handleExport() {
+    downloadAppState(state);
+    setError(null);
+    setStatus({ kind: "exported" });
   }
 
   return (
     <article className="utility-card utility-card--slim">
       <div className="section-heading-row">
         <h2 className="section-title">{t("settings.data")}</h2>
-        <InfoPopover label={t("settings.dataInfo")}>
+        <InfoPopover label={t("settings.dataInfo")} align="start">
           {t("settings.dataHelp")}
         </InfoPopover>
       </div>
@@ -75,7 +85,7 @@ export function DataSection() {
             type="button"
             className="chip-button"
             aria-label={t("settings.export")}
-            onClick={() => downloadAppState(state)}
+            onClick={handleExport}
           >
             <AppIcon icon={Download} className="chip-button__icon" />
             <span className="chip-button__label">{t("settings.export")}</span>
@@ -85,8 +95,9 @@ export function DataSection() {
             className="chip-button"
             aria-label={t("settings.import")}
             onClick={() => {
-              // A stale error from the last attempt shouldn't outlive a new pick.
+              // A stale message from the last attempt shouldn't outlive a new pick.
               setError(null);
+              setStatus(null);
               fileInput.current?.click();
             }}
           >
@@ -110,18 +121,71 @@ export function DataSection() {
             <span>{error}</span>
           </p>
         ) : null}
-        {imported !== null ? (
+        {status ? (
           <p className="status-row" role="status">
             <span className="status-chip">
-              {t(plural("settings.importSuccess", imported), { n: imported })}
+              {status.kind === "exported"
+                ? t("settings.exportSuccess")
+                : t(plural("settings.importSuccess", status.days), {
+                    n: status.days,
+                  })}
             </span>
           </p>
         ) : null}
-        <button type="button" className="text-action" onClick={handleReset}>
+        <button
+          type="button"
+          className="text-action"
+          onClick={() => setConfirmingReset(true)}
+        >
           <AppIcon icon={Trash2} className="text-action__icon" />
           {t("settings.reset")}
         </button>
       </div>
+
+      {pendingImport ? (
+        <ConfirmDialog
+          title={t("settings.importConfirmTitle")}
+          body={
+            <>
+              <p>
+                {t(
+                  plural(
+                    "settings.importFileDays",
+                    Object.keys(pendingImport.intensityByDay).length,
+                  ),
+                  { n: Object.keys(pendingImport.intensityByDay).length },
+                )}
+              </p>
+              <p>
+                {t(plural("settings.importReplaces", loggedDayCount), {
+                  n: loggedDayCount,
+                })}
+              </p>
+            </>
+          }
+          confirmLabel={t("settings.importConfirmAction")}
+          onConfirm={() => {
+            applyImport(pendingImport);
+            setPendingImport(null);
+          }}
+          onCancel={() => setPendingImport(null)}
+        />
+      ) : null}
+
+      {confirmingReset ? (
+        <ConfirmDialog
+          title={t("settings.resetTitle")}
+          body={<p>{t("settings.resetConfirm")}</p>}
+          confirmLabel={t("settings.resetAction")}
+          onConfirm={() => {
+            actions.resetState();
+            setError(null);
+            setStatus(null);
+            setConfirmingReset(false);
+          }}
+          onCancel={() => setConfirmingReset(false)}
+        />
+      ) : null}
     </article>
   );
 }

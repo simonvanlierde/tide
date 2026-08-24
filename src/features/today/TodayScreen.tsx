@@ -127,7 +127,11 @@ export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
                 </InfoPopover>
               </dt>
               <dd className="fact__value">
-                {summary.ovulationDate ? (
+                {isOverdue ? (
+                  // The cycle ran past its forecast, so this cycle's ovulation
+                  // estimate is spent and the next one isn't known yet.
+                  <span>{t("today.fertilityUnclear")}</span>
+                ) : summary.ovulationDate ? (
                   <>
                     <span>
                       {getFertilityEstimate(

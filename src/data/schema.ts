@@ -5,6 +5,7 @@ import type {
   FlowIntensity,
   IsoDate,
   LanguagePreference,
+  LoggedFlow,
   ThemePreference,
 } from "../domain/types";
 import { SUPPORTED_LANGUAGES } from "../i18n";
@@ -43,19 +44,23 @@ function isIsoDate(value: unknown): value is IsoDate {
 const isFlow = (value: unknown): value is FlowIntensity =>
   FLOW_INTENSITIES.includes(value as FlowIntensity);
 
+// null is a logged day with no chosen level; any other non-flow value is junk.
+const isLoggedFlow = (value: unknown): value is LoggedFlow =>
+  value === null || isFlow(value);
+
 // Normalize the logged days into the single date -> flow map. Its keys are the
 // logged days and its values their flow levels; any invalid entry is dropped.
 export function normalizeIntensityByDay(
   intensityByDay: unknown,
-): Record<IsoDate, FlowIntensity> {
+): Record<IsoDate, LoggedFlow> {
   const levels =
     intensityByDay && typeof intensityByDay === "object"
       ? (intensityByDay as Record<string, unknown>)
       : {};
-  const result: Record<IsoDate, FlowIntensity> = {};
+  const result: Record<IsoDate, LoggedFlow> = {};
 
   for (const [day, level] of Object.entries(levels)) {
-    if (isIsoDate(day) && isFlow(level)) {
+    if (isIsoDate(day) && isLoggedFlow(level)) {
       result[day] = level;
     }
   }

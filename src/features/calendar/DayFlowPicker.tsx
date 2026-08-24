@@ -1,6 +1,6 @@
 import { DropletOff, X } from "lucide-react";
 import { useEffect, useRef } from "react";
-import type { FlowIntensity, IsoDate } from "../../domain/types";
+import type { FlowIntensity, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { formatShortDate } from "../../utils/date";
@@ -8,7 +8,7 @@ import { FlowGauge } from "../log/FlowGauge";
 
 interface DayFlowPickerProps {
   day: IsoDate;
-  intensity?: FlowIntensity;
+  intensity?: LoggedFlow;
   isLogged: boolean;
   onSelect: (intensity: FlowIntensity) => void;
   onRemove: () => void;

@@ -1,4 +1,4 @@
-import type { AppState, FlowIntensity, IsoDate } from "../domain/types";
+import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
 import { normalizeAppState } from "./schema";
 
 // Dated so repeated backups don't overwrite each other in Downloads.
@@ -8,7 +8,7 @@ const exportFilename = () =>
 interface BackupFile {
   // The logged days and their flow — its keys are the period days, so they
   // aren't listed a second time. This is the app's own state shape.
-  days: Record<IsoDate, FlowIntensity>;
+  days: Record<IsoDate, LoggedFlow>;
   settings: Pick<
     AppState["settings"],
     "showFertility" | "showCycleDayNumbers" | "theme" | "language"
