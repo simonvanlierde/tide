@@ -34,6 +34,7 @@ Cycle logic is kept pure and isolated from React and the browser, so it can be t
 - `src/state`: reducer and selectors, separate from the React provider
 - `src/app`: app shell and pathname-based routing (`/`, `/calendar`, `/settings`)
 - `src/features`: screen components and presentation helpers
+- `src/i18n`: typed message dictionaries, one per locale
 - `src/ui`: reusable UI primitives
 - `src/styles`: design tokens and shared styling
 - `src/utils`: shared date helpers
@@ -49,11 +50,11 @@ Two automated checks run in CI:
 - **Static lint:** Biome's `a11y` rules (`biome.json`) run as part of `pnpm lint` / `pnpm check`.
 - **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/calendar`, and `/settings`; both themes, with overlays open, tagged `wcag2a`/`wcag2aa`, failing on any *moderate*+ violation. Run with `pnpm test:e2e`.
 
-## Deployment
+## Running your own copy
 
-**[tide.duinlab.nl](https://tide.duinlab.nl)** is hosted on Cloudflare Pages via its Git
-integration: a push to `main` triggers a build (`pnpm build`) that publishes `dist/`. The build
-command and preview settings live in the Cloudflare dashboard; the repo only pins the output
-directory in [`wrangler.jsonc`](wrangler.jsonc).
+Tide has no backend, so a fork needs no infrastructure. `pnpm build` writes a static site to
+`dist/`, and any static host will serve it as-is.
 
-To deploy from a local checkout: `pnpm deploy` (`wrangler pages deploy`).
+**[tide.duinlab.nl](https://tide.duinlab.nl)** builds from `main` on Cloudflare Pages, so a merged
+pull request ships on its own. [`wrangler.jsonc`](wrangler.jsonc) pins the output directory for
+that setup; other hosts need nothing from the repo.
