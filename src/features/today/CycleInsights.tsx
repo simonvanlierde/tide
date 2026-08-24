@@ -60,7 +60,7 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
         </h2>
         <button
           type="button"
-          className="insights__close"
+          className="icon-close"
           aria-label={t("common.close")}
           onClick={requestClose}
         >

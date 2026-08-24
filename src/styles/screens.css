@@ -11,7 +11,7 @@
   .today-screen__note {
     margin: 0;
     color: var(--ink-muted);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     line-height: 1.45;
   }
 
@@ -20,14 +20,14 @@
     margin: 0;
     text-align: center;
     color: var(--ink-muted);
-    font-size: 0.82rem;
+    font-size: var(--text-sm);
   }
 
   .reminder-prompt {
     display: grid;
     gap: 14px;
     padding: 18px;
-    border-radius: 18px;
+    border-radius: var(--radius-prompt);
     border: 1px solid var(--tide-soft);
     background: var(--tide-tint);
   }
@@ -35,7 +35,7 @@
   .reminder-prompt__message {
     margin: 0;
     color: var(--tide-strong);
-    font-size: 1.05rem;
+    font-size: var(--text-lg);
     line-height: 1.4;
     text-align: center;
   }
@@ -45,7 +45,7 @@
   .reminder-prompt__reassure {
     margin: -6px 0 0;
     color: var(--ink-soft);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     line-height: 1.45;
     text-align: center;
   }
@@ -56,7 +56,7 @@
     border: 0;
     background: transparent;
     color: var(--tide-strong);
-    font-size: 0.95rem;
+    font-size: var(--text-md);
     font-weight: 500;
   }
 
@@ -139,14 +139,14 @@
   }
 
   .cycle-dial__eyebrow {
-    font-size: min(0.7rem, 5cqw);
+    font-size: min(var(--text-xs), 5cqw);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--ink-muted);
   }
 
   .cycle-dial__day {
-    font-size: min(3.5rem, 22cqw);
+    font-size: min(var(--text-display), 22cqw);
     line-height: 0.86;
     font-weight: 600;
     color: var(--ink);
@@ -154,13 +154,13 @@
   }
 
   .cycle-dial__phase {
-    font-size: min(1.1rem, 7cqw);
+    font-size: min(var(--text-lg), 7cqw);
     font-weight: 500;
     color: var(--tide-strong);
   }
 
   .cycle-dial__date {
-    font-size: min(1.1rem, 7cqw);
+    font-size: min(var(--text-lg), 7cqw);
     color: var(--ink-muted);
   }
 
@@ -177,10 +177,10 @@
     width: 20px;
     height: 20px;
     margin-top: 3px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--ink);
     border: 3px solid var(--surface);
-    box-shadow: 0 2px 6px rgba(20, 48, 58, 0.3);
+    box-shadow: var(--shadow-knob);
   }
 
   /* Follows the pointer while scrubbing, so the finger's spot on the ring stays
@@ -198,10 +198,10 @@
     width: 20px;
     height: 20px;
     margin-top: 3px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--surface);
     border: 2.5px solid var(--tide);
-    box-shadow: 0 1px 4px rgba(20, 48, 58, 0.2);
+    box-shadow: var(--shadow-knob);
   }
 
   .cycle-dial__legend {
@@ -216,7 +216,7 @@
     align-items: center;
     gap: 6px;
     color: var(--ink-soft);
-    font-size: 0.86rem;
+    font-size: var(--text-md);
     line-height: 1.2;
   }
 
@@ -224,7 +224,7 @@
     width: 9px;
     height: 9px;
     flex: 0 0 auto;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--cycle-idle);
   }
 
@@ -279,10 +279,6 @@
   .calendar__picker {
     display: grid;
     gap: 8px;
-    padding: 14px;
-    border-radius: 16px;
-    background: var(--surface-soft);
-    border: 1px solid var(--surface-border);
   }
 
   .calendar-picker-field {
@@ -300,17 +296,6 @@
 
   .calendar__picker-input {
     width: 100%;
-    min-height: 46px;
-    padding: 0 14px;
-    border-radius: 12px;
-    border: 1px solid var(--surface-border);
-    background: var(--surface);
-    color: var(--ink);
-  }
-
-  .calendar__picker-input:focus-visible {
-    outline: 2px solid var(--tide);
-    outline-offset: 2px;
   }
 
   /* The key wraps to whatever fits: one row of four on most phones, two
@@ -328,14 +313,14 @@
     align-items: center;
     gap: 6px;
     color: var(--ink-soft);
-    font-size: 0.82rem;
+    font-size: var(--text-sm);
   }
 
   .calendar-legend__swatch {
     width: 14px;
     height: 14px;
     flex: 0 0 auto;
-    border-radius: 5px;
+    border-radius: var(--radius-swatch);
   }
 
   .calendar-legend__swatch--logged {

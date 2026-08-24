@@ -5,7 +5,7 @@
   .calendar-grid__weekday {
     margin: 0;
     color: var(--ink-muted);
-    font-size: 0.76rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -15,7 +15,7 @@
   .utility-card p {
     margin: 0;
     color: var(--ink-soft);
-    font-size: 0.98rem;
+    font-size: var(--text-base);
     line-height: 1.5;
   }
 
@@ -46,7 +46,7 @@
     gap: 6px 10px;
     margin: 5px 0 0;
     color: var(--ink-muted);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     line-height: 1.4;
   }
 
@@ -62,7 +62,7 @@
     align-items: center;
     gap: 5px;
     padding: 2px 9px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--surface-soft);
     border: 1px solid var(--surface-border);
     text-decoration: none;
@@ -85,14 +85,14 @@
   }
 
   .colophon__copyright {
-    font-size: 0.97rem;
+    font-size: var(--text-base);
   }
 
   /* Fact list — the estimates that matter, plus a drill-in to the full numbers */
   .fact-list {
     display: grid;
     padding: 4px 18px;
-    border-radius: 20px;
+    border-radius: var(--radius-card);
     background: var(--surface);
     border: 1px solid var(--surface-border);
     box-shadow: var(--shadow-card);
@@ -114,7 +114,7 @@
     border-top: 1px solid var(--surface-border);
     background: transparent;
     color: var(--tide-strong);
-    font-size: 1.05rem;
+    font-size: var(--text-lg);
     font-weight: 500;
     cursor: pointer;
     transition: color 160ms ease;
@@ -159,7 +159,7 @@
     gap: 2px;
     text-align: right;
     color: var(--ink);
-    font-size: 1.05rem;
+    font-size: var(--text-lg);
     font-weight: 500;
   }
 
@@ -173,7 +173,7 @@
 
   .fact__meta {
     color: var(--ink-muted);
-    font-size: 0.82rem;
+    font-size: var(--text-sm);
     font-weight: 400;
   }
 
@@ -191,7 +191,7 @@
     justify-content: center;
     width: 30px;
     height: 30px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     border: 1px solid var(--surface-border);
     background: var(--surface-soft);
     color: var(--ink-muted);
@@ -235,12 +235,12 @@
     z-index: 2;
     width: min(280px, 100vw - 16px);
     padding: 12px 14px;
-    border-radius: 14px;
+    border-radius: var(--radius-segment);
     border: 1px solid var(--surface-border);
     background: var(--surface);
     box-shadow: var(--shadow-soft);
     color: var(--ink-soft);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     font-weight: 400;
     line-height: 1.45;
     letter-spacing: normal;
@@ -293,11 +293,11 @@
     align-items: center;
     gap: 8px;
     padding: 10px 14px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     border: 1px solid var(--tide-soft);
     background: var(--tide-tint);
     color: var(--tide-strong);
-    font-size: 0.92rem;
+    font-size: var(--text-md);
     line-height: 1.2;
   }
 
@@ -327,8 +327,8 @@
   .secondary-action {
     width: 100%;
     padding: 16px 18px;
-    border-radius: 16px;
-    font-size: 1rem;
+    border-radius: var(--radius-button);
+    font-size: var(--text-base);
     font-weight: 600;
   }
 
@@ -336,7 +336,7 @@
     border: 0;
     background: var(--bleed);
     color: var(--ink-on-fill);
-    box-shadow: 0 10px 24px rgba(226, 109, 90, 0.26);
+    box-shadow: var(--shadow-glow);
   }
 
   .primary-action:hover {
@@ -412,7 +412,7 @@
   /* The logged state is a card: confirmation on top, gauge, then the undo. */
   .log-action--logged {
     padding: 18px;
-    border-radius: 20px;
+    border-radius: var(--radius-card);
     background: var(--surface);
     border: 1px solid var(--surface-border);
     box-shadow: var(--shadow-card);
@@ -424,7 +424,7 @@
     gap: 8px;
     margin: 0;
     color: var(--ink);
-    font-size: 1.05rem;
+    font-size: var(--text-lg);
     font-weight: 500;
   }
 
@@ -455,7 +455,7 @@
     padding: 0;
     margin-bottom: 10px;
     color: var(--ink-muted);
-    font-size: 0.76rem;
+    font-size: var(--text-sm);
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -475,7 +475,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 6px;
-    border-radius: 14px;
+    border-radius: var(--radius-segment);
     border: 1px solid transparent;
     cursor: pointer;
   }
@@ -492,7 +492,7 @@
   .flow-gauge__swatch {
     width: 100%;
     height: 26px;
-    border-radius: 9px;
+    border-radius: var(--radius-control);
   }
 
   /* The rising tide: each level's own coral depth. */
@@ -519,7 +519,7 @@
   }
 
   .flow-gauge__label {
-    font-size: 0.78rem;
+    font-size: var(--text-sm);
     color: var(--ink-muted);
     text-align: center;
     overflow-wrap: anywhere;
@@ -537,14 +537,18 @@
   }
 
   /* Per-day flow picker on the calendar */
+  /* Inset panel: a tonal step down inside a card (day picker, month picker). */
+  .inset-panel {
+    padding: 14px;
+    border-radius: var(--radius-button);
+    background: var(--surface-soft);
+    border: 1px solid var(--surface-border);
+  }
+
   .day-flow-picker {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 14px;
-    border-radius: 16px;
-    background: var(--surface-soft);
-    border: 1px solid var(--surface-border);
   }
 
   .day-flow-picker__head {
@@ -558,24 +562,37 @@
     color: var(--ink);
   }
 
-  .day-flow-picker__close {
+  /* Round icon-only close, shared by the day picker and the insights dialog.
+     32px visible, 44px hit area. */
+  .icon-close {
+    position: relative;
     display: inline-grid;
     place-items: center;
     width: 32px;
     height: 32px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     border: 0;
     background: transparent;
     color: var(--ink-soft);
     cursor: pointer;
   }
 
-  .day-flow-picker__close:hover {
-    background: var(--surface);
+  .icon-close::before {
+    content: "";
+    position: absolute;
+    inset: -6px;
+  }
+
+  .icon-close:hover {
+    background: var(--surface-soft);
     color: var(--ink);
   }
 
-  .day-flow-picker__close:focus-visible {
+  .inset-panel .icon-close:hover {
+    background: var(--surface);
+  }
+
+  .icon-close:focus-visible {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
   }
@@ -615,8 +632,8 @@
     gap: 8px;
     min-height: 44px;
     padding: 9px 15px;
-    border-radius: 999px;
-    font-size: 0.94rem;
+    border-radius: var(--radius-pill);
+    font-size: var(--text-md);
   }
 
   .chip-button__icon {
@@ -627,8 +644,10 @@
 
   /* Very narrow phones: drop the label, leaving a round icon-only button. The
      aria-label keeps each action named for assistive tech. */
-  @media (max-width: 360px) {
+  @container (max-width: 360px) {
     .chip-button__label {
+      /* Same recipe as .visually-hidden in base.css; a class can't be toggled
+         from a container query, so the rule is restated here once. */
       position: absolute;
       width: 1px;
       height: 1px;
@@ -656,7 +675,7 @@
   .calendar-picker-button {
     margin: 0;
     color: var(--ink);
-    font-size: 1rem;
+    font-size: var(--text-base);
     line-height: 1.2;
   }
 
@@ -709,16 +728,17 @@
   }
 
   /* Native language dropdown: matches the calendar month/year picker inputs. */
-  .settings-select {
-    min-height: 40px;
-    padding: 0 12px;
-    border-radius: 12px;
+  /* Native select: one height everywhere (settings language, month picker). */
+  .select-field {
+    min-height: 46px;
+    padding: 0 14px;
+    border-radius: var(--radius-field);
     border: 1px solid var(--surface-border);
     background: var(--surface);
     color: var(--ink);
   }
 
-  .settings-select:focus-visible {
+  .select-field:focus-visible {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
   }
@@ -753,7 +773,7 @@
     gap: 4px;
     width: 100%;
     padding: 4px;
-    border-radius: 14px;
+    border-radius: var(--radius-segment);
     background: var(--surface-soft);
     border: 1px solid var(--surface-border);
   }
@@ -774,10 +794,10 @@
     min-height: 38px;
     padding: 6px 8px;
     border: 0;
-    border-radius: 10px;
+    border-radius: var(--radius-control);
     background: transparent;
     color: var(--ink-soft);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     font-weight: 500;
     transition:
       background-color 160ms ease,
@@ -815,6 +835,16 @@
     }
   }
 
+  /* Foldable cover screens: shave the option padding so three worded options
+     still fit in a 280px shell. */
+  @container (max-width: 300px) {
+    .segmented__option {
+      min-width: 0;
+      gap: 4px;
+      padding: 6px 4px;
+    }
+  }
+
   /* On/off switch: a coral-free teal toggle with a sliding knob. The pill is
      46x28; the hit area is extended to 44px tall. */
   .switch {
@@ -823,7 +853,7 @@
     width: 46px;
     height: 28px;
     padding: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     border: 1px solid var(--surface-border);
     background: var(--surface-soft);
     transition:
@@ -844,9 +874,9 @@
     left: 2px;
     width: 22px;
     height: 22px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--surface);
-    box-shadow: 0 1px 3px rgba(20, 48, 58, 0.25);
+    box-shadow: var(--shadow-knob);
     transition: transform 160ms ease;
   }
 
@@ -870,7 +900,7 @@
     display: grid;
     gap: 14px;
     padding: 20px;
-    border-radius: 22px;
+    border-radius: var(--radius-card-lg);
     background: var(--surface);
     border: 1px solid var(--surface-border);
     box-shadow: var(--shadow-card);
@@ -908,7 +938,7 @@
     min-width: 0;
     overflow: hidden;
     text-align: center;
-    font-size: 0.72rem;
+    font-size: var(--text-sm);
     letter-spacing: 0.06em;
   }
 
@@ -919,7 +949,7 @@
        narrow as its column, so seven of them never push the card wider than
        the screen, even at 200% text. */
     min-width: 0;
-    border-radius: 14px;
+    border-radius: var(--radius-segment);
     padding: 8px 0;
     color: var(--ink);
     background: var(--surface-soft);
@@ -938,11 +968,11 @@
     min-width: 15px;
     height: 15px;
     padding: 0 3px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--surface);
     color: var(--ink-muted);
     box-shadow: inset 0 0 0 1px var(--surface-border);
-    font-size: 0.62rem;
+    font-size: var(--text-xs);
     line-height: 1;
     font-variant-numeric: tabular-nums;
   }
@@ -959,7 +989,7 @@
     transform: translateX(-50%);
     width: 12px;
     height: 2px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: currentColor;
     opacity: 0.65;
     pointer-events: none;
@@ -1010,7 +1040,6 @@
     background: var(--bleed);
     color: var(--ink-on-fill);
     border-color: var(--bleed);
-    box-shadow: 0 8px 16px rgba(226, 109, 90, 0.22);
   }
 
   /* Flow depth: a logged day fills with its intensity's coral. */
@@ -1059,7 +1088,7 @@
   .calendar__today,
   .calendar__month-button {
     min-height: 44px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
   }
 
   .calendar__nav {
@@ -1080,7 +1109,7 @@
   .calendar__month-button {
     padding: 0 18px;
     color: var(--ink);
-    font-size: 1rem;
+    font-size: var(--text-base);
     font-weight: 600;
     justify-content: center;
   }
@@ -1091,14 +1120,14 @@
     margin: auto;
     padding: 22px;
     border: 1px solid var(--surface-border);
-    border-radius: 24px;
+    border-radius: var(--radius-card-lg);
     background: var(--surface);
     box-shadow: var(--shadow-soft);
     color: var(--ink);
   }
 
   .insights::backdrop {
-    background: rgba(8, 17, 19, 0.42);
+    background: var(--scrim);
     backdrop-filter: blur(2px);
   }
 
@@ -1111,30 +1140,8 @@
 
   .insights__title {
     margin: 0;
-    font-size: 1.15rem;
+    font-size: var(--text-lg);
     font-weight: 600;
-  }
-
-  .insights__close {
-    display: inline-grid;
-    place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 999px;
-    border: 0;
-    background: transparent;
-    color: var(--ink-soft);
-    cursor: pointer;
-  }
-
-  .insights__close:hover {
-    background: var(--surface-soft);
-    color: var(--ink);
-  }
-
-  .insights__close:focus-visible {
-    outline: 2px solid var(--tide);
-    outline-offset: 2px;
   }
 
   .insights__stats {
@@ -1149,13 +1156,13 @@
     align-items: center;
     gap: 2px;
     padding: 16px 8px;
-    border-radius: 16px;
+    border-radius: var(--radius-button);
     background: var(--surface-soft);
     text-align: center;
   }
 
   .insights__stat-value {
-    font-size: 2rem;
+    font-size: var(--text-2xl);
     font-weight: 600;
     line-height: 1;
     font-variant-numeric: tabular-nums;
@@ -1163,13 +1170,13 @@
 
   .insights__stat-unit {
     color: var(--ink-muted);
-    font-size: 0.78rem;
+    font-size: var(--text-sm);
   }
 
   .insights__stat-label {
     margin-top: 4px;
     color: var(--ink-muted);
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1178,7 +1185,7 @@
   .insights__note {
     margin: 12px 0 0;
     color: var(--ink-soft);
-    font-size: 0.88rem;
+    font-size: var(--text-md);
     line-height: 1.45;
   }
 
@@ -1193,7 +1200,7 @@
 
   .insights__regularity-label {
     color: var(--ink-muted);
-    font-size: 0.7rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1208,7 +1215,7 @@
   .insights__meter-seg {
     width: 18px;
     height: 6px;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: var(--cycle-idle);
   }
 
@@ -1218,7 +1225,7 @@
 
   .insights__regularity-word {
     color: var(--ink);
-    font-size: 0.9rem;
+    font-size: var(--text-md);
     font-weight: 500;
   }
 
@@ -1229,7 +1236,7 @@
   .insights__how-summary {
     cursor: pointer;
     color: var(--tide-strong);
-    font-size: 0.92rem;
+    font-size: var(--text-md);
     font-weight: 500;
   }
 
@@ -1244,7 +1251,7 @@
     display: grid;
     gap: 7px;
     color: var(--ink-soft);
-    font-size: 0.88rem;
+    font-size: var(--text-md);
     line-height: 1.45;
   }
 

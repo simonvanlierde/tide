@@ -29,7 +29,7 @@ export function CalendarMonthPicker({
   return (
     <div
       id="calendar-month-picker"
-      className="calendar-picker-panel calendar__picker"
+      className="calendar-picker-panel calendar__picker inset-panel"
     >
       <span className="settings-label calendar__picker-label">
         {t("calendar.jumpToMonth")}
@@ -37,7 +37,7 @@ export function CalendarMonthPicker({
       <div className="calendar__picker-selects">
         <select
           aria-label={t("calendar.month")}
-          className="calendar__picker-input"
+          className="select-field calendar__picker-input"
           value={monthIndex}
           onChange={(event) => onSelect(year, Number(event.target.value))}
         >
@@ -49,7 +49,7 @@ export function CalendarMonthPicker({
         </select>
         <select
           aria-label={t("calendar.year")}
-          className="calendar__picker-input"
+          className="select-field calendar__picker-input"
           value={year}
           onChange={(event) => onSelect(Number(event.target.value), monthIndex)}
         >

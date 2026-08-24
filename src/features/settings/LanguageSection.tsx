@@ -15,7 +15,7 @@ export function LanguageSection() {
       </label>
       <select
         id="language-select"
-        className="settings-select"
+        className="select-field"
         value={current}
         onChange={(event) =>
           actions.setLanguage(event.target.value as LanguagePreference)

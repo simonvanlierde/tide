@@ -63,7 +63,7 @@ export function DayFlowPicker({
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Escape is a dismiss shortcut layered over the close button below, which stays the operable control.
     // biome-ignore lint/a11y/noStaticElementInteractions: same.
     <div
-      className="day-flow-picker"
+      className="day-flow-picker inset-panel"
       ref={pickerRef}
       onKeyDown={(event) => {
         if (event.key === "Escape") {
@@ -78,7 +78,7 @@ export function DayFlowPicker({
         </span>
         <button
           type="button"
-          className="day-flow-picker__close"
+          className="icon-close"
           aria-label={t("common.close")}
           onClick={closeAndRestoreFocus}
         >
