@@ -19,12 +19,16 @@
     line-height: 1.5;
   }
 
-  /* A problem, not a caption: full ink, leading icon. No coral (that's the
-     bleeding signal), so the weight comes from ink and the icon. */
-  .utility-card .supporting-note--error {
+  /* A note that leads with an icon: the data promise, an import error. */
+  .utility-card .supporting-note--icon {
     display: flex;
     align-items: flex-start;
     gap: 8px;
+  }
+
+  /* A problem, not a caption: full ink. No coral — that's the bleeding
+     signal — so the weight comes from the ink and the icon. */
+  .utility-card .supporting-note--error {
     color: var(--ink);
   }
 
@@ -34,6 +38,11 @@
     flex: none;
     margin-top: 2px;
     color: var(--ink-soft);
+  }
+
+  /* Teal carries the reassurance while the sentence stays quiet prose. */
+  .supporting-note__icon--assuring {
+    color: var(--tide);
   }
 
   /* Colophon — version, source link, copyright as one quiet credit. Scoped
@@ -279,31 +288,6 @@
     height: 24px;
     border: 0;
     background: transparent;
-  }
-
-  /* The privacy promise, at the head of the Data card: tide-tint pill,
-     deep-tide text, same family as the status chips. Left-aligned with the
-     card's own rhythm rather than centred. */
-  .utility-card .privacy-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    justify-self: start;
-    max-width: 100%;
-    margin: 0;
-    padding: 10px 16px;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--tide-soft);
-    background: var(--tide-tint);
-    color: var(--tide-strong);
-    font-size: var(--text-md);
-    line-height: 1.3;
-  }
-
-  .privacy-chip__icon {
-    width: 17px;
-    height: 17px;
-    flex: none;
   }
 
   /* The committed action in a confirm dialog. Solid deep tide, never coral:
@@ -697,23 +681,6 @@
     outline-offset: 2px;
   }
 
-  .chip-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .chip-row--dense {
-    gap: 6px;
-  }
-
-  .chip-fieldset {
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-    border: 0;
-  }
-
   .chip-button,
   .calendar-grid__day,
   .calendar__nav,
@@ -734,18 +701,6 @@
     padding: 9px 15px;
     border-radius: var(--radius-pill);
     font-size: var(--text-md);
-  }
-
-  .chip-button__icon {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-  }
-
-  .chip-button.is-active {
-    background: var(--accent-solid);
-    color: #fff;
-    border-color: var(--accent-solid);
   }
 
   /* Settings text */
@@ -816,9 +771,23 @@
   /* Card heading paired with an info affordance on the right. */
   /* An info affordance always sits beside the label it explains, never at the
      far end of the row: heading + "i", label + "i". */
+  .section-heading {
+    display: grid;
+    gap: 6px;
+  }
+
   .section-heading-row {
     display: flex;
     align-items: center;
+    gap: 8px;
+  }
+
+  /* Export and Import are a matched pair, sized like every other control on
+     this screen: full card width, button radius, not floating pills. They
+     stack when the words can no longer sit side by side. */
+  .data-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
     gap: 8px;
   }
 

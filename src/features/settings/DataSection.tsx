@@ -79,32 +79,39 @@ export function DataSection() {
 
   return (
     <article className="utility-card utility-card--slim">
-      <div className="section-heading-row">
-        <h2 className="section-title">{t("settings.data")}</h2>
-        <InfoPopover label={t("settings.dataInfo")} align="start">
-          {t("settings.dataHelp")}
-        </InfoPopover>
-      </div>
-      {/* Answers "where does my data go?" above the controls that move it. */}
-      <p className="privacy-chip">
-        <AppIcon icon={ShieldCheck} className="privacy-chip__icon" />
-        <span>{t("settings.privacy")}</span>
-      </p>
+      <header className="section-heading">
+        <div className="section-heading-row">
+          <h2 className="section-title">{t("settings.data")}</h2>
+          <InfoPopover label={t("settings.dataInfo")} align="start">
+            {t("settings.dataHelp")}
+          </InfoPopover>
+        </div>
+        {/* Answers "where does my data go?" before the controls that move it.
+            Prose, not a pill: a sentence the width of the card shaped like a
+            control reads as a button that doesn't answer. */}
+        <p className="supporting-note supporting-note--icon">
+          <AppIcon
+            icon={ShieldCheck}
+            className="supporting-note__icon supporting-note__icon--assuring"
+          />
+          <span>{t("settings.privacy")}</span>
+        </p>
+      </header>
       <div className="settings-group settings-group--compact">
-        <div className="chip-row chip-row--dense">
+        <div className="data-actions">
           <button
             type="button"
-            className="chip-button"
-            aria-label={t("settings.export")}
+            className="secondary-action"
             onClick={handleExport}
           >
-            <AppIcon icon={Download} className="chip-button__icon" />
-            <span className="chip-button__label">{t("settings.export")}</span>
+            <span className="button-label">
+              <AppIcon icon={Download} className="button-icon" />
+              <span>{t("settings.export")}</span>
+            </span>
           </button>
           <button
             type="button"
-            className="chip-button"
-            aria-label={t("settings.import")}
+            className="secondary-action"
             onClick={() => {
               // A stale message from the last attempt shouldn't outlive a new pick.
               setError(null);
@@ -112,8 +119,10 @@ export function DataSection() {
               fileInput.current?.click();
             }}
           >
-            <AppIcon icon={Upload} className="chip-button__icon" />
-            <span className="chip-button__label">{t("settings.import")}</span>
+            <span className="button-label">
+              <AppIcon icon={Upload} className="button-icon" />
+              <span>{t("settings.import")}</span>
+            </span>
           </button>
         </div>
         <input
@@ -127,7 +136,10 @@ export function DataSection() {
           onChange={handleImport}
         />
         {error ? (
-          <p className="supporting-note supporting-note--error" role="alert">
+          <p
+            className="supporting-note supporting-note--icon supporting-note--error"
+            role="alert"
+          >
             <AppIcon icon={CircleAlert} className="supporting-note__icon" />
             <span>{error}</span>
           </p>
