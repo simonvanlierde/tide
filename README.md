@@ -66,7 +66,6 @@ Estimates are informational, not a form of birth control.
 
 - **Bring your history from another app**: import a Clue or Flo export, not just a Tide backup
 - **Symptoms and mood**: log cramps, headaches and mood alongside bleeding
-- **Local reminders**: an optional notification when a period is expected, still with no server
 - **App lock**: an optional passcode or biometric lock, for a phone that gets handed around
 
 ## Contributing
