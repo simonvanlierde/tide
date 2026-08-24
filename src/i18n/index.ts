@@ -56,7 +56,7 @@ export function translate(
 }
 
 // Pick the plural form of a `${base}.one` / `${base}.other` key pair.
-// ponytail: only valid for n ≥ 1, which is all our call sites (the "0 / today"
+// NOTE: only valid for n ≥ 1, which is all our call sites (the "0 / today"
 // cases have their own keys). en/nl/de/fr/es all use "one" only for exactly 1,
 // so a full Intl.PluralRules isn't needed here.
 export function plural<K extends string>(
