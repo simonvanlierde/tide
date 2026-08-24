@@ -15,13 +15,21 @@ describe("SettingsScreen", () => {
     vi.restoreAllMocks();
   });
 
-  it("shows the privacy notice inside the About card", () => {
+  it("makes the privacy promise where the data controls are", () => {
     renderSettings();
     expect(
       screen.getByRole("heading", { level: 2, name: /about/i }),
     ).toBeInTheDocument();
+
+    // The promise belongs beside export, import and delete — not adrift in About.
+    const dataCard = screen
+      .getByRole("heading", { level: 2, name: /^data$/i })
+      .closest("article");
+    expect(dataCard).not.toBeNull();
     expect(
-      screen.getByText(/your data never leaves this device/i),
+      within(dataCard as HTMLElement).getByText(
+        /your data never leaves this device/i,
+      ),
     ).toBeInTheDocument();
   });
 

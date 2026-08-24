@@ -1,6 +1,4 @@
-import { ShieldCheck } from "lucide-react";
 import { useT } from "../../state/provider";
-import { AppIcon } from "../../ui/icons";
 import { AboutSection } from "./AboutSection";
 import { CycleNumbersSection } from "./CycleNumbersSection";
 import { DataSection } from "./DataSection";
@@ -22,12 +20,6 @@ export function SettingsScreen() {
           <CycleNumbersSection />
         </div>
       </article>
-      {/* Answers "where does my data go?" right where the export, import and
-          delete controls are — the only place on the screen that asks it. */}
-      <p className="privacy-chip">
-        <AppIcon icon={ShieldCheck} className="privacy-chip__icon" />
-        <span>{t("settings.privacy")}</span>
-      </p>
       <DataSection />
       <AboutSection />
     </section>

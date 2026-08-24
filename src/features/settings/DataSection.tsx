@@ -1,4 +1,10 @@
-import { CircleAlert, Download, Trash2, Upload } from "lucide-react";
+import {
+  CircleAlert,
+  Download,
+  ShieldCheck,
+  Trash2,
+  Upload,
+} from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
 import { downloadAppState, parseImportedState } from "../../data/transfer";
 import type { AppState } from "../../domain/types";
@@ -79,6 +85,11 @@ export function DataSection() {
           {t("settings.dataHelp")}
         </InfoPopover>
       </div>
+      {/* Answers "where does my data go?" above the controls that move it. */}
+      <p className="privacy-chip">
+        <AppIcon icon={ShieldCheck} className="privacy-chip__icon" />
+        <span>{t("settings.privacy")}</span>
+      </p>
       <div className="settings-group settings-group--compact">
         <div className="chip-row chip-row--dense">
           <button

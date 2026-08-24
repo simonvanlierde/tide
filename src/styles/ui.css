@@ -281,13 +281,14 @@
     background: transparent;
   }
 
-  /* The privacy promise at the top of Settings: tide-tint pill, deep-tide
-     text, same family as the status chips but self-centred. */
-  .privacy-chip {
+  /* The privacy promise, at the head of the Data card: tide-tint pill,
+     deep-tide text, same family as the status chips. Left-aligned with the
+     card's own rhythm rather than centred. */
+  .utility-card .privacy-chip {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    justify-self: center;
+    justify-self: start;
     max-width: 100%;
     margin: 0;
     padding: 10px 16px;
