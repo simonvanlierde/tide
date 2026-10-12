@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { defaultAppState } from "../../src/data/schema";
 import { downloadAppState, parseImportedState } from "../../src/data/transfer";
+import { getTodayIsoDate } from "../../src/utils/date";
 import { createAppState } from "../support/app";
 
 afterEach(() => {
@@ -128,7 +129,7 @@ describe("downloadAppState", () => {
     expect(click).toHaveBeenCalledOnce();
     expect(click.mock.contexts[0]).toMatchObject({
       href: "blob:tide-backup",
-      download: expect.stringMatching(/^tide-backup-\d{4}-\d{2}-\d{2}\.json$/),
+      download: `tide-backup-${getTodayIsoDate()}.json`,
     });
     // Revocation is deferred a tick so the download has started first.
     await new Promise((resolve) => setTimeout(resolve, 0));

@@ -1,9 +1,10 @@
 import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
+import { getTodayIsoDate } from "../utils/date";
 import { normalizeAppState } from "./schema";
 
 // Dated so repeated backups don't overwrite each other in Downloads.
-const exportFilename = () =>
-  `tide-backup-${new Date().toISOString().slice(0, 10)}.json`;
+// Local day, not UTC, so a backup made just after midnight carries today's date.
+const exportFilename = () => `tide-backup-${getTodayIsoDate()}.json`;
 
 interface BackupFile {
   // The logged days and their flow — its keys are the period days, so they
