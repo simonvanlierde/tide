@@ -220,7 +220,7 @@ export function useCycleSummary(today: IsoDate = getTodayIsoDate()) {
   return useMemo(() => selectCycleSummary(state, today), [state, today]);
 }
 
-export function useCycleStats() {
+export function useCycleStats(today: IsoDate) {
   const state = useAppState();
-  return useMemo(() => selectCycleStats(state), [state]);
+  return useMemo(() => selectCycleStats(state, today), [state, today]);
 }

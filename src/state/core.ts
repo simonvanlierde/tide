@@ -126,12 +126,14 @@ export function appStateReducer(
   }
 }
 
+// Future-dated days (imported, or left by a clock that moved back) must not
+// feed the cycle-length history, the stats, or the past fertile windows.
+export function selectPastPredictionDays(state: AppState, today: IsoDate) {
+  return getPredictionDays(state.intensityByDay).filter((day) => day <= today);
+}
+
 export function selectCycleSummary(state: AppState, today: IsoDate) {
-  // Future-dated days (imported, or left by a clock that moved back) must not
-  // feed the cycle-length history either.
-  const predictionDays = getPredictionDays(state.intensityByDay).filter(
-    (day) => day <= today,
-  );
+  const predictionDays = selectPastPredictionDays(state, today);
 
   return buildCycleSummary({
     today,
@@ -140,6 +142,6 @@ export function selectCycleSummary(state: AppState, today: IsoDate) {
   });
 }
 
-export function selectCycleStats(state: AppState) {
-  return getCycleStats(getPredictionDays(state.intensityByDay));
+export function selectCycleStats(state: AppState, today: IsoDate) {
+  return getCycleStats(selectPastPredictionDays(state, today));
 }

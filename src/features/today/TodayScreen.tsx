@@ -39,7 +39,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const t = useT();
   const locale = useLocale();
   const summary = useCycleSummary(today);
-  const stats = useCycleStats();
+  const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
