@@ -33,13 +33,8 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      includeAssets: [
-        "favicon.ico",
-        "icons/icon.svg",
-        "icons/icon-192.png",
-        "icons/icon-512.png",
-      ],
-      injectRegister: "auto",
+      // The manifest icons are precached on their own (includeManifestIcons).
+      includeAssets: ["favicon.ico", "icons/icon.svg"],
       registerType: "autoUpdate",
       manifest,
     }),
