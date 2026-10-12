@@ -8,12 +8,7 @@ overrides:
   serialize-javascript: ^7.0.5
   '@babel/core': ^7.29.6
   '@babel/plugin-transform-modules-systemjs': ^7.29.4
-  fast-uri: ^3.1.7
-  browserslist: ^4.28.7
-  baseline-browser-mapping: ^2.11.0
   brace-expansion@>=2 <3: ^2.1.7
-  brace-expansion@>=4 <6: ^5.0.12
-  source-map-js: ^1.2.2
   esbuild: ^0.28.1
 
 importers:
@@ -2403,7 +2398,7 @@ packages:
     resolution: {integrity: sha512-t8wonIOdQyOjtPd2VktlBu6QjTVTks6v8bSi7kd0r2Vll8TK1JYDZtRRdbmCHOAMphkZgrzK+L+vXK4pyZ8t4A==}
     hasBin: true
     peerDependencies:
-      browserslist: ^4.28.7
+      browserslist: '>= 4.21.0'
 
   vite-plugin-pwa@2.0.0:
     resolution: {integrity: sha512-6G9dsPKT9QKYpeTuTLJM28zZL3HsXUTUM/QUZBEgQk2jbfrPJDq2i8gTewAKqi1c9Mt6MiidrL4SFI+HthiQMg==}
