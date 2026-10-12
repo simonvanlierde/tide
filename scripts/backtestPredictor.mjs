@@ -81,8 +81,7 @@ const { module: cycle } = await runnerImport("/src/domain/cycle.ts", {
 const { module: date } = await runnerImport("/src/utils/date.ts", {
   configFile: false,
 });
-const { buildCycleSummary, getCompletedCycleLengths, DEFAULT_CYCLE_LENGTH } =
-  cycle;
+const { buildCycleSummary, DEFAULT_CYCLE_LENGTH } = cycle;
 const { addDays, differenceInDays } = date;
 
 const stretches = parseStretches(await loadCsv());
@@ -103,11 +102,7 @@ for (const stretch of stretches) {
     }
     // The data has start dates only, so each period is logged as its first day.
     const periodDays = stretch.slice(0, k + 1).map((c) => c.start);
-    const summary = buildCycleSummary({
-      today: current.start,
-      periodDays,
-      completedCycleLengths: getCompletedCycleLengths(periodDays),
-    });
+    const summary = buildCycleSummary({ today: current.start, periodDays });
     const actual = addDays(current.start, current.length);
     const lastLength = stretch[k - 1]?.length ?? DEFAULT_CYCLE_LENGTH;
     records.push({

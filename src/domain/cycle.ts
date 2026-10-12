@@ -36,8 +36,8 @@ const MAX_FERTILE_WIDENING = 5;
 
 interface BuildCycleSummaryInput {
   today: IsoDate;
+  /** Logged days that count toward predictions (spotting already left out). */
   periodDays: IsoDate[];
-  completedCycleLengths: number[];
 }
 
 function getCycleStarts(periodDays: IsoDate[]) {
@@ -212,6 +212,7 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
   // A future-dated day (possible via import, or a clock that moved backwards)
   // would otherwise become the "last cycle start" and blow up every estimate.
   const periodDays = input.periodDays.filter((day) => day <= input.today);
+  const completedCycleLengths = getCompletedCycleLengths(periodDays);
   const cycleStarts = getCycleStarts(periodDays);
   const lastCycleStart = cycleStarts.at(-1);
 
@@ -219,8 +220,8 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
     return INSUFFICIENT_SUMMARY;
   }
 
-  const cycleLength = estimateCycleLength(input.completedCycleLengths);
-  const fertileWindow = getFertileWindow(input.completedCycleLengths);
+  const cycleLength = estimateCycleLength(completedCycleLengths);
+  const fertileWindow = getFertileWindow(completedCycleLengths);
   const cycleDay = Math.max(
     1,
     differenceInDays(input.today, lastCycleStart) + 1,
@@ -255,8 +256,7 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
     },
     cycleLength,
     periodLength,
-    estimateMode:
-      input.completedCycleLengths.length > 0 ? "learned" : "fallback",
+    estimateMode: completedCycleLengths.length > 0 ? "learned" : "fallback",
   };
 }
 

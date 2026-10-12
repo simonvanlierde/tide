@@ -1,8 +1,4 @@
-import {
-  buildCycleSummary,
-  getCompletedCycleLengths,
-  getCycleStats,
-} from "../domain/cycle";
+import { buildCycleSummary, getCycleStats } from "../domain/cycle";
 import { getPredictionDays } from "../domain/flow";
 import type {
   AppState,
@@ -133,12 +129,9 @@ export function selectPastPredictionDays(state: AppState, today: IsoDate) {
 }
 
 export function selectCycleSummary(state: AppState, today: IsoDate) {
-  const predictionDays = selectPastPredictionDays(state, today);
-
   return buildCycleSummary({
     today,
-    periodDays: predictionDays,
-    completedCycleLengths: getCompletedCycleLengths(predictionDays),
+    periodDays: selectPastPredictionDays(state, today),
   });
 }
 

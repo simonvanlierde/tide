@@ -7,6 +7,7 @@ import {
   getPastOvulationDates,
 } from "../../src/domain/cycle";
 import type { IsoDate } from "../../src/domain/types";
+import { startsEndingOn } from "../support/cycles";
 
 describe("getCompletedCycleLengths", () => {
   it("ignores gaps from missed logging days when computing completed cycle lengths", () => {
@@ -121,7 +122,6 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-08-22",
       periodDays: ["2026-08-01", "2026-08-02", "2026-08-03", "2099-01-01"],
-      completedCycleLengths: [],
     });
 
     expect(summary.cycleDay).toBe(22);
@@ -131,8 +131,7 @@ describe("buildCycleSummary", () => {
   it("stops forecasting once the expected period is long overdue", () => {
     const summary = buildCycleSummary({
       today: "2026-08-22",
-      periodDays: ["2025-08-01", "2025-08-02"],
-      completedCycleLengths: [28],
+      periodDays: ["2025-07-04", "2025-08-01", "2025-08-02"],
     });
 
     expect(summary.estimateMode).toBe("insufficient");
@@ -152,7 +151,6 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-06-10",
       periodDays: [...periodDays],
-      completedCycleLengths: getCompletedCycleLengths([...periodDays]),
     });
 
     expect(summary.cycleDay).toBe(10);
@@ -164,7 +162,6 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-19",
       periodDays: ["2026-04-19", "2026-04-20"],
-      completedCycleLengths: [],
     });
 
     expect(summary.cycleDay).toBe(1);
@@ -177,8 +174,7 @@ describe("buildCycleSummary", () => {
   it("calculates the current cycle day from the most recent cycle start", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
-      periodDays: ["2026-03-20", "2026-03-21", "2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28, 29, 27],
+      periodDays: [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"],
     });
 
     expect(summary.cycleDay).toBe(17);
@@ -187,8 +183,7 @@ describe("buildCycleSummary", () => {
   it("shows the next period as an estimate in X days", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
-      periodDays: ["2026-03-20", "2026-03-21", "2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28, 29, 27],
+      periodDays: [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"],
     });
 
     expect(summary.nextPeriod.date).toBe("2026-04-30");
@@ -199,7 +194,6 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
       periodDays: [],
-      completedCycleLengths: [],
     });
 
     expect(summary.phaseLabel).toBe("unknown");
@@ -212,8 +206,10 @@ describe("buildCycleSummary", () => {
     // estimate to ~31; the median holds at 28.
     const summary = buildCycleSummary({
       today: "2026-04-04",
-      periodDays: ["2026-04-02", "2026-04-03"],
-      completedCycleLengths: [27, 28, 45, 28, 29],
+      periodDays: [
+        ...startsEndingOn("2026-04-02", [27, 28, 45, 28, 29]),
+        "2026-04-03",
+      ],
     });
 
     expect(summary.cycleLength).toBe(28);
@@ -226,8 +222,10 @@ describe("buildCycleSummary", () => {
   it("keeps the tight biological fertile window for a regular cycler", () => {
     const summary = buildCycleSummary({
       today: "2026-04-04",
-      periodDays: ["2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28, 28, 28, 28],
+      periodDays: [
+        ...startsEndingOn("2026-04-02", [28, 28, 28, 28]),
+        "2026-04-03",
+      ],
     });
 
     expect(summary.fertileWindow).toEqual({ start: -5, end: 1 });
@@ -255,7 +253,6 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-06-24",
       periodDays,
-      completedCycleLengths: getCompletedCycleLengths(periodDays),
     });
 
     expect(summary.fertileWindow).toEqual({ start: -5, end: 1 });
@@ -265,8 +262,7 @@ describe("buildCycleSummary", () => {
     // Cycles 26/28/30 days apart: SD ≈ 1.6 days -> one day of widening each side.
     const summary = buildCycleSummary({
       today: "2026-04-04",
-      periodDays: ["2026-04-02", "2026-04-03"],
-      completedCycleLengths: [26, 28, 30],
+      periodDays: [...startsEndingOn("2026-04-02", [26, 28, 30]), "2026-04-03"],
     });
 
     expect(summary.fertileWindow).toEqual({ start: -6, end: 2 });
@@ -277,8 +273,10 @@ describe("buildCycleSummary", () => {
     // estimate down once they fall outside the recency window.
     const summary = buildCycleSummary({
       today: "2026-04-04",
-      periodDays: ["2026-04-02", "2026-04-03"],
-      completedCycleLengths: [21, 21, 21, 30, 30, 30, 30, 30, 30],
+      periodDays: [
+        ...startsEndingOn("2026-04-02", [21, 21, 21, 30, 30, 30, 30, 30, 30]),
+        "2026-04-03",
+      ],
     });
 
     expect(summary.cycleLength).toBe(30);
@@ -288,7 +286,6 @@ describe("buildCycleSummary", () => {
     const summary = buildCycleSummary({
       today: "2026-04-18",
       periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
-      completedCycleLengths: [28],
     });
 
     expect(["menstrual", "follicular", "ovulation", "luteal"]).toContain(
