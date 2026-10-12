@@ -27,6 +27,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Backup files are named after your local date, not the UTC date.
 - Screen readers no longer read the info button's label as part of the
   fertility and cycle-number switch names.
+- Screen readers now hear which weekday each calendar day falls on: the month
+  is a table with a header per weekday column.
+- The install icon is listed separately for plain and masked use, so Android
+  launchers that apply a mask shape use it as intended.
+
+### Security
+
+- The Content-Security-Policy no longer allows inline styles.
 
 ## [0.4.0] - 2026-08-24
 
