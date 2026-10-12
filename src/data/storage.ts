@@ -7,7 +7,13 @@ export { STORAGE_KEY } from "./schema";
 export const BACKUP_KEY = `${STORAGE_KEY}.backup`;
 
 export function loadAppState(): AppState {
-  const raw = window.localStorage.getItem(STORAGE_KEY);
+  let raw: string | null;
+  try {
+    raw = window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    // Storage blocked (site data disabled): run with defaults, nothing to back up.
+    return defaultAppState;
+  }
 
   if (!raw) {
     return defaultAppState;
@@ -29,8 +35,12 @@ export function saveAppState(state: AppState) {
 // Remove every copy of the user's data, including the corrupt-blob backup,
 // which nothing else ever surfaces.
 export function clearAppState() {
-  window.localStorage.removeItem(STORAGE_KEY);
-  window.localStorage.removeItem(BACKUP_KEY);
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(BACKUP_KEY);
+  } catch {
+    // Storage blocked: nothing was ever written, so there is nothing to clear.
+  }
 }
 
 // Storage can be full or blocked (e.g. private browsing); losing persistence

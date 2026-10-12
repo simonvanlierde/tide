@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   BACKUP_KEY,
+  clearAppState,
   loadAppState,
   STORAGE_KEY,
   saveAppState,
@@ -129,6 +130,26 @@ describe("local storage", () => {
       expect(() => saveAppState(createAppState())).not.toThrow();
     } finally {
       setItem.mockRestore();
+    }
+  });
+
+  it("starts with defaults when storage is blocked outright", () => {
+    const blocked = () => {
+      throw new DOMException("blocked", "SecurityError");
+    };
+    const getItem = vi
+      .spyOn(Storage.prototype, "getItem")
+      .mockImplementation(blocked);
+    const removeItem = vi
+      .spyOn(Storage.prototype, "removeItem")
+      .mockImplementation(blocked);
+
+    try {
+      expect(loadAppState()).toEqual(createAppState());
+      expect(() => clearAppState()).not.toThrow();
+    } finally {
+      getItem.mockRestore();
+      removeItem.mockRestore();
     }
   });
 });
