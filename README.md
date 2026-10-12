@@ -60,6 +60,8 @@ Every estimate is computed on-device from the bleeding days you log. Nothing lea
   egg ~1). It **widens with the standard deviation of your recent cycles** (capped at ±5 days):
   tight for regular cycles, wider for irregular ones.
 
+How close the next-period estimate lands on real cycle data: [docs/backtest.md](docs/backtest.md).
+
 Estimates are informational, not a form of birth control.
 
 ## Roadmap

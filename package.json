@@ -15,6 +15,7 @@
     "typecheck": "tsc -b --pretty false",
     "build": "vite build && node scripts/writeCspHeaders.mjs",
     "bundle:check": "node scripts/checkBundleBudget.mjs",
+    "backtest": "node scripts/backtestPredictor.mjs",
     "lint": "biome check .",
     "format": "biome check --write .",
     "preview": "vite preview",
