@@ -1,12 +1,13 @@
-import { useT } from "../../state/provider";
+import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { AboutSection } from "./AboutSection";
-import { CycleNumbersSection } from "./CycleNumbersSection";
 import { DataSection } from "./DataSection";
-import { FertilitySection } from "./FertilitySection";
 import { LanguageSection } from "./LanguageSection";
+import { SwitchRow } from "./SwitchRow";
 import { ThemeSection } from "./ThemeSection";
 
 export function SettingsScreen() {
+  const { settings } = useAppState();
+  const actions = useAppStateActions();
   const t = useT();
   return (
     <section className="utility-screen">
@@ -16,8 +17,20 @@ export function SettingsScreen() {
         <div className="settings-group settings-group--compact">
           <ThemeSection />
           <LanguageSection />
-          <FertilitySection />
-          <CycleNumbersSection />
+          <SwitchRow
+            label={t("settings.showFertility")}
+            infoLabel={t("settings.fertilityInfo")}
+            help={t("settings.fertilityHelp")}
+            checked={settings.showFertility}
+            onChange={actions.setShowFertility}
+          />
+          <SwitchRow
+            label={t("settings.showCycleNumbers")}
+            infoLabel={t("settings.cycleNumbersInfo")}
+            help={t("settings.cycleNumbersHelp")}
+            checked={settings.showCycleDayNumbers}
+            onChange={actions.setShowCycleDayNumbers}
+          />
         </div>
       </article>
       <DataSection />
