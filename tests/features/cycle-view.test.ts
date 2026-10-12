@@ -5,21 +5,16 @@ import {
   buildCycleSegments,
   getSegmentStatus,
 } from "../../src/features/today/CycleView";
+import { startsEndingOn } from "../support/cycles";
 
 describe("buildCycleSegments", () => {
   it("maps a learned cycle with logged days onto day segments", () => {
     const today: IsoDate = "2026-04-18";
     const periodDays: IsoDate[] = [
-      "2026-03-20",
-      "2026-03-21",
-      "2026-04-02",
+      ...startsEndingOn("2026-04-02", [28, 29, 27]),
       "2026-04-03",
     ];
-    const summary = buildCycleSummary({
-      today,
-      periodDays,
-      completedCycleLengths: [28, 29, 27],
-    });
+    const summary = buildCycleSummary({ today, periodDays });
 
     const segments = buildCycleSegments(summary, periodDays, today, true);
 
@@ -57,12 +52,11 @@ describe("buildCycleSegments", () => {
 
   it("sizes the ring to a short learned cycle without padding to 28", () => {
     const today: IsoDate = "2026-06-06";
-    const periodDays: IsoDate[] = ["2026-06-01", "2026-06-02"];
-    const summary = buildCycleSummary({
-      today,
-      periodDays,
-      completedCycleLengths: [24, 24, 25], // median 24
-    });
+    const periodDays: IsoDate[] = [
+      ...startsEndingOn("2026-06-01", [24, 24, 25]), // median 24
+      "2026-06-02",
+    ];
+    const summary = buildCycleSummary({ today, periodDays });
 
     const segments = buildCycleSegments(summary, periodDays, today, true);
 
@@ -85,7 +79,6 @@ describe("buildCycleSegments", () => {
     const summary = buildCycleSummary({
       today,
       periodDays,
-      completedCycleLengths: [],
     });
 
     const segments = buildCycleSegments(summary, periodDays, today, true);
@@ -106,7 +99,6 @@ describe("buildCycleSegments", () => {
     const summary = buildCycleSummary({
       today,
       periodDays,
-      completedCycleLengths: [],
     });
 
     const segments = buildCycleSegments(summary, periodDays, today, false);
@@ -120,7 +112,6 @@ describe("buildCycleSegments", () => {
     const summary = buildCycleSummary({
       today,
       periodDays: [],
-      completedCycleLengths: [],
     });
 
     const segments = buildCycleSegments(summary, [], today, true);
@@ -137,12 +128,8 @@ describe("buildCycleSegments", () => {
 
 describe("getSegmentStatus", () => {
   const today: IsoDate = "2026-04-18";
-  const periodDays: IsoDate[] = ["2026-04-02", "2026-04-03"];
-  const summary = buildCycleSummary({
-    today,
-    periodDays,
-    completedCycleLengths: [28],
-  });
+  const periodDays: IsoDate[] = ["2026-03-05", "2026-04-02", "2026-04-03"];
+  const summary = buildCycleSummary({ today, periodDays });
   const segments = buildCycleSegments(summary, periodDays, today, true);
 
   function statusOf(dayNumber: number) {
@@ -166,7 +153,6 @@ describe("getSegmentStatus", () => {
     const overdueSummary = buildCycleSummary({
       today: overdueToday,
       periodDays,
-      completedCycleLengths: [28],
     });
     const overdueSegments = buildCycleSegments(
       overdueSummary,
@@ -186,7 +172,6 @@ describe("getSegmentStatus", () => {
     const unknownSummary = buildCycleSummary({
       today,
       periodDays: [],
-      completedCycleLengths: [],
     });
     const unknownSegments = buildCycleSegments(unknownSummary, [], today, true);
 

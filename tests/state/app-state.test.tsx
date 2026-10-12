@@ -109,6 +109,25 @@ describe("app state", () => {
     );
   });
 
+  it("asks for persistent storage once a day is logged, not before", async () => {
+    const persist = vi.fn().mockResolvedValue(true);
+    Object.defineProperty(navigator, "storage", {
+      value: { persist },
+      configurable: true,
+    });
+    const user = userEvent.setup();
+    try {
+      renderWithAppState(<Probe />, { state: createAppState() });
+      expect(persist).not.toHaveBeenCalled();
+
+      await user.click(screen.getByRole("button", { name: "toggle probe" }));
+
+      expect(persist).toHaveBeenCalledOnce();
+    } finally {
+      Reflect.deleteProperty(navigator, "storage");
+    }
+  });
+
   it("refuses to expose state or actions outside a provider", () => {
     expect(() => renderHook(() => useAppState())).toThrow(
       /must be used inside AppStateProvider/,

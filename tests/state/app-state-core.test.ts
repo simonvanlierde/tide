@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { getPeriodDays } from "../../src/domain/flow";
-import { appStateReducer, selectCycleSummary } from "../../src/state/core";
+import {
+  appStateReducer,
+  selectCycleStats,
+  selectCycleSummary,
+} from "../../src/state/core";
 import { createAppState, createLearnedCycleState } from "../support/app";
 
 describe("app state core selectors", () => {
@@ -152,5 +156,28 @@ describe("app state core selectors", () => {
     expect(summary.cycleDay).toBe(22);
     expect(summary.cycleLength).toBe(28);
     expect(summary.nextPeriod.date).toBe("2026-08-29");
+  });
+
+  it("leaves a future-dated day out of the cycle stats too", () => {
+    const state = createAppState({
+      periodDays: ["2026-07-04", "2026-08-01", "2099-01-01"],
+    });
+
+    expect(selectCycleStats(state, "2026-08-22")).toEqual({
+      cyclesTracked: 1,
+      variabilityDays: null,
+    });
+  });
+
+  it("sets one settings field and leaves the rest alone", () => {
+    const state = createAppState({ periodDays: ["2026-04-02"] });
+    const next = appStateReducer(state, {
+      type: "setSetting",
+      key: "theme",
+      value: "dark",
+    });
+
+    expect(next.settings).toEqual({ ...state.settings, theme: "dark" });
+    expect(next.intensityByDay).toBe(state.intensityByDay);
   });
 });

@@ -15,6 +15,7 @@ import {
   saveAppState,
 } from "../data/storage";
 import type {
+  AppSettings,
   AppState,
   FlowIntensity,
   IsoDate,
@@ -53,6 +54,16 @@ export function AppStateProvider({
   useEffect(() => {
     saveAppState(state);
   }, [state]);
+
+  // Ask the browser to keep this origin's storage through disk pressure (and,
+  // in Safari, past a week without a visit): the logged days live nowhere
+  // else. Asked once there is something to keep, never on a blank first run.
+  const hasLoggedDays = Object.keys(state.intensityByDay).length > 0;
+  useEffect(() => {
+    if (hasLoggedDays) {
+      navigator.storage?.persist?.().catch(() => undefined);
+    }
+  }, [hasLoggedDays]);
 
   // Another tab (or the installed PWA window) saved: adopt its state instead
   // of overwriting it with ours on our next change. The event only fires for
@@ -188,18 +199,8 @@ export function useAppStateActions() {
       dismissReminder(today: IsoDate) {
         dispatch({ type: "dismissReminder", today });
       },
-      setShowFertility(show: boolean) {
-        dispatch({ type: "setShowFertility", show });
-      },
-      setShowCycleDayNumbers(show: boolean) {
-        // biome-ignore lint/security/noSecrets: an action type name, not a credential
-        dispatch({ type: "setShowCycleDayNumbers", show });
-      },
-      setTheme(theme: ThemePreference) {
-        dispatch({ type: "setTheme", theme });
-      },
-      setLanguage(language: LanguagePreference) {
-        dispatch({ type: "setLanguage", language });
+      setSetting<K extends keyof AppSettings>(key: K, value: AppSettings[K]) {
+        dispatch({ type: "setSetting", key, value } as AppStateAction);
       },
       importState(state: AppState) {
         dispatch({ type: "importState", state });
@@ -220,7 +221,7 @@ export function useCycleSummary(today: IsoDate = getTodayIsoDate()) {
   return useMemo(() => selectCycleSummary(state, today), [state, today]);
 }
 
-export function useCycleStats() {
+export function useCycleStats(today: IsoDate) {
   const state = useAppState();
-  return useMemo(() => selectCycleStats(state), [state]);
+  return useMemo(() => selectCycleStats(state, today), [state, today]);
 }

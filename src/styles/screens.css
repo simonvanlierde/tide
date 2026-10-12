@@ -367,6 +367,7 @@
       gap: 6px;
     }
 
+    .calendar-grid__body,
     .calendar-grid__header,
     .calendar-grid__week {
       gap: 5px;

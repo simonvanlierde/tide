@@ -18,7 +18,10 @@ export function LanguageSection() {
         className="select-field"
         value={current}
         onChange={(event) =>
-          actions.setLanguage(event.target.value as LanguagePreference)
+          actions.setSetting(
+            "language",
+            event.target.value as LanguagePreference,
+          )
         }
       >
         {LANGUAGE_OPTIONS.map((option) => (

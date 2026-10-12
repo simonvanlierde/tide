@@ -4,6 +4,38 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- A backtest of the next-period estimate on a public cycle dataset, with the
+  results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
+  `pnpm backtest`.
+- Once a day is logged, Tide asks the browser to keep its stored data rather
+  than clear it to free space. Firefox shows its own prompt for this.
+
+### Fixed
+
+- An app left open overnight now moves to the new day, so logging today no
+  longer logs yesterday.
+- Importing a JSON file that is not a Tide backup now shows an error instead of
+  replacing your history with an empty one.
+- Tide starts normally when the browser blocks site storage, instead of showing
+  the error screen.
+- Future-dated days left by an import or a clock change no longer count in the
+  cycle insights or the calendar's past fertile windows.
+- Backup files are named after your local date, not the UTC date.
+- Screen readers no longer read the info button's label as part of the
+  fertility and cycle-number switch names.
+- Screen readers now hear which weekday each calendar day falls on: the month
+  is a table with a header per weekday column.
+- The install icon is listed separately for plain and masked use, so Android
+  launchers that apply a mask shape use it as intended.
+
+### Security
+
+- The Content-Security-Policy no longer allows inline styles.
+
 ## [0.4.0] - 2026-08-24
 
 ### Added
@@ -149,6 +181,7 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
+[Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.4.0...HEAD
 [0.4.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.4.0
 [0.3.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.3.0
 [0.2.1]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.1

@@ -5,9 +5,9 @@ import { fr } from "./fr";
 import { nl } from "./nl";
 
 // A language ships as one entry here. Adding a language = write xx.ts (same keys
-// as en, enforced by the Dictionary type), register it here, and add it to
-// LANGUAGE_OPTIONS in features/settings/config.ts. SupportedLanguage and the
-// stored-preference union both widen automatically.
+// as en, enforced by the Dictionary type), register it here, and add its
+// "language.xx" name to every dictionary. SupportedLanguage, the stored
+// preference union and the settings picker all widen automatically.
 const DICTIONARIES = { en, nl, de, fr, es } satisfies Record<
   string,
   Dictionary

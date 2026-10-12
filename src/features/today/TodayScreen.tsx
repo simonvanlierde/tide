@@ -18,12 +18,9 @@ import {
   useLocale,
   useT,
 } from "../../state/provider";
+import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
-import {
-  differenceInDays,
-  formatShortDate,
-  getTodayIsoDate,
-} from "../../utils/date";
+import { differenceInDays, formatShortDate } from "../../utils/date";
 import { LogAction } from "../log/LogAction";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
 import { InfoPopover } from "../settings/InfoPopover";
@@ -34,13 +31,15 @@ interface TodayScreenProps {
   today?: IsoDate;
 }
 
-export function TodayScreen({ today = getTodayIsoDate() }: TodayScreenProps) {
+export function TodayScreen(props: TodayScreenProps) {
+  const liveToday = useToday();
+  const today = props.today ?? liveToday;
   const state = useAppState();
   const actions = useAppStateActions();
   const t = useT();
   const locale = useLocale();
   const summary = useCycleSummary(today);
-  const stats = useCycleStats();
+  const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({

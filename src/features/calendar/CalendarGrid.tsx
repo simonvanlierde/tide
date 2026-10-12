@@ -92,7 +92,7 @@ export function CalendarGrid({
     }
     setFocusedDay(day.value);
     event.currentTarget
-      .closest(".calendar-grid__week")
+      .closest(".calendar-grid__body")
       ?.querySelectorAll<HTMLButtonElement>(".calendar-grid__day")
       [target]?.focus();
   }
@@ -110,96 +110,112 @@ export function CalendarGrid({
     forecastRun = isPredicted ? forecastRun + 1 : 0;
   }
 
-  return (
-    <section className="calendar-grid" aria-label={t("calendar.title")}>
-      <div className="calendar-grid__header">
-        {weekdayLabels.map((day) => (
-          <div key={day} className="calendar-grid__weekday">
-            {day}
-          </div>
-        ))}
-      </div>
-      <div className="calendar-grid__week">
-        {monthDays.map((day, index) => {
-          const value = day.value;
-          const isLogged = loggedDays.has(value);
-          // One series only: the running cycle-day count, on days that have
-          // happened. The coral run already says which period day a logged
-          // cell is, and a number on a future cell would read as a fact.
-          const dayNumber =
-            showCycleDayNumbers && !isLogged && !day.isFuture
-              ? cycleDayNumbers.get(value)
-              : undefined;
-          // Logged days take the coral fill, deepened by flow level; without a
-          // chosen level the base .is-logged coral stands. A prediction only
-          // shows on days that aren't already logged.
-          const flow = isLogged ? (dayIntensity.get(value) ?? null) : null;
-          const marker = isLogged ? undefined : cycleMarkers.get(value);
-          const isPredictedPeriod = marker === "predicted-period";
-          const forecastStep = forecastSteps[index] ?? 0;
-          const isSelected = value === selectedDay;
-          const className = [
-            "calendar-grid__day",
-            isLogged ? "is-logged" : "",
-            value === justLoggedDay ? "is-just-logged" : "",
-            flow ? `is-flow-${flow}` : "",
-            day.isToday ? "is-today" : "",
-            isSelected ? "is-selected" : "",
-            day.isOutsideMonth ? "is-outside-month" : "",
-            day.isFuture ? "is-future" : "",
-            marker ? MARKER_CLASS[marker] : "",
-          ]
-            .filter(Boolean)
-            .join(" ");
-          const dayLabel = `${t(isLogged ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
-          // A logged future day (clock moved back, or imported) stays
-          // removable; only logging a new future day is blocked.
-          const isUnavailable = day.isFuture && !isLogged;
-          const dateLabel = isUnavailable
-            ? t("calendar.dayUnavailable", { label: dayLabel })
-            : dayLabel;
-          // Flow is otherwise colour-only, so name it for screen readers.
-          const detail = flow
-            ? t(`flow.${flow}`)
-            : marker
-              ? t(MARKER_LABEL_KEY[marker])
-              : undefined;
+  const weekStarts = monthDays
+    .map((_, index) => index)
+    .filter((index) => index % 7 === 0);
 
-          return (
-            <button
-              key={day.key}
-              type="button"
-              className={className}
-              style={
-                isPredictedPeriod
-                  ? ({ "--forecast-step": forecastStep } as CSSProperties)
-                  : undefined
-              }
-              disabled={isUnavailable}
-              tabIndex={value === tabStop ? 0 : -1}
-              onKeyDown={(event) => moveFocus(event, index)}
-              onFocus={() => setFocusedDay(value)}
-              aria-label={
-                detail
-                  ? t("calendar.dayWithMarker", {
-                      label: dateLabel,
-                      marker: detail,
-                    })
-                  : dateLabel
-              }
-              aria-pressed={isSelected}
-              onClick={() => onSelectDay(value)}
-            >
-              {parseIsoDate(value).getUTCDate()}
-              {dayNumber ? (
-                <span className="calendar-grid__period-day" aria-hidden="true">
-                  {dayNumber}
-                </span>
-              ) : null}
-            </button>
-          );
-        })}
-      </div>
-    </section>
+  return (
+    // A table, so screen readers announce each day's weekday column.
+    <table className="calendar-grid" aria-label={t("calendar.title")}>
+      <thead>
+        <tr className="calendar-grid__header">
+          {weekdayLabels.map((day) => (
+            <th key={day} scope="col" className="calendar-grid__weekday">
+              {day}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className="calendar-grid__body">
+        {weekStarts.map((weekStart) => (
+          <tr key={monthDays[weekStart]?.key} className="calendar-grid__week">
+            {monthDays.slice(weekStart, weekStart + 7).map((day, offset) => {
+              const index = weekStart + offset;
+              const value = day.value;
+              const isLogged = loggedDays.has(value);
+              // One series only: the running cycle-day count, on days that have
+              // happened. The coral run already says which period day a logged
+              // cell is, and a number on a future cell would read as a fact.
+              const dayNumber =
+                showCycleDayNumbers && !isLogged && !day.isFuture
+                  ? cycleDayNumbers.get(value)
+                  : undefined;
+              // Logged days take the coral fill, deepened by flow level; without a
+              // chosen level the base .is-logged coral stands. A prediction only
+              // shows on days that aren't already logged.
+              const flow = isLogged ? (dayIntensity.get(value) ?? null) : null;
+              const marker = isLogged ? undefined : cycleMarkers.get(value);
+              const isPredictedPeriod = marker === "predicted-period";
+              const forecastStep = forecastSteps[index] ?? 0;
+              const isSelected = value === selectedDay;
+              const className = [
+                "calendar-grid__day",
+                isLogged ? "is-logged" : "",
+                value === justLoggedDay ? "is-just-logged" : "",
+                flow ? `is-flow-${flow}` : "",
+                day.isToday ? "is-today" : "",
+                isSelected ? "is-selected" : "",
+                day.isOutsideMonth ? "is-outside-month" : "",
+                day.isFuture ? "is-future" : "",
+                marker ? MARKER_CLASS[marker] : "",
+              ]
+                .filter(Boolean)
+                .join(" ");
+              const dayLabel = `${t(isLogged ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
+              // A logged future day (clock moved back, or imported) stays
+              // removable; only logging a new future day is blocked.
+              const isUnavailable = day.isFuture && !isLogged;
+              const dateLabel = isUnavailable
+                ? t("calendar.dayUnavailable", { label: dayLabel })
+                : dayLabel;
+              // Flow is otherwise colour-only, so name it for screen readers.
+              const detail = flow
+                ? t(`flow.${flow}`)
+                : marker
+                  ? t(MARKER_LABEL_KEY[marker])
+                  : undefined;
+
+              return (
+                <td key={day.key} className="calendar-grid__cell">
+                  <button
+                    type="button"
+                    className={className}
+                    style={
+                      isPredictedPeriod
+                        ? ({ "--forecast-step": forecastStep } as CSSProperties)
+                        : undefined
+                    }
+                    disabled={isUnavailable}
+                    tabIndex={value === tabStop ? 0 : -1}
+                    onKeyDown={(event) => moveFocus(event, index)}
+                    onFocus={() => setFocusedDay(value)}
+                    aria-label={
+                      detail
+                        ? t("calendar.dayWithMarker", {
+                            label: dateLabel,
+                            marker: detail,
+                          })
+                        : dateLabel
+                    }
+                    aria-pressed={isSelected}
+                    onClick={() => onSelectDay(value)}
+                  >
+                    {parseIsoDate(value).getUTCDate()}
+                    {dayNumber ? (
+                      <span
+                        className="calendar-grid__period-day"
+                        aria-hidden="true"
+                      >
+                        {dayNumber}
+                      </span>
+                    ) : null}
+                  </button>
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

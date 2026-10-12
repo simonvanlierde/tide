@@ -22,7 +22,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/calendar$/);
   await expect(
-    page.getByRole("region", { name: en["calendar.title"] }),
+    page.getByRole("table", { name: en["calendar.title"] }),
   ).toBeVisible();
 });
 
@@ -85,6 +85,11 @@ test("manifest and install assets are served", async ({ page }) => {
     scope: "/",
     display: "standalone",
   });
+  expect(
+    (manifest.icons as { purpose: string }[])
+      .map((icon) => icon.purpose)
+      .sort(),
+  ).toEqual(["any", "any", "maskable", "maskable"]);
 
   const faviconResponse = await page.request.get("/favicon.ico");
   expect(faviconResponse.ok()).toBe(true);

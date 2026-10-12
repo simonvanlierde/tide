@@ -156,7 +156,6 @@ export function CycleDial({
     return key ? t(key) : phaseLabel;
   };
   const frameRef = useRef<HTMLDivElement>(null);
-  // The cycle day being previewed while scrubbing, or null for the live view.
   // The cycle day being previewed while scrubbing (null: the live view) and
   // the exact pointer angle, so the ghost dot tracks the finger rather than
   // snapping to the day centre (null for keyboard previews). One state object:

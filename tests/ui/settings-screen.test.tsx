@@ -69,7 +69,10 @@ describe("SettingsScreen", () => {
     const user = userEvent.setup();
     renderSettings();
 
-    const toggle = screen.getByRole("switch", { name: /fertility estimates/i });
+    // Exact name: the info button beside the label is not part of it.
+    const toggle = screen.getByRole("switch", {
+      name: "Show fertility estimates",
+    });
     expect(toggle).toBeChecked();
 
     await user.click(toggle);

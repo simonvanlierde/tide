@@ -1,12 +1,13 @@
-import { useT } from "../../state/provider";
+import { useAppState, useAppStateActions, useT } from "../../state/provider";
 import { AboutSection } from "./AboutSection";
-import { CycleNumbersSection } from "./CycleNumbersSection";
 import { DataSection } from "./DataSection";
-import { FertilitySection } from "./FertilitySection";
 import { LanguageSection } from "./LanguageSection";
+import { SwitchRow } from "./SwitchRow";
 import { ThemeSection } from "./ThemeSection";
 
 export function SettingsScreen() {
+  const { settings } = useAppState();
+  const actions = useAppStateActions();
   const t = useT();
   return (
     <section className="utility-screen">
@@ -16,8 +17,23 @@ export function SettingsScreen() {
         <div className="settings-group settings-group--compact">
           <ThemeSection />
           <LanguageSection />
-          <FertilitySection />
-          <CycleNumbersSection />
+          <SwitchRow
+            label={t("settings.showFertility")}
+            infoLabel={t("settings.fertilityInfo")}
+            help={t("settings.fertilityHelp")}
+            checked={settings.showFertility}
+            onChange={(show) => actions.setSetting("showFertility", show)}
+          />
+          <SwitchRow
+            label={t("settings.showCycleNumbers")}
+            infoLabel={t("settings.cycleNumbersInfo")}
+            help={t("settings.cycleNumbersHelp")}
+            checked={settings.showCycleDayNumbers}
+            onChange={(show) =>
+              // biome-ignore lint/security/noSecrets: a settings field name, not a credential
+              actions.setSetting("showCycleDayNumbers", show)
+            }
+          />
         </div>
       </article>
       <DataSection />

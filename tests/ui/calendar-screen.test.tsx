@@ -37,6 +37,24 @@ describe("CalendarScreen", () => {
     ).toBeInTheDocument();
   });
 
+  it("lays the month out as a table with a weekday header per column", () => {
+    renderWithAppState(<CalendarScreen today="2026-04-18" />);
+
+    const table = screen.getByRole("table", { name: "Calendar" });
+    expect(within(table).getAllByRole("columnheader")).toHaveLength(7);
+    // April 2026 starts on a Wednesday: header row plus five weeks.
+    const rows = within(table).getAllByRole("row");
+    expect(rows).toHaveLength(6);
+    for (const week of rows.slice(1)) {
+      expect(within(week).getAllByRole("cell")).toHaveLength(7);
+    }
+    expect(
+      within(rows[1] as HTMLElement).getByRole("button", {
+        name: /april 1, 2026/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
   it("shows fertility markers by default but hides them when turned off", () => {
     const shown = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),

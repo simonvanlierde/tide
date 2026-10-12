@@ -1,16 +1,20 @@
-import {
-  buildCycleSummary,
-  getCompletedCycleLengths,
-  getCycleStats,
-} from "../domain/cycle";
+import { buildCycleSummary, getCycleStats } from "../domain/cycle";
 import { getPredictionDays } from "../domain/flow";
 import type {
+  AppSettings,
   AppState,
   FlowIntensity,
   IsoDate,
-  LanguagePreference,
-  ThemePreference,
 } from "../domain/types";
+
+// One action per settings field, typed so each key only takes its own value.
+type SetSettingAction = {
+  [K in keyof AppSettings]: {
+    type: "setSetting";
+    key: K;
+    value: AppSettings[K];
+  };
+}[keyof AppSettings];
 
 export type AppStateAction =
   | { type: "togglePeriodDay"; day: IsoDate; today: IsoDate }
@@ -21,10 +25,7 @@ export type AppStateAction =
       today: IsoDate;
     }
   | { type: "dismissReminder"; today: IsoDate }
-  | { type: "setShowFertility"; show: boolean }
-  | { type: "setShowCycleDayNumbers"; show: boolean }
-  | { type: "setTheme"; theme: ThemePreference }
-  | { type: "setLanguage"; language: LanguagePreference }
+  | SetSettingAction
   | { type: "importState"; state: AppState };
 
 export function appStateReducer(
@@ -77,47 +78,13 @@ export function appStateReducer(
     case "dismissReminder":
       return {
         ...state,
-        settings: {
-          ...state.settings,
-          dismissedOn: action.today,
-        },
+        settings: { ...state.settings, dismissedOn: action.today },
       };
 
-    case "setShowFertility":
+    case "setSetting":
       return {
         ...state,
-        settings: {
-          ...state.settings,
-          showFertility: action.show,
-        },
-      };
-
-    // biome-ignore lint/security/noSecrets: an action type name, not a credential
-    case "setShowCycleDayNumbers":
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          showCycleDayNumbers: action.show,
-        },
-      };
-
-    case "setTheme":
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          theme: action.theme,
-        },
-      };
-
-    case "setLanguage":
-      return {
-        ...state,
-        settings: {
-          ...state.settings,
-          language: action.language,
-        },
+        settings: { ...state.settings, [action.key]: action.value },
       };
 
     // Wholesale replace: the imported state is already normalized by the caller.
@@ -126,20 +93,19 @@ export function appStateReducer(
   }
 }
 
-export function selectCycleSummary(state: AppState, today: IsoDate) {
-  // Future-dated days (imported, or left by a clock that moved back) must not
-  // feed the cycle-length history either.
-  const predictionDays = getPredictionDays(state.intensityByDay).filter(
-    (day) => day <= today,
-  );
+// Future-dated days (imported, or left by a clock that moved back) must not
+// feed the cycle-length history, the stats, or the past fertile windows.
+export function selectPastPredictionDays(state: AppState, today: IsoDate) {
+  return getPredictionDays(state.intensityByDay).filter((day) => day <= today);
+}
 
+export function selectCycleSummary(state: AppState, today: IsoDate) {
   return buildCycleSummary({
     today,
-    periodDays: predictionDays,
-    completedCycleLengths: getCompletedCycleLengths(predictionDays),
+    periodDays: selectPastPredictionDays(state, today),
   });
 }
 
-export function selectCycleStats(state: AppState) {
-  return getCycleStats(getPredictionDays(state.intensityByDay));
+export function selectCycleStats(state: AppState, today: IsoDate) {
+  return getCycleStats(selectPastPredictionDays(state, today));
 }

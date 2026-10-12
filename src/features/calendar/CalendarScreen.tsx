@@ -3,7 +3,8 @@ import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
 import type { IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
-import { formatShortDate, getTodayIsoDate } from "../../utils/date";
+import { useToday } from "../../state/useToday";
+import { formatShortDate } from "../../utils/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarMonthPicker } from "./CalendarMonthPicker";
 import { DayFlowPicker } from "./DayFlowPicker";
@@ -13,9 +14,9 @@ interface CalendarScreenProps {
   today?: IsoDate;
 }
 
-export function CalendarScreen({
-  today = getTodayIsoDate(),
-}: CalendarScreenProps) {
+export function CalendarScreen(props: CalendarScreenProps) {
+  const liveToday = useToday();
+  const today = props.today ?? liveToday;
   const model = useCalendar(today);
   const t = useT();
   const locale = useLocale();
