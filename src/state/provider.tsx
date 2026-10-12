@@ -54,6 +54,16 @@ export function AppStateProvider({
     saveAppState(state);
   }, [state]);
 
+  // Ask the browser to keep this origin's storage through disk pressure (and,
+  // in Safari, past a week without a visit): the logged days live nowhere
+  // else. Asked once there is something to keep, never on a blank first run.
+  const hasLoggedDays = Object.keys(state.intensityByDay).length > 0;
+  useEffect(() => {
+    if (hasLoggedDays) {
+      navigator.storage?.persist?.().catch(() => undefined);
+    }
+  }, [hasLoggedDays]);
+
   // Another tab (or the installed PWA window) saved: adopt its state instead
   // of overwriting it with ours on our next change. The event only fires for
   // writes from other documents, so this can't loop on our own save above.
