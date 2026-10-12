@@ -44,8 +44,21 @@ export function downloadAppState(state: AppState) {
 }
 
 // Parse an exported backup back into a valid AppState. Throws on unparseable
-// JSON; normalizeAppState then drops anything malformed, so a hand-edited or
-// foreign file can never corrupt state.
+// JSON and on JSON with no logged-days map at all (some other app's file),
+// which would otherwise import as an empty history and replace the real one.
+// normalizeAppState then drops anything malformed inside a real backup.
 export function parseImportedState(text: string): AppState {
-  return normalizeAppState(JSON.parse(text));
+  const parsed: unknown = JSON.parse(text);
+  const candidate =
+    parsed && typeof parsed === "object" && "state" in parsed
+      ? parsed.state
+      : parsed;
+  if (
+    !candidate ||
+    typeof candidate !== "object" ||
+    !("days" in candidate || "intensityByDay" in candidate)
+  ) {
+    throw new Error("Not a Tide backup");
+  }
+  return normalizeAppState(parsed);
 }

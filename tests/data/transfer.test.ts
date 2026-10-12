@@ -64,6 +64,23 @@ describe("parseImportedState", () => {
     expect(() => parseImportedState("not json")).toThrow();
   });
 
+  it("throws on JSON that is not a Tide backup instead of importing nothing", () => {
+    for (const text of ["{}", "[]", "null", '{"cycles":[1,2]}']) {
+      expect(() => parseImportedState(text)).toThrow();
+    }
+  });
+
+  it("still reads the legacy versioned envelope", () => {
+    const parsed = parseImportedState(
+      JSON.stringify({
+        version: 1,
+        state: { intensityByDay: { "2026-04-02": "light" } },
+      }),
+    );
+
+    expect(parsed.intensityByDay).toEqual({ "2026-04-02": "light" });
+  });
+
   it("drops malformed fields instead of corrupting state", () => {
     const parsed = parseImportedState(
       JSON.stringify({
