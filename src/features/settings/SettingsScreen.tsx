@@ -22,14 +22,17 @@ export function SettingsScreen() {
             infoLabel={t("settings.fertilityInfo")}
             help={t("settings.fertilityHelp")}
             checked={settings.showFertility}
-            onChange={actions.setShowFertility}
+            onChange={(show) => actions.setSetting("showFertility", show)}
           />
           <SwitchRow
             label={t("settings.showCycleNumbers")}
             infoLabel={t("settings.cycleNumbersInfo")}
             help={t("settings.cycleNumbersHelp")}
             checked={settings.showCycleDayNumbers}
-            onChange={actions.setShowCycleDayNumbers}
+            onChange={(show) =>
+              // biome-ignore lint/security/noSecrets: a settings field name, not a credential
+              actions.setSetting("showCycleDayNumbers", show)
+            }
           />
         </div>
       </article>

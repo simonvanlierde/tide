@@ -15,6 +15,7 @@ import {
   saveAppState,
 } from "../data/storage";
 import type {
+  AppSettings,
   AppState,
   FlowIntensity,
   IsoDate,
@@ -198,18 +199,8 @@ export function useAppStateActions() {
       dismissReminder(today: IsoDate) {
         dispatch({ type: "dismissReminder", today });
       },
-      setShowFertility(show: boolean) {
-        dispatch({ type: "setShowFertility", show });
-      },
-      setShowCycleDayNumbers(show: boolean) {
-        // biome-ignore lint/security/noSecrets: an action type name, not a credential
-        dispatch({ type: "setShowCycleDayNumbers", show });
-      },
-      setTheme(theme: ThemePreference) {
-        dispatch({ type: "setTheme", theme });
-      },
-      setLanguage(language: LanguagePreference) {
-        dispatch({ type: "setLanguage", language });
+      setSetting<K extends keyof AppSettings>(key: K, value: AppSettings[K]) {
+        dispatch({ type: "setSetting", key, value } as AppStateAction);
       },
       importState(state: AppState) {
         dispatch({ type: "importState", state });

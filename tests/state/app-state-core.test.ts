@@ -168,4 +168,16 @@ describe("app state core selectors", () => {
       variabilityDays: null,
     });
   });
+
+  it("sets one settings field and leaves the rest alone", () => {
+    const state = createAppState({ periodDays: ["2026-04-02"] });
+    const next = appStateReducer(state, {
+      type: "setSetting",
+      key: "theme",
+      value: "dark",
+    });
+
+    expect(next.settings).toEqual({ ...state.settings, theme: "dark" });
+    expect(next.intensityByDay).toBe(state.intensityByDay);
+  });
 });

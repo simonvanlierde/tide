@@ -36,7 +36,7 @@ export function ThemeSection() {
                 : "segmented__option"
             }
             aria-pressed={current === option.value}
-            onClick={() => actions.setTheme(option.value)}
+            onClick={() => actions.setSetting("theme", option.value)}
           >
             <AppIcon
               icon={THEME_ICONS[option.value]}
