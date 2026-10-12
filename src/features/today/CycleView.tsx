@@ -1,3 +1,4 @@
+import { DEFAULT_CYCLE_LENGTH } from "../../domain/cycle";
 import type { CycleSummary, IsoDate, LoggedFlow } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { addDays, differenceInDays } from "../../utils/date";
@@ -32,7 +33,7 @@ export function buildCycleSegments(
           summary.cycleDay + summary.nextPeriod.daysUntil - 1,
           summary.cycleDay,
         )
-      : 28;
+      : DEFAULT_CYCLE_LENGTH;
   const cycleStartDate =
     summary.cycleDay !== null ? addDays(today, -(summary.cycleDay - 1)) : null;
   const ovulationDay =
