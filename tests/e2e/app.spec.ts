@@ -85,6 +85,11 @@ test("manifest and install assets are served", async ({ page }) => {
     scope: "/",
     display: "standalone",
   });
+  expect(
+    (manifest.icons as { purpose: string }[])
+      .map((icon) => icon.purpose)
+      .sort(),
+  ).toEqual(["any", "any", "maskable", "maskable"]);
 
   const faviconResponse = await page.request.get("/favicon.ico");
   expect(faviconResponse.ok()).toBe(true);

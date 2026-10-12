@@ -13,20 +13,18 @@ const manifest: Partial<ManifestOptions> = {
   display: "standalone",
   theme_color: "#f5f9f9",
   background_color: "#f5f9f9",
-  icons: [
-    {
-      src: "/icons/icon-192.png",
-      sizes: "192x192",
+  // The same artwork serves both purposes: the ring spans 68% of the width,
+  // already inside the 80% circle that Android's mask shapes keep, so a padded
+  // copy would only shrink it. Listed per purpose, since a combined
+  // "any maskable" entry is discouraged.
+  icons: (["any", "maskable"] as const).flatMap((purpose) =>
+    [192, 512].map((size) => ({
+      src: `/icons/icon-${size}.png`,
+      sizes: `${size}x${size}`,
       type: "image/png",
-      purpose: "any maskable",
-    },
-    {
-      src: "/icons/icon-512.png",
-      sizes: "512x512",
-      type: "image/png",
-      purpose: "any maskable",
-    },
-  ],
+      purpose,
+    })),
+  ),
 };
 
 export default defineConfig({
