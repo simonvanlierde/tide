@@ -17,4 +17,10 @@ overrides:
   # GHSA-3jxr-9vmj-r5cp and GHSA-q2hr-2g5m-vwhr, via workbox-build's jake/minimatch 5.
   # Remove once vite-plugin-pwa no longer pulls minimatch 5.
   "brace-expansion@>=2 <3": ^2.1.7
+  # GHSA-q2hr-2g5m-vwhr for the 5.x line, via minimatch 10 in the build tooling.
+  # Remove once the lockfile resolves brace-expansion >= 5.0.12 without it.
+  "brace-expansion@>=4 <6": ^5.0.12
+  # GHSA-68fv-2mgg-jv7q, via postcss and css-tree. Remove once the lockfile resolves
+  # source-map-js >= 1.2.2 without it.
+  source-map-js: ^1.2.2
   esbuild: ^0.28.1
