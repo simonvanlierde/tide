@@ -22,7 +22,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/calendar$/);
   await expect(
-    page.getByRole("region", { name: en["calendar.title"] }),
+    page.getByRole("table", { name: en["calendar.title"] }),
   ).toBeVisible();
 });
 

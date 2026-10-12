@@ -994,6 +994,14 @@
     touch-action: pan-y;
   }
 
+  /* The grid is a <table> for its semantics; grid layout replaces the table
+     layout on every part of it. */
+  .calendar-grid thead,
+  .calendar-grid__body {
+    display: grid;
+    gap: 8px;
+  }
+
   .calendar-grid__header,
   .calendar-grid__week {
     display: grid;
@@ -1001,8 +1009,15 @@
     gap: 8px;
   }
 
+  .calendar-grid__cell {
+    display: grid;
+    min-width: 0;
+    padding: 0;
+  }
+
   .calendar-grid__weekday {
     min-width: 0;
+    padding: 0;
     overflow: hidden;
     text-align: center;
     font-size: var(--text-sm);
