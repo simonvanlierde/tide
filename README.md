@@ -49,7 +49,7 @@ Every estimate is computed on-device from the bleeding days you log. Nothing lea
   are missed logs within the same period.
 - **Cycle length.** The **median of your last 6 completed cycles** (days between starts). Median so
   one odd cycle doesn't skew it; recent cycles only, since cycle length drifts. Falls back to
-  **28 days** until you've logged two cycles.
+  **28 days** until you've logged two period starts (one full cycle).
 - **Period length.** Average of past periods, clamped to the **2–7 day** normal band (ACOG). Ignores
   the current, unfinished period; defaults to **4 days** with no history.
 - **Next period.** Most recent cycle start plus the estimated cycle length.
