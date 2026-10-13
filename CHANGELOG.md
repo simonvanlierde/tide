@@ -43,6 +43,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Security
 
 - The Content-Security-Policy no longer allows inline styles.
+- Browsers are told to reach tide.duinlab.nl over HTTPS only, for a year at a
+  time (Strict-Transport-Security).
 
 ## [0.4.0] - 2026-08-24
 
