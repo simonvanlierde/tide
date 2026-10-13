@@ -1,6 +1,7 @@
 import { act, fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { App } from "../../src/app/App";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import {
   loadStoredState,
@@ -18,6 +19,7 @@ function renderSettings(state = createAppState()) {
 describe("SettingsScreen", () => {
   afterEach(() => {
     vi.restoreAllMocks();
+    window.history.replaceState(null, "", "/");
   });
 
   it("makes the privacy promise where the data controls are", () => {
@@ -382,7 +384,13 @@ describe("SettingsScreen", () => {
       intensityByDay: { "2026-04-02": "heavy" },
     });
     window.localStorage.setItem(STORAGE_KEY, raw);
-    renderWithAppState(<SettingsScreen />);
+    window.history.replaceState(null, "", "/settings");
+    renderWithAppState(<App />);
+
+    // The app-level notice is the only one; the buttons point at it.
+    expect(
+      screen.getAllByText(/a newer version of tide saved your data/i),
+    ).toHaveLength(1);
 
     for (const name of [/^import$/i, /delete all data/i]) {
       const button = screen.getByRole("button", { name });
