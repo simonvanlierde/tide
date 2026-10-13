@@ -41,6 +41,13 @@ export function TodayScreen(props: TodayScreenProps) {
   const summary = useCycleSummary(today);
   const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  // Logging, removing or dismissing swaps the button under the user's finger
+  // for another control; from then on, focus follows to the replacement.
+  const [movedFocus, setMovedFocus] = useState(false);
+  const toggleToday = () => {
+    setMovedFocus(true);
+    actions.togglePeriodDay(today, today);
+  };
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
     today,
@@ -178,18 +185,23 @@ export function TodayScreen(props: TodayScreenProps) {
         <ReminderPrompt
           isOverdue={reminderState.isOverdue}
           expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
-          onLog={() => actions.togglePeriodDay(today, today)}
-          onDismiss={() => actions.dismissReminder(today)}
+          onLog={toggleToday}
+          onDismiss={() => {
+            setMovedFocus(true);
+            actions.dismissReminder(today);
+          }}
+          autoFocus={movedFocus}
         />
       ) : (
         <LogAction
           isLogged={isTodayLogged}
           intensity={state.intensityByDay[today]}
           variant={logVariant}
-          onToggle={() => actions.togglePeriodDay(today, today)}
+          onToggle={toggleToday}
           onSelectIntensity={(intensity) =>
             actions.setDayIntensity(today, intensity, today)
           }
+          autoFocus={movedFocus}
         />
       )}
       <p className="today-screen__privacy">{t("today.privacy")}</p>

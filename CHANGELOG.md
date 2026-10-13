@@ -34,6 +34,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - On a 320 px screen, the flow levels no longer run into each other, the theme
   options stack instead of shrinking to "Sy…", and Export and Import stack
   instead of splitting their words. German, French, Dutch and Spanish all fit.
+- Logging today moves keyboard focus to the flow levels, and removing the log
+  or dismissing the reminder moves it to the log button, instead of dropping
+  it to the top of the page.
 
 ### Security
 

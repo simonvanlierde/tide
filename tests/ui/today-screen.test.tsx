@@ -362,6 +362,49 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
   });
 
+  it("moves focus to the gauge after a log and back to Log after a remove", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    );
+    expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
+
+    await user.click(
+      screen.getByRole("button", { name: /remove bleeding log/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveFocus();
+  });
+
+  it("moves focus on when the reminder logs or is dismissed", async () => {
+    const user = userEvent.setup();
+    const state = createAppState({ periodDays: ["2026-04-02", "2026-04-03"] });
+    const { unmount } = renderWithAppState(<TodayScreen today="2026-04-28" />, {
+      state,
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    );
+    expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
+    unmount();
+
+    renderToday("2026-04-28", state);
+    await user.click(screen.getByRole("button", { name: /not yet/i }));
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveFocus();
+  });
+
+  it("leaves focus alone on first render", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: ["2026-04-18"] }));
+
+    expect(document.body).toHaveFocus();
+  });
+
   it("keeps a calm log action and no prompt outside the window", () => {
     renderToday("2026-04-18");
 
