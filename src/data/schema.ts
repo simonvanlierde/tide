@@ -37,7 +37,7 @@ export const defaultAppState: AppState = {
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-function isIsoDate(value: unknown): value is IsoDate {
+export function isIsoDate(value: unknown): value is IsoDate {
   if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
     return false;
   }
