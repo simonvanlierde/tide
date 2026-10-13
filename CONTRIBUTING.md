@@ -21,13 +21,13 @@ pnpm dev
 | `pnpm test:e2e` | Playwright smoke tests |
 | `pnpm build` | Production build to `dist/` |
 
-Run `pnpm check` before opening a PR; it's the same gate CI runs.
+Run `pnpm check` before you open a PR. It's the same gate CI runs.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …).
 
 ## Architecture
 
-Cycle logic is kept pure and isolated from React and the browser, so it can be tested as plain functions. Dependencies point inward; the React layer reads through `state`, which is the only caller of the pure `domain` and the `data` persistence boundary:
+I keep the cycle logic pure and away from React and the browser, so it can be tested as plain functions. Dependencies point inward. The React layer reads through `state`, and `state` is the only code that calls the pure `domain` and the `data` layer, where data is saved and loaded:
 
 - `src/domain`: pure cycle and reminder logic (no React, storage, or browser APIs)
 - `src/data`: defaults, validation, and normalization at the `localStorage` boundary
@@ -39,16 +39,16 @@ Cycle logic is kept pure and isolated from React and the browser, so it can be t
 - `src/styles`: design tokens and shared styling
 - `src/utils`: shared date helpers
 
-Tests mirror this layering, with a thin Playwright e2e layer covering routing, persistence across reloads, and PWA smoke.
+The tests follow the same layers. On top sits a thin layer of Playwright end-to-end tests: routing, data that survives a reload, and a smoke test of the PWA.
 
-The core design decision, keeping all data on-device with no backend, is recorded in [docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md). Releases are tracked in [CHANGELOG.md](CHANGELOG.md).
+The main design decision is to keep all data on the device, with no backend. [docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md) records why. [CHANGELOG.md](CHANGELOG.md) lists the releases.
 
 ## Accessibility
 
 Two automated checks run in CI:
 
 - **Static lint:** Biome's `a11y` rules (`biome.json`) run as part of `pnpm lint` / `pnpm check`.
-- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/calendar`, and `/settings`; both themes, with overlays open, tagged `wcag2a`/`wcag2aa`, failing on any *moderate*+ violation. Run with `pnpm test:e2e`.
+- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/calendar`, and `/settings`, in both themes and with overlays open. It checks the rules tagged `wcag2a`/`wcag2aa`, and fails on any violation rated *moderate* or worse. Run it with `pnpm test:e2e`.
 
 ## Running your own copy
 

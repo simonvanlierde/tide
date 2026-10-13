@@ -6,8 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8.svg)](https://tide.duinlab.nl)
 
-Tide is a privacy-first period tracker: a small, local-first React PWA that keeps all cycle data in
-your browser.
+Tide is a privacy-first period tracker. It's a small React web app that you can install (a PWA),
+and it keeps all your cycle data in your browser.
 
 | Today | Calendar |
 | --- | --- |
@@ -15,7 +15,7 @@ your browser.
 
 ## Install
 
-Tide runs in the browser and installs as an app, no app store needed.
+Tide runs in the browser. You can install it as an app without an app store.
 
 1. Open **[tide.duinlab.nl](https://tide.duinlab.nl)**.
 2. Add it to your home screen:
@@ -23,52 +23,55 @@ Tide runs in the browser and installs as an app, no app store needed.
    - **Android (Chrome):** menu (⋮) → *Install app*
    - **Desktop (Chrome/Edge):** install icon in the address bar
 
-Once installed it works offline, and all data stays on your device.
+Once installed, it works offline, and all data stays on your device.
 
 ## Features
 
-- **Log bleeding days**: add or remove with one tap, or log a whole past period at once
-- **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual /
-  follicular / ovulation / luteal) and a scrub preview
-- **Predictions**: next period learned from your history (28-day fallback), plus an approximate
-  fertile window and ovulation estimate if you choose to see them. Every prediction is drawn
-  as a dashed outline, so it never looks like a logged day
-- **Cycle insights**: your average cycle and period lengths, cycles tracked, and a regularity meter,
-  with a plain-language note on how predictions are worked out
-- **Calendar**: month-by-month view with cycle day numbers and fertile / ovulation / next-period
-  markers, for reviewing and logging days
+- **Log bleeding days**: add or remove a day with one tap, or log a whole past period at once
+- **Today at a glance**: a tidal cycle dial shows your current day and phase (menstrual /
+  follicular / ovulation / luteal). Drag along the dial to preview other days
+- **Predictions**: Tide learns your next period from your history, and uses 28 days until it can.
+  If you choose to see them, it also shows an approximate fertile window and ovulation estimate.
+  Every prediction is drawn as a dashed outline, so it never looks like a logged day
+- **Cycle insights**: your average cycle and period lengths, the number of cycles tracked, and a
+  regularity meter, with a plain-language note on how the predictions are worked out
+- **Calendar**: a month-by-month view with cycle day numbers and fertile / ovulation / next-period
+  markers. Use it to look back and to log days
 - **Import & export**: back up your data to a JSON file, restore it on any device, or delete
   everything in one go
 - **Bring your history**: import a Clue or Flo export from Settings → Data → Import. Tide reads
   the bleeding and spotting days and adds them to the days you already logged, which stay as they
   are. From Clue, pick `measurements.json` from the export zip, or an older `.cluedata` backup.
-  Flo days keep the flow level Flo recorded; a day without one imports as a plain log. A Tide
+  Flo days keep the flow level Flo recorded. A day without one imports as a plain log. A Tide
   backup replaces your data instead.
-- **Private by design**: installable, offline-capable PWA; all data stays on the device; no
-  accounts, no network, no analytics
+- **Private by design**: an installable PWA that works offline. All data stays on the device, with
+  no accounts, no network and no analytics
 
 ### How predictions work
 
-Every estimate is computed on-device from the bleeding days you log. Nothing leaves your device.
+Tide works out every estimate on your device, from the bleeding days you log. Nothing leaves your
+device.
 
-- **Cycles.** A gap of **10+ days** between logged bleeding days starts a new cycle; shorter gaps
-  are missed logs within the same period.
-- **Cycle length.** The **median of your last 6 completed cycles** (days between starts). Median so
-  one odd cycle doesn't skew it; recent cycles only, since cycle length drifts. Falls back to
-  **28 days** until you've logged two period starts (one full cycle).
-- **Period length.** Average of past periods, clamped to the **2–7 day** normal band (ACOG). Ignores
-  the current, unfinished period; defaults to **4 days** with no history.
-- **Next period.** Most recent cycle start plus the estimated cycle length.
-- **Ovulation.** **14 days before** the next predicted period; the luteal phase is the cycle's least
-  variable part. Calendar math can't do better without temperature or LH-test input, which Tide
-  doesn't collect.
-- **Fertile window.** The 5 days before through 1 day after ovulation (sperm survive ~5 days, the
-  egg ~1). It **widens with the standard deviation of your recent cycles** (capped at ±5 days):
-  tight for regular cycles, wider for irregular ones.
+- **Cycles.** A gap of **10+ days** between logged bleeding days starts a new cycle. A shorter gap
+  counts as missed logs within the same period.
+- **Cycle length.** The **median of your last 6 completed cycles**, counted in days between
+  starts. I use the median so one odd cycle doesn't skew it, and only recent cycles because cycle
+  length drifts. Until you've logged two period starts (one full cycle), Tide uses **28 days**.
+- **Period length.** The average of your past periods, kept within the **2–7 day** range that ACOG
+  (the American College of Obstetricians and Gynecologists) gives as normal. It leaves out the
+  current, unfinished period, and uses **4 days** when there's no history.
+- **Next period.** The most recent cycle start plus the estimated cycle length.
+- **Ovulation.** **14 days before** the next predicted period, because the luteal phase (the part
+  after ovulation) varies least from cycle to cycle. Calendar math can't do better without
+  temperature or LH-test input, and Tide doesn't collect those.
+- **Fertile window.** From 5 days before ovulation to 1 day after, because sperm survive about
+  5 days and the egg about 1. It **widens with the standard deviation of your recent cycles**
+  (capped at ±5 days), so it stays tight for regular cycles and gets wider for irregular ones.
 
-How close the next-period estimate lands on real cycle data: [docs/backtest.md](docs/backtest.md).
+To see how close the next-period estimate lands on real cycle data, read
+[docs/backtest.md](docs/backtest.md).
 
-Estimates are informational, not a form of birth control.
+The estimates are for information only. They are not a form of birth control.
 
 ## Roadmap
 
