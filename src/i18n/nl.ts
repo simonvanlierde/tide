@@ -140,6 +140,12 @@ export const nl: Dictionary = {
   "common.cancel": "Annuleren",
   "common.days": "dagen",
 
+  // Crash screen
+  "error.title": "Er ging iets mis",
+  "error.body": "Je gelogde dagen staan nog steeds op dit apparaat.",
+  "error.reload": "Opnieuw laden",
+  "error.downloadRaw": "Ruwe gegevens downloaden",
+
   "settings.title": "Instellingen",
   "settings.preferences": "Voorkeuren",
   "settings.theme": "Thema",

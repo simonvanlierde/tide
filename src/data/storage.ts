@@ -28,6 +28,16 @@ export function loadAppState(): AppState {
   }
 }
 
+// The stored blob exactly as saved, or null when there is none or storage is
+// blocked. For the crash screen, which must not depend on parsing it.
+export function loadRawAppState(): string | null {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
 export function saveAppState(state: AppState) {
   setItemSafely(STORAGE_KEY, JSON.stringify(state));
 }

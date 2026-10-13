@@ -148,6 +148,12 @@ export const en = {
   "common.cancel": "Cancel",
   "common.days": "days",
 
+  // Crash screen
+  "error.title": "Something went wrong",
+  "error.body": "Your logged days are still saved on this device.",
+  "error.reload": "Reload",
+  "error.downloadRaw": "Download raw data",
+
   // Settings
   "settings.title": "Settings",
   "settings.preferences": "Preferences",

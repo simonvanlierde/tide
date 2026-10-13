@@ -13,6 +13,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `pnpm backtest`.
 - Once a day is logged, Tide asks the browser to keep its stored data rather
   than clear it to free space. Firefox shows its own prompt for this.
+- The crash screen can download your stored data as a file, exactly as saved,
+  and speaks your language instead of always English.
 
 ### Fixed
 

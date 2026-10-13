@@ -140,6 +140,12 @@ export const fr: Dictionary = {
   "common.cancel": "Annuler",
   "common.days": "jours",
 
+  // Crash screen
+  "error.title": "Un problème est survenu",
+  "error.body": "Vos jours enregistrés sont toujours sur cet appareil.",
+  "error.reload": "Recharger",
+  "error.downloadRaw": "Télécharger les données brutes",
+
   "settings.title": "Réglages",
   "settings.preferences": "Préférences",
   "settings.theme": "Thème",

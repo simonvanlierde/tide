@@ -141,6 +141,13 @@ export const de: Dictionary = {
   "common.cancel": "Abbrechen",
   "common.days": "Tage",
 
+  // Crash screen
+  "error.title": "Etwas ist schiefgelaufen",
+  "error.body":
+    "Deine erfassten Tage sind weiterhin auf diesem Gerät gespeichert.",
+  "error.reload": "Neu laden",
+  "error.downloadRaw": "Rohdaten herunterladen",
+
   "settings.title": "Einstellungen",
   "settings.preferences": "Präferenzen",
   "settings.theme": "Design",

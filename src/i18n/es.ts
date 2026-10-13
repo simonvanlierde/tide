@@ -139,6 +139,12 @@ export const es: Dictionary = {
   "common.cancel": "Cancelar",
   "common.days": "días",
 
+  // Crash screen
+  "error.title": "Algo salió mal",
+  "error.body": "Tus días registrados siguen guardados en este dispositivo.",
+  "error.reload": "Recargar",
+  "error.downloadRaw": "Descargar datos sin procesar",
+
   "settings.title": "Ajustes",
   "settings.preferences": "Preferencias",
   "settings.theme": "Tema",
