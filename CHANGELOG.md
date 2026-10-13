@@ -13,6 +13,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `pnpm backtest`.
 - Once a day is logged, Tide asks the browser to keep its stored data rather
   than clear it to free space. Firefox shows its own prompt for this.
+- The crash screen can download your stored data as a file, exactly as saved,
+  and speaks your language instead of always English.
+
+### Changed
+
+- The calendar legend uses the same words as the Today legend: Period,
+  Expected, Fertile window, Ovulation.
+- Before the first log, Today shows one line, "Log your period to see a
+  forecast", instead of a "--" cycle day and two "Not enough data yet" rows.
 
 ### Fixed
 
@@ -31,10 +40,23 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is a table with a header per weekday column.
 - The install icon is listed separately for plain and masked use, so Android
   launchers that apply a mask shape use it as intended.
+- On a 320 px screen, the flow levels no longer run into each other, the theme
+  options stack instead of shrinking to "Sy…", and Export and Import stack
+  instead of splitting their words. German, French, Dutch and Spanish all fit.
+- Logging today moves keyboard focus to the flow levels, and removing the log
+  or dismissing the reminder moves it to the log button, instead of dropping
+  it to the top of the page.
+- A tab still running an older version no longer strips data that a newer
+  version saved. It shows that data, asks you to reload, and saves nothing
+  until you do. Import and "Delete all data" are disabled meanwhile.
+- Tide keeps a copy of the stored data whenever loading it would drop
+  anything, not only when the data is unreadable.
 
 ### Security
 
 - The Content-Security-Policy no longer allows inline styles.
+- Browsers are told to reach tide.duinlab.nl over HTTPS only, for a year at a
+  time (Strict-Transport-Security).
 
 ## [0.4.0] - 2026-08-24
 

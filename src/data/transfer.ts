@@ -30,18 +30,26 @@ function toBackupFile(state: AppState): BackupFile {
   };
 }
 
-// Download the current state as a JSON file the user can keep as a backup.
-export function downloadAppState(state: AppState) {
-  const blob = new Blob([JSON.stringify(toBackupFile(state), null, 2)], {
-    type: "application/json",
-  });
+function downloadJson(json: string, filename: string) {
+  const blob = new Blob([json], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = exportFilename();
+  link.download = filename;
   link.click();
   // Safari can cancel the download if the URL is revoked before it starts.
   setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
+// Download the current state as a JSON file the user can keep as a backup.
+export function downloadAppState(state: AppState) {
+  downloadJson(JSON.stringify(toBackupFile(state), null, 2), exportFilename());
+}
+
+// Download the stored blob untouched, for the crash screen: whatever broke the
+// app may be in the data, so nothing here parses or normalizes it.
+export function downloadRawState(raw: string) {
+  downloadJson(raw, `tide-raw-${getTodayIsoDate()}.json`);
 }
 
 // Parse an exported backup back into a valid AppState. Throws on unparseable

@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
@@ -41,6 +41,20 @@ export function TodayScreen(props: TodayScreenProps) {
   const summary = useCycleSummary(today);
   const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  // Logging, removing or dismissing swaps the button under the user's finger
+  // for another control, so focus follows to the replacement once. A change
+  // from another tab or a new day leaves focus where it is.
+  const [focusPending, setFocusPending] = useState(false);
+  // Children's effects run first and move focus; then the flag drops.
+  useEffect(() => {
+    if (focusPending) {
+      setFocusPending(false);
+    }
+  }, [focusPending]);
+  const toggleToday = () => {
+    setFocusPending(true);
+    actions.togglePeriodDay(today, today);
+  };
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
     today,
@@ -89,72 +103,75 @@ export function TodayScreen(props: TodayScreenProps) {
       ) : null}
 
       <div className="fact-list">
-        <dl className="fact-list__rows">
-          {/* Once the forecast date has passed, "next period" with a date in
+        {/* With no estimate, the learning note above is the one line that
+            says so; empty rows would only repeat it. */}
+        {summary.estimateMode === "insufficient" ? null : (
+          <dl className="fact-list__rows">
+            {/* Once the forecast date has passed, "next period" with a date in
               the past contradicts itself; the row becomes "Period · N days
               late · Expected <date>". */}
-          <div className="fact">
-            <dt className="fact__label">
-              {t(isOverdue ? "today.periodLate" : "today.nextPeriod")}
-            </dt>
-            <dd className="fact__value">
-              <span>
-                {getNextPeriodPhrase(t, summary.nextPeriod.daysUntil)}
-              </span>
-              {summary.nextPeriod.date ? (
-                <span className="fact__meta">
-                  {isOverdue
-                    ? t("today.expectedOn", {
-                        date: formatShortDate(summary.nextPeriod.date, locale),
-                      })
-                    : formatShortDate(summary.nextPeriod.date, locale)}
-                </span>
-              ) : null}
-            </dd>
-          </div>
-
-          {state.settings.showFertility ? (
             <div className="fact">
-              <dt className="fact__label fact__label--with-info">
-                {t("today.fertility")}
-                <InfoPopover
-                  label={t("today.fertilityInfoLabel")}
-                  align="start"
-                >
-                  <p>{t("settings.fertilityMethod")}</p>
-                  <p>{t("settings.fertilityDisclaimer")}</p>
-                </InfoPopover>
+              <dt className="fact__label">
+                {t(isOverdue ? "today.periodLate" : "today.nextPeriod")}
               </dt>
               <dd className="fact__value">
-                {isOverdue ? (
-                  // The cycle ran past its forecast, so this cycle's ovulation
-                  // estimate is spent and the next one isn't known yet.
-                  <span>{t("today.fertilityUnclear")}</span>
-                ) : summary.ovulationDate ? (
-                  <>
-                    <span>
-                      {getFertilityEstimate(
-                        t,
-                        summary.phaseLabel,
-                        summary.fertile,
-                      )}
-                    </span>
-                    <span className="fact__meta">
-                      {getOvulationPhrase(
-                        t,
-                        differenceInDays(summary.ovulationDate, today),
-                      )}
-                    </span>
-                  </>
-                ) : (
-                  // No ovulation estimate means no fertility claim, rather
-                  // than a confident "lower" from zero data.
-                  <span>{t("today.notEnoughData")}</span>
-                )}
+                <span>
+                  {getNextPeriodPhrase(t, summary.nextPeriod.daysUntil)}
+                </span>
+                {summary.nextPeriod.date ? (
+                  <span className="fact__meta">
+                    {isOverdue
+                      ? t("today.expectedOn", {
+                          date: formatShortDate(
+                            summary.nextPeriod.date,
+                            locale,
+                          ),
+                        })
+                      : formatShortDate(summary.nextPeriod.date, locale)}
+                  </span>
+                ) : null}
               </dd>
             </div>
-          ) : null}
-        </dl>
+
+            {state.settings.showFertility ? (
+              <div className="fact">
+                <dt className="fact__label fact__label--with-info">
+                  {t("today.fertility")}
+                  <InfoPopover
+                    label={t("today.fertilityInfoLabel")}
+                    align="start"
+                  >
+                    <p>{t("settings.fertilityMethod")}</p>
+                    <p>{t("settings.fertilityDisclaimer")}</p>
+                  </InfoPopover>
+                </dt>
+                <dd className="fact__value">
+                  {isOverdue ? (
+                    // The cycle ran past its forecast, so this cycle's ovulation
+                    // estimate is spent and the next one isn't known yet.
+                    <span>{t("today.fertilityUnclear")}</span>
+                  ) : summary.ovulationDate ? (
+                    <>
+                      <span>
+                        {getFertilityEstimate(
+                          t,
+                          summary.phaseLabel,
+                          summary.fertile,
+                        )}
+                      </span>
+                      <span className="fact__meta">
+                        {getOvulationPhrase(
+                          t,
+                          differenceInDays(summary.ovulationDate, today),
+                        )}
+                      </span>
+                    </>
+                  ) : null}
+                </dd>
+              </div>
+            ) : null}
+          </dl>
+        )}
 
         <button
           type="button"
@@ -178,18 +195,23 @@ export function TodayScreen(props: TodayScreenProps) {
         <ReminderPrompt
           isOverdue={reminderState.isOverdue}
           expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
-          onLog={() => actions.togglePeriodDay(today, today)}
-          onDismiss={() => actions.dismissReminder(today)}
+          onLog={toggleToday}
+          onDismiss={() => {
+            setFocusPending(true);
+            actions.dismissReminder(today);
+          }}
+          autoFocus={focusPending}
         />
       ) : (
         <LogAction
           isLogged={isTodayLogged}
           intensity={state.intensityByDay[today]}
           variant={logVariant}
-          onToggle={() => actions.togglePeriodDay(today, today)}
+          onToggle={toggleToday}
           onSelectIntensity={(intensity) =>
             actions.setDayIntensity(today, intensity, today)
           }
+          autoFocus={focusPending}
         />
       )}
       <p className="today-screen__privacy">{t("today.privacy")}</p>
@@ -202,7 +224,7 @@ function getNextPeriodPhrase(
   daysUntil: CycleSummary["nextPeriod"]["daysUntil"],
 ) {
   if (daysUntil === null) {
-    return t("today.notEnoughData");
+    return t("common.unknown");
   }
 
   if (daysUntil < 0) {

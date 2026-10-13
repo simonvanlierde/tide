@@ -234,7 +234,7 @@ export function CycleDial({
       : null;
   const centerDay = isPredictedPreview
     ? (previewIndex ?? 0) + 1
-    : (preview?.dayNumber ?? summary.cycleDay ?? "--");
+    : (preview?.dayNumber ?? summary.cycleDay);
   const centerStatus = isPredictedPreview
     ? t("status.periodExpected")
     : preview
@@ -365,8 +365,16 @@ export function CycleDial({
       >
         <div className="cycle-dial__ring" style={dialStyle}>
           <div className="cycle-dial__inner">
-            <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
-            <strong className="cycle-dial__day">{centerDay}</strong>
+            {/* No cycle day yet: no numeral, rather than a "--" placeholder.
+                The learning note under the dial says what to do. */}
+            {centerDay === null ? null : (
+              <>
+                <span className="cycle-dial__eyebrow">
+                  {t("dial.cycleDay")}
+                </span>
+                <strong className="cycle-dial__day">{centerDay}</strong>
+              </>
+            )}
             <span className="cycle-dial__phase">{centerStatus}</span>
             {centerDate ? (
               <span className="cycle-dial__date">

@@ -7,13 +7,14 @@ export const de: Dictionary = {
   "nav.settings": "Einstellungen",
   "app.skipToContent": "Zum Inhalt springen",
   "app.primaryNav": "Hauptnavigation",
+  "app.newerData":
+    "Eine neuere Version von Tide hat deine Daten gespeichert. Lade neu, um zu aktualisieren; Änderungen hier werden nicht gespeichert.",
 
   "today.srCycleDay": "Zyklustag {day}, {phase}",
   "today.nextPeriod": "Nächste Periode",
   "today.fertility": "Fruchtbarkeit",
   "today.fertilityInfoLabel": "Wie die Fruchtbarkeit geschätzt wird",
   "today.cycleInsights": "Zyklus-Einblicke",
-  "today.notEnoughData": "Noch nicht genügend Daten",
   "today.daysAgo.one": "vor {n} Tag",
   "today.daysAgo.other": "vor {n} Tagen",
   "today.expectedToday": "Heute erwartet",
@@ -35,7 +36,7 @@ export const de: Dictionary = {
   "today.learningFallback":
     "Es wird von einem typischen 28-Tage-Zyklus ausgegangen, bis dein Muster erkannt ist.",
   "today.learningInsufficient":
-    "Erfasse Blutungen, um eine Schätzung zu starten.",
+    "Erfasse deine Periode, um eine Vorhersage zu sehen.",
 
   "phase.menstrual": "Menstruation",
   "phase.follicular": "Follikulär",
@@ -123,10 +124,6 @@ export const de: Dictionary = {
   "calendar.emptyHelp":
     "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
   "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",
-  "calendar.legend.logged": "Erfasst",
-  "calendar.legend.predicted": "Erwartet",
-  "calendar.legend.fertile": "Fruchtbar",
-  "calendar.legend.ovulation": "Eisprung",
   "calendar.log": "Erfassen",
   "calendar.edit": "Bearbeiten",
   "calendar.dayUnavailable": "{label} nicht verfügbar",
@@ -140,6 +137,13 @@ export const de: Dictionary = {
   "common.close": "Schließen",
   "common.cancel": "Abbrechen",
   "common.days": "Tage",
+  "common.reload": "Neu laden",
+
+  // Crash screen
+  "error.title": "Etwas ist schiefgelaufen",
+  "error.body":
+    "Deine erfassten Tage sind weiterhin auf diesem Gerät gespeichert.",
+  "error.downloadRaw": "Rohdaten herunterladen",
 
   "settings.title": "Einstellungen",
   "settings.preferences": "Präferenzen",

@@ -2,7 +2,11 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
-import { createAppState, renderWithAppState } from "../support/app";
+import {
+  createAppState,
+  createLearnedCycleState,
+  renderWithAppState,
+} from "../support/app";
 
 const originalAnimate = HTMLElement.prototype.animate;
 
@@ -492,6 +496,18 @@ describe("CalendarScreen", () => {
       screen.getByText(/tap a past day to log your first bleeding day/i),
     ).toBeInTheDocument();
     expect(container.querySelector(".calendar-legend")).toBeNull();
+  });
+
+  it("names its markers with the same words as the Today legend", () => {
+    const { container } = renderWithAppState(
+      <CalendarScreen today="2026-04-18" />,
+      { state: createLearnedCycleState() },
+    );
+
+    const legend = container.querySelector(".calendar-legend");
+    expect(legend).toHaveTextContent(/period/i);
+    expect(legend).toHaveTextContent(/fertile window/i);
+    expect(legend).not.toHaveTextContent(/logged/i);
   });
 
   it("is one tab stop, with arrow keys walking the grid", async () => {

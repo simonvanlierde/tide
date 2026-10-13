@@ -6,13 +6,14 @@ export const es: Dictionary = {
   "nav.settings": "Ajustes",
   "app.skipToContent": "Saltar al contenido",
   "app.primaryNav": "Navegación principal",
+  "app.newerData":
+    "Una versión más reciente de Tide guardó tus datos. Recarga para actualizar; los cambios hechos aquí no se guardan.",
 
   "today.srCycleDay": "Día del ciclo {day}, {phase}",
   "today.nextPeriod": "Próximo período",
   "today.fertility": "Fertilidad",
   "today.fertilityInfoLabel": "Cómo se estima la fertilidad",
   "today.cycleInsights": "Detalles del ciclo",
-  "today.notEnoughData": "Aún no hay suficientes datos",
   "today.daysAgo.one": "hace {n} día",
   "today.daysAgo.other": "hace {n} días",
   "today.expectedToday": "Previsto hoy",
@@ -33,8 +34,7 @@ export const es: Dictionary = {
   "today.ovulationInDays.other": "Ovulación en {n} días",
   "today.learningFallback":
     "Se usa un ciclo típico de 28 días hasta que aprendamos tu patrón.",
-  "today.learningInsufficient":
-    "Registra el sangrado para empezar una estimación.",
+  "today.learningInsufficient": "Registra tu período para ver una previsión.",
 
   "phase.menstrual": "Menstrual",
   "phase.follicular": "Folicular",
@@ -121,10 +121,6 @@ export const es: Dictionary = {
   "calendar.emptyHelp":
     "Toca un día pasado para registrar tu primer día de sangrado.",
   "calendar.futureHelp": "Los días futuros aún no se pueden registrar.",
-  "calendar.legend.logged": "Registrado",
-  "calendar.legend.predicted": "Previsto",
-  "calendar.legend.fertile": "Fértil",
-  "calendar.legend.ovulation": "Ovulación",
   "calendar.log": "Registrar",
   "calendar.edit": "Editar",
   "calendar.dayUnavailable": "{label} no disponible",
@@ -138,6 +134,12 @@ export const es: Dictionary = {
   "common.close": "Cerrar",
   "common.cancel": "Cancelar",
   "common.days": "días",
+  "common.reload": "Recargar",
+
+  // Crash screen
+  "error.title": "Algo salió mal",
+  "error.body": "Tus días registrados siguen guardados en este dispositivo.",
+  "error.downloadRaw": "Descargar datos sin procesar",
 
   "settings.title": "Ajustes",
   "settings.preferences": "Preferencias",

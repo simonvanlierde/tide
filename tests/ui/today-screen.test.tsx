@@ -1,6 +1,7 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { dayAngleDeg } from "../../src/features/today/dialGeometry";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
@@ -239,14 +240,17 @@ describe("TodayScreen", () => {
       screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
-    // Both the next-period and the fertility rows decline to guess.
-    expect(screen.getAllByText(/^not enough data yet$/i)).toHaveLength(2);
+    // One line says there is no forecast yet: no "--" numeral, and no
+    // next-period or fertility rows that each repeat it.
+    expect(
+      screen.getByText(/^log your period to see a forecast\.$/i),
+    ).toBeVisible();
+    expect(screen.queryByText("--")).not.toBeInTheDocument();
+    expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/lower today/i)).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByText(/log bleeding to start an estimate/i),
-    ).toBeInTheDocument();
     // With nothing logged, logging is the one thing to do: keep it prominent.
     expect(
       screen.getByRole("button", { name: /log bleeding today/i }),
@@ -360,6 +364,72 @@ describe("TodayScreen", () => {
     ).toHaveClass("text-action");
     // No level was chosen, so the confirmation claims none.
     expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
+  });
+
+  it("moves focus to the gauge after a log and back to Log after a remove", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    );
+    expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
+
+    await user.click(
+      screen.getByRole("button", { name: /remove bleeding log/i }),
+    );
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveFocus();
+  });
+
+  it("moves focus on when the reminder logs or is dismissed", async () => {
+    const user = userEvent.setup();
+    const state = createAppState({ periodDays: ["2026-04-02", "2026-04-03"] });
+    const { unmount } = renderWithAppState(<TodayScreen today="2026-04-28" />, {
+      state,
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    );
+    expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
+    unmount();
+
+    renderToday("2026-04-28", state);
+    await user.click(screen.getByRole("button", { name: /not yet/i }));
+    expect(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    ).toHaveFocus();
+  });
+
+  it("leaves focus alone when another tab logs or removes today", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+
+    // One local log, so a stale "focus next time" flag would be set.
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    );
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    dial.focus();
+
+    for (const periodDays of [
+      LEARNED_PERIOD_DAYS,
+      [...LEARNED_PERIOD_DAYS, "2026-04-18" as IsoDate],
+    ]) {
+      saveAppState(createAppState({ periodDays }));
+      act(() => {
+        window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+      });
+      expect(dial).toHaveFocus();
+    }
+  });
+
+  it("leaves focus alone on first render", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: ["2026-04-18"] }));
+
+    expect(document.body).toHaveFocus();
   });
 
   it("keeps a calm log action and no prompt outside the window", () => {

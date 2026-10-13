@@ -1,38 +1,78 @@
 import type { AppState } from "../domain/types";
-import { defaultAppState, normalizeAppState, STORAGE_KEY } from "./schema";
+import {
+  defaultAppState,
+  normalizeAppState,
+  SCHEMA_VERSION,
+  STORAGE_KEY,
+} from "./schema";
 
 // biome-ignore lint/performance/noBarrelFile: intentional re-export of the public storage key
 export { STORAGE_KEY } from "./schema";
 
 export const BACKUP_KEY = `${STORAGE_KEY}.backup`;
 
-export function loadAppState(): AppState {
+export interface StoredState {
+  state: AppState;
+  /** Written by a newer build: show it, but never save over it. */
+  readOnly: boolean;
+}
+
+export function loadStoredState(): StoredState {
   let raw: string | null;
   try {
     raw = window.localStorage.getItem(STORAGE_KEY);
   } catch {
     // Storage blocked (site data disabled): run with defaults, nothing to back up.
-    return defaultAppState;
+    return { state: defaultAppState, readOnly: false };
   }
 
   if (!raw) {
-    return defaultAppState;
+    return { state: defaultAppState, readOnly: false };
   }
 
+  let parsed: { schemaVersion?: unknown } | null;
   try {
-    return normalizeAppState(JSON.parse(raw));
+    parsed = JSON.parse(raw);
   } catch {
     // Keep the unreadable blob so the next save can't permanently destroy it.
     setItemSafely(BACKUP_KEY, raw);
-    return defaultAppState;
+    return { state: defaultAppState, readOnly: false };
+  }
+
+  const state = normalizeAppState(parsed);
+  const version = parsed?.schemaVersion;
+  if (typeof version === "number" && version > SCHEMA_VERSION) {
+    return { state, readOnly: true };
+  }
+  // The next save writes the normalized state, so keep the original whenever
+  // that would differ from it: a dropped day, an unknown field, a bad value.
+  // Our own saves round-trip unchanged, so this only fires on blobs written
+  // elsewhere or by an older build.
+  if (serialize(state) !== raw) {
+    setItemSafely(BACKUP_KEY, raw);
+  }
+  return { state, readOnly: false };
+}
+
+// The stored blob exactly as saved, or null when there is none or storage is
+// blocked. For the crash screen, which must not depend on parsing it.
+export function loadRawAppState(): string | null {
+  try {
+    return window.localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
   }
 }
 
 export function saveAppState(state: AppState) {
-  setItemSafely(STORAGE_KEY, JSON.stringify(state));
+  setItemSafely(STORAGE_KEY, serialize(state));
 }
 
-// Remove every copy of the user's data, including the corrupt-blob backup,
+function serialize(state: AppState) {
+  return JSON.stringify({ schemaVersion: SCHEMA_VERSION, ...state });
+}
+
+// Remove every copy of the user's data, including the pre-normalization backup,
 // which nothing else ever surfaces.
 export function clearAppState() {
   try {

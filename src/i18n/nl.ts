@@ -6,13 +6,14 @@ export const nl: Dictionary = {
   "nav.settings": "Instellingen",
   "app.skipToContent": "Naar inhoud",
   "app.primaryNav": "Hoofdnavigatie",
+  "app.newerData":
+    "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Laad opnieuw om bij te werken; wijzigingen hier worden niet opgeslagen.",
 
   "today.srCycleDay": "Cyclusdag {day}, {phase}",
   "today.nextPeriod": "Volgende menstruatie",
   "today.fertility": "Vruchtbaarheid",
   "today.fertilityInfoLabel": "Hoe vruchtbaarheid wordt geschat",
   "today.cycleInsights": "Cyclusinzichten",
-  "today.notEnoughData": "Nog niet genoeg gegevens",
   "today.daysAgo.one": "{n} dag geleden",
   "today.daysAgo.other": "{n} dagen geleden",
   "today.expectedToday": "Vandaag verwacht",
@@ -34,7 +35,7 @@ export const nl: Dictionary = {
   "today.learningFallback":
     "We gaan uit van een gemiddelde cyclus van 28 dagen totdat we je patroon kennen.",
   "today.learningInsufficient":
-    "Registreer bloedverlies om een schatting te starten.",
+    "Log je menstruatie om een voorspelling te zien.",
 
   "phase.menstrual": "Menstruatie",
   "phase.follicular": "Folliculair",
@@ -122,10 +123,6 @@ export const nl: Dictionary = {
   "calendar.emptyHelp":
     "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
   "calendar.futureHelp": "Toekomstige dagen kun je nog niet loggen.",
-  "calendar.legend.logged": "Geregistreerd",
-  "calendar.legend.predicted": "Verwacht",
-  "calendar.legend.fertile": "Vruchtbaar",
-  "calendar.legend.ovulation": "Eisprong",
   "calendar.log": "Registreren",
   "calendar.edit": "Wijzigen",
   "calendar.dayUnavailable": "{label} niet beschikbaar",
@@ -139,6 +136,12 @@ export const nl: Dictionary = {
   "common.close": "Sluiten",
   "common.cancel": "Annuleren",
   "common.days": "dagen",
+  "common.reload": "Opnieuw laden",
+
+  // Crash screen
+  "error.title": "Er ging iets mis",
+  "error.body": "Je gelogde dagen staan nog steeds op dit apparaat.",
+  "error.downloadRaw": "Ruwe gegevens downloaden",
 
   "settings.title": "Instellingen",
   "settings.preferences": "Voorkeuren",

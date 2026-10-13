@@ -1,4 +1,5 @@
 import { DropletOff, Droplets } from "lucide-react";
+import { useEffect, useRef } from "react";
 import type { FlowIntensity, LoggedFlow } from "../../domain/types";
 import { useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
@@ -13,6 +14,10 @@ interface LogActionProps {
   onSelectIntensity?: (intensity: FlowIntensity) => void;
   /** "quiet" demotes the button to a calm secondary style when no bleed is expected. */
   variant?: "primary" | "quiet";
+  /** Focus the control that replaced the one just pressed: the gauge after a
+   *  log, the log button after a remove. Set only for an action taken here,
+   *  never for a page load or a change from another tab. */
+  autoFocus?: boolean;
 }
 
 export function LogAction({
@@ -21,8 +26,18 @@ export function LogAction({
   onToggle,
   onSelectIntensity,
   variant = "primary",
+  autoFocus = false,
 }: LogActionProps) {
   const t = useT();
+  const logButton = useRef<HTMLButtonElement>(null);
+
+  // The pressed button unmounts with its subtree, which drops focus to <body>.
+  // The gauge focuses itself on mount; the log button needs a nudge.
+  useEffect(() => {
+    if (autoFocus && !isLogged) {
+      logButton.current?.focus();
+    }
+  }, [autoFocus, isLogged]);
 
   // Logged: the day's last word is the confirmation, then the one decision
   // left (flow), and only then the undo, as a text action rather than a
@@ -39,7 +54,11 @@ export function LogAction({
           </span>
         </p>
         {onSelectIntensity ? (
-          <FlowGauge selected={intensity} onSelect={onSelectIntensity} />
+          <FlowGauge
+            selected={intensity}
+            onSelect={onSelectIntensity}
+            autoFocus={autoFocus}
+          />
         ) : null}
         <button
           type="button"
@@ -56,6 +75,7 @@ export function LogAction({
   return (
     <div className="log-action">
       <button
+        ref={logButton}
         type="button"
         className={variant === "quiet" ? "secondary-action" : "primary-action"}
         onClick={onToggle}

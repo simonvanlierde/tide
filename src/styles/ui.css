@@ -461,6 +461,19 @@
     text-align: left;
   }
 
+  /* Placed after the hover washes so a disabled button never lights up. */
+  .secondary-action:disabled,
+  .text-action:disabled {
+    border-color: var(--surface-border);
+    background: var(--surface);
+    color: var(--ink-muted);
+    cursor: not-allowed;
+  }
+
+  .text-action:disabled {
+    background: transparent;
+  }
+
   .text-action__icon {
     width: 16px;
     height: 16px;
@@ -603,11 +616,14 @@
   .flow-gauge__label {
     font-size: var(--text-sm);
     color: var(--ink-muted);
+    /* Full column width, or the centred flex item sizes to its word and
+       never wraps. hyphens first so German breaks at syllables
+       ("Schmier-blutung"); anywhere is the fallback where the browser has no
+       hyphenation dictionary. */
+    align-self: stretch;
     text-align: center;
-    /* hyphens first so German breaks at syllables ("Schmier-blutung");
-       break-word is only the fallback for a word that still can't fit. */
     hyphens: auto;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
   .flow-gauge__level[data-selected="true"] .flow-gauge__label {
@@ -784,11 +800,17 @@
 
   /* Export and Import are a matched pair, sized like every other control on
      this screen: full card width, button radius, not floating pills. They
-     stack when the words can no longer sit side by side. */
+     stack when the words can no longer sit side by side: each button starts
+     at its unbroken label's width, so "Exportieren" wraps the row instead of
+     breaking mid-word. */
   .data-actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .data-actions > .secondary-action {
+    flex: 1 1 max-content;
   }
 
   .settings-label {
@@ -892,12 +914,11 @@
     }
   }
 
-  /* Foldable cover screens: shave the option padding so three worded options
-     still fit in a 280px shell. */
-  /* Too narrow for three worded options side by side — at 200% text that is
-     any phone. Stack them instead of ellipsising: "S…" says nothing, and the
-     words were the point of stacking the control under its label. */
-  @container (max-width: 19em) {
+  /* Too narrow for three worded options side by side: "Système" and
+     "Sistema" ellipsise up to a 360px shell, and at 200% text that is any
+     phone. Stack them instead: "S…" says nothing, and the words were the
+     point of stacking the control under its label. */
+  @container (max-width: 24em) {
     .segmented {
       grid-auto-flow: row;
     }
@@ -978,6 +999,11 @@
   .utility-card--slim {
     padding-block: 15px;
     gap: 11px;
+  }
+
+  /* Sits above whichever screen is open, one block-gap clear of it. */
+  .newer-data-notice {
+    margin-bottom: 16px;
   }
 
   /* Calendar */

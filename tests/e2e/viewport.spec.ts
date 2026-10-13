@@ -14,69 +14,113 @@ const SIZES = [
 
 const ROUTES = ["/", "/calendar", "/settings"] as const;
 
+// Every shipped language: German and French run longest ("Schmierblutung",
+// "Exportieren"), and none of them may clip or overlap.
+const LANGUAGES = ["en", "de", "fr", "nl", "es"] as const;
+
 for (const size of SIZES) {
-  test.describe(size.name, () => {
-    test.use({ viewport: { width: size.width, height: size.height } });
+  for (const language of LANGUAGES) {
+    test.describe(`${size.name} ${language}`, () => {
+      test.use({ viewport: { width: size.width, height: size.height } });
 
-    test.beforeEach(async ({ page }) => {
-      await seedAppState(page);
-    });
-
-    for (const path of ROUTES) {
-      test(`${path} has no horizontal overflow`, async ({ page }) => {
-        await page.goto(path);
-        await expect(
-          page.getByRole("navigation", { name: /primary navigation/i }),
-        ).toBeVisible();
-
-        const { scrollWidth, clientWidth } = await page.evaluate(() => ({
-          scrollWidth: document.documentElement.scrollWidth,
-          clientWidth: document.documentElement.clientWidth,
-        }));
-
-        // +1 tolerates sub-pixel rounding, not a real overflowing element.
-        expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
+      test.beforeEach(async ({ page }) => {
+        await seedAppState(page, language);
       });
 
-      test(`${path} keeps interactive content clear of the tab bar`, async ({
-        page,
-      }) => {
-        await page.goto(path);
-        await expect(
-          page.getByRole("navigation", { name: /primary navigation/i }),
-        ).toBeVisible();
+      for (const path of ROUTES) {
+        test(`${path} has no horizontal overflow`, async ({ page }) => {
+          await page.goto(path);
+          await expect(page.locator(".tab-bar")).toBeVisible();
 
-        // Scroll to the very bottom, then check that nothing you can click in
-        // <main> is left hidden behind the fixed tab bar (the padding under
-        // .app-main must clear it). Measured lowest-first, not DOM order.
-        const { maxBottom, tabTop } = await page.evaluate(() => {
-          window.scrollTo(0, document.body.scrollHeight);
-          const interactive = document.querySelectorAll(
-            "#main a, #main button, #main input, #main summary, #main [tabindex]",
-          );
-          let lowest = 0;
-          for (const el of interactive) {
-            const rect = el.getBoundingClientRect();
-            if (rect.width === 0 || rect.height === 0) continue;
-            lowest = Math.max(lowest, rect.bottom);
-          }
-          const tab = document
-            .querySelector(".tab-bar")
-            ?.getBoundingClientRect();
-          return { maxBottom: lowest, tabTop: tab?.top ?? 0 };
+          const { scrollWidth, clientWidth } = await page.evaluate(() => ({
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth,
+          }));
+
+          // +1 tolerates sub-pixel rounding, not a real overflowing element.
+          expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
         });
 
-        expect(maxBottom).toBeLessThanOrEqual(tabTop + 1);
-      });
-    }
+        // The document can fit while a word spills out of its own box: a flow
+        // label running into its neighbour, or a clipped or ellipsised button.
+        test(`${path} fits every label and button in its box`, async ({
+          page,
+        }) => {
+          await page.goto(path);
+          await expect(page.locator(".tab-bar")).toBeVisible();
 
-    test("settings tab stays reachable", async ({ page }) => {
-      await page.goto("/settings");
-      await expect(
-        page.getByRole("link", { name: /^settings$/i }),
-      ).toBeInViewport();
+          const overflowing = await page.evaluate(() =>
+            [
+              ...document.querySelectorAll<HTMLElement>(
+                "#main button, #main label, #main .segmented__label, #main .flow-gauge__label",
+              ),
+            ]
+              .filter(
+                (el) =>
+                  el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1,
+              )
+              .map((el) => el.textContent?.trim()),
+          );
+
+          expect(overflowing).toEqual([]);
+        });
+
+        test(`${path} keeps interactive content clear of the tab bar`, async ({
+          page,
+        }) => {
+          await page.goto(path);
+          await expect(page.locator(".tab-bar")).toBeVisible();
+
+          // Scroll to the very bottom, then check that nothing you can click in
+          // <main> is left hidden behind the fixed tab bar (the padding under
+          // .app-main must clear it). Measured lowest-first, not DOM order.
+          const { maxBottom, tabTop } = await page.evaluate(() => {
+            window.scrollTo(0, document.body.scrollHeight);
+            const interactive = document.querySelectorAll(
+              "#main a, #main button, #main input, #main summary, #main [tabindex]",
+            );
+            let lowest = 0;
+            for (const el of interactive) {
+              const rect = el.getBoundingClientRect();
+              if (rect.width === 0 || rect.height === 0) continue;
+              lowest = Math.max(lowest, rect.bottom);
+            }
+            const tab = document
+              .querySelector(".tab-bar")
+              ?.getBoundingClientRect();
+            return { maxBottom: lowest, tabTop: tab?.top ?? 0 };
+          });
+
+          expect(maxBottom).toBeLessThanOrEqual(tabTop + 1);
+        });
+      }
+
+      // Export and Import stack rather than hyphenate: a word split over two
+      // lines ("Expor-tieren") has one text rect per line.
+      test("keeps the Export and Import labels on one line", async ({
+        page,
+      }) => {
+        await page.goto("/settings");
+        const lines = await page
+          .locator(".data-actions .button-label > span")
+          .evaluateAll((spans) =>
+            spans.map((span) => {
+              const range = document.createRange();
+              range.selectNodeContents(span);
+              return range.getClientRects().length;
+            }),
+          );
+        expect(lines).toEqual([1, 1]);
+      });
+
+      test("settings tab stays reachable", async ({ page }) => {
+        await page.goto("/settings");
+        await expect(
+          page.locator('.tab-bar a[href="/settings"]'),
+        ).toBeInViewport();
+      });
     });
-  });
+  }
 }
 
 test.describe("theme segmented control", () => {

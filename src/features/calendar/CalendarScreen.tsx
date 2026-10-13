@@ -227,10 +227,11 @@ function prefersReducedMotion() {
 }
 
 const LEGEND_ITEMS = [
-  { key: "logged", labelKey: "calendar.legend.logged" },
-  { key: "predicted", labelKey: "calendar.legend.predicted" },
-  { key: "fertile", labelKey: "calendar.legend.fertile" },
-  { key: "ovulation", labelKey: "calendar.legend.ovulation" },
+  // The same words as the Today dial's legend: one name per marker.
+  { key: "logged", labelKey: "legend.period" },
+  { key: "predicted", labelKey: "legend.expected" },
+  { key: "fertile", labelKey: "legend.fertileWindow" },
+  { key: "ovulation", labelKey: "legend.ovulation" },
 ] as const satisfies readonly { key: string; labelKey: MessageKey }[];
 
 export type LegendKey = (typeof LEGEND_ITEMS)[number]["key"];

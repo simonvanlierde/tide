@@ -6,13 +6,14 @@ export const fr: Dictionary = {
   "nav.settings": "Réglages",
   "app.skipToContent": "Aller au contenu",
   "app.primaryNav": "Navigation principale",
+  "app.newerData":
+    "Une version plus récente de Tide a enregistré vos données. Rechargez pour mettre à jour ; les modifications faites ici ne sont pas enregistrées.",
 
   "today.srCycleDay": "Jour du cycle {day}, {phase}",
   "today.nextPeriod": "Prochaines règles",
   "today.fertility": "Fertilité",
   "today.fertilityInfoLabel": "Comment la fertilité est estimée",
   "today.cycleInsights": "Aperçu du cycle",
-  "today.notEnoughData": "Pas encore assez de données",
   "today.daysAgo.one": "il y a {n} jour",
   "today.daysAgo.other": "il y a {n} jours",
   "today.expectedToday": "Prévues aujourd’hui",
@@ -34,7 +35,7 @@ export const fr: Dictionary = {
   "today.learningFallback":
     "Cycle type de 28 jours utilisé jusqu’à ce que votre rythme soit appris.",
   "today.learningInsufficient":
-    "Enregistrez vos saignements pour lancer une estimation.",
+    "Enregistrez vos règles pour voir une prévision.",
 
   "phase.menstrual": "Menstruelle",
   "phase.follicular": "Folliculaire",
@@ -122,10 +123,6 @@ export const fr: Dictionary = {
     "Touchez un jour passé pour enregistrer votre premier jour de saignement.",
   "calendar.futureHelp":
     "Les jours à venir ne peuvent pas encore être enregistrés.",
-  "calendar.legend.logged": "Enregistré",
-  "calendar.legend.predicted": "Prévu",
-  "calendar.legend.fertile": "Fertile",
-  "calendar.legend.ovulation": "Ovulation",
   "calendar.log": "Enregistrer",
   "calendar.edit": "Modifier",
   "calendar.dayUnavailable": "{label} indisponible",
@@ -139,6 +136,12 @@ export const fr: Dictionary = {
   "common.close": "Fermer",
   "common.cancel": "Annuler",
   "common.days": "jours",
+  "common.reload": "Recharger",
+
+  // Crash screen
+  "error.title": "Un problème est survenu",
+  "error.body": "Vos jours enregistrés sont toujours sur cet appareil.",
+  "error.downloadRaw": "Télécharger les données brutes",
 
   "settings.title": "Réglages",
   "settings.preferences": "Préférences",

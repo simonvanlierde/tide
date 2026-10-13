@@ -9,7 +9,12 @@ import { type ChangeEvent, useRef, useState } from "react";
 import { downloadAppState, parseImportedState } from "../../data/transfer";
 import type { AppState } from "../../domain/types";
 import { plural } from "../../i18n";
-import { useAppState, useAppStateActions, useT } from "../../state/provider";
+import {
+  useAppState,
+  useAppStateActions,
+  useIsReadOnly,
+  useT,
+} from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { InfoPopover } from "./InfoPopover";
@@ -23,6 +28,9 @@ export function DataSection() {
   const state = useAppState();
   const actions = useAppStateActions();
   const t = useT();
+  // A newer build saved the data and this tab never saves, so an import would
+  // vanish on reload and a delete would wipe data this build can't read.
+  const readOnly = useIsReadOnly();
   const fileInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<DataStatus | null>(null);
@@ -112,6 +120,8 @@ export function DataSection() {
           <button
             type="button"
             className="secondary-action"
+            disabled={readOnly}
+            aria-describedby={readOnly ? "data-read-only" : undefined}
             onClick={() => {
               // A stale message from the last attempt shouldn't outlive a new pick.
               setError(null);
@@ -155,9 +165,20 @@ export function DataSection() {
             </span>
           </p>
         ) : null}
+        {readOnly ? (
+          <p
+            id="data-read-only"
+            className="supporting-note supporting-note--icon"
+          >
+            <AppIcon icon={CircleAlert} className="supporting-note__icon" />
+            <span>{t("app.newerData")}</span>
+          </p>
+        ) : null}
         <button
           type="button"
           className="text-action"
+          disabled={readOnly}
+          aria-describedby={readOnly ? "data-read-only" : undefined}
           onClick={() => setConfirmingReset(true)}
         >
           <AppIcon icon={Trash2} className="text-action__icon" />

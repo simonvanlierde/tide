@@ -16,9 +16,12 @@ const SEED_STATE = {
   settings: { dismissedOn: null, theme: "system" },
 };
 
-export async function seedAppState(page: Page) {
+export async function seedAppState(page: Page, language = "system") {
   await page.clock.setFixedTime(FIXED_NOW);
-  await page.addInitScript((state) => {
-    localStorage.setItem("tide.period-tracker.state", JSON.stringify(state));
-  }, SEED_STATE);
+  await page.addInitScript(
+    (state) => {
+      localStorage.setItem("tide.period-tracker.state", JSON.stringify(state));
+    },
+    { ...SEED_STATE, settings: { ...SEED_STATE.settings, language } },
+  );
 }

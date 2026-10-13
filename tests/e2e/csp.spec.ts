@@ -64,3 +64,10 @@ test("the built app runs under its own Content-Security-Policy", async ({
     .poll(() => violations)
     .toEqual([expect.stringMatching(/^style-src-elem inline/)]);
 });
+
+test("the built headers pin HTTPS for this host only", async ({ page }) => {
+  const headersFile = await (await page.request.get("/_headers")).text();
+  expect(headersFile).toMatch(
+    /^\s*Strict-Transport-Security: max-age=31536000$/m,
+  );
+});
