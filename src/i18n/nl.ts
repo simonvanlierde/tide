@@ -180,23 +180,27 @@ export const nl: Dictionary = {
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
-    "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een back-up.",
+    "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een Tide-back-up, of voegt dagen toe uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError":
-    "Dat bestand is geen geldige Tide-back-up. Gebruik een JSON-bestand dat uit Tide is geëxporteerd.",
+    "Dat bestand is geen Tide-back-up en geen export van Clue of Flo.",
   "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
   "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",
   "settings.importConfirmTitle": "Je gegevens vervangen?",
   "settings.importConfirmAction": "Vervangen",
-  "settings.importFileDays.one": "Deze back-up bevat {n} gelogde dag.",
-  "settings.importFileDays.other": "Deze back-up bevat {n} gelogde dagen.",
+  "settings.importFileDays.one": "Dit bestand bevat {n} gelogde dag.",
+  "settings.importFileDays.other": "Dit bestand bevat {n} gelogde dagen.",
   "settings.importReplaces.one":
-    "Die vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.",
+    "Het vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.",
   "settings.importReplaces.other":
-    "Die vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.",
+    "Het vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.",
+  "settings.importMergeTitle": "Dagen uit {source} toevoegen?",
+  "settings.importMergeAction": "Toevoegen",
+  "settings.importMerges":
+    "Dagen die hier al gelogd zijn, blijven zoals ze zijn.",
   "settings.reset": "Alle gegevens wissen",
   "settings.resetTitle": "Alle gegevens verwijderen?",
   "settings.resetAction": "Verwijderen",

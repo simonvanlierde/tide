@@ -161,7 +161,9 @@ describe("SettingsScreen", () => {
       screen.getByLabelText(/import data file/i),
       new File(["not json"], "broken.json", { type: "application/json" }),
     );
-    expect(screen.getByRole("alert")).toHaveTextContent(/valid tide backup/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /isn.t a tide backup or a clue or flo export/i,
+    );
 
     await user.upload(
       screen.getByLabelText(/import data file/i),
@@ -201,7 +203,7 @@ describe("SettingsScreen", () => {
     // Both sides of the trade are named before anything is replaced.
     const dialog = screen.getByRole("dialog");
     expect(
-      within(dialog).getByText(/holds 2 logged days/i),
+      within(dialog).getByText(/this file holds 2 logged days/i),
     ).toBeInTheDocument();
     expect(
       within(dialog).getByText(/replaces the 1 day logged on this device/i),
@@ -229,6 +231,62 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       /imported 2 logged days\./i,
     );
+  });
+
+  it("adds the days from a Clue export after confirming, keeping days already logged", async () => {
+    const user = userEvent.setup();
+    renderSettings(
+      createAppState({ intensityByDay: { "2026-03-02": "light" } }),
+    );
+    const clue = [
+      { date: "2026-03-01", type: "period", value: { option: "heavy" } },
+      { date: "2026-03-02", type: "period", value: { option: "very_heavy" } },
+      { date: "2026-03-03", type: "spotting", value: {} },
+      { date: "2026-03-03", type: "pain", value: { option: "cramps" } },
+    ];
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(clue)], "measurements.json", {
+        type: "application/json",
+      }),
+    );
+
+    // Nothing is written until the user agrees.
+    const dialog = await screen.findByRole("dialog");
+    expect(
+      within(dialog).getByRole("heading", { name: /add days from clue/i }),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(/this file holds 3 logged days/i),
+    ).toBeInTheDocument();
+    expect(loadStoredState().state.intensityByDay).toEqual({
+      "2026-03-02": "light",
+    });
+
+    await user.click(within(dialog).getByRole("button", { name: /^add$/i }));
+    expect(loadStoredState().state.intensityByDay).toEqual({
+      "2026-03-01": "heavy",
+      "2026-03-02": "light",
+      "2026-03-03": "spotting",
+    });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 2 logged days\./i,
+    );
+  });
+
+  it("names the supported sources when a JSON file is from none of them", async () => {
+    const user = userEvent.setup();
+    renderSettings();
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify({ hello: "world" })], "other.json", {
+        type: "application/json",
+      }),
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /tide backup or a clue or flo export/i,
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("asks before deleting everything, and only then deletes", async () => {

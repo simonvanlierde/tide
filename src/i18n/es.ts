@@ -179,23 +179,27 @@ export const es: Dictionary = {
   "settings.data": "Datos",
   "settings.dataInfo": "Acerca de importar y exportar",
   "settings.dataHelp":
-    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de seguridad.",
+    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de Tide, o añade días desde Clue o Flo.",
   "settings.export": "Exportar",
   "settings.exportSuccess": "Copia guardada en tus descargas.",
   "settings.import": "Importar",
   "settings.importFile": "Importar archivo de datos",
   "settings.importError":
-    "Ese archivo no es una copia válida de Tide. Usa un archivo JSON exportado desde Tide.",
+    "Ese archivo no es una copia de Tide ni una exportación de Clue o Flo.",
   "settings.importSuccess.one": "{n} día registrado importado.",
   "settings.importSuccess.other": "{n} días registrados importados.",
   "settings.importConfirmTitle": "¿Reemplazar tus datos?",
   "settings.importConfirmAction": "Reemplazar",
-  "settings.importFileDays.one": "Esta copia contiene {n} día registrado.",
-  "settings.importFileDays.other": "Esta copia contiene {n} días registrados.",
+  "settings.importFileDays.one": "Este archivo contiene {n} día registrado.",
+  "settings.importFileDays.other":
+    "Este archivo contiene {n} días registrados.",
   "settings.importReplaces.one":
     "Reemplaza el {n} día registrado en este dispositivo y no se puede deshacer.",
   "settings.importReplaces.other":
     "Reemplaza los {n} días registrados en este dispositivo y no se puede deshacer.",
+  "settings.importMergeTitle": "¿Añadir los días de {source}?",
+  "settings.importMergeAction": "Añadir",
+  "settings.importMerges": "Los días ya registrados aquí se quedan como están.",
   "settings.reset": "Borrar todos los datos",
   "settings.resetTitle": "¿Eliminar todos los datos?",
   "settings.resetAction": "Eliminar",

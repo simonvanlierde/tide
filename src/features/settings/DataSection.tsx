@@ -6,6 +6,7 @@ import {
   Upload,
 } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
+import type { OtherAppSource } from "../../data/otherApps";
 import { downloadAppState, parseImportedState } from "../../data/transfer";
 import type { AppState } from "../../domain/types";
 import { plural } from "../../i18n";
@@ -16,6 +17,7 @@ import {
   useT,
 } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
+import { getTodayIsoDate } from "../../utils/date";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { InfoPopover } from "./InfoPopover";
 
@@ -34,17 +36,25 @@ export function DataSection() {
   const fileInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<DataStatus | null>(null);
-  // A parsed backup waiting for the user to agree to overwrite what's here.
-  const [pendingImport, setPendingImport] = useState<AppState | null>(null);
+  // A parsed import waiting for the user to agree. A Tide backup replaces
+  // what's here; another app's export (source set) is merged into it.
+  const [pendingImport, setPendingImport] = useState<{
+    next: AppState;
+    fileDays: number;
+    source?: OtherAppSource;
+  } | null>(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
-  function applyImport(next: AppState) {
+  // The status counts the days the import added: all of a backup, or only the
+  // new days of a merge.
+  function applyImport(next: AppState, merged = false) {
     actions.importState(next);
     setError(null);
     setStatus({
       kind: "imported",
-      days: Object.keys(next.intensityByDay).length,
+      days:
+        Object.keys(next.intensityByDay).length - (merged ? loggedDayCount : 0),
     });
   }
 
@@ -64,19 +74,40 @@ export function DataSection() {
       return;
     }
 
+    const text = await file.text();
+    let next: AppState;
     try {
-      const next = parseImportedState(await file.text());
-      // Import replaces everything and there is no undo, so ask first — but
-      // only when there is something to lose.
-      if (loggedDayCount > 0) {
-        setPendingImport(next);
+      next = parseImportedState(text);
+    } catch {
+      // Not a Tide backup: try the other apps' formats, loaded only now.
+      const { parseOtherAppExport, mergeImportedDays } = await import(
+        "../../data/otherApps"
+      );
+      const other = parseOtherAppExport(text, getTodayIsoDate());
+      if (!other) {
+        setStatus(null);
+        setError(t("settings.importError"));
         return;
       }
-      applyImport(next);
-    } catch {
-      setStatus(null);
-      setError(t("settings.importError"));
+      // Always confirm: the file's format is a guess, so the user checks the
+      // day count before anything is written.
+      setPendingImport({
+        next: mergeImportedDays(state, other.days),
+        fileDays: Object.keys(other.days).length,
+        source: other.source,
+      });
+      return;
     }
+    // Import replaces everything and there is no undo, so ask first — but
+    // only when there is something to lose.
+    if (loggedDayCount > 0) {
+      setPendingImport({
+        next,
+        fileDays: Object.keys(next.intensityByDay).length,
+      });
+      return;
+    }
+    applyImport(next);
   }
 
   function handleExport() {
@@ -138,7 +169,7 @@ export function DataSection() {
         <input
           ref={fileInput}
           type="file"
-          accept="application/json,.json"
+          accept="application/json,.json,.cluedata"
           aria-label={t("settings.importFile")}
           className="visually-hidden"
           // The Import chip opens it; a second, invisible tab stop only confuses.
@@ -188,28 +219,34 @@ export function DataSection() {
 
       {pendingImport ? (
         <ConfirmDialog
-          title={t("settings.importConfirmTitle")}
+          title={
+            pendingImport.source
+              ? t("settings.importMergeTitle", { source: pendingImport.source })
+              : t("settings.importConfirmTitle")
+          }
           body={
             <>
               <p>
-                {t(
-                  plural(
-                    "settings.importFileDays",
-                    Object.keys(pendingImport.intensityByDay).length,
-                  ),
-                  { n: Object.keys(pendingImport.intensityByDay).length },
-                )}
+                {t(plural("settings.importFileDays", pendingImport.fileDays), {
+                  n: pendingImport.fileDays,
+                })}
               </p>
               <p>
-                {t(plural("settings.importReplaces", loggedDayCount), {
-                  n: loggedDayCount,
-                })}
+                {pendingImport.source
+                  ? t("settings.importMerges")
+                  : t(plural("settings.importReplaces", loggedDayCount), {
+                      n: loggedDayCount,
+                    })}
               </p>
             </>
           }
-          confirmLabel={t("settings.importConfirmAction")}
+          confirmLabel={t(
+            pendingImport.source
+              ? "settings.importMergeAction"
+              : "settings.importConfirmAction",
+          )}
           onConfirm={() => {
-            applyImport(pendingImport);
+            applyImport(pendingImport.next, !!pendingImport.source);
             setPendingImport(null);
           }}
           onCancel={() => setPendingImport(null)}
