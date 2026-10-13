@@ -1,12 +1,15 @@
 import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
-import { normalizeAppState } from "./schema";
+import { normalizeAppState, SCHEMA_VERSION } from "./schema";
 
 // Dated so repeated backups don't overwrite each other in Downloads.
 // Local day, not UTC, so a backup made just after midnight carries today's date.
 const exportFilename = () => `tide-backup-${getTodayIsoDate()}.json`;
 
 interface BackupFile {
+  // Read on import like the stored blob's: an older backup's showFertility was
+  // never chosen (see normalizeAppState).
+  schemaVersion: number;
   // The logged days and their flow — its keys are the period days, so they
   // aren't listed a second time. This is the app's own state shape.
   days: Record<IsoDate, LoggedFlow>;
@@ -20,6 +23,7 @@ interface BackupFile {
 // reminder-dismissal is transient UI state and is intentionally omitted.
 function toBackupFile(state: AppState): BackupFile {
   return {
+    schemaVersion: SCHEMA_VERSION,
     days: state.intensityByDay,
     settings: {
       showFertility: state.settings.showFertility,

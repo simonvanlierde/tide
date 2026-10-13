@@ -31,7 +31,8 @@ Once installed it works offline, and all data stays on your device.
 - **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual /
   follicular / ovulation / luteal) and a scrub preview
 - **Predictions**: next period learned from your history (28-day fallback), plus an approximate
-  fertile window and ovulation estimate
+  fertile window and ovulation estimate if you choose to see them. Every prediction is drawn
+  as a dashed outline, so it never looks like a logged day
 - **Cycle insights**: your average cycle and period lengths, cycles tracked, and a regularity meter,
   with a plain-language note on how predictions are worked out
 - **Calendar**: month-by-month view with cycle day numbers and fertile / ovulation / next-period

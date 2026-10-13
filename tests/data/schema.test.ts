@@ -30,4 +30,30 @@ describe("schema normalization at the storage trust boundary", () => {
     });
     expect(state.settings).toEqual(defaultAppState.settings);
   });
+
+  it("asks again where showFertility was only ever the old default", () => {
+    // Before version 2, true was the default nobody chose: back to unasked.
+    for (const blob of [
+      { settings: { showFertility: true } },
+      { schemaVersion: 1, settings: { showFertility: true } },
+    ]) {
+      expect(normalizeAppState(blob).settings.showFertility).toBeNull();
+    }
+    // false could only come from the Settings switch, so it is an answer.
+    expect(
+      normalizeAppState({
+        schemaVersion: 1,
+        settings: { showFertility: false },
+      }).settings.showFertility,
+    ).toBe(false);
+    // From version 2 on, true is an answer too.
+    expect(
+      normalizeAppState({ schemaVersion: 2, settings: { showFertility: true } })
+        .settings.showFertility,
+    ).toBe(true);
+    expect(
+      normalizeAppState({ schemaVersion: 2, settings: { showFertility: null } })
+        .settings.showFertility,
+    ).toBeNull();
+  });
 });

@@ -220,6 +220,63 @@ describe("TodayScreen", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("asks once about fertility estimates and hides them until answered", async () => {
+    const user = userEvent.setup();
+    renderToday(
+      "2026-04-18",
+      createAppState({ periodDays: LEARNED_PERIOD_DAYS }),
+    );
+
+    const question = screen.getByRole("region", {
+      name: "Show fertility estimates?",
+    });
+    expect(question).toHaveTextContent(/an estimate, not birth control/i);
+    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".cycle-dial__estimates")?.getAttribute("style"),
+    ).not.toContain("--estimate-fertile");
+
+    await user.click(screen.getByRole("button", { name: "Show" }));
+
+    expect(question).not.toBeInTheDocument();
+    expect(screen.getByText("Fertility")).toBeInTheDocument();
+    expect(screen.getByText(/^not birth control$/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /cycle insights/i }),
+    ).toHaveFocus();
+    expect(
+      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings
+        .showFertility,
+    ).toBe(true);
+  });
+
+  it("keeps fertility estimates hidden when the answer is no", async () => {
+    const user = userEvent.setup();
+    renderToday(
+      "2026-04-18",
+      createAppState({ periodDays: LEARNED_PERIOD_DAYS }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Don't show" }));
+
+    expect(
+      screen.queryByRole("region", { name: "Show fertility estimates?" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
+    expect(
+      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings
+        .showFertility,
+    ).toBe(false);
+  });
+
+  it("does not ask about fertility before there is an estimate to show", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: [] }));
+
+    expect(
+      screen.queryByRole("region", { name: "Show fertility estimates?" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("logs a bleeding day from the primary action", async () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");

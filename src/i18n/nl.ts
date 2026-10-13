@@ -22,6 +22,11 @@ export const nl: Dictionary = {
   "today.higherToday": "Vandaag waarschijnlijker (schatting)",
   "today.lowerToday": "Vandaag minder waarschijnlijk (schatting)",
   "today.notBirthControl": "Geen anticonceptie",
+  "fertilityAsk.title": "Vruchtbaarheidsschattingen tonen?",
+  "fertilityAsk.body":
+    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie.",
+  "fertilityAsk.show": "Tonen",
+  "fertilityAsk.hide": "Niet tonen",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
   "today.fertilityUnclear": "Onduidelijk bij vertraging",
   "today.periodLate": "Menstruatie",

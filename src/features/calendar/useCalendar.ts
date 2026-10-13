@@ -49,7 +49,8 @@ export function useCalendar(today: IsoDate) {
       ),
     [state.intensityByDay],
   );
-  const showFertility = state.settings.showFertility;
+  // null (not asked yet) hides the estimates, like an explicit "no".
+  const showFertility = state.settings.showFertility === true;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
   // Ovulation for each completed past cycle, so their fertile windows show the
   // same as the forecast does for the current cycle.

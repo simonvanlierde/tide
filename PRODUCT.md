@@ -43,8 +43,9 @@ doors: import to bring history in, export to leave.
 
 - The cycle model lives in `src/domain/cycle.ts` and is explained in the README under "How
   predictions work". Treat that pair as the source of truth; do not restate its numbers.
-- Every estimate is an estimate. Fertility sits behind a settings toggle, and the
-  disclaimer that it is informational and not birth control stays in the product.
+- Every estimate is an estimate. Fertility estimates stay hidden until the user answers a
+  one-time question on Today, and the Settings switch changes the answer later. The note
+  that they are not birth control sits next to the fertility line, not only in Settings.
 - Five locales as typed dictionaries, dates and plurals through `Intl`. German and French
   run long and have to fit.
 - Light and dark themes, following the system or an override.

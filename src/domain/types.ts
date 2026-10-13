@@ -50,8 +50,10 @@ export interface AppSettings {
   /** Day the reminder was dismissed with "Not yet"; suppresses the prompt only
    * while it equals today. Transient UI state — persisted locally, not exported. */
   dismissedOn: IsoDate | null;
-  /** Show fertile-window and ovulation estimates on the home screen and calendar. */
-  showFertility: boolean;
+  /** Show fertile-window and ovulation estimates on the home screen and
+   * calendar. null until the user answers the question on Today; estimates
+   * stay hidden until then. */
+  showFertility: boolean | null;
   /** Number the days of the current cycle (day 1, 2, 3…) on the calendar. */
   showCycleDayNumbers: boolean;
   theme: ThemePreference;

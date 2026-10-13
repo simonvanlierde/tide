@@ -59,9 +59,20 @@ describe("CalendarScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows fertility markers by default but hides them when turned off", () => {
-    const shown = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+  it("hides fertility markers until asked, shows them on yes, hides them on no", () => {
+    const unasked = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+    expect(
+      screen.queryByRole("button", { name: /likely ovulation/i }),
+    ).not.toBeInTheDocument();
+    unasked.unmount();
+
+    const shown = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02"],
+        settings: { showFertility: true },
+      }),
     });
     expect(
       screen.getByRole("button", { name: /likely ovulation/i }),

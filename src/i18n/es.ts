@@ -22,6 +22,11 @@ export const es: Dictionary = {
   "today.higherToday": "Más probable hoy (estimación)",
   "today.lowerToday": "Menos probable hoy (estimación)",
   "today.notBirthControl": "No es un anticonceptivo",
+  "fertilityAsk.title": "¿Mostrar estimaciones de fertilidad?",
+  "fertilityAsk.body":
+    "Tide puede marcar los días en que es más probable que seas fértil, calculados a partir de los períodos que registras. Es una estimación, no un método anticonceptivo.",
+  "fertilityAsk.show": "Mostrar",
+  "fertilityAsk.hide": "No mostrar",
   "today.privacy": "Guardado solo en este dispositivo.",
   "today.fertilityUnclear": "Incierta con retraso",
   "today.periodLate": "Regla",

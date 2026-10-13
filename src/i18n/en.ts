@@ -27,6 +27,11 @@ export const en = {
   "today.higherToday": "More likely today (estimate)",
   "today.lowerToday": "Less likely today (estimate)",
   "today.notBirthControl": "Not birth control",
+  "fertilityAsk.title": "Show fertility estimates?",
+  "fertilityAsk.body":
+    "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control.",
+  "fertilityAsk.show": "Show",
+  "fertilityAsk.hide": "Don't show",
   "today.privacy": "Stored only on this device.",
   "today.fertilityUnclear": "Unclear while late",
   "today.periodLate": "Period",

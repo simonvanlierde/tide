@@ -23,6 +23,11 @@ export const de: Dictionary = {
   "today.higherToday": "Heute wahrscheinlicher (Schätzung)",
   "today.lowerToday": "Heute weniger wahrscheinlich (Schätzung)",
   "today.notBirthControl": "Keine Verhütungsmethode",
+  "fertilityAsk.title": "Fruchtbarkeitsschätzungen anzeigen?",
+  "fertilityAsk.body":
+    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode.",
+  "fertilityAsk.show": "Anzeigen",
+  "fertilityAsk.hide": "Nicht anzeigen",
   "today.privacy": "Nur auf diesem Gerät gespeichert.",
   "today.fertilityUnclear": "Unklar bei Verspätung",
   "today.periodLate": "Periode",

@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
@@ -15,6 +15,7 @@ import {
   useAppStateActions,
   useCycleStats,
   useCycleSummary,
+  useIsReadOnly,
   useLocale,
   useT,
 } from "../../state/provider";
@@ -26,6 +27,7 @@ import { ReminderPrompt } from "../reminders/ReminderPrompt";
 import { InfoPopover } from "../settings/InfoPopover";
 import { CycleDial } from "./CycleDial";
 import { CycleInsights } from "./CycleInsights";
+import { FertilityQuestion } from "./FertilityQuestion";
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -41,6 +43,14 @@ export function TodayScreen(props: TodayScreenProps) {
   const summary = useCycleSummary(today);
   const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const insightsButton = useRef<HTMLButtonElement>(null);
+  const readOnly = useIsReadOnly();
+  // null: not asked yet. Estimates stay hidden until the user says yes.
+  const showFertility = state.settings.showFertility === true;
+  const askFertility =
+    state.settings.showFertility === null &&
+    summary.ovulationDate !== null &&
+    !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
   // from another tab or a new day leaves focus where it is.
@@ -95,7 +105,7 @@ export function TodayScreen(props: TodayScreenProps) {
         periodDays={getPeriodDays(state.intensityByDay)}
         intensityByDay={state.intensityByDay}
         today={today}
-        showFertility={state.settings.showFertility}
+        showFertility={showFertility}
       />
 
       {learningNote ? (
@@ -133,7 +143,7 @@ export function TodayScreen(props: TodayScreenProps) {
               </dd>
             </div>
 
-            {state.settings.showFertility ? (
+            {showFertility ? (
               <div className="fact">
                 <dt className="fact__label fact__label--with-info">
                   {t("today.fertility")}
@@ -177,6 +187,7 @@ export function TodayScreen(props: TodayScreenProps) {
         )}
 
         <button
+          ref={insightsButton}
           type="button"
           className="fact-list__more"
           onClick={() => setInsightsOpen(true)}
@@ -185,6 +196,17 @@ export function TodayScreen(props: TodayScreenProps) {
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
       </div>
+
+      {askFertility ? (
+        <FertilityQuestion
+          onAnswer={(show) => {
+            actions.setSetting("showFertility", show);
+            // The card goes away under the user's focus; continue from the
+            // control just before it.
+            insightsButton.current?.focus();
+          }}
+        />
+      ) : null}
 
       {insightsOpen ? (
         <CycleInsights

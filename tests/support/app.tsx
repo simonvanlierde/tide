@@ -19,12 +19,20 @@ export const LEARNED_PERIOD_DAYS: IsoDate[] = [
 
 export const LEARNING_PERIOD_DAYS: IsoDate[] = ["2026-04-19", "2026-04-20"];
 
+// Both histories belong to a user who said yes to fertility estimates; the
+// not-yet-asked default (null) has its own tests.
 export function createLearnedCycleState() {
-  return createAppState({ periodDays: LEARNED_PERIOD_DAYS });
+  return createAppState({
+    periodDays: LEARNED_PERIOD_DAYS,
+    settings: { showFertility: true },
+  });
 }
 
 export function createLearningCycleState() {
-  return createAppState({ periodDays: LEARNING_PERIOD_DAYS });
+  return createAppState({
+    periodDays: LEARNING_PERIOD_DAYS,
+    settings: { showFertility: true },
+  });
 }
 
 interface AppStateOverrides {

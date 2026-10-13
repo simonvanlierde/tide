@@ -21,7 +21,7 @@ export function SettingsScreen() {
             label={t("settings.showFertility")}
             infoLabel={t("settings.fertilityInfo")}
             help={t("settings.fertilityHelp")}
-            checked={settings.showFertility}
+            checked={settings.showFertility === true}
             onChange={(show) => actions.setSetting("showFertility", show)}
           />
           <SwitchRow

@@ -66,7 +66,7 @@ describe("SettingsScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("toggles fertility estimates off and remembers the choice", async () => {
+  it("answers the fertility question from the switch and remembers it", async () => {
     const user = userEvent.setup();
     renderSettings();
 
@@ -74,10 +74,13 @@ describe("SettingsScreen", () => {
     const toggle = screen.getByRole("switch", {
       name: "Show fertility estimates",
     });
-    expect(toggle).toBeChecked();
+    // Not asked yet: estimates are hidden, so the switch reads off.
+    expect(toggle).not.toBeChecked();
 
     await user.click(toggle);
+    expect(loadStoredState().state.settings.showFertility).toBe(true);
 
+    await user.click(toggle);
     expect(loadStoredState().state.settings.showFertility).toBe(false);
   });
 
@@ -128,9 +131,10 @@ describe("SettingsScreen", () => {
 
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
     expect(JSON.parse(await blob.text())).toEqual({
+      schemaVersion: 2,
       days: { "2026-04-02": "medium" },
       settings: {
-        showFertility: true,
+        showFertility: null,
         showCycleDayNumbers: true,
         theme: "system",
         language: "system",

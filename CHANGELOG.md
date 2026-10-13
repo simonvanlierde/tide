@@ -18,6 +18,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Tide asks once whether to show fertility estimates, and hides them until you
+  answer. This includes current users, who had them on without being asked.
+  If you had turned them off in Settings, that choice stays. The Settings
+  switch still changes the answer.
 - Every estimate looks like an estimate: the expected period, the fertile
   window and ovulation are dashed outlines on both the dial and the calendar,
   and in both legends. Only logged days are filled.
