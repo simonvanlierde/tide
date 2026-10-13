@@ -1,6 +1,6 @@
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { getPastOvulationDates } from "../../domain/cycle";
-import { getPeriodDays } from "../../domain/flow";
+import { getPeriodDays, getPeriodRange } from "../../domain/flow";
 import type { FlowIntensity, IsoDate, LoggedFlow } from "../../domain/types";
 import { selectPastPredictionDays } from "../../state/core";
 import {
@@ -26,6 +26,19 @@ export function useCalendar(today: IsoDate) {
   const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
   // The day just logged by a one-tap; drives its one-shot "tap to edit" pulse.
   const [justLoggedDay, setJustLoggedDay] = useState<IsoDate | null>(null);
+  // Logging a past period in one go: null when not picking, else the first
+  // day picked so far (null until tapped) and whether the last tap ran past
+  // the cap.
+  const [rangePick, setRangePick] = useState<{
+    from: IsoDate | null;
+    tooLong: boolean;
+  } | null>(null);
+  // The range just logged, and the days it added, for its status line and undo.
+  const [justLoggedRange, setJustLoggedRange] = useState<{
+    from: IsoDate;
+    to: IsoDate;
+    added: IsoDate[];
+  } | null>(null);
 
   const monthDays = useMemo(
     () => buildMonthDays(visibleMonth, today),
@@ -49,7 +62,8 @@ export function useCalendar(today: IsoDate) {
       ),
     [state.intensityByDay],
   );
-  const showFertility = state.settings.showFertility;
+  // null (not asked yet) hides the estimates, like an explicit "no".
+  const showFertility = state.settings.showFertility === true;
   const showCycleDayNumbers = state.settings.showCycleDayNumbers;
   // Ovulation for each completed past cycle, so their fertile windows show the
   // same as the forecast does for the current cycle.
@@ -107,10 +121,10 @@ export function useCalendar(today: IsoDate) {
   useEffect(() => {
     const moved = previousForecast.current !== summary.nextPeriod.date;
     previousForecast.current = summary.nextPeriod.date;
-    if (moved && justLoggedDay) {
+    if (moved && (justLoggedDay || justLoggedRange)) {
       setForecastMoved(true);
     }
-  }, [summary.nextPeriod.date, justLoggedDay]);
+  }, [summary.nextPeriod.date, justLoggedDay, justLoggedRange]);
 
   const locale = useLocale();
   const monthLabel = useMemo(
@@ -136,7 +150,28 @@ export function useCalendar(today: IsoDate) {
       // no longer shows.
       setSelectedDay(null);
       setJustLoggedDay(null);
+      setJustLoggedRange(null);
       setForecastMoved(false);
+      // A range pick stays open: a period can run across the month boundary.
+    });
+  }
+
+  function pickRangeDay(from: IsoDate | null, day: IsoDate) {
+    if (from === null) {
+      setRangePick({ from: day, tooLong: false });
+      return;
+    }
+    const days = getPeriodRange(from, day);
+    if (!days) {
+      setRangePick({ from, tooLong: true });
+      return;
+    }
+    actions.logPeriodRange(from, day, today);
+    setRangePick(null);
+    setJustLoggedRange({
+      from: days[0] as IsoDate,
+      to: days.at(-1) as IsoDate,
+      added: days.filter((entry) => !loggedDays.has(entry) && entry <= today),
     });
   }
 
@@ -183,6 +218,13 @@ export function useCalendar(today: IsoDate) {
     // Empty day → one-tap log at the default flow (medium). Logged day → open
     // its picker to change the flow or remove it; tapping the open day closes.
     selectDay(day: IsoDate) {
+      setJustLoggedRange(null);
+      if (rangePick) {
+        setJustLoggedDay(null);
+        setForecastMoved(false);
+        pickRangeDay(rangePick.from, day);
+        return;
+      }
       if (!loggedDays.has(day)) {
         actions.togglePeriodDay(day, today);
         setJustLoggedDay(day);
@@ -195,6 +237,18 @@ export function useCalendar(today: IsoDate) {
       setForecastMoved(false);
       setSelectedDay((current) => (current === day ? null : day));
     },
+    rangePick,
+    justLoggedRange,
+    startRangePick() {
+      setRangePick({ from: null, tooLong: false });
+      setSelectedDay(null);
+      setJustLoggedDay(null);
+      setJustLoggedRange(null);
+      setForecastMoved(false);
+    },
+    cancelRangePick() {
+      setRangePick(null);
+    },
     closePicker() {
       setSelectedDay(null);
     },
@@ -202,7 +256,15 @@ export function useCalendar(today: IsoDate) {
       if (justLoggedDay && loggedDays.has(justLoggedDay)) {
         actions.togglePeriodDay(justLoggedDay, today);
       }
+      // One undo for the whole range: only the days it added, so days that
+      // were logged before keep their flow.
+      for (const day of justLoggedRange?.added ?? []) {
+        if (loggedDays.has(day)) {
+          actions.togglePeriodDay(day, today);
+        }
+      }
       setJustLoggedDay(null);
+      setJustLoggedRange(null);
       setForecastMoved(false);
     },
     setDayIntensity(day: IsoDate, intensity: FlowIntensity) {

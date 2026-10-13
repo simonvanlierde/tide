@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
@@ -15,6 +15,7 @@ import {
   useAppStateActions,
   useCycleStats,
   useCycleSummary,
+  useIsReadOnly,
   useLocale,
   useT,
 } from "../../state/provider";
@@ -26,6 +27,7 @@ import { ReminderPrompt } from "../reminders/ReminderPrompt";
 import { InfoPopover } from "../settings/InfoPopover";
 import { CycleDial } from "./CycleDial";
 import { CycleInsights } from "./CycleInsights";
+import { FertilityQuestion } from "./FertilityQuestion";
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -41,6 +43,14 @@ export function TodayScreen(props: TodayScreenProps) {
   const summary = useCycleSummary(today);
   const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const insightsButton = useRef<HTMLButtonElement>(null);
+  const readOnly = useIsReadOnly();
+  // null: not asked yet. Estimates stay hidden until the user says yes.
+  const showFertility = state.settings.showFertility === true;
+  const askFertility =
+    state.settings.showFertility === null &&
+    summary.ovulationDate !== null &&
+    !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
   // from another tab or a new day leaves focus where it is.
@@ -95,11 +105,21 @@ export function TodayScreen(props: TodayScreenProps) {
         periodDays={getPeriodDays(state.intensityByDay)}
         intensityByDay={state.intensityByDay}
         today={today}
-        showFertility={state.settings.showFertility}
+        showFertility={showFertility}
       />
 
       {learningNote ? (
         <p className="today-screen__note">{learningNote}</p>
+      ) : null}
+      {/* Import is disabled while read-only, so the link would lead nowhere. */}
+      {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
+        <p className="today-screen__note">
+          {t("today.importPrompt")}{" "}
+          {/* biome-ignore lint/a11y/useValidAnchor: real page navigation with an href; the handler only keeps it client-side, like the tab bar */}
+          <a href="/settings#import" onClick={openImport}>
+            {t("today.importLink")}
+          </a>
+        </p>
       ) : null}
 
       <div className="fact-list">
@@ -133,7 +153,7 @@ export function TodayScreen(props: TodayScreenProps) {
               </dd>
             </div>
 
-            {state.settings.showFertility ? (
+            {showFertility ? (
               <div className="fact">
                 <dt className="fact__label fact__label--with-info">
                   {t("today.fertility")}
@@ -165,6 +185,9 @@ export function TodayScreen(props: TodayScreenProps) {
                           differenceInDays(summary.ovulationDate, today),
                         )}
                       </span>
+                      <span className="fact__meta">
+                        {t("today.notBirthControl")}
+                      </span>
                     </>
                   ) : null}
                 </dd>
@@ -174,6 +197,7 @@ export function TodayScreen(props: TodayScreenProps) {
         )}
 
         <button
+          ref={insightsButton}
           type="button"
           className="fact-list__more"
           onClick={() => setInsightsOpen(true)}
@@ -182,6 +206,17 @@ export function TodayScreen(props: TodayScreenProps) {
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
       </div>
+
+      {askFertility ? (
+        <FertilityQuestion
+          onAnswer={(show) => {
+            actions.setSetting("showFertility", show);
+            // The card goes away under the user's focus; continue from the
+            // control just before it.
+            insightsButton.current?.focus();
+          }}
+        />
+      ) : null}
 
       {insightsOpen ? (
         <CycleInsights
@@ -217,6 +252,23 @@ export function TodayScreen(props: TodayScreenProps) {
       <p className="today-screen__privacy">{t("today.privacy")}</p>
     </section>
   );
+}
+
+// Client-side, like the tab bar: the app shell follows popstate, then focuses
+// the #import target. A modified click opens the page the browser's way.
+function openImport(event: MouseEvent<HTMLAnchorElement>) {
+  if (
+    event.button !== 0 ||
+    event.metaKey ||
+    event.ctrlKey ||
+    event.shiftKey ||
+    event.altKey
+  ) {
+    return;
+  }
+  event.preventDefault();
+  window.history.pushState(null, "", event.currentTarget.href);
+  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 function getNextPeriodPhrase(

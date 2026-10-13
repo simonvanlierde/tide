@@ -15,7 +15,8 @@ export const STORAGE_KEY = "tide.period-tracker.state";
 // The stored shape this build reads and writes. Bump it when a change would
 // lose data in an older build that rewrites the blob with only the fields it
 // knows. Blobs from before versioning have no schemaVersion and read as 0.
-export const SCHEMA_VERSION = 1;
+// 2: showFertility can be null (not asked yet); see normalizeAppState.
+export const SCHEMA_VERSION = 2;
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 const LANGUAGE_PREFERENCES: LanguagePreference[] = [
@@ -27,7 +28,7 @@ export const defaultAppState: AppState = {
   intensityByDay: {},
   settings: {
     dismissedOn: null,
-    showFertility: true,
+    showFertility: null,
     showCycleDayNumbers: true,
     theme: "system",
     language: "system",
@@ -36,7 +37,7 @@ export const defaultAppState: AppState = {
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
-function isIsoDate(value: unknown): value is IsoDate {
+export function isIsoDate(value: unknown): value is IsoDate {
   if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
     return false;
   }
@@ -106,6 +107,10 @@ export function normalizeAppState(state: unknown): AppState {
   if (!state || typeof state !== "object") {
     return defaultAppState;
   }
+  const version =
+    "schemaVersion" in state && typeof state.schemaVersion === "number"
+      ? state.schemaVersion
+      : 0;
 
   // Pre-release builds persisted a { version, state } envelope; unwrap it so
   // upgrading users keep their logged history.
@@ -115,11 +120,19 @@ export function normalizeAppState(state: unknown): AppState {
       : state
   ) as Partial<AppState> & { days?: unknown };
 
+  const settings = normalizeSettings(candidate.settings);
+  // Before version 2, showFertility defaulted to true without anyone being
+  // asked. Turn that default back into "not asked" so the question shows; a
+  // false was a choice made in Settings and stays.
+  if (version < 2 && settings.showFertility) {
+    settings.showFertility = null;
+  }
+
   // Backups use `days`; current state uses `intensityByDay`.
   return {
     intensityByDay: normalizeIntensityByDay(
       candidate.days ?? candidate.intensityByDay,
     ),
-    settings: normalizeSettings(candidate.settings),
+    settings,
   };
 }

@@ -14,6 +14,8 @@ colors:
   flow-light: "#e89a88"
   amber: "#e8a24b"
   sand: "#f4d6a8"
+  amber-line: "#c2610f"
+  sand-line: "#8a7a20"
   sea-idle: "rgba(84, 123, 121, 0.4)"
   ink: "#14303a"
   ink-soft: "#486069"
@@ -156,7 +158,8 @@ same pool at night, retuned rather than inverted.
 ### Secondary
 
 - **Coral** (`coral`): the bleeding signal and nothing else. Logged days, the log button,
-  the dial's period arc, the dashed expected outline.
+  the dial's period arc. The dashed expected outline uses `coral-deep` in light, `coral` in
+  dark.
 - **Coral Ink** (`coral-ink`): coral as text on light surfaces, where `coral-deep` at
   4.1:1 misses AA.
 - **Flow ramp** (`flow-spotting` → `flow-light` → coral → `flow-heavy`): rising intensity.
@@ -164,8 +167,11 @@ same pool at night, retuned rather than inverted.
 
 ### Tertiary
 
-- **Amber** (`amber`): the ovulation day.
+- **Amber** (`amber`): the ovulation estimate.
 - **Sand** (`sand`): the fertile window.
+- **Amber Line** / **Sand Line** (`amber-line`, `sand-line`): the same two estimates as
+  outlines on the light theme, where amber and sand are too pale for a line. Dark uses
+  amber and sand themselves.
 - **Sea Idle** (`sea-idle`): the unremarkable stretch of the dial ring.
 
 ### Neutral
@@ -182,6 +188,11 @@ same pool at night, retuned rather than inverted.
 
 **The One Warm Voice Rule.** Coral means bleeding. It never marks a button, badge or accent
 that isn't the period.
+
+**The Outline Rule.** Every estimate is a dashed outline in its colour with no fill: the
+expected period, the fertile window and ovulation, on the dial, the calendar and both
+legends, in both themes. Fills are for logged days only. Each outline clears 3:1 against
+the card and the page ground.
 
 **The Paired Themes Rule.** Dark is not light inverted. Retune every fill and ink step for
 the dark ground so `ink-on-fill` still clears AA on it.
@@ -262,9 +273,8 @@ Everything is rounded, every radius is a token, and the corner grows with the bl
 - **Card** (20–22 px): the fact list, utility cards.
 
 The dial is a circle. Calendar days are rounded squares; a day that has happened carries
-its cycle-day number in a corner bubble, and an expected day gets a dashed coral outline
-with no fill. The dash fades along the run; the number never does. Borders are 1 px
-hairlines at 9% ink.
+its cycle-day number in a corner bubble, and an estimated day gets a 2 px dashed outline
+with no fill. Borders are 1 px hairlines at 9% ink.
 
 ## Components
 
@@ -279,7 +289,8 @@ Values live in the front matter. What follows is what each component is *for*.
   uses it in two columns that stack when the words stop fitting.
 - **Commit**: solid deep tide, for the affirmative action in a confirm dialog. Never
   coral: coral means bleeding, not "this button matters".
-- **Text action**: the quietest weight, used for Remove, Undo and Delete all data alike.
+- **Text action**: the quietest weight, used for Remove, Undo, Delete all data and "Log a
+  past period" alike. Standing alone under the calendar it keeps a 44 px touch target.
 - Every interactive element takes a `2px solid tide` focus ring at 2 px offset and a 160 ms
   ease.
 
@@ -312,20 +323,25 @@ skip link pins top-left on keyboard focus.
 
 ### Cycle Dial (signature)
 
-An open circular gauge. A conic ring carries the phase colours (coral period arc at its
-logged intensity, sand fertile window, amber ovulation, sea-idle for the rest), masked so
-per-day ticks sit in a thin band at the rim. A white inner disc holds the eyebrow, numeral,
+An open circular gauge. A conic ring fills logged days in coral at their logged intensity
+and the unremarkable days in sea-idle. Estimated days (fertile window, ovulation, the
+expected next period) stay hollow: a second layer draws them as dashed rails along the
+band's inner and outer edge, the dial's form of the calendar's dashed outline. Per-day
+ticks sit in a thin band at the rim. A white inner disc holds the eyebrow, numeral,
 phase and date. An ink marker rings today; a teal ghost dot follows the finger while
 scrubbing. Scrubbing previews any day and changes nothing. The legend names only the
 colours the ring is actually showing.
 
 ### Calendar grid
 
-Seven columns of rounded-square day buttons. Logged days fill with their flow-ramp colour,
-expected days are dashed outlines, fertile and ovulation days fill sand and amber, and
-neighbouring-month days keep their marker at a lighter fill. Today takes a short underscore
+Seven columns of rounded-square day buttons. Logged days fill with their flow-ramp colour;
+expected, fertile and ovulation days are dashed outlines in coral, sand and amber, with no
+fill. Neighbouring-month logged days keep a lighter fill; their estimates keep the full
+outline, which a lighter one would drop below 3:1. Today takes a short underscore
 in `currentColor`, selection a teal ring. A newly logged day pulses once unless the user
-asked for reduced motion. The grid is one tab stop, walked with arrow keys.
+asked for reduced motion. The grid is one tab stop, walked with arrow keys. Logging a past
+period reuses the grid: the first day picked holds the selection ring until the last day
+is picked, and a status line under the grid says which step comes next.
 
 ## Do's and Don'ts
 

@@ -59,9 +59,20 @@ describe("CalendarScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("shows fertility markers by default but hides them when turned off", () => {
-    const shown = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+  it("hides fertility markers until asked, shows them on yes, hides them on no", () => {
+    const unasked = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+    expect(
+      screen.queryByRole("button", { name: /likely ovulation/i }),
+    ).not.toBeInTheDocument();
+    unasked.unmount();
+
+    const shown = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-04-02"],
+        settings: { showFertility: true },
+      }),
     });
     expect(
       screen.getByRole("button", { name: /likely ovulation/i }),
@@ -551,5 +562,93 @@ describe("CalendarScreen", () => {
     expect(
       screen.getByText(/future days can't be logged yet/i),
     ).toBeInTheDocument();
+  });
+
+  it("logs a past period from its first and last day, with one undo", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ intensityByDay: { "2026-04-07": "heavy" } }),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /log a past period/i }),
+    );
+    // The pick happens on the grid, so focus goes there.
+    expect(document.activeElement).toHaveClass("calendar-grid__day");
+    expect(screen.getByRole("status")).toHaveTextContent(/first day/i);
+
+    await user.click(screen.getByRole("button", { name: /april 5, 2026/i }));
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /from .*apr 5.*last day/i,
+    );
+    // Nothing is logged until the last day is picked.
+    expect(
+      screen.getByRole("button", { name: /april 5, 2026/i }),
+    ).not.toHaveClass("is-logged");
+
+    await user.click(screen.getByRole("button", { name: /april 9, 2026/i }));
+    for (const day of [5, 6, 8, 9]) {
+      expect(
+        screen.getByRole("button", { name: `Edit April ${day}, 2026` }),
+      ).toHaveClass("is-logged");
+    }
+    // The day logged before keeps its flow.
+    expect(
+      screen.getByRole("button", { name: /edit april 7, 2026.*heavy/i }),
+    ).toHaveClass("is-flow-heavy");
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /logged .*apr 5 – .*apr 9/i,
+    );
+
+    await user.click(screen.getByRole("button", { name: /^undo$/i }));
+    for (const day of [5, 6, 8, 9]) {
+      expect(
+        screen.getByRole("button", { name: `Log April ${day}, 2026` }),
+      ).not.toHaveClass("is-logged");
+    }
+    expect(
+      screen.getByRole("button", { name: /edit april 7, 2026.*heavy/i }),
+    ).toHaveClass("is-flow-heavy");
+  });
+
+  it("refuses a range past the cap and cancels with Escape", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState(),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /log a past period/i }),
+    );
+    await user.click(screen.getByRole("button", { name: /april 1, 2026/i }));
+    await user.click(screen.getByRole("button", { name: /april 15, 2026/i }));
+
+    expect(screen.getByRole("status")).toHaveTextContent(/more than 14 days/i);
+    expect(document.querySelectorAll(".is-logged")).toHaveLength(0);
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /log a past period/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("picks a range with the keyboard alone", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState(),
+    });
+
+    await user.click(
+      screen.getByRole("button", { name: /log a past period/i }),
+    );
+    // Focus starts on today's cell; walk back two days, pick, back one, pick.
+    expect(document.activeElement).toHaveAccessibleName(/april 18, 2026/i);
+    await user.keyboard("{ArrowLeft}{ArrowLeft}{Enter}{ArrowRight}{Enter}");
+
+    expect(document.querySelectorAll(".is-logged")).toHaveLength(2);
+    expect(
+      screen.getByRole("button", { name: "Edit April 16, 2026" }),
+    ).toHaveClass("is-logged");
   });
 });

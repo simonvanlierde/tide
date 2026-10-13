@@ -28,6 +28,9 @@ const manifest: Partial<ManifestOptions> = {
 };
 
 export default defineConfig({
+  // The only lazy chunk is the other-app import, which needs nothing beyond the
+  // main chunk, so the modulepreload polyfill is dead weight in the budget.
+  build: { modulePreload: false },
   plugins: [
     react(),
     VitePWA({

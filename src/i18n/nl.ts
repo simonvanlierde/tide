@@ -19,9 +19,18 @@ export const nl: Dictionary = {
   "today.expectedToday": "Vandaag verwacht",
   "today.inDays.one": "Over {n} dag",
   "today.inDays.other": "Over {n} dagen",
-  "today.higherToday": "Vandaag hoger",
-  "today.lowerToday": "Vandaag lager",
+  "today.higherToday": "Vandaag waarschijnlijker (schatting)",
+  "today.lowerToday": "Vandaag minder waarschijnlijk (schatting)",
+  "today.notBirthControl": "Geen anticonceptie",
+  "fertilityAsk.title": "Vruchtbaarheidsschattingen tonen?",
+  "fertilityAsk.body":
+    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie.",
+  "fertilityAsk.show": "Tonen",
+  "fertilityAsk.hide": "Niet tonen",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
+  "today.importPrompt":
+    "Heb je een Tide-back-up of je geschiedenis uit Clue of Flo?",
+  "today.importLink": "Importeren",
   "today.fertilityUnclear": "Onduidelijk bij vertraging",
   "today.periodLate": "Menstruatie",
   "today.daysLate.one": "{n} dag te laat",
@@ -120,6 +129,12 @@ export const nl: Dictionary = {
   "calendar.justLogged": "{date} gelogd.",
   "calendar.justLoggedForecast": "{date} gelogd. Voorspelling bijgewerkt.",
   "calendar.undo": "Ongedaan maken",
+  "calendar.logRange": "Eerdere menstruatie loggen",
+  "calendar.rangePickFirst": "Kies de eerste dag van de menstruatie.",
+  "calendar.rangePickLast":
+    "Vanaf {date}: kies nu de laatste dag, hooguit {max} dagen.",
+  "calendar.rangeTooLong":
+    "Meer dan {max} dagen. Kies een laatste dag dichterbij.",
   "calendar.emptyHelp":
     "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
   "calendar.futureHelp": "Toekomstige dagen kun je nog niet loggen.",
@@ -174,23 +189,27 @@ export const nl: Dictionary = {
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
-    "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een back-up.",
+    "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een Tide-back-up, of voegt dagen toe uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError":
-    "Dat bestand is geen geldige Tide-back-up. Gebruik een JSON-bestand dat uit Tide is geëxporteerd.",
+    "Dat bestand is geen Tide-back-up en geen export van Clue of Flo.",
   "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
   "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",
   "settings.importConfirmTitle": "Je gegevens vervangen?",
   "settings.importConfirmAction": "Vervangen",
-  "settings.importFileDays.one": "Deze back-up bevat {n} gelogde dag.",
-  "settings.importFileDays.other": "Deze back-up bevat {n} gelogde dagen.",
+  "settings.importFileDays.one": "Dit bestand bevat {n} gelogde dag.",
+  "settings.importFileDays.other": "Dit bestand bevat {n} gelogde dagen.",
   "settings.importReplaces.one":
-    "Die vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.",
+    "Het vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.",
   "settings.importReplaces.other":
-    "Die vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.",
+    "Het vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.",
+  "settings.importMergeTitle": "Dagen uit {source} toevoegen?",
+  "settings.importMergeAction": "Toevoegen",
+  "settings.importMerges":
+    "Dagen die hier al gelogd zijn, blijven zoals ze zijn.",
   "settings.reset": "Alle gegevens wissen",
   "settings.resetTitle": "Alle gegevens verwijderen?",
   "settings.resetAction": "Verwijderen",

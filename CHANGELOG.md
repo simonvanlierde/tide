@@ -8,6 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Import your history from Clue or Flo: pick the export in Settings → Data →
+  Import, the same button as for a Tide backup. Tide shows how many days the
+  file holds and asks before adding them. Days you already logged in Tide stay
+  as they are. From Clue, use `measurements.json` from the export zip or an
+  older `.cluedata` backup.
+- Log a past period in one go from the Calendar: pick its first and last day,
+  up to 14 days, and every day between is logged. Set each day's flow after,
+  or undo the whole range with one tap.
+- Before anything is logged, Today asks "Have a Tide backup, or history in Clue
+  or Flo?" Its "Import it" link opens Settings at the Import button.
 - A backtest of the next-period estimate on a public cycle dataset, with the
   results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
   `pnpm backtest`.
@@ -18,6 +28,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Tide asks once whether to show fertility estimates, and hides them until you
+  answer. This includes current users, who had them on without being asked.
+  If you had turned them off in Settings, that choice stays. The Settings
+  switch still changes the answer.
+- Every estimate looks like an estimate: the expected period, the fertile
+  window and ovulation are dashed outlines on both the dial and the calendar,
+  and in both legends. Only logged days are filled.
+- The Today fertility line says "More likely today (estimate)" or "Less likely
+  today (estimate)", with "Not birth control" right under it.
 - The calendar legend uses the same words as the Today legend: Period,
   Expected, Fertile window, Ovulation.
 - Before the first log, Today shows one line, "Log your period to see a

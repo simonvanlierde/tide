@@ -26,6 +26,20 @@ describe("parseImportedState", () => {
     );
   });
 
+  it("keeps a backup's fertility answer, but asks again for an older backup's default", () => {
+    const backup = (extra: object) =>
+      JSON.stringify({
+        days: { "2026-04-02": "medium" },
+        settings: { showFertility: true },
+        ...extra,
+      });
+
+    expect(parseImportedState(backup({})).settings.showFertility).toBeNull();
+    expect(
+      parseImportedState(backup({ schemaVersion: 2 })).settings.showFertility,
+    ).toBe(true);
+  });
+
   it("round-trips a state through export and back, dropping only transient dismiss state", () => {
     const state = createAppState({
       periodDays: ["2026-04-02", "2026-04-03"],
@@ -113,9 +127,10 @@ describe("downloadAppState", () => {
     expect(await blob.text()).toBe(
       JSON.stringify(
         {
+          schemaVersion: 2,
           days: { "2026-04-02": "medium" },
           settings: {
-            showFertility: true,
+            showFertility: null,
             showCycleDayNumbers: true,
             theme: "system",
             language: "system",

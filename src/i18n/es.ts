@@ -19,9 +19,18 @@ export const es: Dictionary = {
   "today.expectedToday": "Previsto hoy",
   "today.inDays.one": "en {n} día",
   "today.inDays.other": "en {n} días",
-  "today.higherToday": "Más alta hoy",
-  "today.lowerToday": "Más baja hoy",
+  "today.higherToday": "Más probable hoy (estimación)",
+  "today.lowerToday": "Menos probable hoy (estimación)",
+  "today.notBirthControl": "No es un anticonceptivo",
+  "fertilityAsk.title": "¿Mostrar estimaciones de fertilidad?",
+  "fertilityAsk.body":
+    "Tide puede marcar los días en que es más probable que seas fértil, calculados a partir de los períodos que registras. Es una estimación, no un método anticonceptivo.",
+  "fertilityAsk.show": "Mostrar",
+  "fertilityAsk.hide": "No mostrar",
   "today.privacy": "Guardado solo en este dispositivo.",
+  "today.importPrompt":
+    "¿Tienes una copia de seguridad de Tide o tu historial de Clue o Flo?",
+  "today.importLink": "Importar",
   "today.fertilityUnclear": "Incierta con retraso",
   "today.periodLate": "Regla",
   "today.daysLate.one": "{n} día de retraso",
@@ -118,6 +127,12 @@ export const es: Dictionary = {
   "calendar.justLogged": "{date} registrado.",
   "calendar.justLoggedForecast": "{date} registrado. Previsión actualizada.",
   "calendar.undo": "Deshacer",
+  "calendar.logRange": "Registrar un período pasado",
+  "calendar.rangePickFirst": "Elige el primer día del período.",
+  "calendar.rangePickLast":
+    "Desde el {date}: elige el último día, como máximo {max} días.",
+  "calendar.rangeTooLong":
+    "Más de {max} días. Elige un último día más cercano.",
   "calendar.emptyHelp":
     "Toca un día pasado para registrar tu primer día de sangrado.",
   "calendar.futureHelp": "Los días futuros aún no se pueden registrar.",
@@ -173,23 +188,27 @@ export const es: Dictionary = {
   "settings.data": "Datos",
   "settings.dataInfo": "Acerca de importar y exportar",
   "settings.dataHelp":
-    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de seguridad.",
+    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de Tide, o añade días desde Clue o Flo.",
   "settings.export": "Exportar",
   "settings.exportSuccess": "Copia guardada en tus descargas.",
   "settings.import": "Importar",
   "settings.importFile": "Importar archivo de datos",
   "settings.importError":
-    "Ese archivo no es una copia válida de Tide. Usa un archivo JSON exportado desde Tide.",
+    "Ese archivo no es una copia de Tide ni una exportación de Clue o Flo.",
   "settings.importSuccess.one": "{n} día registrado importado.",
   "settings.importSuccess.other": "{n} días registrados importados.",
   "settings.importConfirmTitle": "¿Reemplazar tus datos?",
   "settings.importConfirmAction": "Reemplazar",
-  "settings.importFileDays.one": "Esta copia contiene {n} día registrado.",
-  "settings.importFileDays.other": "Esta copia contiene {n} días registrados.",
+  "settings.importFileDays.one": "Este archivo contiene {n} día registrado.",
+  "settings.importFileDays.other":
+    "Este archivo contiene {n} días registrados.",
   "settings.importReplaces.one":
     "Reemplaza el {n} día registrado en este dispositivo y no se puede deshacer.",
   "settings.importReplaces.other":
     "Reemplaza los {n} días registrados en este dispositivo y no se puede deshacer.",
+  "settings.importMergeTitle": "¿Añadir los días de {source}?",
+  "settings.importMergeAction": "Añadir",
+  "settings.importMerges": "Los días ya registrados aquí se quedan como están.",
   "settings.reset": "Borrar todos los datos",
   "settings.resetTitle": "¿Eliminar todos los datos?",
   "settings.resetAction": "Eliminar",

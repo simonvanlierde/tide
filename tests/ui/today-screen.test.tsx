@@ -1,6 +1,7 @@
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { dayAngleDeg } from "../../src/features/today/dialGeometry";
@@ -27,7 +28,9 @@ describe("TodayScreen", () => {
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/lower today/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/less likely today \(estimate\)/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByLabelText(/how fertility is estimated/i),
     ).toBeInTheDocument();
@@ -61,11 +64,18 @@ describe("TodayScreen", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("draws the predicted next period as a coral fill on the dial", () => {
+  it("draws the predicted next period as an outline, not a fill, on the dial", () => {
     renderToday("2026-04-18");
 
+    // The filled ring carries logged days only; estimates are on the
+    // outline layer.
     const ring = document.querySelector(".cycle-dial__ring");
-    expect(ring?.getAttribute("style")).toContain("var(--cycle-period)");
+    const outlines = document.querySelector(".cycle-dial__estimates");
+    expect(ring?.getAttribute("style")).not.toContain("--estimate-");
+    expect(outlines?.getAttribute("style")).toContain("var(--estimate-period)");
+    expect(outlines?.getAttribute("style")).toContain(
+      "var(--estimate-fertile)",
+    );
     expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument(); // today
   });
 
@@ -179,7 +189,9 @@ describe("TodayScreen", () => {
     renderToday("2026-04-15");
 
     expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/higher today/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/more likely today \(estimate\)/i),
+    ).toBeInTheDocument();
   });
 
   it("shows the fertility disclaimer in an info popover", async () => {
@@ -203,11 +215,66 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/higher today|lower today/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/likely today/i)).not.toBeInTheDocument();
     expect(
       screen.queryByLabelText(/how fertility is estimated/i),
+    ).not.toBeInTheDocument();
+  });
+
+  it("asks once about fertility estimates and hides them until answered", async () => {
+    const user = userEvent.setup();
+    renderToday(
+      "2026-04-18",
+      createAppState({ periodDays: LEARNED_PERIOD_DAYS }),
+    );
+
+    const question = screen.getByRole("region", {
+      name: "Show fertility estimates?",
+    });
+    expect(question).toHaveTextContent(/an estimate, not birth control/i);
+    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
+    expect(
+      document.querySelector(".cycle-dial__estimates")?.getAttribute("style"),
+    ).not.toContain("--estimate-fertile");
+
+    await user.click(screen.getByRole("button", { name: "Show" }));
+
+    expect(question).not.toBeInTheDocument();
+    expect(screen.getByText("Fertility")).toBeInTheDocument();
+    expect(screen.getByText(/^not birth control$/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /cycle insights/i }),
+    ).toHaveFocus();
+    expect(
+      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings
+        .showFertility,
+    ).toBe(true);
+  });
+
+  it("keeps fertility estimates hidden when the answer is no", async () => {
+    const user = userEvent.setup();
+    renderToday(
+      "2026-04-18",
+      createAppState({ periodDays: LEARNED_PERIOD_DAYS }),
+    );
+
+    await user.click(screen.getByRole("button", { name: "Don't show" }));
+
+    expect(
+      screen.queryByRole("region", { name: "Show fertility estimates?" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
+    expect(
+      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings
+        .showFertility,
+    ).toBe(false);
+  });
+
+  it("does not ask about fertility before there is an estimate to show", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: [] }));
+
+    expect(
+      screen.queryByRole("region", { name: "Show fertility estimates?" }),
     ).not.toBeInTheDocument();
   });
 
@@ -233,6 +300,36 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
   });
 
+  it("offers an import only before anything is logged", () => {
+    const empty = renderWithAppState(<TodayScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: [] }),
+    });
+    expect(
+      screen.getByText(/have a tide backup, or history in clue or flo\?/i),
+    ).toBeVisible();
+    expect(screen.getByRole("link", { name: /^import it$/i })).toHaveAttribute(
+      "href",
+      "/settings#import",
+    );
+    empty.unmount();
+
+    renderToday("2026-04-18");
+    expect(
+      screen.queryByRole("link", { name: /^import it$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("hides the import link while a newer build owns the stored data", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: {} }),
+    );
+    renderWithAppState(<TodayScreen today="2026-04-18" />);
+    expect(
+      screen.queryByRole("link", { name: /^import it$/i }),
+    ).not.toBeInTheDocument();
+  });
+
   it("prompts for a first log when there is no cycle history at all", () => {
     renderToday("2026-04-18", createAppState({ periodDays: [] }));
 
@@ -248,7 +345,9 @@ describe("TodayScreen", () => {
     expect(screen.queryByText("--")).not.toBeInTheDocument();
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/lower today/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/less likely today \(estimate\)/i),
+    ).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
     // With nothing logged, logging is the one thing to do: keep it prominent.

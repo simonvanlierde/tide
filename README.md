@@ -27,17 +27,23 @@ Once installed it works offline, and all data stays on your device.
 
 ## Features
 
-- **Log bleeding days**: add or remove with one tap
+- **Log bleeding days**: add or remove with one tap, or log a whole past period at once
 - **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual /
   follicular / ovulation / luteal) and a scrub preview
 - **Predictions**: next period learned from your history (28-day fallback), plus an approximate
-  fertile window and ovulation estimate
+  fertile window and ovulation estimate if you choose to see them. Every prediction is drawn
+  as a dashed outline, so it never looks like a logged day
 - **Cycle insights**: your average cycle and period lengths, cycles tracked, and a regularity meter,
   with a plain-language note on how predictions are worked out
 - **Calendar**: month-by-month view with cycle day numbers and fertile / ovulation / next-period
   markers, for reviewing and logging days
 - **Import & export**: back up your data to a JSON file, restore it on any device, or delete
   everything in one go
+- **Bring your history**: import a Clue or Flo export from Settings → Data → Import. Tide reads
+  the bleeding and spotting days and adds them to the days you already logged, which stay as they
+  are. From Clue, pick `measurements.json` from the export zip, or an older `.cluedata` backup.
+  Flo days keep the flow level Flo recorded; a day without one imports as a plain log. A Tide
+  backup replaces your data instead.
 - **Private by design**: installable, offline-capable PWA; all data stays on the device; no
   accounts, no network, no analytics
 
@@ -66,7 +72,6 @@ Estimates are informational, not a form of birth control.
 
 ## Roadmap
 
-- **Bring your history from another app**: import a Clue or Flo export, not just a Tide backup
 - **Symptoms and mood**: log cramps, headaches and mood alongside bleeding
 - **App lock**: an optional passcode or biometric lock, for a phone that gets handed around
 

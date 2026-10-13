@@ -107,4 +107,15 @@ describe("App shell", () => {
       screen.getByText(/^settings$/i, { selector: ".app-header__title" }),
     ).toBeInTheDocument();
   });
+
+  it("takes Today's import link to the Import button in Settings", async () => {
+    window.history.replaceState(null, "", "/");
+    const user = userEvent.setup();
+    renderWithAppState(<App />);
+
+    await user.click(screen.getByRole("link", { name: /^import it$/i }));
+
+    expect(window.location.pathname).toBe("/settings");
+    expect(screen.getByRole("button", { name: /^import$/i })).toHaveFocus();
+  });
 });

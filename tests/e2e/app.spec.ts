@@ -1,6 +1,7 @@
+import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { en } from "../../src/i18n/en";
-import { FIXED_NOW } from "./seed";
+import { FIXED_NOW, seedAppState } from "./seed";
 
 // Pin "today" so every test sees the same date regardless of when CI runs.
 test.beforeEach(async ({ page }) => {
@@ -112,4 +113,58 @@ test("manifest and install assets are served", async ({ page }) => {
     "href",
     "/icons/icon-192.png",
   );
+});
+
+test("the fertility question is accessible and its answer is saved", async ({
+  page,
+}) => {
+  await seedAppState(page, "en", { showFertility: null });
+  await page.goto("/");
+
+  const question = page.getByRole("region", {
+    name: en["fertilityAsk.title"],
+  });
+  await expect(question).toBeVisible();
+  await expect(
+    page.getByText(en["today.fertility"], { exact: true }),
+  ).toHaveCount(0);
+  const { violations } = await new AxeBuilder({ page })
+    .include(".today-screen")
+    .withTags(["wcag2a", "wcag2aa"])
+    .analyze();
+  expect(violations.map((v) => v.id)).toEqual([]);
+
+  await question
+    .getByRole("button", { name: en["fertilityAsk.show"], exact: true })
+    .click();
+  await expect(question).toHaveCount(0);
+  await expect(page.getByText(en["today.notBirthControl"])).toBeVisible();
+
+  // The seed script reruns on reload, so read the saved answer directly.
+  const saved = await page.evaluate(() =>
+    localStorage.getItem("tide.period-tracker.state"),
+  );
+  expect(JSON.parse(saved ?? "{}").settings.showFertility).toBe(true);
+});
+
+test("a past period logs in one go and survives a reload", async ({ page }) => {
+  await page.goto("/calendar");
+
+  await page.getByRole("button", { name: en["calendar.logRange"] }).click();
+  await page.getByRole("button", { name: /april 6, 2026/i }).click();
+  await page.getByRole("button", { name: /april 10, 2026/i }).click();
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(5);
+
+  await page.reload();
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(5);
+});
+
+test("Today's import link lands on the Import button", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("link", { name: en["today.importLink"] }).click();
+  await expect(page).toHaveURL(/\/settings#import$/);
+  await expect(
+    page.getByRole("button", { name: en["settings.import"], exact: true }),
+  ).toBeFocused();
 });

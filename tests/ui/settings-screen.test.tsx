@@ -1,8 +1,12 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { act, fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
-import { loadStoredState, STORAGE_KEY } from "../../src/data/storage";
+import {
+  loadStoredState,
+  STORAGE_KEY,
+  saveAppState,
+} from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -66,7 +70,7 @@ describe("SettingsScreen", () => {
     ).toBeInTheDocument();
   });
 
-  it("toggles fertility estimates off and remembers the choice", async () => {
+  it("answers the fertility question from the switch and remembers it", async () => {
     const user = userEvent.setup();
     renderSettings();
 
@@ -74,10 +78,13 @@ describe("SettingsScreen", () => {
     const toggle = screen.getByRole("switch", {
       name: "Show fertility estimates",
     });
-    expect(toggle).toBeChecked();
+    // Not asked yet: estimates are hidden, so the switch reads off.
+    expect(toggle).not.toBeChecked();
 
     await user.click(toggle);
+    expect(loadStoredState().state.settings.showFertility).toBe(true);
 
+    await user.click(toggle);
     expect(loadStoredState().state.settings.showFertility).toBe(false);
   });
 
@@ -128,9 +135,10 @@ describe("SettingsScreen", () => {
 
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
     expect(JSON.parse(await blob.text())).toEqual({
+      schemaVersion: 2,
       days: { "2026-04-02": "medium" },
       settings: {
-        showFertility: true,
+        showFertility: null,
         showCycleDayNumbers: true,
         theme: "system",
         language: "system",
@@ -157,7 +165,9 @@ describe("SettingsScreen", () => {
       screen.getByLabelText(/import data file/i),
       new File(["not json"], "broken.json", { type: "application/json" }),
     );
-    expect(screen.getByRole("alert")).toHaveTextContent(/valid tide backup/i);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /isn.t a tide backup or a clue or flo export/i,
+    );
 
     await user.upload(
       screen.getByLabelText(/import data file/i),
@@ -197,7 +207,7 @@ describe("SettingsScreen", () => {
     // Both sides of the trade are named before anything is replaced.
     const dialog = screen.getByRole("dialog");
     expect(
-      within(dialog).getByText(/holds 2 logged days/i),
+      within(dialog).getByText(/this file holds 2 logged days/i),
     ).toBeInTheDocument();
     expect(
       within(dialog).getByText(/replaces the 1 day logged on this device/i),
@@ -225,6 +235,90 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("status")).toHaveTextContent(
       /imported 2 logged days\./i,
     );
+  });
+
+  it("adds the days from a Clue export after confirming, keeping days already logged", async () => {
+    const user = userEvent.setup();
+    renderSettings(
+      createAppState({ intensityByDay: { "2026-03-02": "light" } }),
+    );
+    const clue = [
+      { date: "2026-03-01", type: "period", value: { option: "heavy" } },
+      { date: "2026-03-02", type: "period", value: { option: "very_heavy" } },
+      { date: "2026-03-03", type: "spotting", value: {} },
+      { date: "2026-03-03", type: "pain", value: { option: "cramps" } },
+    ];
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(clue)], "measurements.json", {
+        type: "application/json",
+      }),
+    );
+
+    // Nothing is written until the user agrees.
+    const dialog = await screen.findByRole("dialog");
+    expect(
+      within(dialog).getByRole("heading", { name: /add days from clue/i }),
+    ).toBeInTheDocument();
+    expect(
+      within(dialog).getByText(/this file holds 3 logged days/i),
+    ).toBeInTheDocument();
+    expect(loadStoredState().state.intensityByDay).toEqual({
+      "2026-03-02": "light",
+    });
+
+    await user.click(within(dialog).getByRole("button", { name: /^add$/i }));
+    expect(loadStoredState().state.intensityByDay).toEqual({
+      "2026-03-01": "heavy",
+      "2026-03-02": "light",
+      "2026-03-03": "spotting",
+    });
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 2 logged days\./i,
+    );
+  });
+
+  it("keeps a day another tab saved while the Clue dialog was open", async () => {
+    const user = userEvent.setup();
+    renderSettings(createAppState({ periodDays: ["2026-03-02"] }));
+    const clue = [{ date: "2026-03-01", type: "period", value: {} }];
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(clue)], "measurements.json", {
+        type: "application/json",
+      }),
+    );
+    const dialog = await screen.findByRole("dialog");
+
+    saveAppState(createAppState({ periodDays: ["2026-03-02", "2026-03-10"] }));
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+    });
+    await user.click(within(dialog).getByRole("button", { name: /^add$/i }));
+
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
+      "2026-03-01",
+      "2026-03-02",
+      "2026-03-10",
+    ]);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 1 logged day\./i,
+    );
+  });
+
+  it("names the supported sources when a JSON file is from none of them", async () => {
+    const user = userEvent.setup();
+    renderSettings();
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify({ hello: "world" })], "other.json", {
+        type: "application/json",
+      }),
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /tide backup or a clue or flo export/i,
+    );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("asks before deleting everything, and only then deletes", async () => {

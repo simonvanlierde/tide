@@ -104,6 +104,41 @@
     box-shadow: var(--shadow-soft);
   }
 
+  /* Estimates (fertile window, ovulation, the expected period) are hollow in
+     the ring. This layer draws their outline: the estimate colours, masked to
+     two thin rails at the band's inner and outer edge and cut into dashes,
+     the same dashed outline the calendar uses. */
+  .cycle-dial__estimates {
+    --band: min(30px, 11cqw);
+    --rail: 2.5px;
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    pointer-events: none;
+    -webkit-mask:
+      radial-gradient(
+        circle closest-side,
+        transparent calc(100% - var(--band)),
+        #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
+        transparent calc(100% - var(--band) + var(--rail))
+          calc(100% - var(--rail)),
+        #000 calc(100% - var(--rail))
+      ),
+      repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 5deg);
+    -webkit-mask-composite: source-in;
+    mask:
+      radial-gradient(
+        circle closest-side,
+        transparent calc(100% - var(--band)),
+        #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
+        transparent calc(100% - var(--band) + var(--rail))
+          calc(100% - var(--rail)),
+        #000 calc(100% - var(--rail))
+      ),
+      repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 5deg);
+    mask-composite: intersect;
+  }
+
   /* Day ticks live on their own layer, masked to a thin band at the outer rim
      so each mark is a little tick rather than a line across the ring. */
   .cycle-dial__ticks {
@@ -232,17 +267,22 @@
     background: var(--cycle-period);
   }
 
-  /* The ghosted nub on the ring: coral at the same weight the gradient uses. */
-  .cycle-view__dot--expected {
-    background: color-mix(in srgb, var(--cycle-period) 60%, transparent);
+  /* Estimates: dashed outlines, as on the ring and the calendar. */
+  .cycle-view__dot--expected,
+  .cycle-view__dot--fertile,
+  .cycle-view__dot--ovulation {
+    width: 11px;
+    height: 11px;
+    background: transparent;
+    border: 1.5px dashed var(--estimate-period);
   }
 
   .cycle-view__dot--fertile {
-    background: var(--cycle-fertile);
+    border-color: var(--estimate-fertile);
   }
 
   .cycle-view__dot--ovulation {
-    background: var(--cycle-ovulation);
+    border-color: var(--estimate-ovulation);
   }
 
   /* Calendar */
@@ -284,10 +324,16 @@
     text-align: center;
   }
 
-  .calendar__today {
+  .calendar__today,
+  .calendar__range {
     width: fit-content;
     max-width: 100%;
     justify-self: center;
+  }
+
+  /* A text action standing alone, so it takes a full 44px touch target. */
+  .calendar__range {
+    min-height: 44px;
   }
 
   .calendar__picker {
@@ -344,19 +390,21 @@
     background: var(--bleed);
   }
 
+  /* A 2 px dash only fits three segments on a swatch this small, which reads
+     as a broken ring; thinner keeps the dashed-square pattern of the day. */
+  .calendar-legend__swatch--predicted,
+  .calendar-legend__swatch--fertile,
+  .calendar-legend__swatch--ovulation {
+    background: transparent;
+    border: 1.5px dashed var(--estimate-period);
+  }
+
   .calendar-legend__swatch--fertile {
-    background: var(--cycle-fertile);
+    border-color: var(--estimate-fertile);
   }
 
   .calendar-legend__swatch--ovulation {
-    background: var(--cycle-ovulation);
-  }
-
-  /* A 2 px dash only fits three segments on a swatch this small, which reads
-     as a broken ring; thinner keeps the dashed-square pattern of the day. */
-  .calendar-legend__swatch--predicted {
-    background: transparent;
-    border: 1.5px dashed var(--bleed);
+    border-color: var(--estimate-ovulation);
   }
 
   /* Narrow shells: tighter gaps and card padding buy the day cells width.
