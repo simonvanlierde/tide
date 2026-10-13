@@ -118,7 +118,11 @@ export function App() {
       <main id="main" ref={mainRef} className="app-main" tabIndex={-1}>
         {readOnly ? (
           <div className="utility-card utility-card--slim newer-data-notice">
-            <p className="supporting-note supporting-note--icon" role="status">
+            <p
+              id="newer-data-notice"
+              className="supporting-note supporting-note--icon"
+              role="status"
+            >
               <AppIcon icon={CircleAlert} className="supporting-note__icon" />
               <span>{t("app.newerData")}</span>
             </p>

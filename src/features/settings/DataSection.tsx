@@ -150,7 +150,7 @@ export function DataSection() {
             type="button"
             className="secondary-action"
             disabled={readOnly}
-            aria-describedby={readOnly ? "data-read-only" : undefined}
+            aria-describedby={readOnly ? "newer-data-notice" : undefined}
             onClick={() => {
               // A stale message from the last attempt shouldn't outlive a new pick.
               setError(null);
@@ -194,20 +194,11 @@ export function DataSection() {
             </span>
           </p>
         ) : null}
-        {readOnly ? (
-          <p
-            id="data-read-only"
-            className="supporting-note supporting-note--icon"
-          >
-            <AppIcon icon={CircleAlert} className="supporting-note__icon" />
-            <span>{t("app.newerData")}</span>
-          </p>
-        ) : null}
         <button
           type="button"
           className="text-action"
           disabled={readOnly}
-          aria-describedby={readOnly ? "data-read-only" : undefined}
+          aria-describedby={readOnly ? "newer-data-notice" : undefined}
           onClick={() => setConfirmingReset(true)}
         >
           <AppIcon icon={Trash2} className="text-action__icon" />
