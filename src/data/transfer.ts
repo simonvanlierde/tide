@@ -75,3 +75,17 @@ export function parseImportedState(text: string): AppState {
   }
   return normalizeAppState(parsed);
 }
+
+// Days from another app's export (see otherApps.ts). Kept here, not in the
+// lazy chunk, so the merge runs on the state current when the user confirms.
+// Imported days fill only the days not logged here: what the user already
+// logged in Tide wins over another app's record of the same day.
+export function mergeImportedDays(
+  state: AppState,
+  days: Record<IsoDate, LoggedFlow>,
+): AppState {
+  return {
+    ...state,
+    intensityByDay: { ...days, ...state.intensityByDay },
+  };
+}

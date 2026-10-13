@@ -1,8 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  mergeImportedDays,
-  parseOtherAppExport,
-} from "../../src/data/otherApps";
+import { parseOtherAppExport } from "../../src/data/otherApps";
+import { mergeImportedDays } from "../../src/data/transfer";
 import { createAppState } from "../support/app";
 
 const TODAY = "2026-04-10";

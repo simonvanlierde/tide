@@ -1,8 +1,12 @@
-import { fireEvent, screen, within } from "@testing-library/react";
+import { act, fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
-import { loadStoredState, STORAGE_KEY } from "../../src/data/storage";
+import {
+  loadStoredState,
+  STORAGE_KEY,
+  saveAppState,
+} from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -271,6 +275,34 @@ describe("SettingsScreen", () => {
     });
     expect(screen.getByRole("status")).toHaveTextContent(
       /imported 2 logged days\./i,
+    );
+  });
+
+  it("keeps a day another tab saved while the Clue dialog was open", async () => {
+    const user = userEvent.setup();
+    renderSettings(createAppState({ periodDays: ["2026-03-02"] }));
+    const clue = [{ date: "2026-03-01", type: "period", value: {} }];
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(clue)], "measurements.json", {
+        type: "application/json",
+      }),
+    );
+    const dialog = await screen.findByRole("dialog");
+
+    saveAppState(createAppState({ periodDays: ["2026-03-02", "2026-03-10"] }));
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+    });
+    await user.click(within(dialog).getByRole("button", { name: /^add$/i }));
+
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
+      "2026-03-01",
+      "2026-03-02",
+      "2026-03-10",
+    ]);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /imported 1 logged day\./i,
     );
   });
 

@@ -1,5 +1,5 @@
 import { FLOW_INTENSITIES } from "../domain/flow";
-import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
+import type { IsoDate, LoggedFlow } from "../domain/types";
 import { addDays } from "../utils/date";
 import { isIsoDate, normalizeIntensityByDay } from "./schema";
 
@@ -149,16 +149,4 @@ export function parseOtherAppExport(
   // The schema drops impossible dates ("2023-02-30") and any stray key.
   const days = normalizeIntensityByDay(raw);
   return Object.keys(days).length > 0 ? { source, days } : null;
-}
-
-// Imported days fill only the days not logged here: what the user already
-// logged in Tide wins over another app's record of the same day.
-export function mergeImportedDays(
-  state: AppState,
-  days: Record<IsoDate, LoggedFlow>,
-): AppState {
-  return {
-    ...state,
-    intensityByDay: { ...days, ...state.intensityByDay },
-  };
 }

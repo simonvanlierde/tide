@@ -6,8 +6,12 @@ import {
   Upload,
 } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
-import type { OtherAppSource } from "../../data/otherApps";
-import { downloadAppState, parseImportedState } from "../../data/transfer";
+import type { OtherAppImport } from "../../data/otherApps";
+import {
+  downloadAppState,
+  mergeImportedDays,
+  parseImportedState,
+} from "../../data/transfer";
 import type { AppState } from "../../domain/types";
 import { plural } from "../../i18n";
 import {
@@ -37,12 +41,11 @@ export function DataSection() {
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<DataStatus | null>(null);
   // A parsed import waiting for the user to agree. A Tide backup replaces
-  // what's here; another app's export (source set) is merged into it.
-  const [pendingImport, setPendingImport] = useState<{
-    next: AppState;
-    fileDays: number;
-    source?: OtherAppSource;
-  } | null>(null);
+  // what's here. Another app's days merge into the state at confirm time, so
+  // a save from another tab while the dialog is open is kept.
+  const [pendingImport, setPendingImport] = useState<
+    ({ fileDays: number } & ({ next: AppState } | OtherAppImport)) | null
+  >(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
@@ -80,9 +83,7 @@ export function DataSection() {
       next = parseImportedState(text);
     } catch {
       // Not a Tide backup: try the other apps' formats, loaded only now.
-      const { parseOtherAppExport, mergeImportedDays } = await import(
-        "../../data/otherApps"
-      );
+      const { parseOtherAppExport } = await import("../../data/otherApps");
       const other = parseOtherAppExport(text, getTodayIsoDate());
       if (!other) {
         setStatus(null);
@@ -91,11 +92,7 @@ export function DataSection() {
       }
       // Always confirm: the file's format is a guess, so the user checks the
       // day count before anything is written.
-      setPendingImport({
-        next: mergeImportedDays(state, other.days),
-        fileDays: Object.keys(other.days).length,
-        source: other.source,
-      });
+      setPendingImport({ ...other, fileDays: Object.keys(other.days).length });
       return;
     }
     // Import replaces everything and there is no undo, so ask first, but
@@ -221,7 +218,7 @@ export function DataSection() {
       {pendingImport ? (
         <ConfirmDialog
           title={
-            pendingImport.source
+            "source" in pendingImport
               ? t("settings.importMergeTitle", { source: pendingImport.source })
               : t("settings.importConfirmTitle")
           }
@@ -233,7 +230,7 @@ export function DataSection() {
                 })}
               </p>
               <p>
-                {pendingImport.source
+                {"source" in pendingImport
                   ? t("settings.importMerges")
                   : t(plural("settings.importReplaces", loggedDayCount), {
                       n: loggedDayCount,
@@ -242,12 +239,18 @@ export function DataSection() {
             </>
           }
           confirmLabel={t(
-            pendingImport.source
+            "source" in pendingImport
               ? "settings.importMergeAction"
               : "settings.importConfirmAction",
           )}
           onConfirm={() => {
-            applyImport(pendingImport.next, !!pendingImport.source);
+            const merged = "source" in pendingImport;
+            applyImport(
+              merged
+                ? mergeImportedDays(state, pendingImport.days)
+                : pendingImport.next,
+              merged,
+            );
             setPendingImport(null);
           }}
           onCancel={() => setPendingImport(null)}
