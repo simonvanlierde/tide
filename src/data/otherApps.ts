@@ -17,8 +17,8 @@ export interface OtherAppImport {
   days: Record<IsoDate, LoggedFlow>;
 }
 
-// A Flo cycle with a runaway end date (a typo, a missing log) would otherwise
-// paint weeks of bleeding.
+// The longest Flo period read. Without a cap, a runaway end date (a typo, a
+// missing log) would paint weeks of bleeding.
 const MAX_FLO_PERIOD_DAYS = 15;
 
 type Json = Record<string, unknown>;

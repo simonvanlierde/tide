@@ -98,7 +98,7 @@ export function DataSection() {
       });
       return;
     }
-    // Import replaces everything and there is no undo, so ask first — but
+    // Import replaces everything and there is no undo, so ask first, but
     // only when there is something to lose.
     if (loggedDayCount > 0) {
       setPendingImport({

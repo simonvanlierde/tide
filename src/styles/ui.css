@@ -157,8 +157,8 @@
     overflow-wrap: anywhere;
   }
 
-  /* A one-word label ("Fertility") wraps between words only, never inside
-     one; the value next to it wraps instead. */
+  /* A label wraps only between words, so a one-word label like "Fertility"
+     never breaks; the value next to it wraps instead. */
   .fact > .fact__label {
     min-width: auto;
     overflow-wrap: normal;
