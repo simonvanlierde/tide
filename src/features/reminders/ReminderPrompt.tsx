@@ -8,7 +8,6 @@ interface ReminderPromptProps {
   onDismiss: () => void;
   /** Passed on to the log button; see LogAction. */
   autoFocus?: boolean;
-  onFocusMoved?: () => void;
 }
 
 export function ReminderPrompt({
@@ -17,7 +16,6 @@ export function ReminderPrompt({
   onLog,
   onDismiss,
   autoFocus,
-  onFocusMoved,
 }: ReminderPromptProps) {
   const t = useT();
   // Split the template on the {date} placeholder so the date stays bold while
@@ -38,12 +36,7 @@ export function ReminderPrompt({
       {isOverdue ? (
         <p className="reminder-prompt__reassure">{t("reminder.reassure")}</p>
       ) : null}
-      <LogAction
-        isLogged={false}
-        onToggle={onLog}
-        autoFocus={autoFocus}
-        onFocusMoved={onFocusMoved}
-      />
+      <LogAction isLogged={false} onToggle={onLog} autoFocus={autoFocus} />
       <button
         type="button"
         className="reminder-prompt__dismiss"

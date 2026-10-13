@@ -18,8 +18,6 @@ interface LogActionProps {
    *  log, the log button after a remove. Set only for an action taken here,
    *  never for a page load or a change from another tab. */
   autoFocus?: boolean;
-  /** Called once focus has moved, so the parent can clear autoFocus. */
-  onFocusMoved?: () => void;
 }
 
 export function LogAction({
@@ -29,7 +27,6 @@ export function LogAction({
   onSelectIntensity,
   variant = "primary",
   autoFocus = false,
-  onFocusMoved,
 }: LogActionProps) {
   const t = useT();
   const logButton = useRef<HTMLButtonElement>(null);
@@ -37,14 +34,10 @@ export function LogAction({
   // The pressed button unmounts with its subtree, which drops focus to <body>.
   // The gauge focuses itself on mount; the log button needs a nudge.
   useEffect(() => {
-    if (!autoFocus) {
-      return;
-    }
-    if (!isLogged) {
+    if (autoFocus && !isLogged) {
       logButton.current?.focus();
     }
-    onFocusMoved?.();
-  }, [autoFocus, isLogged, onFocusMoved]);
+  }, [autoFocus, isLogged]);
 
   // Logged: the day's last word is the confirmation, then the one decision
   // left (flow), and only then the undo, as a text action rather than a

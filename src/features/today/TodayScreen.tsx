@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
@@ -45,7 +45,12 @@ export function TodayScreen(props: TodayScreenProps) {
   // for another control, so focus follows to the replacement once. A change
   // from another tab or a new day leaves focus where it is.
   const [focusPending, setFocusPending] = useState(false);
-  const clearFocusPending = useCallback(() => setFocusPending(false), []);
+  // Children's effects run first and move focus; then the flag drops.
+  useEffect(() => {
+    if (focusPending) {
+      setFocusPending(false);
+    }
+  }, [focusPending]);
   const toggleToday = () => {
     setFocusPending(true);
     actions.togglePeriodDay(today, today);
@@ -196,7 +201,6 @@ export function TodayScreen(props: TodayScreenProps) {
             actions.dismissReminder(today);
           }}
           autoFocus={focusPending}
-          onFocusMoved={clearFocusPending}
         />
       ) : (
         <LogAction
@@ -208,7 +212,6 @@ export function TodayScreen(props: TodayScreenProps) {
             actions.setDayIntensity(today, intensity, today)
           }
           autoFocus={focusPending}
-          onFocusMoved={clearFocusPending}
         />
       )}
       <p className="today-screen__privacy">{t("today.privacy")}</p>
