@@ -13,6 +13,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   file holds and asks before adding them. Days you already logged in Tide stay
   as they are. From Clue, use `measurements.json` from the export zip or an
   older `.cluedata` backup.
+- Log a past period in one go from the Calendar: pick its first and last day,
+  up to 14 days, and every day between is logged. Set each day's flow after,
+  or undo the whole range with one tap.
 - A backtest of the next-period estimate on a public cycle dataset, with the
   results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
   `pnpm backtest`.

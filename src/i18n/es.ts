@@ -124,6 +124,12 @@ export const es: Dictionary = {
   "calendar.justLogged": "{date} registrado.",
   "calendar.justLoggedForecast": "{date} registrado. Previsión actualizada.",
   "calendar.undo": "Deshacer",
+  "calendar.logRange": "Registrar un período pasado",
+  "calendar.rangePickFirst": "Elige el primer día del período.",
+  "calendar.rangePickLast":
+    "Desde el {date}: elige el último día, como máximo {max} días.",
+  "calendar.rangeTooLong":
+    "Más de {max} días. Elige un último día más cercano.",
   "calendar.emptyHelp":
     "Toca un día pasado para registrar tu primer día de sangrado.",
   "calendar.futureHelp": "Los días futuros aún no se pueden registrar.",

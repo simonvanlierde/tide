@@ -146,3 +146,15 @@ test("the fertility question is accessible and its answer is saved", async ({
   );
   expect(JSON.parse(saved ?? "{}").settings.showFertility).toBe(true);
 });
+
+test("a past period logs in one go and survives a reload", async ({ page }) => {
+  await page.goto("/calendar");
+
+  await page.getByRole("button", { name: en["calendar.logRange"] }).click();
+  await page.getByRole("button", { name: /april 6, 2026/i }).click();
+  await page.getByRole("button", { name: /april 10, 2026/i }).click();
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(5);
+
+  await page.reload();
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(5);
+});

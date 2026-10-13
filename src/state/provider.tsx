@@ -212,6 +212,9 @@ export function useAppStateActions() {
       setDayIntensity(day: IsoDate, intensity: FlowIntensity, today: IsoDate) {
         dispatch({ type: "setDayIntensity", day, intensity, today });
       },
+      logPeriodRange(from: IsoDate, to: IsoDate, today: IsoDate) {
+        dispatch({ type: "logPeriodRange", from, to, today });
+      },
       dismissReminder(today: IsoDate) {
         dispatch({ type: "dismissReminder", today });
       },

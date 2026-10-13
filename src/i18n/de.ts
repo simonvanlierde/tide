@@ -127,6 +127,12 @@ export const de: Dictionary = {
   "calendar.justLogged": "{date} erfasst.",
   "calendar.justLoggedForecast": "{date} erfasst. Prognose aktualisiert.",
   "calendar.undo": "Rückgängig",
+  "calendar.logRange": "Vergangene Periode erfassen",
+  "calendar.rangePickFirst": "Wähle den ersten Tag der Periode.",
+  "calendar.rangePickLast":
+    "Ab {date}: Wähle jetzt den letzten Tag, höchstens {max} Tage.",
+  "calendar.rangeTooLong":
+    "Mehr als {max} Tage. Wähle einen näheren letzten Tag.",
   "calendar.emptyHelp":
     "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
   "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",

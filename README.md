@@ -27,7 +27,7 @@ Once installed it works offline, and all data stays on your device.
 
 ## Features
 
-- **Log bleeding days**: add or remove with one tap
+- **Log bleeding days**: add or remove with one tap, or log a whole past period at once
 - **Today at a glance**: a tidal cycle dial showing your current day and phase (menstrual /
   follicular / ovulation / luteal) and a scrub preview
 - **Predictions**: next period learned from your history (28-day fallback), plus an approximate

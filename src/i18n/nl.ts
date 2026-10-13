@@ -126,6 +126,12 @@ export const nl: Dictionary = {
   "calendar.justLogged": "{date} gelogd.",
   "calendar.justLoggedForecast": "{date} gelogd. Voorspelling bijgewerkt.",
   "calendar.undo": "Ongedaan maken",
+  "calendar.logRange": "Eerdere menstruatie loggen",
+  "calendar.rangePickFirst": "Kies de eerste dag van de menstruatie.",
+  "calendar.rangePickLast":
+    "Vanaf {date}: kies nu de laatste dag, hooguit {max} dagen.",
+  "calendar.rangeTooLong":
+    "Meer dan {max} dagen. Kies een laatste dag dichterbij.",
   "calendar.emptyHelp":
     "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
   "calendar.futureHelp": "Toekomstige dagen kun je nog niet loggen.",

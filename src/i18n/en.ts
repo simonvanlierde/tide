@@ -134,6 +134,11 @@ export const en = {
   "calendar.justLogged": "Logged {date}.",
   "calendar.justLoggedForecast": "Logged {date}. Forecast updated.",
   "calendar.undo": "Undo",
+  "calendar.logRange": "Log a past period",
+  "calendar.rangePickFirst": "Pick the first day of the period.",
+  "calendar.rangePickLast":
+    "From {date}: now pick the last day, up to {max} days.",
+  "calendar.rangeTooLong": "More than {max} days. Pick a closer last day.",
   "calendar.emptyHelp": "Tap a past day to log your first bleeding day.",
   "calendar.futureHelp": "Future days can't be logged yet.",
   "calendar.log": "Log",

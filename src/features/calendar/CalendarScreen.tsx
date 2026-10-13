@@ -1,5 +1,6 @@
 import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
+import { MAX_PERIOD_RANGE_DAYS } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
@@ -56,6 +57,14 @@ export function CalendarScreen(props: CalendarScreenProps) {
     model.goToToday();
   }
 
+  // Picking a range happens on the grid, so start there: focus its tab stop.
+  function handleStartRange() {
+    model.startRangePick();
+    articleRef.current
+      ?.querySelector<HTMLElement>('.calendar-grid__day[tabindex="0"]')
+      ?.focus();
+  }
+
   function handleTouchStart(event: TouchEvent) {
     const touch = event.touches[0];
     if (touch) {
@@ -97,7 +106,9 @@ export function CalendarScreen(props: CalendarScreenProps) {
     ) {
       return;
     }
-    if (event.key === "PageUp") {
+    if (event.key === "Escape" && model.rangePick) {
+      model.cancelRangePick();
+    } else if (event.key === "PageUp") {
       event.preventDefault();
       model.goToPreviousMonth();
     } else if (event.key === "PageDown") {
@@ -160,7 +171,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
             cycleDayNumbers={model.cycleDayNumbers}
             showCycleDayNumbers={model.showCycleDayNumbers}
             cycleMarkers={model.cycleMarkers}
-            selectedDay={model.selectedDay}
+            selectedDay={model.selectedDay ?? model.rangePick?.from ?? null}
             justLoggedDay={model.justLoggedDay}
             onSelectDay={model.selectDay}
           />
@@ -177,14 +188,33 @@ export function CalendarScreen(props: CalendarScreenProps) {
             onRemove={() => model.removeDay(model.selectedDay as IsoDate)}
             onClose={model.closePicker}
           />
-        ) : model.justLoggedDay ? (
-          // A one-tap log wrote data; say what, and make undo one tap too.
+        ) : model.rangePick ? (
+          <p className="supporting-note calendar__help" role="status">
+            {model.rangePick.from === null
+              ? t("calendar.rangePickFirst")
+              : t(
+                  model.rangePick.tooLong
+                    ? "calendar.rangeTooLong"
+                    : "calendar.rangePickLast",
+                  {
+                    date: formatShortDate(model.rangePick.from, locale),
+                    max: MAX_PERIOD_RANGE_DAYS,
+                  },
+                )}
+          </p>
+        ) : model.justLoggedDay || model.justLoggedRange ? (
+          // A one-tap log or a range wrote data; say what, and make undo one
+          // tap too.
           <p className="supporting-note calendar__help" role="status">
             {t(
               model.forecastMoved
                 ? "calendar.justLoggedForecast"
                 : "calendar.justLogged",
-              { date: formatShortDate(model.justLoggedDay, locale) },
+              {
+                date: model.justLoggedRange
+                  ? `${formatShortDate(model.justLoggedRange.from, locale)} – ${formatShortDate(model.justLoggedRange.to, locale)}`
+                  : formatShortDate(model.justLoggedDay as IsoDate, locale),
+              },
             )}{" "}
             <button
               type="button"
@@ -204,6 +234,17 @@ export function CalendarScreen(props: CalendarScreenProps) {
                   : "calendar.tapHelp",
             )}
           </p>
+        )}
+        {model.selectedDay ? null : (
+          // One button that turns into Cancel, so focus stays put when a
+          // pick is cancelled.
+          <button
+            type="button"
+            className="text-action calendar__range"
+            onClick={model.rangePick ? model.cancelRangePick : handleStartRange}
+          >
+            {t(model.rangePick ? "common.cancel" : "calendar.logRange")}
+          </button>
         )}
         {model.isCurrentMonth ? null : (
           <button

@@ -1,5 +1,5 @@
 import { buildCycleSummary, getCycleStats } from "../domain/cycle";
-import { getPredictionDays } from "../domain/flow";
+import { getPeriodRange, getPredictionDays } from "../domain/flow";
 import type {
   AppSettings,
   AppState,
@@ -24,6 +24,7 @@ export type AppStateAction =
       intensity: FlowIntensity;
       today: IsoDate;
     }
+  | { type: "logPeriodRange"; from: IsoDate; to: IsoDate; today: IsoDate }
   | { type: "dismissReminder"; today: IsoDate }
   | SetSettingAction
   | { type: "importState"; state: AppState };
@@ -74,6 +75,22 @@ export function appStateReducer(
         },
       };
     }
+
+    // A past period in one go: every day not yet logged gets a one-tap log,
+    // through the same case (and the same future-day check) as a single tap.
+    // Days already logged keep their flow. A run past the cap changes nothing.
+    case "logPeriodRange":
+      return (getPeriodRange(action.from, action.to) ?? []).reduce(
+        (next, day) =>
+          day in next.intensityByDay
+            ? next
+            : appStateReducer(next, {
+                type: "togglePeriodDay",
+                day,
+                today: action.today,
+              }),
+        state,
+      );
 
     case "dismissReminder":
       return {

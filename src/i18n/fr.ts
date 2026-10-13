@@ -125,6 +125,12 @@ export const fr: Dictionary = {
   "calendar.justLogged": "{date} enregistré.",
   "calendar.justLoggedForecast": "{date} enregistré. Prévision mise à jour.",
   "calendar.undo": "Annuler",
+  "calendar.logRange": "Enregistrer des règles passées",
+  "calendar.rangePickFirst": "Choisissez le premier jour des règles.",
+  "calendar.rangePickLast":
+    "À partir du {date} : choisissez le dernier jour, {max} jours au plus.",
+  "calendar.rangeTooLong":
+    "Plus de {max} jours. Choisissez un dernier jour plus proche.",
   "calendar.emptyHelp":
     "Touchez un jour passé pour enregistrer votre premier jour de saignement.",
   "calendar.futureHelp":

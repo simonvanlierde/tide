@@ -180,4 +180,49 @@ describe("app state core selectors", () => {
     expect(next.settings).toEqual({ ...state.settings, theme: "dark" });
     expect(next.intensityByDay).toBe(state.intensityByDay);
   });
+
+  it("logs a past period in one go, keeping days already logged", () => {
+    const state = createAppState({
+      intensityByDay: { "2026-04-03": "heavy" },
+    });
+
+    const next = appStateReducer(state, {
+      type: "logPeriodRange",
+      from: "2026-04-05",
+      to: "2026-04-02",
+      today: "2026-04-30",
+    });
+
+    // New days are one-tap logs (no level); the logged day keeps its flow.
+    expect(next.intensityByDay).toEqual({
+      "2026-04-02": null,
+      "2026-04-03": "heavy",
+      "2026-04-04": null,
+      "2026-04-05": null,
+    });
+  });
+
+  it("logs no future day and nothing at all past the cap", () => {
+    const state = createAppState();
+
+    const upToToday = appStateReducer(state, {
+      type: "logPeriodRange",
+      from: "2026-04-28",
+      to: "2026-05-02",
+      today: "2026-04-30",
+    });
+    expect(getPeriodDays(upToToday.intensityByDay)).toEqual([
+      "2026-04-28",
+      "2026-04-29",
+      "2026-04-30",
+    ]);
+
+    const tooLong = appStateReducer(state, {
+      type: "logPeriodRange",
+      from: "2026-04-01",
+      to: "2026-04-15",
+      today: "2026-04-30",
+    });
+    expect(tooLong).toBe(state);
+  });
 });

@@ -324,10 +324,16 @@
     text-align: center;
   }
 
-  .calendar__today {
+  .calendar__today,
+  .calendar__range {
     width: fit-content;
     max-width: 100%;
     justify-self: center;
+  }
+
+  /* A text action standing alone, so it takes a full 44px touch target. */
+  .calendar__range {
+    min-height: 44px;
   }
 
   .calendar__picker {

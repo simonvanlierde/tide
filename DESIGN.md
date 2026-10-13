@@ -289,7 +289,8 @@ Values live in the front matter. What follows is what each component is *for*.
   uses it in two columns that stack when the words stop fitting.
 - **Commit**: solid deep tide, for the affirmative action in a confirm dialog. Never
   coral: coral means bleeding, not "this button matters".
-- **Text action**: the quietest weight, used for Remove, Undo and Delete all data alike.
+- **Text action**: the quietest weight, used for Remove, Undo, Delete all data and "Log a
+  past period" alike. Standing alone under the calendar it keeps a 44 px touch target.
 - Every interactive element takes a `2px solid tide` focus ring at 2 px offset and a 160 ms
   ease.
 
@@ -338,7 +339,9 @@ expected, fertile and ovulation days are dashed outlines in coral, sand and ambe
 fill. Neighbouring-month logged days keep a lighter fill; their estimates keep the full
 outline, which a lighter one would drop below 3:1. Today takes a short underscore
 in `currentColor`, selection a teal ring. A newly logged day pulses once unless the user
-asked for reduced motion. The grid is one tab stop, walked with arrow keys.
+asked for reduced motion. The grid is one tab stop, walked with arrow keys. Logging a past
+period reuses the grid: the first day picked holds the selection ring until the last day
+is picked, and a status line under the grid says which step comes next.
 
 ## Do's and Don'ts
 
