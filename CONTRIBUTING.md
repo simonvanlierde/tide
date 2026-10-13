@@ -1,9 +1,7 @@
 # Contributing to Tide
 
-Thanks for helping out. Bug reports, ideas, and pull requests are all welcome.
-
-- **Found a bug or have an idea?** [Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose).
-- **Want to fix it yourself?** Fork, make your change, and open a pull request.
+[Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose) for a bug or an idea, or
+fork and open a pull request.
 
 ## Development
 
@@ -20,8 +18,6 @@ pnpm dev
 | `pnpm test` | Unit and UI tests |
 | `pnpm test:e2e` | Playwright smoke tests |
 | `pnpm build` | Production build to `dist/` |
-
-Run `pnpm check` before you open a PR. It's the same gate CI runs.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …).
 
@@ -41,7 +37,7 @@ I keep the cycle logic pure and away from React and the browser, so it can be te
 
 The tests follow the same layers. On top sits a thin layer of Playwright end-to-end tests: routing, data that survives a reload, and a smoke test of the PWA.
 
-The main design decision is to keep all data on the device, with no backend. [docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md) records why. [CHANGELOG.md](CHANGELOG.md) lists the releases.
+[docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md) records why all data stays on the device. [CHANGELOG.md](CHANGELOG.md) lists the releases.
 
 ## Accessibility
 

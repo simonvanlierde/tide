@@ -351,21 +351,13 @@ comes next.
 
 ### Do
 
-- **Do** keep coral for bleeding only.
-- **Do** draw predictions as outlines and facts as fills. Nobody should ever mistake one for
-  the other.
-- **Do** give every interactive element the `2px solid tide` focus ring and a 160 ms
-  ease.
 - **Do** base responsive changes on the shell container, not the viewport.
-- **Do** use tabular numerals for anything that counts.
 - **Do** take type sizes and radii from the tokens. A new value needs a new token.
 - **Do** respect `prefers-reduced-motion` through the `a11y` layer.
 
 ### Don't
 
 - **Don't** add a second accent colour, or use teal for alerts.
-- **Don't** stack shadows inside a card. Depth inside a card comes from colour.
-- **Don't** make the dark theme by inverting the light one.
 - **Don't** use a pill for anything but a small control. A sentence shaped like a control
   looks like a button that never responds.
 - **Don't** add sharp corners, or radii under 10 px on anything larger than a 16 px
