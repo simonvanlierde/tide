@@ -119,6 +119,29 @@ describe("parseOtherAppExport: Flo", () => {
     });
   });
 
+  it("reads each day's flow from period_intensity", () => {
+    expect(
+      flo([
+        {
+          period_start_date: "2026-03-01 22:00:00.0",
+          period_end_date: "2026-03-04 22:00:00.0",
+          period_intensity: '{"0": 3, "1": 1, "2": 2, "9": 3}',
+        },
+        {
+          period_start_date: "2026-04-01 00:00:00.0",
+          period_end_date: null,
+          period_intensity: "not json",
+        },
+      ])?.days,
+    ).toEqual({
+      "2026-03-01": "heavy",
+      "2026-03-02": "light",
+      "2026-03-03": "medium",
+      "2026-03-04": null,
+      "2026-04-01": null,
+    });
+  });
+
   it("treats a missing, invalid or earlier end as a one-day period", () => {
     expect(
       flo([

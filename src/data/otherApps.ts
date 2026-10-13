@@ -87,8 +87,27 @@ function readClueLegacy(entries: unknown[]) {
   return days;
 }
 
-// Flo: operationalData.cycles[] with a start and end date per period. Flo
-// records no flow level, so each day is a plain log.
+// Flo's flow scale in period_intensity: 1 light, 2 medium, 3 heavy.
+const FLO_FLOW: Record<string, LoggedFlow> = {
+  1: "light",
+  2: "medium",
+  3: "heavy",
+};
+
+// period_intensity is a JSON object stored as a string, mapping a day's
+// zero-based position in the period to its flow. Unreadable gives no levels.
+function floIntensity(value: unknown): Record<string, unknown> {
+  try {
+    const parsed: unknown = typeof value === "string" ? JSON.parse(value) : {};
+    return isObject(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+// Flo: operationalData.cycles[] with a start and end date per period. The
+// date part of Flo's timestamps is the user's own calendar day. A day with no
+// flow in period_intensity is a plain log.
 function readFloCycles(cycles: unknown[]) {
   const days: Record<string, LoggedFlow> = {};
   const date = (value: unknown) => {
@@ -106,8 +125,9 @@ function readFloCycles(cycles: unknown[]) {
     const cap = addDays(start, MAX_FLO_PERIOD_DAYS - 1);
     let end = date(cycle.period_end_date) ?? start;
     end = end < start ? start : end > cap ? cap : end;
-    for (let day = start; day <= end; day = addDays(day, 1)) {
-      days[day] = null;
+    const intensity = floIntensity(cycle.period_intensity);
+    for (let day = start, i = 0; day <= end; day = addDays(day, 1), i++) {
+      days[day] = FLO_FLOW[String(intensity[i])] ?? null;
     }
   }
   return days;

@@ -42,8 +42,8 @@ Once installed it works offline, and all data stays on your device.
 - **Bring your history**: import a Clue or Flo export from Settings → Data → Import. Tide reads
   the bleeding and spotting days and adds them to the days you already logged, which stay as they
   are. From Clue, pick `measurements.json` from the export zip, or an older `.cluedata` backup.
-  Flo records no flow level, so its days import as plain logs. A Tide backup replaces your data
-  instead.
+  Flo days keep the flow level Flo recorded; a day without one imports as a plain log. A Tide
+  backup replaces your data instead.
 - **Private by design**: installable, offline-capable PWA; all data stays on the device; no
   accounts, no network, no analytics
 
