@@ -28,7 +28,7 @@ no effort, and find the forecast good enough to plan around.
 ## Positioning
 
 No account, no network, no analytics, and nothing in the bundle that could send data out.
-The README and the app explain the prediction model in plain language, so you can check the
+The docs and the app explain the prediction model in plain language, so you can check the
 sums yourself instead of trusting a black box. A plain JSON file is the way in and the way
 out: import it to bring your history, export it to leave.
 
@@ -44,8 +44,8 @@ out: import it to bring your history, export it to leave.
 
 ## Capabilities and Constraints
 
-- The cycle model is in `src/domain/cycle.ts`, and the README explains it under "How
-  predictions work". Those two are the source of truth, so don't repeat their numbers here.
+- The cycle model is in `src/domain/cycle.ts`, and
+  [docs/predictions.md](docs/predictions.md) explains it. Those two are the source of truth, so don't repeat their numbers here.
 - Every estimate is an estimate. Fertility estimates stay hidden until you answer a one-time
   question on Today, and you can change the answer later with the Settings switch. The note
   that they are not birth control sits next to the fertility line, not only in Settings.
