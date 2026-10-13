@@ -4,7 +4,6 @@ import {
   normalizeAppState,
   SCHEMA_VERSION,
   STORAGE_KEY,
-  storedSchemaVersion,
 } from "./schema";
 
 // biome-ignore lint/performance/noBarrelFile: intentional re-export of the public storage key
@@ -31,7 +30,7 @@ export function loadStoredState(): StoredState {
     return { state: defaultAppState, readOnly: false };
   }
 
-  let parsed: unknown;
+  let parsed: { schemaVersion?: unknown } | null;
   try {
     parsed = JSON.parse(raw);
   } catch {
@@ -41,7 +40,8 @@ export function loadStoredState(): StoredState {
   }
 
   const state = normalizeAppState(parsed);
-  if (storedSchemaVersion(parsed) > SCHEMA_VERSION) {
+  const version = parsed?.schemaVersion;
+  if (typeof version === "number" && version > SCHEMA_VERSION) {
     return { state, readOnly: true };
   }
   // The next save writes the normalized state, so keep the original whenever
@@ -52,10 +52,6 @@ export function loadStoredState(): StoredState {
     setItemSafely(BACKUP_KEY, raw);
   }
   return { state, readOnly: false };
-}
-
-export function loadAppState(): AppState {
-  return loadStoredState().state;
 }
 
 // The stored blob exactly as saved, or null when there is none or storage is

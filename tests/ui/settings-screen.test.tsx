@@ -2,7 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
-import { loadAppState, STORAGE_KEY } from "../../src/data/storage";
+import { loadStoredState, STORAGE_KEY } from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -78,7 +78,7 @@ describe("SettingsScreen", () => {
 
     await user.click(toggle);
 
-    expect(loadAppState().settings.showFertility).toBe(false);
+    expect(loadStoredState().state.settings.showFertility).toBe(false);
   });
 
   it("toggles cycle day numbers off and remembers the choice", async () => {
@@ -92,7 +92,7 @@ describe("SettingsScreen", () => {
 
     await user.click(toggle);
 
-    expect(loadAppState().settings.showCycleDayNumbers).toBe(false);
+    expect(loadStoredState().state.settings.showCycleDayNumbers).toBe(false);
   });
 
   it("switches the theme and remembers the choice", async () => {
@@ -107,7 +107,7 @@ describe("SettingsScreen", () => {
     );
 
     expect(document.documentElement.dataset.theme).toBe("dark");
-    expect(loadAppState().settings.theme).toBe("dark");
+    expect(loadStoredState().state.settings.theme).toBe("dark");
   });
 
   it("exports the current state as a Tide backup", async () => {
@@ -167,10 +167,12 @@ describe("SettingsScreen", () => {
     );
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
       "2026-04-02",
     ]);
-    expect(loadAppState().intensityByDay).toEqual({ "2026-04-02": "heavy" });
+    expect(loadStoredState().state.intensityByDay).toEqual({
+      "2026-04-02": "heavy",
+    });
     expect(screen.getByRole("status")).toHaveTextContent(
       /imported 1 logged day\./i,
     );
@@ -200,13 +202,13 @@ describe("SettingsScreen", () => {
     expect(
       within(dialog).getByText(/replaces the 1 day logged on this device/i),
     ).toBeInTheDocument();
-    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
       "2026-03-01",
     ]);
 
     // Backing out keeps what's here.
     await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
-    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
       "2026-03-01",
     ]);
 
@@ -216,7 +218,7 @@ describe("SettingsScreen", () => {
         name: /^replace$/i,
       }),
     );
-    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
       "2026-04-02",
       "2026-04-03",
     ]);
@@ -231,7 +233,7 @@ describe("SettingsScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /delete all data/i }));
     await user.click(screen.getByRole("button", { name: /cancel/i }));
-    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([
       "2026-03-01",
     ]);
 
@@ -241,7 +243,7 @@ describe("SettingsScreen", () => {
         name: /^delete$/i,
       }),
     );
-    expect(getPeriodDays(loadAppState().intensityByDay)).toEqual([]);
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([]);
   });
 
   it("confirms an export instead of letting the download happen in silence", async () => {

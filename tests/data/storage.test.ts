@@ -3,7 +3,6 @@ import { SCHEMA_VERSION } from "../../src/data/schema";
 import {
   BACKUP_KEY,
   clearAppState,
-  loadAppState,
   loadStoredState,
   STORAGE_KEY,
   saveAppState,
@@ -21,7 +20,7 @@ describe("local storage", () => {
 
     saveAppState(state);
 
-    expect(loadAppState()).toEqual(state);
+    expect(loadStoredState().state).toEqual(state);
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "")).toEqual({
       schemaVersion: SCHEMA_VERSION,
       ...state,
@@ -72,14 +71,16 @@ describe("local storage", () => {
     });
     window.localStorage.setItem(STORAGE_KEY, raw);
 
-    expect(loadAppState().intensityByDay).toEqual({ "2026-04-02": "heavy" });
+    expect(loadStoredState().state.intensityByDay).toEqual({
+      "2026-04-02": "heavy",
+    });
     expect(window.localStorage.getItem(BACKUP_KEY)).toBe(raw);
   });
 
   it("recovers safely from corrupted local storage", () => {
     window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
 
-    expect(loadAppState()).toEqual(createAppState());
+    expect(loadStoredState().state).toEqual(createAppState());
   });
 
   it("fills in defaults for incomplete current-shape state", () => {
@@ -91,7 +92,7 @@ describe("local storage", () => {
       }),
     );
 
-    expect(loadAppState()).toEqual(
+    expect(loadStoredState().state).toEqual(
       createAppState({
         periodDays: ["2026-04-02"],
         settings: {
@@ -116,7 +117,7 @@ describe("local storage", () => {
       }),
     );
 
-    expect(loadAppState()).toEqual(
+    expect(loadStoredState().state).toEqual(
       createAppState({
         periodDays: ["2026-03-20", "2026-04-02"],
         settings: {
@@ -138,7 +139,7 @@ describe("local storage", () => {
       }),
     );
 
-    expect(loadAppState()).toEqual(
+    expect(loadStoredState().state).toEqual(
       createAppState({
         intensityByDay: { "2026-04-02": "heavy", "2026-04-09": "light" },
       }),
@@ -156,7 +157,7 @@ describe("local storage", () => {
       }),
     );
 
-    expect(loadAppState()).toEqual(
+    expect(loadStoredState().state).toEqual(
       createAppState({ periodDays: ["2026-04-02"] }),
     );
   });
@@ -164,7 +165,7 @@ describe("local storage", () => {
   it("backs up an unreadable blob before falling back to defaults", () => {
     window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
 
-    expect(loadAppState()).toEqual(createAppState());
+    expect(loadStoredState().state).toEqual(createAppState());
     expect(window.localStorage.getItem(BACKUP_KEY)).toBe(
       "{ definitely not json",
     );
@@ -196,7 +197,7 @@ describe("local storage", () => {
       .mockImplementation(blocked);
 
     try {
-      expect(loadAppState()).toEqual(createAppState());
+      expect(loadStoredState().state).toEqual(createAppState());
       expect(() => clearAppState()).not.toThrow();
     } finally {
       getItem.mockRestore();

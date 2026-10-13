@@ -17,15 +17,6 @@ export const STORAGE_KEY = "tide.period-tracker.state";
 // knows. Blobs from before versioning have no schemaVersion and read as 0.
 export const SCHEMA_VERSION = 1;
 
-export function storedSchemaVersion(stored: unknown): number {
-  return stored &&
-    typeof stored === "object" &&
-    "schemaVersion" in stored &&
-    typeof stored.schemaVersion === "number"
-    ? stored.schemaVersion
-    : 0;
-}
-
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 const LANGUAGE_PREFERENCES: LanguagePreference[] = [
   "system",
