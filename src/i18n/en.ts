@@ -33,6 +33,8 @@ export const en = {
   "fertilityAsk.show": "Show",
   "fertilityAsk.hide": "Don't show",
   "today.privacy": "Stored only on this device.",
+  "today.importPrompt": "Have a Tide backup?",
+  "today.importLink": "Import it",
   "today.fertilityUnclear": "Unclear while late",
   "today.periodLate": "Period",
   "today.daysLate.one": "{n} day late",

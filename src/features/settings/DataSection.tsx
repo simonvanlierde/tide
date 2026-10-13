@@ -149,6 +149,7 @@ export function DataSection() {
             </span>
           </button>
           <button
+            id="import"
             type="button"
             className="secondary-action"
             disabled={readOnly}

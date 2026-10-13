@@ -88,14 +88,22 @@ export function App() {
   const readOnly = useIsReadOnly();
 
   // Move focus to the new screen's content so assistive tech announces the
-  // change instead of staying on the now-stale tab. Skipped on initial load.
+  // change instead of staying on the now-stale tab, or to the element a
+  // #fragment names (Today's import link). Skipped on initial load.
   // biome-ignore lint/correctness/useExhaustiveDependencies: re-run on every pathname change is the point.
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    mainRef.current?.focus({ preventScroll: true });
+    const target = window.location.hash
+      ? document.getElementById(window.location.hash.slice(1))
+      : null;
+    if (target) {
+      target.focus();
+    } else {
+      mainRef.current?.focus({ preventScroll: true });
+    }
   }, [pathname]);
 
   return (

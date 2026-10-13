@@ -16,6 +16,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Log a past period in one go from the Calendar: pick its first and last day,
   up to 14 days, and every day between is logged. Set each day's flow after,
   or undo the whole range with one tap.
+- Before anything is logged, Today offers "Have a Tide backup? Import it",
+  which opens Settings at the Import button.
 - A backtest of the next-period estimate on a public cycle dataset, with the
   results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
   `pnpm backtest`.

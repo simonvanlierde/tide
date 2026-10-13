@@ -28,6 +28,8 @@ export const fr: Dictionary = {
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
   "today.privacy": "Stocké uniquement sur cet appareil.",
+  "today.importPrompt": "Vous avez une sauvegarde Tide ?",
+  "today.importLink": "L’importer",
   "today.fertilityUnclear": "Incertaine en retard",
   "today.periodLate": "Règles",
   "today.daysLate.one": "{n} jour de retard",

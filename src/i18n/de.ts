@@ -29,6 +29,8 @@ export const de: Dictionary = {
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.privacy": "Nur auf diesem Gerät gespeichert.",
+  "today.importPrompt": "Hast du ein Tide-Backup?",
+  "today.importLink": "Importieren",
   "today.fertilityUnclear": "Unklar bei Verspätung",
   "today.periodLate": "Periode",
   "today.daysLate.one": "{n} Tag überfällig",

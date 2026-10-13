@@ -158,3 +158,13 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
   await page.reload();
   await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(5);
 });
+
+test("Today's import link lands on the Import button", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("link", { name: en["today.importLink"] }).click();
+  await expect(page).toHaveURL(/\/settings#import$/);
+  await expect(
+    page.getByRole("button", { name: en["settings.import"], exact: true }),
+  ).toBeFocused();
+});
