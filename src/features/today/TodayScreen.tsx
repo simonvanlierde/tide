@@ -165,6 +165,9 @@ export function TodayScreen(props: TodayScreenProps) {
                           differenceInDays(summary.ovulationDate, today),
                         )}
                       </span>
+                      <span className="fact__meta">
+                        {t("today.notBirthControl")}
+                      </span>
                     </>
                   ) : null}
                 </dd>

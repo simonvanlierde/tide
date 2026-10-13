@@ -27,7 +27,9 @@ describe("TodayScreen", () => {
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/lower today/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/less likely today \(estimate\)/i),
+    ).toBeInTheDocument();
     expect(
       screen.getByLabelText(/how fertility is estimated/i),
     ).toBeInTheDocument();
@@ -186,7 +188,9 @@ describe("TodayScreen", () => {
     renderToday("2026-04-15");
 
     expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/higher today/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/more likely today \(estimate\)/i),
+    ).toBeInTheDocument();
   });
 
   it("shows the fertility disclaimer in an info popover", async () => {
@@ -210,9 +214,7 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/higher today|lower today/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/likely today/i)).not.toBeInTheDocument();
     expect(
       screen.queryByLabelText(/how fertility is estimated/i),
     ).not.toBeInTheDocument();
@@ -255,7 +257,9 @@ describe("TodayScreen", () => {
     expect(screen.queryByText("--")).not.toBeInTheDocument();
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/lower today/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/less likely today \(estimate\)/i),
+    ).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
     // With nothing logged, logging is the one thing to do: keep it prominent.
