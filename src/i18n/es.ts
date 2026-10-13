@@ -14,7 +14,6 @@ export const es: Dictionary = {
   "today.fertility": "Fertilidad",
   "today.fertilityInfoLabel": "Cómo se estima la fertilidad",
   "today.cycleInsights": "Detalles del ciclo",
-  "today.notEnoughData": "Aún no hay suficientes datos",
   "today.daysAgo.one": "hace {n} día",
   "today.daysAgo.other": "hace {n} días",
   "today.expectedToday": "Previsto hoy",
@@ -35,8 +34,7 @@ export const es: Dictionary = {
   "today.ovulationInDays.other": "Ovulación en {n} días",
   "today.learningFallback":
     "Se usa un ciclo típico de 28 días hasta que aprendamos tu patrón.",
-  "today.learningInsufficient":
-    "Registra el sangrado para empezar una estimación.",
+  "today.learningInsufficient": "Registra tu período para ver una previsión.",
 
   "phase.menstrual": "Menstrual",
   "phase.follicular": "Folicular",
@@ -123,10 +121,6 @@ export const es: Dictionary = {
   "calendar.emptyHelp":
     "Toca un día pasado para registrar tu primer día de sangrado.",
   "calendar.futureHelp": "Los días futuros aún no se pueden registrar.",
-  "calendar.legend.logged": "Registrado",
-  "calendar.legend.predicted": "Previsto",
-  "calendar.legend.fertile": "Fértil",
-  "calendar.legend.ovulation": "Ovulación",
   "calendar.log": "Registrar",
   "calendar.edit": "Editar",
   "calendar.dayUnavailable": "{label} no disponible",

@@ -19,7 +19,6 @@ export const en = {
   "today.fertility": "Fertility",
   "today.fertilityInfoLabel": "How fertility is estimated",
   "today.cycleInsights": "Cycle insights",
-  "today.notEnoughData": "Not enough data yet",
   "today.daysAgo.one": "{n} day ago",
   "today.daysAgo.other": "{n} days ago",
   "today.expectedToday": "Expected today",
@@ -40,7 +39,7 @@ export const en = {
   "today.ovulationInDays.other": "Ovulation in {n} days",
   "today.learningFallback":
     "Using a typical 28-day cycle until we learn your pattern.",
-  "today.learningInsufficient": "Log bleeding to start an estimate.",
+  "today.learningInsufficient": "Log your period to see a forecast.",
 
   // Cycle phases: word form (heading) and line form ("X phase")
   "phase.menstrual": "Menstrual",
@@ -93,7 +92,7 @@ export const en = {
   "insights.how5":
     "The fertile window runs {before} days before to {after} day after ovulation, and widens when your cycles vary more.",
 
-  // Today-screen legend
+  // Marker legend, shared by the Today dial and the calendar
   "legend.period": "Period",
   "legend.expected": "Expected",
   "legend.fertileWindow": "Fertile window",
@@ -131,10 +130,6 @@ export const en = {
   "calendar.undo": "Undo",
   "calendar.emptyHelp": "Tap a past day to log your first bleeding day.",
   "calendar.futureHelp": "Future days can't be logged yet.",
-  "calendar.legend.logged": "Logged",
-  "calendar.legend.predicted": "Expected",
-  "calendar.legend.fertile": "Fertile",
-  "calendar.legend.ovulation": "Ovulation",
   "calendar.log": "Log",
   "calendar.edit": "Edit",
   "calendar.dayUnavailable": "{label} unavailable",

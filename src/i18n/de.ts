@@ -15,7 +15,6 @@ export const de: Dictionary = {
   "today.fertility": "Fruchtbarkeit",
   "today.fertilityInfoLabel": "Wie die Fruchtbarkeit geschätzt wird",
   "today.cycleInsights": "Zyklus-Einblicke",
-  "today.notEnoughData": "Noch nicht genügend Daten",
   "today.daysAgo.one": "vor {n} Tag",
   "today.daysAgo.other": "vor {n} Tagen",
   "today.expectedToday": "Heute erwartet",
@@ -37,7 +36,7 @@ export const de: Dictionary = {
   "today.learningFallback":
     "Es wird von einem typischen 28-Tage-Zyklus ausgegangen, bis dein Muster erkannt ist.",
   "today.learningInsufficient":
-    "Erfasse Blutungen, um eine Schätzung zu starten.",
+    "Erfasse deine Periode, um eine Vorhersage zu sehen.",
 
   "phase.menstrual": "Menstruation",
   "phase.follicular": "Follikulär",
@@ -125,10 +124,6 @@ export const de: Dictionary = {
   "calendar.emptyHelp":
     "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
   "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",
-  "calendar.legend.logged": "Erfasst",
-  "calendar.legend.predicted": "Erwartet",
-  "calendar.legend.fertile": "Fruchtbar",
-  "calendar.legend.ovulation": "Eisprung",
   "calendar.log": "Erfassen",
   "calendar.edit": "Bearbeiten",
   "calendar.dayUnavailable": "{label} nicht verfügbar",

@@ -16,6 +16,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The crash screen can download your stored data as a file, exactly as saved,
   and speaks your language instead of always English.
 
+### Changed
+
+- The calendar legend uses the same words as the Today legend: Period,
+  Expected, Fertile window, Ovulation.
+- Before the first log, Today shows one line, "Log your period to see a
+  forecast", instead of a "--" cycle day and two "Not enough data yet" rows.
+
 ### Fixed
 
 - An app left open overnight now moves to the new day, so logging today no

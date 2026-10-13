@@ -239,14 +239,17 @@ describe("TodayScreen", () => {
       screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
-    // Both the next-period and the fertility rows decline to guess.
-    expect(screen.getAllByText(/^not enough data yet$/i)).toHaveLength(2);
+    // One line says there is no forecast yet: no "--" numeral, and no
+    // next-period or fertility rows that each repeat it.
+    expect(
+      screen.getByText(/^log your period to see a forecast\.$/i),
+    ).toBeVisible();
+    expect(screen.queryByText("--")).not.toBeInTheDocument();
+    expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/lower today/i)).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
-    expect(
-      screen.getByText(/log bleeding to start an estimate/i),
-    ).toBeInTheDocument();
     // With nothing logged, logging is the one thing to do: keep it prominent.
     expect(
       screen.getByRole("button", { name: /log bleeding today/i }),
