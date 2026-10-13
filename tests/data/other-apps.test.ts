@@ -61,6 +61,18 @@ describe("parseOtherAppExport: Clue measurements.json", () => {
       days: { "2026-03-06": "spotting" },
     });
   });
+
+  it("drops days after today, and returns null when only those are left", () => {
+    expect(
+      parse([
+        { date: "2026-04-10", type: "period", value: { option: "light" } },
+        { date: "2026-04-11", type: "period", value: { option: "light" } },
+      ]),
+    ).toEqual({ source: "Clue", days: { "2026-04-10": "light" } });
+    expect(
+      parse({ data: [{ day: "2026-05-01", period: "heavy" }] }),
+    ).toBeNull();
+  });
 });
 
 describe("parseOtherAppExport: legacy .cluedata", () => {

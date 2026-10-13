@@ -89,7 +89,7 @@ function readClueLegacy(entries: unknown[]) {
 
 // Flo: operationalData.cycles[] with a start and end date per period. Flo
 // records no flow level, so each day is a plain log.
-function readFloCycles(cycles: unknown[], today: IsoDate) {
+function readFloCycles(cycles: unknown[]) {
   const days: Record<string, LoggedFlow> = {};
   const date = (value: unknown) => {
     const day = typeof value === "string" ? value.slice(0, 10) : null;
@@ -100,13 +100,12 @@ function readFloCycles(cycles: unknown[], today: IsoDate) {
       continue;
     }
     const start = date(cycle.period_start_date);
-    if (!start || start > today) {
+    if (!start) {
       continue;
     }
     const cap = addDays(start, MAX_FLO_PERIOD_DAYS - 1);
-    const lastAllowed = cap < today ? cap : today;
     let end = date(cycle.period_end_date) ?? start;
-    end = end < start ? start : end > lastAllowed ? lastAllowed : end;
+    end = end < start ? start : end > cap ? cap : end;
     for (let day = start; day <= end; day = addDays(day, 1)) {
       days[day] = null;
     }
@@ -141,12 +140,17 @@ export function parseOtherAppExport(
     Array.isArray(parsed.operationalData.cycles)
   ) {
     source = "Flo";
-    raw = readFloCycles(parsed.operationalData.cycles, today);
+    raw = readFloCycles(parsed.operationalData.cycles);
   } else {
     return null;
   }
 
-  // The schema drops impossible dates ("2023-02-30") and any stray key.
-  const days = normalizeIntensityByDay(raw);
+  // The schema drops impossible dates ("2023-02-30") and any stray key. A
+  // future day is dropped too: Tide never logs one.
+  const days = Object.fromEntries(
+    Object.entries(normalizeIntensityByDay(raw)).filter(
+      ([day]) => day <= today,
+    ),
+  );
   return Object.keys(days).length > 0 ? { source, days } : null;
 }
