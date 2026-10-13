@@ -221,7 +221,7 @@ stack in a 16 px grid, and the main area pads its bottom past the fixed tab bar 
 plus the safe-area inset.
 
 The shell is a size container, so layout switches read the shell, not the viewport. Below
-26em the theme control stacks under its label; below 19em its options stack too. The
+26em the theme control stacks under its label; below 24em its options stack too. The
 calendar tightens its gaps below 400 px and trims the card's side padding below 350 px, and
 its legend is a centred row that wraps. The dial is `min(17.5rem, 64vw)` and a container in
 its own right.

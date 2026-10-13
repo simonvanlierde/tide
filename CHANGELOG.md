@@ -31,6 +31,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   is a table with a header per weekday column.
 - The install icon is listed separately for plain and masked use, so Android
   launchers that apply a mask shape use it as intended.
+- On a 320 px screen, the flow levels no longer run into each other, the theme
+  options stack instead of shrinking to "Sy…", and Export and Import stack
+  instead of splitting their words. German, French, Dutch and Spanish all fit.
 
 ### Security
 
