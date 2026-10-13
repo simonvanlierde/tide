@@ -1,6 +1,7 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { dayAngleDeg } from "../../src/features/today/dialGeometry";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
@@ -400,6 +401,29 @@ describe("TodayScreen", () => {
     expect(
       screen.getByRole("button", { name: /log bleeding today/i }),
     ).toHaveFocus();
+  });
+
+  it("leaves focus alone when another tab logs or removes today", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+
+    // One local log, so a stale "focus next time" flag would be set.
+    await user.click(
+      screen.getByRole("button", { name: /log bleeding today/i }),
+    );
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    dial.focus();
+
+    for (const periodDays of [
+      LEARNED_PERIOD_DAYS,
+      [...LEARNED_PERIOD_DAYS, "2026-04-18" as IsoDate],
+    ]) {
+      saveAppState(createAppState({ periodDays }));
+      act(() => {
+        window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+      });
+      expect(dial).toHaveFocus();
+    }
   });
 
   it("leaves focus alone on first render", () => {

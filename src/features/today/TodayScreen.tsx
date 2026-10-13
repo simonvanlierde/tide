@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
@@ -42,10 +42,12 @@ export function TodayScreen(props: TodayScreenProps) {
   const stats = useCycleStats(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
   // Logging, removing or dismissing swaps the button under the user's finger
-  // for another control; from then on, focus follows to the replacement.
-  const [movedFocus, setMovedFocus] = useState(false);
+  // for another control, so focus follows to the replacement once. A change
+  // from another tab or a new day leaves focus where it is.
+  const [focusPending, setFocusPending] = useState(false);
+  const clearFocusPending = useCallback(() => setFocusPending(false), []);
   const toggleToday = () => {
-    setMovedFocus(true);
+    setFocusPending(true);
     actions.togglePeriodDay(today, today);
   };
   const isTodayLogged = today in state.intensityByDay;
@@ -190,10 +192,11 @@ export function TodayScreen(props: TodayScreenProps) {
           expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
           onLog={toggleToday}
           onDismiss={() => {
-            setMovedFocus(true);
+            setFocusPending(true);
             actions.dismissReminder(today);
           }}
-          autoFocus={movedFocus}
+          autoFocus={focusPending}
+          onFocusMoved={clearFocusPending}
         />
       ) : (
         <LogAction
@@ -204,7 +207,8 @@ export function TodayScreen(props: TodayScreenProps) {
           onSelectIntensity={(intensity) =>
             actions.setDayIntensity(today, intensity, today)
           }
-          autoFocus={movedFocus}
+          autoFocus={focusPending}
+          onFocusMoved={clearFocusPending}
         />
       )}
       <p className="today-screen__privacy">{t("today.privacy")}</p>
