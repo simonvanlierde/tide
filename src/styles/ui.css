@@ -1117,14 +1117,6 @@
     background: color-mix(in srgb, var(--bleed) 45%, transparent);
   }
 
-  .calendar-grid__day.is-outside-month.is-fertile {
-    background: color-mix(in srgb, var(--cycle-fertile) 45%, transparent);
-  }
-
-  .calendar-grid__day.is-outside-month.is-ovulation {
-    background: color-mix(in srgb, var(--cycle-ovulation) 45%, transparent);
-  }
-
   .calendar-grid__day.is-outside-month {
     color: var(--ink-muted);
   }
@@ -1137,33 +1129,24 @@
     opacity: 0.7;
   }
 
-  /* Cycle predictions. Placed after the future/disabled rules so upcoming
-     fertile and period days still read clearly. */
-  .calendar-grid__day.is-fertile {
-    background: var(--cycle-fertile);
-    color: var(--ink-on-fill);
+  /* Estimates: a dashed outline in the estimate's colour and no fill, so no
+     estimate reads as a logged day. Placed after the future/disabled rules,
+     and at full opacity, so the outline keeps its 3:1 contrast. */
+  .calendar-grid__day.is-fertile,
+  .calendar-grid__day.is-ovulation,
+  .calendar-grid__day.is-predicted-period {
+    background: transparent;
+    border: 2px dashed var(--estimate-fertile);
     opacity: 1;
   }
 
   .calendar-grid__day.is-ovulation {
-    background: var(--cycle-ovulation);
-    color: var(--ink-on-fill);
-    opacity: 1;
+    border-color: var(--estimate-ovulation);
   }
 
   .calendar-grid__day.is-predicted-period {
-    background: transparent;
-    /* Each successive day of the expected run fades its outline further, so
-       the forecast reads as more tentative the deeper into the period it goes.
-       Only the dash fades: the day number stays at full AA contrast. */
-    border: 2px dashed
-      color-mix(
-        in srgb,
-        var(--bleed) max(55%, calc(100% - var(--forecast-step, 0) * 18%)),
-        transparent
-      );
+    border-color: var(--estimate-period);
     color: var(--bleed-ink);
-    opacity: 1;
   }
 
   .calendar-grid__day.is-logged {

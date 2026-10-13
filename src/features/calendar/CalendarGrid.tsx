@@ -1,9 +1,4 @@
-import {
-  type CSSProperties,
-  type KeyboardEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type KeyboardEvent, useMemo, useState } from "react";
 import type { IsoDate, LoggedFlow } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
@@ -96,20 +91,6 @@ export function CalendarGrid({
       ?.querySelectorAll<HTMLButtonElement>(".calendar-grid__day")
       [target]?.focus();
   }
-  // Days render in date order, so consecutive predicted-period cells belong to
-  // the same run. One forward pass gives each its offset within the run, so each
-  // day of the expected period fades a step further than the last. A run clipped
-  // by the visible window's start restarts at 0, which is only cosmetic.
-  const forecastSteps: number[] = [];
-  let forecastRun = 0;
-  for (const day of monthDays) {
-    const isPredicted =
-      !loggedDays.has(day.value) &&
-      cycleMarkers.get(day.value) === "predicted-period";
-    forecastSteps.push(isPredicted ? forecastRun : 0);
-    forecastRun = isPredicted ? forecastRun + 1 : 0;
-  }
-
   const weekStarts = monthDays
     .map((_, index) => index)
     .filter((index) => index % 7 === 0);
@@ -145,8 +126,6 @@ export function CalendarGrid({
               // shows on days that aren't already logged.
               const flow = isLogged ? (dayIntensity.get(value) ?? null) : null;
               const marker = isLogged ? undefined : cycleMarkers.get(value);
-              const isPredictedPeriod = marker === "predicted-period";
-              const forecastStep = forecastSteps[index] ?? 0;
               const isSelected = value === selectedDay;
               const className = [
                 "calendar-grid__day",
@@ -180,11 +159,6 @@ export function CalendarGrid({
                   <button
                     type="button"
                     className={className}
-                    style={
-                      isPredictedPeriod
-                        ? ({ "--forecast-step": forecastStep } as CSSProperties)
-                        : undefined
-                    }
                     disabled={isUnavailable}
                     tabIndex={value === tabStop ? 0 : -1}
                     onKeyDown={(event) => moveFocus(event, index)}

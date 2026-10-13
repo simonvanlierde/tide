@@ -18,6 +18,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Every estimate looks like an estimate: the expected period, the fertile
+  window and ovulation are dashed outlines on both the dial and the calendar,
+  and in both legends. Only logged days are filled.
 - The calendar legend uses the same words as the Today legend: Period,
   Expected, Fertile window, Ovulation.
 - Before the first log, Today shows one line, "Log your period to see a

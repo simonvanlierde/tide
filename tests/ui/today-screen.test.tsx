@@ -61,11 +61,18 @@ describe("TodayScreen", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
-  it("draws the predicted next period as a coral fill on the dial", () => {
+  it("draws the predicted next period as an outline, not a fill, on the dial", () => {
     renderToday("2026-04-18");
 
+    // The filled ring carries logged days only; estimates are on the
+    // outline layer.
     const ring = document.querySelector(".cycle-dial__ring");
-    expect(ring?.getAttribute("style")).toContain("var(--cycle-period)");
+    const outlines = document.querySelector(".cycle-dial__estimates");
+    expect(ring?.getAttribute("style")).not.toContain("--estimate-");
+    expect(outlines?.getAttribute("style")).toContain("var(--estimate-period)");
+    expect(outlines?.getAttribute("style")).toContain(
+      "var(--estimate-fertile)",
+    );
     expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument(); // today
   });
 

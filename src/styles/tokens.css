@@ -46,6 +46,12 @@
     --cycle-ovulation: #e8a24b;
     --cycle-fertile: #f4d6a8;
     --cycle-idle: rgba(84, 123, 121, 0.4);
+    /* Estimates are dashed outlines, never fills. Sand and amber are too pale
+       for a line on the light ground, so their outlines take deeper shades:
+       each clears 4.1:1 on the white card and 3.4:1 on the darkest ground. */
+    --estimate-period: var(--bleed-strong);
+    --estimate-fertile: #8a7a20;
+    --estimate-ovulation: #c2610f;
     /* Text on the warm cycle fills — they stay light in both themes, so this
        stays near-black in both themes (not overridden in the dark block) to
        clear AA on coral, sand, and amber. */
@@ -132,6 +138,10 @@
     --cycle-ovulation: #f2a63c;
     --cycle-fertile: #ecd3a4;
     --cycle-idle: rgba(194, 238, 234, 0.3);
+    /* On the dark ground the fills themselves are bright enough for a line. */
+    --estimate-period: var(--bleed);
+    --estimate-fertile: var(--cycle-fertile);
+    --estimate-ovulation: var(--cycle-ovulation);
 
     --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
     --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);

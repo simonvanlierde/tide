@@ -30,12 +30,9 @@ interface CycleDialProps {
 // whole ring.
 const TICK_DEG = 0.8;
 const TICK_COLOR = "color-mix(in srgb, var(--ink) 16%, transparent)";
-// The expected period is a ghosted coral fill — same hue as a logged period but
-// translucent and soft-edged, so it reads as a forecast that dissolves toward
-// the top seam.
-const PREDICTED_COLOR =
-  "color-mix(in srgb, var(--cycle-period) 60%, transparent)";
-const PREDICTED_FADE_DEG = 16; // how far the ghosted fill tapers toward the top
+// The expected period is an estimate, drawn like the fertile window: a dashed
+// outline (see .cycle-dial__estimates) that dissolves toward the top seam.
+const PREDICTED_FADE_DEG = 16; // how far the expected outline tapers toward the top
 const PREDICTED_TAIL_STEP = 1.25; // tail length past the arc, in day-widths
 // How many day-widths the expected-period nub occupies. A period runs longer
 // than this, but the dial only hints at the next start — a fuller run would eat
@@ -47,21 +44,32 @@ const BLEND_DEG = 1.4;
 // the last logged day fades out into it.
 const FADE_DEG = 8;
 
+// The filled ring carries facts only: logged days and the idle stretch.
+// Estimated days stay hollow there and get their outline from estimateColor.
 function phaseColor(segment: CycleSegment) {
   // isPeriod first: a day logged without a level still belongs to the period
   // arc, in base coral, rather than falling through to fertile or idle.
   if (segment.isPeriod) {
     return segment.flow ? `var(--flow-${segment.flow})` : "var(--bleed)";
   }
+  return segment.isOvulation || segment.isFertile
+    ? "transparent"
+    : "var(--cycle-idle)";
+}
+
+function estimateColor(segment: CycleSegment) {
+  if (segment.isPeriod) {
+    return "transparent";
+  }
   return segment.isOvulation
-    ? "var(--cycle-ovulation)"
+    ? "var(--estimate-ovulation)"
     : segment.isFertile
-      ? "var(--cycle-fertile)"
-      : "var(--cycle-idle)";
+      ? "var(--estimate-fertile)"
+      : "transparent";
 }
 
 // The angular window over which the predicted period fades out toward the top.
-// Shared by the coral fill and the day ticks so they dissolve together.
+// Shared by the expected outline and the day ticks so they dissolve together.
 function predictedFade(total: number) {
   const step = ARC_SWEEP_DEG / total;
   const tailEnd = ARC_SWEEP_DEG + PREDICTED_TAIL_STEP * step;
@@ -69,13 +77,17 @@ function predictedFade(total: number) {
   return { fadeStart, tailEnd };
 }
 
-function getDialStyle(segments: CycleSegment[], predictedCount: number) {
+function ringStyle(
+  segments: CycleSegment[],
+  predictedCount: number,
+  color: (segment: CycleSegment) => string,
+  predictedColor: string,
+) {
   const total = segments.length + predictedCount;
   const step = ARC_SWEEP_DEG / total;
   const stops: string[] = [];
   segments.forEach((segment, i) => {
     const isLast = i === segments.length - 1;
-    const color = phaseColor(segment);
     // Day 1 fades in from the gap; interior boundaries blend a touch.
     const start = i === 0 ? FADE_DEG : step * i + BLEND_DEG;
     let end = step * (i + 1) - BLEND_DEG;
@@ -84,14 +96,14 @@ function getDialStyle(segments: CycleSegment[], predictedCount: number) {
     if (isLast && predictedCount === 0) {
       end = step * (i + 1) - FADE_DEG;
     }
-    stops.push(`${color} ${start}deg ${end}deg`);
+    stops.push(`${color(segment)} ${start}deg ${end}deg`);
   });
   if (predictedCount > 0) {
-    // Ghosted coral fill for the predicted days, tapering out toward the top.
+    // The predicted days, tapering out toward the top.
     const { fadeStart, tailEnd } = predictedFade(total);
     const cellStart = step * segments.length + BLEND_DEG;
     stops.push(
-      `${PREDICTED_COLOR} ${cellStart}deg ${Math.max(fadeStart, cellStart)}deg`,
+      `${predictedColor} ${cellStart}deg ${Math.max(fadeStart, cellStart)}deg`,
     );
     stops.push(`transparent ${tailEnd}deg 360deg`);
   } else {
@@ -198,10 +210,20 @@ export function CycleDial({
   const cycleDayCount = segments.length;
   const predictedCount = hasPrediction ? PREDICTED_SPAN_DAYS : 0;
   const totalCells = cycleDayCount + predictedCount;
-  // Two conic gradients with up to ~40 stops each: rebuilt only when the data
+  // Three conic gradients with up to ~40 stops each: rebuilt only when the data
   // changes, not on every scrub frame.
   const dialStyle = useMemo(
-    () => getDialStyle(segments, predictedCount),
+    () => ringStyle(segments, predictedCount, phaseColor, "transparent"),
+    [segments, predictedCount],
+  );
+  const estimatesStyle = useMemo(
+    () =>
+      ringStyle(
+        segments,
+        predictedCount,
+        estimateColor,
+        "var(--estimate-period)",
+      ),
     [segments, predictedCount],
   );
   const ticksStyle = useMemo(
@@ -383,6 +405,11 @@ export function CycleDial({
             ) : null}
           </div>
         </div>
+        <div
+          className="cycle-dial__estimates"
+          style={estimatesStyle}
+          aria-hidden="true"
+        />
         <div
           className="cycle-dial__ticks"
           style={ticksStyle}
