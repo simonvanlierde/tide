@@ -2,6 +2,7 @@ import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
+import { SCHEMA_VERSION, STORAGE_KEY } from "../../src/data/schema";
 import { renderWithAppState } from "../support/app";
 
 describe("App shell", () => {
@@ -30,6 +31,28 @@ describe("App shell", () => {
       "aria-current",
       "page",
     );
+  });
+
+  it("asks for a reload when a newer build saved the data", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1 }),
+    );
+
+    renderWithAppState(<App />);
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /a newer version of tide saved your data/i,
+    );
+    expect(screen.getByRole("button", { name: /^reload$/i })).toBeVisible();
+  });
+
+  it("shows no reload notice for data this build wrote", () => {
+    renderWithAppState(<App />);
+
+    expect(
+      screen.queryByText(/a newer version of tide/i),
+    ).not.toBeInTheDocument();
   });
 
   it("navigates between screens through the app shell links", async () => {

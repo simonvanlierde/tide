@@ -1,3 +1,4 @@
+import { CircleAlert } from "lucide-react";
 import {
   type MouseEvent,
   startTransition,
@@ -5,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useT } from "../state/provider";
+import { useIsReadOnly, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
 import {
   appScreens,
@@ -84,6 +85,7 @@ export function App() {
   const t = useT();
   const mainRef = useRef<HTMLElement>(null);
   const isFirstRender = useRef(true);
+  const readOnly = useIsReadOnly();
 
   // Move focus to the new screen's content so assistive tech announces the
   // change instead of staying on the now-stale tab. Skipped on initial load.
@@ -106,6 +108,21 @@ export function App() {
         <span className="app-header__title">{t(activeScreen.labelKey)}</span>
       </header>
       <main id="main" ref={mainRef} className="app-main" tabIndex={-1}>
+        {readOnly ? (
+          <div className="utility-card utility-card--slim newer-data-notice">
+            <p className="supporting-note supporting-note--icon" role="status">
+              <AppIcon icon={CircleAlert} className="supporting-note__icon" />
+              <span>{t("app.newerData")}</span>
+            </p>
+            <button
+              type="button"
+              className="text-action"
+              onClick={() => window.location.reload()}
+            >
+              {t("common.reload")}
+            </button>
+          </div>
+        ) : null}
         {activeScreen.render()}
       </main>
       <TabBar activePath={activeScreen.path} onNavigate={navigate} />

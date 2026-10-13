@@ -6,6 +6,8 @@ export const es: Dictionary = {
   "nav.settings": "Ajustes",
   "app.skipToContent": "Saltar al contenido",
   "app.primaryNav": "Navegación principal",
+  "app.newerData":
+    "Una versión más reciente de Tide guardó tus datos. Recarga para actualizar; los cambios hechos aquí no se guardan.",
 
   "today.srCycleDay": "Día del ciclo {day}, {phase}",
   "today.nextPeriod": "Próximo período",
@@ -138,11 +140,11 @@ export const es: Dictionary = {
   "common.close": "Cerrar",
   "common.cancel": "Cancelar",
   "common.days": "días",
+  "common.reload": "Recargar",
 
   // Crash screen
   "error.title": "Algo salió mal",
   "error.body": "Tus días registrados siguen guardados en este dispositivo.",
-  "error.reload": "Recargar",
   "error.downloadRaw": "Descargar datos sin procesar",
 
   "settings.title": "Ajustes",

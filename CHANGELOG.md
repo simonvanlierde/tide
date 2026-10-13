@@ -39,6 +39,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Logging today moves keyboard focus to the flow levels, and removing the log
   or dismissing the reminder moves it to the log button, instead of dropping
   it to the top of the page.
+- A tab still running an older version no longer strips data that a newer
+  version saved. It shows that data, asks you to reload, and saves nothing
+  until you do.
+- Tide keeps a copy of the stored data whenever loading it would drop
+  anything, not only when the data is unreadable.
 
 ### Security
 

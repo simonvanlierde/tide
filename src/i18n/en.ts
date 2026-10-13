@@ -10,6 +10,8 @@ export const en = {
   "nav.settings": "Settings",
   "app.skipToContent": "Skip to content",
   "app.primaryNav": "Primary navigation",
+  "app.newerData":
+    "A newer version of Tide saved your data. Reload to update; changes made here are not saved.",
 
   // Today screen
   "today.srCycleDay": "Cycle day {day}, {phase}",
@@ -147,11 +149,11 @@ export const en = {
   "common.close": "Close",
   "common.cancel": "Cancel",
   "common.days": "days",
+  "common.reload": "Reload",
 
   // Crash screen
   "error.title": "Something went wrong",
   "error.body": "Your logged days are still saved on this device.",
-  "error.reload": "Reload",
   "error.downloadRaw": "Download raw data",
 
   // Settings

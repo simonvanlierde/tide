@@ -6,6 +6,8 @@ export const fr: Dictionary = {
   "nav.settings": "Réglages",
   "app.skipToContent": "Aller au contenu",
   "app.primaryNav": "Navigation principale",
+  "app.newerData":
+    "Une version plus récente de Tide a enregistré vos données. Rechargez pour mettre à jour ; les modifications faites ici ne sont pas enregistrées.",
 
   "today.srCycleDay": "Jour du cycle {day}, {phase}",
   "today.nextPeriod": "Prochaines règles",
@@ -139,11 +141,11 @@ export const fr: Dictionary = {
   "common.close": "Fermer",
   "common.cancel": "Annuler",
   "common.days": "jours",
+  "common.reload": "Recharger",
 
   // Crash screen
   "error.title": "Un problème est survenu",
   "error.body": "Vos jours enregistrés sont toujours sur cet appareil.",
-  "error.reload": "Recharger",
   "error.downloadRaw": "Télécharger les données brutes",
 
   "settings.title": "Réglages",

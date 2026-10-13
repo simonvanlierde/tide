@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<
             className="chip-button"
             onClick={() => window.location.reload()}
           >
-            {translate(lang, "error.reload")}
+            {translate(lang, "common.reload")}
           </button>
           {raw ? (
             <button

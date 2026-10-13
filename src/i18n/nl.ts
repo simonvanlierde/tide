@@ -6,6 +6,8 @@ export const nl: Dictionary = {
   "nav.settings": "Instellingen",
   "app.skipToContent": "Naar inhoud",
   "app.primaryNav": "Hoofdnavigatie",
+  "app.newerData":
+    "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Laad opnieuw om bij te werken; wijzigingen hier worden niet opgeslagen.",
 
   "today.srCycleDay": "Cyclusdag {day}, {phase}",
   "today.nextPeriod": "Volgende menstruatie",
@@ -139,11 +141,11 @@ export const nl: Dictionary = {
   "common.close": "Sluiten",
   "common.cancel": "Annuleren",
   "common.days": "dagen",
+  "common.reload": "Opnieuw laden",
 
   // Crash screen
   "error.title": "Er ging iets mis",
   "error.body": "Je gelogde dagen staan nog steeds op dit apparaat.",
-  "error.reload": "Opnieuw laden",
   "error.downloadRaw": "Ruwe gegevens downloaden",
 
   "settings.title": "Instellingen",

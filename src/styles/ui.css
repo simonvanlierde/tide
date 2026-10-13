@@ -988,6 +988,11 @@
     gap: 11px;
   }
 
+  /* Sits above whichever screen is open, one block-gap clear of it. */
+  .newer-data-notice {
+    margin-bottom: 16px;
+  }
+
   /* Calendar */
   .calendar-grid {
     gap: 10px;

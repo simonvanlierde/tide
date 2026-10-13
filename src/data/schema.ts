@@ -12,6 +12,20 @@ import { SUPPORTED_LANGUAGES } from "../i18n";
 
 export const STORAGE_KEY = "tide.period-tracker.state";
 
+// The stored shape this build reads and writes. Bump it when a change would
+// lose data in an older build that rewrites the blob with only the fields it
+// knows. Blobs from before versioning have no schemaVersion and read as 0.
+export const SCHEMA_VERSION = 1;
+
+export function storedSchemaVersion(stored: unknown): number {
+  return stored &&
+    typeof stored === "object" &&
+    "schemaVersion" in stored &&
+    typeof stored.schemaVersion === "number"
+    ? stored.schemaVersion
+    : 0;
+}
+
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 const LANGUAGE_PREFERENCES: LanguagePreference[] = [
   "system",

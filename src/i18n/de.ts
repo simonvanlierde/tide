@@ -7,6 +7,8 @@ export const de: Dictionary = {
   "nav.settings": "Einstellungen",
   "app.skipToContent": "Zum Inhalt springen",
   "app.primaryNav": "Hauptnavigation",
+  "app.newerData":
+    "Eine neuere Version von Tide hat deine Daten gespeichert. Lade neu, um zu aktualisieren; Änderungen hier werden nicht gespeichert.",
 
   "today.srCycleDay": "Zyklustag {day}, {phase}",
   "today.nextPeriod": "Nächste Periode",
@@ -140,12 +142,12 @@ export const de: Dictionary = {
   "common.close": "Schließen",
   "common.cancel": "Abbrechen",
   "common.days": "Tage",
+  "common.reload": "Neu laden",
 
   // Crash screen
   "error.title": "Etwas ist schiefgelaufen",
   "error.body":
     "Deine erfassten Tage sind weiterhin auf diesem Gerät gespeichert.",
-  "error.reload": "Neu laden",
   "error.downloadRaw": "Rohdaten herunterladen",
 
   "settings.title": "Einstellungen",

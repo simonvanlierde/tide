@@ -6,11 +6,12 @@ import {
   useEffect,
   useMemo,
   useReducer,
+  useState,
 } from "react";
 import { defaultAppState } from "../data/schema";
 import {
   clearAppState,
-  loadAppState,
+  loadStoredState,
   STORAGE_KEY,
   saveAppState,
 } from "../data/storage";
@@ -35,6 +36,7 @@ const AppStateContext = createContext<AppState | null>(null);
 const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(
   null,
 );
+const ReadOnlyContext = createContext(false);
 
 interface AppStateProviderProps {
   children: ReactNode;
@@ -45,15 +47,19 @@ export function AppStateProvider({
   children,
   initialState,
 }: AppStateProviderProps) {
-  const [state, dispatch] = useReducer(
-    appStateReducer,
-    initialState ?? null,
-    (value: AppState | null) => value ?? loadAppState(),
+  const [loaded] = useState(() =>
+    initialState ? { state: initialState, readOnly: false } : loadStoredState(),
   );
+  const [state, dispatch] = useReducer(appStateReducer, loaded.state);
+  // A newer build wrote the stored data: saving our normalized copy would
+  // strip whatever fields it added, so this tab shows it and never saves.
+  const [readOnly, setReadOnly] = useState(loaded.readOnly);
 
   useEffect(() => {
-    saveAppState(state);
-  }, [state]);
+    if (!readOnly) {
+      saveAppState(state);
+    }
+  }, [state, readOnly]);
 
   // Ask the browser to keep this origin's storage through disk pressure (and,
   // in Safari, past a week without a visit): the logged days live nowhere
@@ -71,7 +77,9 @@ export function AppStateProvider({
   useEffect(() => {
     function handleStorage(event: StorageEvent) {
       if (event.key === STORAGE_KEY) {
-        dispatch({ type: "importState", state: loadAppState() });
+        const stored = loadStoredState();
+        setReadOnly(stored.readOnly);
+        dispatch({ type: "importState", state: stored.state });
       }
     }
     window.addEventListener("storage", handleStorage);
@@ -84,7 +92,9 @@ export function AppStateProvider({
   return (
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
-        {children}
+        <ReadOnlyContext.Provider value={readOnly}>
+          {children}
+        </ReadOnlyContext.Provider>
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
   );
@@ -165,6 +175,12 @@ export function useLocale() {
   return resolveLanguage(useLanguage());
 }
 
+// True when a newer version of Tide saved the stored data, so this one must
+// not write until the page reloads into that version.
+export function useIsReadOnly() {
+  return useContext(ReadOnlyContext);
+}
+
 export function useAppState() {
   const state = useContext(AppStateContext);
 
@@ -205,7 +221,7 @@ export function useAppStateActions() {
       importState(state: AppState) {
         dispatch({ type: "importState", state });
       },
-      // Wipe every logged day and the orphaned corrupt-blob backup, so the
+      // Wipe every logged day and the orphaned backup blob, so the
       // device holds no history afterwards. Settings reset too.
       resetState() {
         clearAppState();
