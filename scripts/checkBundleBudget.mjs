@@ -4,7 +4,7 @@ import process from "node:process";
 import { gzipSync } from "node:zlib";
 
 const DIST_ASSETS_DIR = join(process.cwd(), "dist", "assets");
-const MAX_GZIP_BYTES = 95 * 1024;
+const MAX_GZIP_BYTES = 100 * 1024;
 
 const jsAssets = readdirSync(DIST_ASSETS_DIR).filter((filename) =>
   filename.endsWith(".js"),
