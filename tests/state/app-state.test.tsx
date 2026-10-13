@@ -97,6 +97,46 @@ describe("app state", () => {
     );
   });
 
+  it("adopts another tab's save without writing a different value back", () => {
+    renderWithAppState(<Probe />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+    saveAppState(createAppState({ periodDays: ["2026-04-09"] }));
+    const otherTabValue = window.localStorage.getItem(STORAGE_KEY);
+    const setItem = vi.spyOn(Storage.prototype, "setItem");
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+    });
+    setItem.mockRestore();
+
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
+      /^2026-04-09$/,
+    );
+    // Writing a different value would fire this event in the other tab and
+    // start a ping-pong; an identical rewrite is harmless.
+    for (const [key, value] of setItem.mock.calls) {
+      if (key === STORAGE_KEY) {
+        expect(value).toBe(otherTabValue);
+      }
+    }
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(otherTabValue);
+  });
+
+  it("ignores storage events for other keys", () => {
+    renderWithAppState(<Probe />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+    saveAppState(createAppState({ periodDays: ["2026-04-09"] }));
+
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", { key: "other" }));
+    });
+
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
+      /^2026-04-02$/,
+    );
+  });
+
   it("never saves over data written by a newer build", async () => {
     const raw = JSON.stringify({
       schemaVersion: SCHEMA_VERSION + 1,
