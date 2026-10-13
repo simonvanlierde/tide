@@ -28,8 +28,9 @@ export const es: Dictionary = {
   "fertilityAsk.show": "Mostrar",
   "fertilityAsk.hide": "No mostrar",
   "today.privacy": "Guardado solo en este dispositivo.",
-  "today.importPrompt": "¿Tienes una copia de seguridad de Tide?",
-  "today.importLink": "Impórtala",
+  "today.importPrompt":
+    "¿Tienes una copia de seguridad de Tide o tu historial de Clue o Flo?",
+  "today.importLink": "Importar",
   "today.fertilityUnclear": "Incierta con retraso",
   "today.periodLate": "Regla",
   "today.daysLate.one": "{n} día de retraso",

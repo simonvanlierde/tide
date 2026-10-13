@@ -29,7 +29,7 @@ export const de: Dictionary = {
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.privacy": "Nur auf diesem Gerät gespeichert.",
-  "today.importPrompt": "Hast du ein Tide-Backup?",
+  "today.importPrompt": "Hast du ein Tide-Backup oder Daten aus Clue oder Flo?",
   "today.importLink": "Importieren",
   "today.fertilityUnclear": "Unklar bei Verspätung",
   "today.periodLate": "Periode",

@@ -299,11 +299,13 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
   });
 
-  it("offers a Tide backup import only before anything is logged", () => {
+  it("offers an import only before anything is logged", () => {
     const empty = renderWithAppState(<TodayScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: [] }),
     });
-    expect(screen.getByText(/have a tide backup\?/i)).toBeVisible();
+    expect(
+      screen.getByText(/have a tide backup, or history in clue or flo\?/i),
+    ).toBeVisible();
     expect(screen.getByRole("link", { name: /^import it$/i })).toHaveAttribute(
       "href",
       "/settings#import",

@@ -28,7 +28,8 @@ export const nl: Dictionary = {
   "fertilityAsk.show": "Tonen",
   "fertilityAsk.hide": "Niet tonen",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
-  "today.importPrompt": "Heb je een Tide-back-up?",
+  "today.importPrompt":
+    "Heb je een Tide-back-up of je geschiedenis uit Clue of Flo?",
   "today.importLink": "Importeren",
   "today.fertilityUnclear": "Onduidelijk bij vertraging",
   "today.periodLate": "Menstruatie",
