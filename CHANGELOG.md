@@ -48,7 +48,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   it to the top of the page.
 - A tab still running an older version no longer strips data that a newer
   version saved. It shows that data, asks you to reload, and saves nothing
-  until you do.
+  until you do. Import and "Delete all data" are disabled meanwhile.
 - Tide keeps a copy of the stored data whenever loading it would drop
   anything, not only when the data is unreadable.
 

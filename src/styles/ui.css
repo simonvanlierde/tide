@@ -461,6 +461,19 @@
     text-align: left;
   }
 
+  /* Placed after the hover washes so a disabled button never lights up. */
+  .secondary-action:disabled,
+  .text-action:disabled {
+    border-color: var(--surface-border);
+    background: var(--surface);
+    color: var(--ink-muted);
+    cursor: not-allowed;
+  }
+
+  .text-action:disabled {
+    background: transparent;
+  }
+
   .text-action__icon {
     width: 16px;
     height: 16px;

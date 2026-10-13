@@ -1,7 +1,8 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { loadAppState } from "../../src/data/storage";
+import { SCHEMA_VERSION } from "../../src/data/schema";
+import { loadAppState, STORAGE_KEY } from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -277,5 +278,34 @@ describe("SettingsScreen", () => {
     });
 
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("blocks import and delete while a newer build owns the stored data", () => {
+    const raw = JSON.stringify({
+      schemaVersion: SCHEMA_VERSION + 1,
+      intensityByDay: { "2026-04-02": "heavy" },
+    });
+    window.localStorage.setItem(STORAGE_KEY, raw);
+    renderWithAppState(<SettingsScreen />);
+
+    for (const name of [/^import$/i, /delete all data/i]) {
+      const button = screen.getByRole("button", { name });
+      expect(button).toBeDisabled();
+      expect(button).toHaveAccessibleDescription(
+        /a newer version of tide saved your data/i,
+      );
+    }
+    // Export only reads, so it stays available.
+    expect(screen.getByRole("button", { name: /^export$/i })).toBeEnabled();
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
+  });
+
+  it("keeps import and delete available for data this build wrote", () => {
+    renderSettings();
+
+    expect(screen.getByRole("button", { name: /^import$/i })).toBeEnabled();
+    expect(
+      screen.getByRole("button", { name: /delete all data/i }),
+    ).toBeEnabled();
   });
 });
