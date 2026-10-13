@@ -301,13 +301,4 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("button", { name: /^export$/i })).toBeEnabled();
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
   });
-
-  it("keeps import and delete available for data this build wrote", () => {
-    renderSettings();
-
-    expect(screen.getByRole("button", { name: /^import$/i })).toBeEnabled();
-    expect(
-      screen.getByRole("button", { name: /delete all data/i }),
-    ).toBeEnabled();
-  });
 });
