@@ -8,6 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Import your history from Clue or Flo: pick the export in Settings → Data →
+  Import, the same button as for a Tide backup. Tide shows how many days the
+  file holds and asks before adding them. Days you already logged in Tide stay
+  as they are. From Clue, use `measurements.json` from the export zip or an
+  older `.cluedata` backup.
 - A backtest of the next-period estimate on a public cycle dataset, with the
   results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
   `pnpm backtest`.
