@@ -1,6 +1,7 @@
 import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
+import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { dayAngleDeg } from "../../src/features/today/dialGeometry";
@@ -313,6 +314,17 @@ describe("TodayScreen", () => {
     empty.unmount();
 
     renderToday("2026-04-18");
+    expect(
+      screen.queryByRole("link", { name: /^import it$/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("hides the import link while a newer build owns the stored data", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: {} }),
+    );
+    renderWithAppState(<TodayScreen today="2026-04-18" />);
     expect(
       screen.queryByRole("link", { name: /^import it$/i }),
     ).not.toBeInTheDocument();

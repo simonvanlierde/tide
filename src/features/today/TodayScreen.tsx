@@ -111,7 +111,8 @@ export function TodayScreen(props: TodayScreenProps) {
       {learningNote ? (
         <p className="today-screen__note">{learningNote}</p>
       ) : null}
-      {Object.keys(state.intensityByDay).length === 0 ? (
+      {/* Import is disabled while read-only, so the link would lead nowhere. */}
+      {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
         <p className="today-screen__note">
           {t("today.importPrompt")}{" "}
           {/* biome-ignore lint/a11y/useValidAnchor: real page navigation with an href; the handler only keeps it client-side, like the tab bar */}
