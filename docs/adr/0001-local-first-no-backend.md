@@ -37,6 +37,7 @@ reaches for the network.
 - No sync across devices and no cloud backup. If the user clears browser storage
   or loses the device, the data is gone. The planned fix is an explicit export and
   import (a local file the user controls), not a backend.
+  Update 2026-10-13: export and import shipped; see the README.
 - No multi-user or sharing features.
 - Predictions run only on data that fits in local storage. That is plenty for
   a period tracker.
