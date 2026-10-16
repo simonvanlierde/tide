@@ -116,25 +116,28 @@ export function App() {
         <span className="app-header__title">{t(activeScreen.labelKey)}</span>
       </header>
       <main id="main" ref={mainRef} className="app-main" tabIndex={-1}>
-        {readOnly ? (
-          <div className="utility-card utility-card--slim newer-data-notice">
-            <p
-              id="newer-data-notice"
-              className="supporting-note supporting-note--icon"
-              role="status"
-            >
-              <AppIcon icon={CircleAlert} className="supporting-note__icon" />
-              <span>{t("app.newerData")}</span>
-            </p>
-            <button
-              type="button"
-              className="text-action"
-              onClick={() => window.location.reload()}
-            >
-              {t("common.reload")}
-            </button>
-          </div>
-        ) : null}
+        {/* Mounted empty from the start: screen readers announce text added to
+            a live region, but often not a region that arrives already filled. */}
+        <div role="status">
+          {readOnly ? (
+            <div className="utility-card utility-card--slim newer-data-notice">
+              <p
+                id="newer-data-notice"
+                className="supporting-note supporting-note--icon"
+              >
+                <AppIcon icon={CircleAlert} className="supporting-note__icon" />
+                <span>{t("app.newerData")}</span>
+              </p>
+              <button
+                type="button"
+                className="text-action"
+                onClick={() => window.location.reload()}
+              >
+                {t("common.reload")}
+              </button>
+            </div>
+          ) : null}
+        </div>
         {activeScreen.render()}
       </main>
       <TabBar activePath={activeScreen.path} onNavigate={navigate} />
