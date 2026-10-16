@@ -6,6 +6,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-10-15
+
 ### Added
 
 - Import your history from Clue or Flo: pick the export in Settings → Data →
@@ -46,6 +48,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - When a newer version of Tide saved your data, Settings showed the notice
   twice. It now shows once, at the top, with the Reload button.
+- Screen readers now announce that notice when another tab saves newer data.
+  Before, it appeared already filled in, so many screen readers stayed silent.
 - An app left open overnight now moves to the new day, so logging today no
   longer logs yesterday.
 - Importing a JSON file that is not a Tide backup now shows an error instead of
@@ -224,9 +228,10 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
-[Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.4.0...HEAD
-[0.4.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.4.0
-[0.3.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.3.0
-[0.2.1]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.1
-[0.2.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.0
+[Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/simonvanlierde/tide/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/simonvanlierde/tide/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/simonvanlierde/tide/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/simonvanlierde/tide/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/simonvanlierde/tide/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.1.0
