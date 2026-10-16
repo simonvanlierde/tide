@@ -48,6 +48,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - When a newer version of Tide saved your data, Settings showed the notice
   twice. It now shows once, at the top, with the Reload button.
+- Screen readers now announce that notice when another tab saves newer data.
+  Before, it appeared already filled in, so many screen readers stayed silent.
 - An app left open overnight now moves to the new day, so logging today no
   longer logs yesterday.
 - Importing a JSON file that is not a Tide backup now shows an error instead of
