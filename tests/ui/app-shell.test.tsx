@@ -1,4 +1,4 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
@@ -45,6 +45,25 @@ describe("App shell", () => {
       /a newer version of tide saved your data/i,
     );
     expect(screen.getByRole("button", { name: /^reload$/i })).toBeVisible();
+  });
+
+  it("fills the already-mounted status region when another tab saves newer data", () => {
+    renderWithAppState(<App />);
+    const status = screen.getByRole("status");
+    expect(status).toBeEmptyDOMElement();
+
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1 }),
+    );
+    act(() => {
+      window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
+    });
+
+    expect(screen.getByRole("status")).toBe(status);
+    expect(status).toHaveTextContent(
+      /a newer version of tide saved your data/i,
+    );
   });
 
   it("shows no reload notice for data this build wrote", () => {
