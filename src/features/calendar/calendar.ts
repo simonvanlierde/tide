@@ -1,12 +1,10 @@
-import type { CycleSummary, IsoDate } from "../../domain/types";
-import {
-  addDays,
-  differenceInDays,
-  formatIsoDate,
-  parseIsoDate,
-} from "../../utils/date";
-
-export type DayMarker = "fertile" | "ovulation" | "predicted-period";
+import type {
+  DayEstimate,
+  Forecast,
+  IsoDate,
+  LoggedFlow,
+} from "../../domain/types";
+import { addDays, formatIsoDate, parseIsoDate } from "../../utils/date";
 
 export interface CalendarDay {
   key: string;
@@ -47,116 +45,39 @@ export function buildMonthDays(
   });
 }
 
-// Paints a fertile window at `ovulationDate` — offsets `window.start..end`
-// marked fertile, with the ovulation day itself set last so it wins its own
-// cell. Bounded to the visible window so out-of-view cycles cost nothing.
-function paintFertileWindow(
-  markers: Map<IsoDate, DayMarker>,
-  ovulationDate: IsoDate,
-  window: { start: number; end: number },
-  rangeStart: IsoDate,
-  rangeEnd: IsoDate,
-) {
-  for (let offset = window.start; offset <= window.end; offset++) {
-    const day = addDays(ovulationDate, offset);
-    if (day >= rangeStart && day <= rangeEnd) {
-      markers.set(day, "fertile");
-    }
-  }
-  if (ovulationDate >= rangeStart && ovulationDate <= rangeEnd) {
-    markers.set(ovulationDate, "ovulation");
-  }
+export interface CalendarCell extends CalendarDay {
+  isLogged: boolean;
+  /** The logged flow; null when no level was chosen, or the day isn't logged. */
+  flow: LoggedFlow;
+  estimate: DayEstimate | null;
+  cycleDay: number | null;
 }
 
-// Predicted markers for the visible grid window [rangeStart, rangeEnd]: the
-// fertile window and ovulation for the next cycle plus every completed past
-// cycle (`pastOvulationDates`, estimated retrospectively from each logged next
-// period start), plus the expected period — a `periodLength`-day run repeating
-// every `cycleLength` days from the next period onward, so the forecast
-// continues indefinitely into the future. Later dates win, so ovulation
-// overrides the fertile day it sits on. Fertility markers are omitted when the
-// user has hidden them; logged days suppress markers at the grid layer.
-export function buildCalendarMarkers(
-  summary: CycleSummary,
+// What the grid shows on each day. A logged day shows its flow and nothing
+// else. Any other day shows the forecast's estimate (fertility only when the
+// user asked for it) and, once it has happened, its cycle-day number: the
+// coral run already says which period day a logged cell is, and a number on a
+// future cell would read as a fact.
+export function buildCalendarCells(
+  monthDays: CalendarDay[],
+  forecast: Forecast,
+  intensityByDay: Record<IsoDate, LoggedFlow>,
   showFertility: boolean,
-  rangeStart: IsoDate,
-  rangeEnd: IsoDate,
-  pastOvulationDates: IsoDate[] = [],
-): Map<IsoDate, DayMarker> {
-  const markers = new Map<IsoDate, DayMarker>();
-
-  if (showFertility) {
-    for (const ovulationDate of pastOvulationDates) {
-      paintFertileWindow(
-        markers,
-        ovulationDate,
-        summary.fertileWindow,
-        rangeStart,
-        rangeEnd,
-      );
-    }
-    if (summary.ovulationDate) {
-      paintFertileWindow(
-        markers,
-        summary.ovulationDate,
-        summary.fertileWindow,
-        rangeStart,
-        rangeEnd,
-      );
-    }
-  }
-
-  if (summary.nextPeriod.date && summary.cycleLength > 0) {
-    // Step forward one cycle at a time and paint each period run that overlaps
-    // the window. Bounded by rangeEnd, so past months (start > rangeEnd) get
-    // nothing and the loop stays cheap.
-    for (
-      let start = summary.nextPeriod.date;
-      start <= rangeEnd;
-      start = addDays(start, summary.cycleLength)
-    ) {
-      for (let offset = 0; offset < summary.periodLength; offset++) {
-        const day = addDays(start, offset);
-        if (day >= rangeStart && day <= rangeEnd) {
-          markers.set(day, "predicted-period");
-        }
-      }
-    }
-  }
-
-  return markers;
-}
-
-// Running cycle-day number for every day of the CURRENT cycle: 1 on the last
-// period's start, counting up to — but not into — the next expected period,
-// which is the next cycle's day 1. Bounded to the visible window. Empty when
-// there is no period history to anchor day 1. The grid hides it on logged
-// days (the coral run says which period day they are) and on future days.
-export function buildCycleDayNumbers(
-  summary: CycleSummary,
-  today: IsoDate,
-  rangeStart: IsoDate,
-  rangeEnd: IsoDate,
-): Map<IsoDate, number> {
-  const numbers = new Map<IsoDate, number>();
-  const nextPeriod = summary.nextPeriod.date;
-  if (!nextPeriod || summary.cycleLength <= 0) {
-    return numbers;
-  }
-
-  const cycleStart = addDays(nextPeriod, -summary.cycleLength);
-  // Normally stop before the next expected period (the next cycle's day 1). But
-  // when that prediction is already overdue, the current cycle is simply running
-  // long — keep counting through today so it doesn't leave a blank stretch.
-  const stopBefore = today >= nextPeriod ? addDays(today, 1) : nextPeriod;
-  const from = cycleStart > rangeStart ? cycleStart : rangeStart;
-  for (
-    let day = from;
-    day <= rangeEnd && day < stopBefore;
-    day = addDays(day, 1)
-  ) {
-    numbers.set(day, differenceInDays(day, cycleStart) + 1);
-  }
-
-  return numbers;
+  showCycleDayNumbers: boolean,
+): CalendarCell[] {
+  return monthDays.map((day) => {
+    const isLogged = day.value in intensityByDay;
+    const { cycleDay, estimate } = forecast.dayInfo(day.value);
+    return {
+      ...day,
+      isLogged,
+      flow: isLogged ? (intensityByDay[day.value] ?? null) : null,
+      estimate:
+        isLogged || (!showFertility && estimate !== "predicted-period")
+          ? null
+          : estimate,
+      cycleDay:
+        showCycleDayNumbers && !isLogged && !day.isFuture ? cycleDay : null,
+    };
+  });
 }

@@ -1,6 +1,11 @@
 import { addDays, differenceInDays } from "../utils/date";
-import { REMINDER_OVERDUE_GRACE_DAYS } from "./reminders";
-import type { CycleStats, CycleSummary, IsoDate } from "./types";
+import type {
+  CycleStats,
+  CycleSummary,
+  DayEstimate,
+  Forecast,
+  IsoDate,
+} from "./types";
 
 export const DEFAULT_CYCLE_LENGTH = 28;
 export const DEFAULT_LUTEAL_LENGTH = 14;
@@ -33,8 +38,12 @@ export const RECENT_CYCLE_WINDOW = 6;
 export const FERTILE_WINDOW_START = -5;
 export const FERTILE_WINDOW_END = 1;
 const MAX_FERTILE_WIDENING = 5;
+// A forecast this many days overdue with nothing logged is stale (the user
+// stopped tracking): the summary drops it, and the reminder stops asking.
+// NOTE: fixed grace; learn a per-user threshold from cycle history if needed.
+export const OVERDUE_GRACE_DAYS = 10;
 
-interface BuildCycleSummaryInput {
+interface ForecastInput {
   today: IsoDate;
   /** Logged days that count toward predictions (spotting already left out). */
   periodDays: IsoDate[];
@@ -208,16 +217,20 @@ const INSUFFICIENT_SUMMARY: CycleSummary = {
   estimateMode: "insufficient",
 };
 
-export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
+// The summary for today and the timeline it implies, in one pass. Every screen
+// reads the timeline through dayInfo, so the dial and the calendar can't place
+// a cycle day or an estimate differently.
+export function forecast(input: ForecastInput): Forecast {
   // A future-dated day (possible via import, or a clock that moved backwards)
   // would otherwise become the "last cycle start" and blow up every estimate.
   const periodDays = input.periodDays.filter((day) => day <= input.today);
   const completedCycleLengths = getCompletedCycleLengths(periodDays);
-  const cycleStarts = getCycleStarts(periodDays);
-  const lastCycleStart = cycleStarts.at(-1);
+  const lastCycleStart = getCycleStarts(periodDays).at(-1);
+  const stats = cycleStats(completedCycleLengths);
+  const pastOvulationDates = getPastOvulationDates(periodDays);
 
   if (!lastCycleStart) {
-    return INSUFFICIENT_SUMMARY;
+    return withTimeline(INSUFFICIENT_SUMMARY, stats, null, null, []);
   }
 
   const cycleLength = estimateCycleLength(completedCycleLengths);
@@ -230,42 +243,102 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
   const ovulationDate = addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH);
   const periodLength = getAveragePeriodLength(periodDays, input.today);
 
-  // Long past the due date with nothing logged, the forecast is stale (the
-  // user stopped tracking) — same bound the reminder uses to stop nagging.
-  // The learned lengths are kept so the insights view still has history.
-  if (
-    differenceInDays(input.today, nextPeriodDate) > REMINDER_OVERDUE_GRACE_DAYS
-  ) {
-    return {
-      ...INSUFFICIENT_SUMMARY,
-      cycleLength,
-      periodLength,
-      fertileWindow,
-    };
+  // Long past the due date with nothing logged, the forecast is stale. The
+  // learned lengths are kept so the insights view still has history, and past
+  // cycles keep their fertile windows.
+  if (differenceInDays(input.today, nextPeriodDate) > OVERDUE_GRACE_DAYS) {
+    return withTimeline(
+      { ...INSUFFICIENT_SUMMARY, cycleLength, periodLength, fertileWindow },
+      stats,
+      null,
+      null,
+      pastOvulationDates,
+    );
   }
 
-  return {
-    cycleDay,
-    phaseLabel: getPhaseLabel(input.today, periodDays, ovulationDate),
-    fertile: isWithinFertileWindow(input.today, ovulationDate, fertileWindow),
-    ovulationDate,
-    fertileWindow,
-    nextPeriod: {
-      date: nextPeriodDate,
-      daysUntil: differenceInDays(nextPeriodDate, input.today),
+  return withTimeline(
+    {
+      cycleDay,
+      phaseLabel: getPhaseLabel(input.today, periodDays, ovulationDate),
+      fertile: isWithinFertileWindow(input.today, ovulationDate, fertileWindow),
+      ovulationDate,
+      fertileWindow,
+      nextPeriod: {
+        date: nextPeriodDate,
+        daysUntil: differenceInDays(nextPeriodDate, input.today),
+      },
+      cycleLength,
+      periodLength,
+      estimateMode: completedCycleLengths.length > 0 ? "learned" : "fallback",
     },
-    cycleLength,
-    periodLength,
-    estimateMode: completedCycleLengths.length > 0 ? "learned" : "fallback",
+    stats,
+    lastCycleStart,
+    // The current cycle runs up to the day before the next expected period;
+    // once that is overdue, it is simply running long, through today.
+    input.today >= nextPeriodDate ? input.today : addDays(nextPeriodDate, -1),
+    [...pastOvulationDates, ovulationDate],
+  );
+}
+
+function withTimeline(
+  summary: CycleSummary,
+  stats: CycleStats,
+  cycleStart: IsoDate | null,
+  cycleEnd: IsoDate | null,
+  // Oldest first.
+  ovulationDates: IsoDate[],
+): Forecast {
+  const { cycleLength, periodLength, fertileWindow } = summary;
+  const nextPeriod = summary.nextPeriod.date;
+
+  return {
+    ...summary,
+    cycleStart,
+    cycleEnd,
+    stats,
+    dayInfo(date) {
+      let estimate: DayEstimate | null = null;
+      // The expected period repeats every cycleLength days from the next one
+      // onward, so the forecast runs on indefinitely. periodLength (at most
+      // MAX_PERIOD_LENGTH) is always shorter than a cycle, so runs never overlap.
+      if (
+        nextPeriod !== null &&
+        date >= nextPeriod &&
+        differenceInDays(date, nextPeriod) % cycleLength < periodLength
+      ) {
+        estimate = "predicted-period";
+      } else {
+        // Latest window first, so where two overlap the later one wins, and
+        // the windows that ended before this date are never visited.
+        for (let index = ovulationDates.length - 1; index >= 0; index--) {
+          const ovulation = ovulationDates[index] as IsoDate;
+          const offset = differenceInDays(date, ovulation);
+          if (offset > fertileWindow.end) {
+            break;
+          }
+          if (offset >= fertileWindow.start) {
+            estimate = offset === 0 ? "ovulation" : "fertile";
+            break;
+          }
+        }
+      }
+      const inCycle =
+        cycleStart !== null &&
+        cycleEnd !== null &&
+        date >= cycleStart &&
+        date <= cycleEnd;
+      return {
+        cycleDay: inCycle ? differenceInDays(date, cycleStart) + 1 : null,
+        estimate,
+      };
+    },
   };
 }
 
-// Extra numbers behind the estimate, for the insights view. Cycle and period
-// lengths already live on CycleSummary, so this only adds what the summary
-// lacks: how many completed cycles it's learned from, and how much recent cycles
-// vary (standard deviation, null until two cycles exist).
-export function getCycleStats(periodDays: IsoDate[]): CycleStats {
-  const completed = getCompletedCycleLengths(periodDays);
+// Extra numbers behind the estimate, for the insights view: how many completed
+// cycles it's learned from, and how much recent cycles vary (standard
+// deviation, null until two cycles exist).
+function cycleStats(completed: number[]): CycleStats {
   const recent = completed.slice(-RECENT_CYCLE_WINDOW);
   return {
     cyclesTracked: completed.length,

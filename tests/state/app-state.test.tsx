@@ -8,7 +8,7 @@ import {
   AppStateProvider,
   useAppState,
   useAppStateActions,
-  useCycleSummary,
+  useForecast,
 } from "../../src/state/provider";
 import {
   createAppState,
@@ -217,11 +217,8 @@ describe("app state", () => {
     );
   });
 
-  it("uses today's date when cycle summary callers omit one", () => {
-    vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-04-18T10:00:00.000Z"));
-
-    const { result } = renderHook(() => useCycleSummary(), {
+  it("forecasts for the day the caller passes", () => {
+    const { result } = renderHook(() => useForecast("2026-04-18"), {
       wrapper: ({ children }) => (
         <AppStateProvider initialState={createLearnedCycleState()}>
           {children}

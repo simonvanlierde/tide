@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import type { CycleSummary } from "../../src/domain/types";
+import { forecast } from "../../src/domain/cycle";
+import type { IsoDate, LoggedFlow } from "../../src/domain/types";
 import {
-  buildCalendarMarkers,
-  buildCycleDayNumbers,
+  buildCalendarCells,
   buildMonthDays,
 } from "../../src/features/calendar/calendar";
 
@@ -41,321 +41,77 @@ describe("calendar helpers", () => {
     });
   });
 
-  it("marks the fertile window, ovulation, and a multi-day expected period", () => {
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    const markers = buildCalendarMarkers(
-      summary,
-      true,
+  // One completed 28-day cycle of 4-day periods (see forecast.test.ts): the
+  // past window centres on 03-17, the current one on 04-14, and the next
+  // period starts 04-28.
+  const intensityByDay: Record<IsoDate, LoggedFlow> = {
+    "2026-03-31": "heavy",
+    "2026-04-01": null,
+  };
+  const learned = forecast({
+    today: "2026-04-09",
+    periodDays: [
+      "2026-03-03",
+      "2026-03-04",
+      "2026-03-05",
+      "2026-03-06",
+      "2026-03-31",
       "2026-04-01",
-      "2026-05-05",
-    );
-
-    // Fertile window spans ovulation-5 through ovulation+1, with ovulation
-    // itself overriding the fertile marker on its own day.
-    expect(markers.get("2026-04-09")).toBe("fertile");
-    expect(markers.get("2026-04-14")).toBe("ovulation");
-    expect(markers.get("2026-04-15")).toBe("fertile");
-    // The expected period spans periodLength days from the next period start.
-    expect(markers.get("2026-04-28")).toBe("predicted-period");
-    expect(markers.get("2026-05-01")).toBe("predicted-period");
-    expect(markers.has("2026-05-02")).toBe(false);
-    expect(markers.has("2026-04-08")).toBe(false);
+      "2026-04-02",
+      "2026-04-03",
+    ],
   });
-
-  it("paints a retrospective fertile window for each past ovulation date", () => {
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    // A past cycle's ovulation on 2026-03-17 gets the same window as the
-    // forecast: 03-12..03-18, ovulation on its own day.
-    const markers = buildCalendarMarkers(
-      summary,
-      true,
-      "2026-03-01",
-      "2026-04-05",
-      ["2026-03-17"],
+  function cells(month: IsoDate, showFertility: boolean, numbers = true) {
+    const all = buildCalendarCells(
+      buildMonthDays(month, "2026-04-09"),
+      learned,
+      intensityByDay,
+      showFertility,
+      numbers,
     );
+    return (date: IsoDate) => all.find((cell) => cell.value === date);
+  }
 
-    expect(markers.get("2026-03-12")).toBe("fertile");
-    expect(markers.get("2026-03-17")).toBe("ovulation");
-    expect(markers.get("2026-03-18")).toBe("fertile");
-    expect(markers.has("2026-03-11")).toBe(false);
+  it("shows the forecast's estimates on days that aren't logged", () => {
+    const cell = cells("2026-04-01", true);
+
+    expect(cell("2026-04-09")?.estimate).toBe("fertile");
+    expect(cell("2026-04-14")?.estimate).toBe("ovulation");
+    expect(cell("2026-04-28")?.estimate).toBe("predicted-period");
   });
 
   it("omits retrospective fertile windows when fertility is hidden", () => {
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
+    const cell = cells("2026-03-01", false);
 
-    const markers = buildCalendarMarkers(
-      summary,
-      false,
-      "2026-03-01",
-      "2026-04-05",
-      ["2026-03-17"],
-    );
-
-    expect([...markers.values()].some((m) => m !== "predicted-period")).toBe(
-      false,
-    );
-  });
-
-  it("repeats the expected period every cycle across the window", () => {
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    // A window two cycles out still gets the forecast: 2026-04-28 + 2×28d.
-    const markers = buildCalendarMarkers(
-      summary,
-      false,
-      "2026-06-01",
-      "2026-07-05",
-    );
-
-    expect(markers.get("2026-06-23")).toBe("predicted-period");
-    expect(markers.get("2026-06-26")).toBe("predicted-period");
-    // The next run starts a full cycle later.
-    expect(markers.get("2026-07-21" as never)).toBeUndefined();
-  });
-
-  it("repeats a short learned cycle every cycleLength days, not 28", () => {
-    const summary: CycleSummary = {
-      cycleDay: 6,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-06-11",
-      nextPeriod: { date: "2026-06-25", daysUntil: 19 },
-      cycleLength: 24,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    const markers = buildCalendarMarkers(
-      summary,
-      false,
-      "2026-06-01",
-      "2026-08-01",
-    );
-
-    // Runs repeat every 24 days: 2026-06-25, then 2026-07-19.
-    expect(markers.get("2026-06-25")).toBe("predicted-period");
-    expect(markers.get("2026-07-19")).toBe("predicted-period");
-    // Not 28 days later (2026-06-25 + 28 = 2026-07-23 would be the 28-day case).
-    expect(markers.has("2026-07-23")).toBe(false);
-  });
-
-  it("paints the overdue expected period on its past dates without rolling forward", () => {
-    // Cycle started 2026-03-13, cycleLength 28 -> predicted 2026-04-10, but today
-    // is 2026-04-18 (8 days late). The prediction stays on its original dates.
-    const summary: CycleSummary = {
-      cycleDay: 37,
-      phaseLabel: "luteal",
-      fertile: false,
-      ovulationDate: "2026-03-27",
-      nextPeriod: { date: "2026-04-10", daysUntil: -8 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    const markers = buildCalendarMarkers(
-      summary,
-      false,
-      "2026-04-01",
-      "2026-04-30",
-    );
-
-    // The overdue run sits on the days it was expected (2026-04-10..13), painted
-    // in the past rather than moved to today.
-    expect(markers.get("2026-04-10")).toBe("predicted-period");
-    expect(markers.get("2026-04-13")).toBe("predicted-period");
-    expect(markers.has("2026-04-14")).toBe(false);
-    // Nothing painted before the (overdue) start.
-    expect(markers.has("2026-04-09")).toBe(false);
-  });
-
-  it("shows no expected period in months before it starts", () => {
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    const markers = buildCalendarMarkers(
-      summary,
-      false,
-      "2026-02-01",
-      "2026-03-08",
-    );
-
-    expect([...markers.values()].some((m) => m === "predicted-period")).toBe(
-      false,
-    );
+    expect(cell("2026-03-12")?.estimate).toBeNull();
+    expect(cell("2026-03-17")?.estimate).toBeNull();
   });
 
   it("drops fertility markers but keeps the expected period when hidden", () => {
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-28", daysUntil: 14 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
+    const cell = cells("2026-04-01", false);
 
-    const markers = buildCalendarMarkers(
-      summary,
-      false,
-      "2026-04-01",
-      "2026-05-05",
-    );
-
-    expect(markers.has("2026-04-14")).toBe(false);
-    expect(markers.has("2026-04-09")).toBe(false);
-    expect(markers.get("2026-04-28")).toBe("predicted-period");
+    expect(cell("2026-04-14")?.estimate).toBeNull();
+    expect(cell("2026-04-09")?.estimate).toBeNull();
+    expect(cell("2026-04-28")?.estimate).toBe("predicted-period");
   });
 
-  it("numbers each day of the current cycle up to the next expected period", () => {
-    // Cycle starts 2026-04-01 (nextPeriod - cycleLength); numbering stops before it.
-    const summary: CycleSummary = {
-      cycleDay: 10,
-      phaseLabel: "follicular",
-      fertile: false,
-      ovulationDate: "2026-04-14",
-      nextPeriod: { date: "2026-04-29", daysUntil: 19 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
+  it("shows a logged day's flow instead of its estimate or number", () => {
+    const cell = cells("2026-04-01", true);
 
-    const numbers = buildCycleDayNumbers(
-      summary,
-      "2026-04-10",
-      "2026-04-01",
-      "2026-05-05",
-    );
-
-    expect(numbers.get("2026-04-01")).toBe(1);
-    expect(numbers.get("2026-04-10")).toBe(10);
-    expect(numbers.get("2026-04-28")).toBe(28);
-    // The next expected period is the next cycle's day 1, so it is not numbered.
-    expect(numbers.has("2026-04-29")).toBe(false);
-    // Days before the cycle start (outside the window's cycle) get nothing.
-    expect(numbers.has("2026-03-31")).toBe(false);
-  });
-
-  it("keeps counting through today when the predicted period is overdue", () => {
-    // Cycle started 2026-03-13; the predicted next period (day 29, 2026-04-10)
-    // has already passed with no new log, so today is day 37.
-    const summary: CycleSummary = {
-      cycleDay: 37,
-      phaseLabel: "luteal",
-      fertile: false,
-      ovulationDate: "2026-03-27",
-      nextPeriod: { date: "2026-04-10", daysUntil: -8 },
-      cycleLength: 28,
-      periodLength: 4,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "learned",
-    };
-
-    const numbers = buildCycleDayNumbers(
-      summary,
-      "2026-04-18",
-      "2026-03-01",
-      "2026-05-05",
-    );
-
-    // The overdue predicted start and today both keep a running number.
-    expect(numbers.get("2026-04-10")).toBe(29);
-    expect(numbers.get("2026-04-18")).toBe(37);
-    // Nothing past today.
-    expect(numbers.has("2026-04-19")).toBe(false);
-  });
-
-  it("produces no cycle-day numbers before a cycle can be estimated", () => {
-    const summary: CycleSummary = {
+    expect(cell("2026-03-31")).toMatchObject({
+      isLogged: true,
+      flow: "heavy",
+      estimate: null,
       cycleDay: null,
-      phaseLabel: "unknown",
-      fertile: false,
-      ovulationDate: null,
-      nextPeriod: { date: null, daysUntil: null },
-      cycleLength: 28,
-      periodLength: 5,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "insufficient",
-    };
-
-    expect(
-      buildCycleDayNumbers(summary, "2026-04-18", "2026-04-01", "2026-05-05")
-        .size,
-    ).toBe(0);
+    });
+    // Logged without a level: still logged, with no flow claimed.
+    expect(cell("2026-04-01")).toMatchObject({ isLogged: true, flow: null });
+    expect(cell("2026-04-02")).toMatchObject({ isLogged: false, cycleDay: 3 });
   });
 
-  it("produces no markers before a cycle can be estimated", () => {
-    const summary: CycleSummary = {
-      cycleDay: null,
-      phaseLabel: "unknown",
-      fertile: false,
-      ovulationDate: null,
-      nextPeriod: { date: null, daysUntil: null },
-      cycleLength: 28,
-      periodLength: 5,
-      fertileWindow: { start: -5, end: 1 },
-      estimateMode: "insufficient",
-    };
-
-    expect(
-      buildCalendarMarkers(summary, true, "2026-04-01", "2026-05-05").size,
-    ).toBe(0);
+  it("numbers only days that have happened, and only when asked", () => {
+    expect(cells("2026-04-01", true)("2026-04-09")?.cycleDay).toBe(10);
+    expect(cells("2026-04-01", true)("2026-04-10")?.cycleDay).toBeNull();
+    expect(cells("2026-04-01", true, false)("2026-04-09")?.cycleDay).toBeNull();
   });
 });

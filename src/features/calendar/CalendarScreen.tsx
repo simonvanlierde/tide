@@ -8,6 +8,7 @@ import { useToday } from "../../state/useToday";
 import { formatShortDate } from "../../utils/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarMonthPicker } from "./CalendarMonthPicker";
+import type { CalendarCell } from "./calendar";
 import { DayFlowPicker } from "./DayFlowPicker";
 import { useCalendar } from "./useCalendar";
 
@@ -138,7 +139,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
           <button
             type="button"
             className="calendar-picker-button calendar__month-button"
-            aria-expanded={model.isPickerOpen}
+            aria-expanded={model.monthPicker.isPickerOpen}
             aria-controls="calendar-month-picker"
             onClick={model.openPicker}
           >
@@ -165,18 +166,13 @@ export function CalendarScreen(props: CalendarScreenProps) {
           onTouchEnd={handleTouchEnd}
         >
           <CalendarGrid
-            monthDays={model.monthDays}
-            loggedDays={model.loggedDays}
-            dayIntensity={model.dayIntensity}
-            cycleDayNumbers={model.cycleDayNumbers}
-            showCycleDayNumbers={model.showCycleDayNumbers}
-            cycleMarkers={model.cycleMarkers}
+            days={model.days}
             selectedDay={model.selectedDay ?? model.rangePick?.from ?? null}
             justLoggedDay={model.justLoggedDay}
             onSelectDay={model.selectDay}
           />
         </div>
-        <CalendarLegend present={model.presentMarkers} />
+        <CalendarLegend days={model.days} />
         {model.selectedDay ? (
           <DayFlowPicker
             day={model.selectedDay}
@@ -225,15 +221,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
             </button>
           </p>
         ) : (
-          <p className="supporting-note calendar__help">
-            {t(
-              model.periodDays.length === 0
-                ? "calendar.emptyHelp"
-                : model.isWholeMonthFuture
-                  ? "calendar.futureHelp"
-                  : "calendar.tapHelp",
-            )}
-          </p>
+          <p className="supporting-note calendar__help">{t(model.helpKey)}</p>
         )}
         {model.selectedDay ? null : (
           // One button that turns into Cancel, so focus stays put when a
@@ -275,13 +263,22 @@ const LEGEND_ITEMS = [
   { key: "ovulation", labelKey: "legend.ovulation" },
 ] as const satisfies readonly { key: string; labelKey: MessageKey }[];
 
-export type LegendKey = (typeof LEGEND_ITEMS)[number]["key"];
+const LEGEND_KEY = {
+  "predicted-period": "predicted",
+  fertile: "fertile",
+  ovulation: "ovulation",
+} as const;
 
 // Only the markers actually on screen this month get a key entry; a legend
 // for things that aren't there is noise. The per-day buttons announce their
 // own marker to screen readers, so the visual legend is decorative here.
-function CalendarLegend({ present }: { present: ReadonlySet<LegendKey> }) {
+function CalendarLegend({ days }: { days: CalendarCell[] }) {
   const t = useT();
+  const present = new Set(
+    days.map((day) =>
+      day.isLogged ? "logged" : day.estimate && LEGEND_KEY[day.estimate],
+    ),
+  );
   const items = LEGEND_ITEMS.filter((item) => present.has(item.key));
   if (items.length === 0) {
     return null;

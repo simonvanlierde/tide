@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getPeriodDays } from "../../src/domain/flow";
-import {
-  appStateReducer,
-  selectCycleStats,
-  selectCycleSummary,
-} from "../../src/state/core";
+import { appStateReducer, selectForecast } from "../../src/state/core";
 import { createAppState, createLearnedCycleState } from "../support/app";
 
 describe("app state core selectors", () => {
@@ -122,13 +118,13 @@ describe("app state core selectors", () => {
       periodDays: ["2026-04-02"],
       intensityByDay: { "2026-04-02": "spotting" },
     });
-    expect(selectCycleSummary(spotting, "2026-04-10").estimateMode).toBe(
+    expect(selectForecast(spotting, "2026-04-10").estimateMode).toBe(
       "insufficient",
     );
 
     // The same day logged as real bleeding does anchor a prediction.
     const bleeding = createAppState({ periodDays: ["2026-04-02"] });
-    expect(selectCycleSummary(bleeding, "2026-04-10").estimateMode).toBe(
+    expect(selectForecast(bleeding, "2026-04-10").estimateMode).toBe(
       "fallback",
     );
   });
@@ -136,7 +132,7 @@ describe("app state core selectors", () => {
   it("derives the cycle summary from plain app state", () => {
     const state = createLearnedCycleState();
 
-    expect(selectCycleSummary(state, "2026-04-18")).toMatchObject({
+    expect(selectForecast(state, "2026-04-18")).toMatchObject({
       cycleDay: 17,
       phaseLabel: "luteal",
       nextPeriod: {
@@ -151,7 +147,7 @@ describe("app state core selectors", () => {
     const state = createAppState({
       periodDays: ["2026-08-01", "2026-08-02", "2026-08-03", "2099-01-01"],
     });
-    const summary = selectCycleSummary(state, "2026-08-22");
+    const summary = selectForecast(state, "2026-08-22");
 
     expect(summary.cycleDay).toBe(22);
     expect(summary.cycleLength).toBe(28);
@@ -163,7 +159,7 @@ describe("app state core selectors", () => {
       periodDays: ["2026-07-04", "2026-08-01", "2099-01-01"],
     });
 
-    expect(selectCycleStats(state, "2026-08-22")).toEqual({
+    expect(selectForecast(state, "2026-08-22").stats).toEqual({
       cyclesTracked: 1,
       variabilityDays: null,
     });

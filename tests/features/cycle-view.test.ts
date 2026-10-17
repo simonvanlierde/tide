@@ -1,11 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { buildCycleSummary } from "../../src/domain/cycle";
-import type { IsoDate } from "../../src/domain/types";
+import { forecast } from "../../src/domain/cycle";
+import type { IsoDate, LoggedFlow } from "../../src/domain/types";
 import {
   buildCycleSegments,
   getSegmentStatus,
 } from "../../src/features/today/CycleView";
 import { startsEndingOn } from "../support/cycles";
+
+// Days logged with a one-tap (no level chosen).
+function logged(days: IsoDate[]): Record<IsoDate, LoggedFlow> {
+  return Object.fromEntries(days.map((day) => [day, null]));
+}
 
 describe("buildCycleSegments", () => {
   it("maps a learned cycle with logged days onto day segments", () => {
@@ -14,9 +19,14 @@ describe("buildCycleSegments", () => {
       ...startsEndingOn("2026-04-02", [28, 29, 27]),
       "2026-04-03",
     ];
-    const summary = buildCycleSummary({ today, periodDays });
+    const summary = forecast({ today, periodDays });
 
-    const segments = buildCycleSegments(summary, periodDays, today, true);
+    const segments = buildCycleSegments(
+      summary,
+      logged(periodDays),
+      today,
+      true,
+    );
 
     // 28-day learned cycle -> one segment per day, no phantom next-cycle day.
     expect(segments).toHaveLength(28);
@@ -56,9 +66,14 @@ describe("buildCycleSegments", () => {
       ...startsEndingOn("2026-06-01", [24, 24, 25]), // median 24
       "2026-06-02",
     ];
-    const summary = buildCycleSummary({ today, periodDays });
+    const summary = forecast({ today, periodDays });
 
-    const segments = buildCycleSegments(summary, periodDays, today, true);
+    const segments = buildCycleSegments(
+      summary,
+      logged(periodDays),
+      today,
+      true,
+    );
 
     // A 24-day cycle gets a 24-day ring — not the old 28-day floor. The next
     // period then lands on the day past the arc (the dial's nub), so the ring
@@ -76,12 +91,17 @@ describe("buildCycleSegments", () => {
   it("maps a fallback 28-day cycle from a single logged start", () => {
     const today: IsoDate = "2026-04-19";
     const periodDays: IsoDate[] = ["2026-04-19", "2026-04-20"];
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today,
       periodDays,
     });
 
-    const segments = buildCycleSegments(summary, periodDays, today, true);
+    const segments = buildCycleSegments(
+      summary,
+      logged(periodDays),
+      today,
+      true,
+    );
 
     expect(segments).toHaveLength(28);
     // Only the day on/before today counts as logged (2026-04-20 is in the future).
@@ -96,12 +116,17 @@ describe("buildCycleSegments", () => {
   it("omits fertile and ovulation segments when fertility is hidden", () => {
     const today: IsoDate = "2026-04-18";
     const periodDays: IsoDate[] = ["2026-04-19", "2026-04-20"];
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today,
       periodDays,
     });
 
-    const segments = buildCycleSegments(summary, periodDays, today, false);
+    const segments = buildCycleSegments(
+      summary,
+      logged(periodDays),
+      today,
+      false,
+    );
 
     expect(segments.some((segment) => segment.isFertile)).toBe(false);
     expect(segments.some((segment) => segment.isOvulation)).toBe(false);
@@ -109,12 +134,12 @@ describe("buildCycleSegments", () => {
 
   it("returns a flat 28-day track when the cycle day is unknown", () => {
     const today: IsoDate = "2026-04-18";
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today,
       periodDays: [],
     });
 
-    const segments = buildCycleSegments(summary, [], today, true);
+    const segments = buildCycleSegments(summary, logged([]), today, true);
 
     expect(segments).toHaveLength(28);
     expect(
@@ -129,8 +154,8 @@ describe("buildCycleSegments", () => {
 describe("getSegmentStatus", () => {
   const today: IsoDate = "2026-04-18";
   const periodDays: IsoDate[] = ["2026-03-05", "2026-04-02", "2026-04-03"];
-  const summary = buildCycleSummary({ today, periodDays });
-  const segments = buildCycleSegments(summary, periodDays, today, true);
+  const summary = forecast({ today, periodDays });
+  const segments = buildCycleSegments(summary, logged(periodDays), today, true);
 
   function statusOf(dayNumber: number) {
     const segment = segments[dayNumber - 1];
@@ -150,13 +175,13 @@ describe("getSegmentStatus", () => {
 
   it("marks overdue days past the predicted period start", () => {
     const overdueToday: IsoDate = "2026-05-01";
-    const overdueSummary = buildCycleSummary({
+    const overdueSummary = forecast({
       today: overdueToday,
       periodDays,
     });
     const overdueSegments = buildCycleSegments(
       overdueSummary,
-      periodDays,
+      logged(periodDays),
       overdueToday,
       true,
     );
@@ -169,11 +194,16 @@ describe("getSegmentStatus", () => {
   });
 
   it("returns no status without cycle data", () => {
-    const unknownSummary = buildCycleSummary({
+    const unknownSummary = forecast({
       today,
       periodDays: [],
     });
-    const unknownSegments = buildCycleSegments(unknownSummary, [], today, true);
+    const unknownSegments = buildCycleSegments(
+      unknownSummary,
+      logged([]),
+      today,
+      true,
+    );
 
     expect(
       unknownSegments[0] &&
