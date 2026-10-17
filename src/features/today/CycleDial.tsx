@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import type { CycleSummary, IsoDate, LoggedFlow } from "../../domain/types";
+import type { Forecast, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
@@ -17,9 +17,8 @@ import {
 } from "./dialGeometry";
 
 interface CycleDialProps {
-  summary: CycleSummary;
+  forecast: Forecast;
   phaseLabel: string;
-  periodDays: IsoDate[];
   intensityByDay: Record<IsoDate, LoggedFlow>;
   today: IsoDate;
   showFertility: boolean;
@@ -153,9 +152,8 @@ function getTicksStyle(total: number, predictedCount: number) {
 }
 
 export function CycleDial({
-  summary,
+  forecast,
   phaseLabel,
-  periodDays,
   intensityByDay,
   today,
   showFertility,
@@ -164,7 +162,7 @@ export function CycleDial({
   const locale = useLocale();
   // Resolve a segment's status key to text, falling back to the phase line.
   const statusText = (segment: CycleSegment) => {
-    const key = getSegmentStatus(segment, summary);
+    const key = getSegmentStatus(segment, forecast);
     return key ? t(key) : phaseLabel;
   };
   const frameRef = useRef<HTMLDivElement>(null);
@@ -183,15 +181,8 @@ export function CycleDial({
   const dragRect = useRef<DOMRect | null>(null);
 
   const segments = useMemo(
-    () =>
-      buildCycleSegments(
-        summary,
-        periodDays,
-        today,
-        showFertility,
-        intensityByDay,
-      ),
-    [summary, periodDays, today, showFertility, intensityByDay],
+    () => buildCycleSegments(forecast, intensityByDay, today, showFertility),
+    [forecast, intensityByDay, today, showFertility],
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
 
@@ -204,7 +195,7 @@ export function CycleDial({
   // the next-period date has already been folded into the ring as its "Period
   // expected" tail, so a nub past the arc would double it and mislabel a past
   // date as a future cycle day.
-  const nextDate = summary.nextPeriod.date;
+  const nextDate = forecast.nextPeriod.date;
   const hasPrediction =
     nextDate !== null && nextDate > today && Boolean(segments[0]?.date);
   const cycleDayCount = segments.length;
@@ -256,7 +247,7 @@ export function CycleDial({
       : null;
   const centerDay = isPredictedPreview
     ? (previewIndex ?? 0) + 1
-    : (preview?.dayNumber ?? summary.cycleDay);
+    : (preview?.dayNumber ?? forecast.cycleDay);
   const centerStatus = isPredictedPreview
     ? t("status.periodExpected")
     : preview
@@ -288,7 +279,7 @@ export function CycleDial({
           .filter(Boolean)
           .join(", ")
       : [
-          t("dial.day", { n: summary.cycleDay ?? t("common.unknown") }),
+          t("dial.day", { n: forecast.cycleDay ?? t("common.unknown") }),
           formatShortDate(today, locale),
           phaseLabel,
         ].join(", ");
@@ -363,7 +354,7 @@ export function CycleDial({
         aria-valuenow={
           isPredictedPreview
             ? (previewIndex ?? 0) + 1
-            : (preview?.dayNumber ?? summary.cycleDay ?? 1)
+            : (preview?.dayNumber ?? forecast.cycleDay ?? 1)
         }
         aria-valuetext={valueText}
         tabIndex={0}
@@ -436,9 +427,9 @@ export function CycleDial({
         // The key only names colours the ring actually shows: no coral dot
         // over an all-grey first-run ring, no sand or amber without an
         // ovulation estimate.
-        showPeriod={periodDays.length > 0}
+        showPeriod={Object.keys(intensityByDay).length > 0}
         showExpected={hasPrediction}
-        showFertility={showFertility && summary.ovulationDate !== null}
+        showFertility={showFertility && forecast.ovulationDate !== null}
       />
     </section>
   );

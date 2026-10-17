@@ -1,5 +1,10 @@
 import { DEFAULT_CYCLE_LENGTH } from "../../domain/cycle";
-import type { CycleSummary, IsoDate, LoggedFlow } from "../../domain/types";
+import type {
+  CycleSummary,
+  Forecast,
+  IsoDate,
+  LoggedFlow,
+} from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { addDays, differenceInDays } from "../../utils/date";
 
@@ -14,70 +19,50 @@ export interface CycleSegment {
   isOvulation: boolean;
 }
 
+// One segment per day of the current cycle, read from the forecast. Without a
+// live forecast the ring is a flat, dateless 28-day track.
 export function buildCycleSegments(
-  summary: CycleSummary,
-  periodDays: IsoDate[],
+  forecast: Forecast,
+  intensityByDay: Record<IsoDate, LoggedFlow>,
   today: IsoDate,
   showFertility: boolean,
-  intensityByDay: Record<IsoDate, LoggedFlow> = {},
-) {
-  const totalDays =
-    summary.nextPeriod.daysUntil !== null && summary.cycleDay !== null
-      ? Math.max(
-          // cycleDay + daysUntil counts today twice (it is both the last day of
-          // this cycle and day 0 of the countdown), so subtract 1 — this is the
-          // learned cycle length. The ring spans exactly that many days, so the
-          // next period lands on the day after the arc, not somewhere inside a
-          // padded ring. cycleDay wins when a period is overdue and the cycle
-          // runs long past its expected length.
-          summary.cycleDay + summary.nextPeriod.daysUntil - 1,
-          summary.cycleDay,
-        )
-      : DEFAULT_CYCLE_LENGTH;
-  const cycleStartDate =
-    summary.cycleDay !== null ? addDays(today, -(summary.cycleDay - 1)) : null;
-  const ovulationDay =
-    summary.cycleDay !== null && summary.ovulationDate
-      ? summary.cycleDay + differenceInDays(summary.ovulationDate, today)
-      : null;
-  const fertileStart =
-    ovulationDay !== null ? ovulationDay + summary.fertileWindow.start : null;
-  const fertileEnd =
-    ovulationDay !== null ? ovulationDay + summary.fertileWindow.end : null;
+): CycleSegment[] {
+  const { cycleStart, cycleEnd } = forecast;
+  if (cycleStart === null || cycleEnd === null) {
+    return Array.from({ length: DEFAULT_CYCLE_LENGTH }, (_, index) => ({
+      dayNumber: index + 1,
+      date: null,
+      isCurrent: false,
+      isPeriod: false,
+      flow: null,
+      isFertile: false,
+      isOvulation: false,
+    }));
+  }
 
-  const loggedDays =
-    cycleStartDate === null
-      ? new Set<string>()
-      : new Set(
-          periodDays.filter((day) => day >= cycleStartDate && day <= today),
-        );
-
-  return Array.from({ length: totalDays }, (_, index) => {
-    const dayNumber = index + 1;
-    const dateValue =
-      cycleStartDate === null ? null : addDays(cycleStartDate, index);
-    const isPeriod = dateValue !== null && loggedDays.has(dateValue);
-
-    return {
-      dayNumber,
-      date: dateValue,
-      isCurrent: dayNumber === summary.cycleDay,
-      isPeriod,
-      // null on a period day means "logged, level not chosen" — the ring shows
-      // it in base coral (see phaseColor, which keys off isPeriod first).
-      flow:
-        isPeriod && dateValue !== null
-          ? (intensityByDay[dateValue] ?? null)
-          : null,
-      isFertile:
-        showFertility &&
-        fertileStart !== null &&
-        fertileEnd !== null &&
-        dayNumber >= fertileStart &&
-        dayNumber <= fertileEnd,
-      isOvulation: showFertility && ovulationDay === dayNumber,
-    } satisfies CycleSegment;
-  });
+  return Array.from(
+    { length: differenceInDays(cycleEnd, cycleStart) + 1 },
+    (_, index) => {
+      const date = addDays(cycleStart, index);
+      const { estimate } = forecast.dayInfo(date);
+      // A logged future day (imported, or a clock that moved back) isn't a
+      // fact yet, so the ring leaves it out.
+      const isPeriod = date <= today && date in intensityByDay;
+      return {
+        dayNumber: index + 1,
+        date,
+        isCurrent: index + 1 === forecast.cycleDay,
+        isPeriod,
+        // null on a period day means "logged, level not chosen": the ring
+        // shows it in base coral (see phaseColor, which keys off isPeriod).
+        flow: isPeriod ? (intensityByDay[date] ?? null) : null,
+        // The ovulation day is part of the fertile window too.
+        isFertile:
+          showFertility && (estimate === "fertile" || estimate === "ovulation"),
+        isOvulation: showFertility && estimate === "ovulation",
+      };
+    },
+  );
 }
 
 // Returns the message key for the segment's status (localized by the caller),

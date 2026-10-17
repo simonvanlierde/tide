@@ -1,6 +1,5 @@
 import { ChevronRight } from "lucide-react";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
-import { getPeriodDays } from "../../domain/flow";
 import { getReminderState } from "../../domain/reminders";
 import type {
   CycleEstimateMode,
@@ -96,11 +95,10 @@ export function TodayScreen(props: TodayScreenProps) {
         })}
       </h1>
       <CycleDial
-        summary={forecast}
+        forecast={forecast}
         phaseLabel={
           isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)
         }
-        periodDays={getPeriodDays(state.intensityByDay)}
         intensityByDay={state.intensityByDay}
         today={today}
         showFertility={showFertility}
