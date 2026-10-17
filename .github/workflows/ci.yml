@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
 
       - name: Set up toolchain
         uses: ./.github/actions/setup-node-pnpm
@@ -42,6 +44,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      # The image's system-ui falls back to WenQuanYi Zen Hei, whose Latin is
+      # narrower than what Linux users get. DejaVu Sans, a common Linux default
+      # and one of the wider ones, makes the layout tests catch clipped labels.
+      - name: Install DejaVu Sans
+        shell: bash
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends fonts-dejavu-core
 
       - name: Set up toolchain
         uses: ./.github/actions/setup-node-pnpm

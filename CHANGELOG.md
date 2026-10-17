@@ -44,6 +44,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- The theme picker in Settings no longer cuts "Système" or "Systeem" short on
+  phones about 390px wide when the system font runs wide, as DejaVu Sans does
+  on many Linux setups.
 - When a newer version of Tide saved your data, Settings showed the notice
   twice. It now shows once, at the top, with the Reload button.
 - An app left open overnight now moves to the new day, so logging today no
