@@ -285,7 +285,7 @@ function withTimeline(
   stats: CycleStats,
   cycleStart: IsoDate | null,
   cycleEnd: IsoDate | null,
-  // In date order: a later window's day overrides an earlier one's.
+  // Oldest first.
   ovulationDates: IsoDate[],
 ): Forecast {
   const { cycleLength, periodLength, fertileWindow } = summary;
@@ -308,10 +308,17 @@ function withTimeline(
       ) {
         estimate = "predicted-period";
       } else {
-        for (const ovulation of ovulationDates) {
+        // Latest window first, so where two overlap the later one wins, and
+        // the windows that ended before this date are never visited.
+        for (let index = ovulationDates.length - 1; index >= 0; index--) {
+          const ovulation = ovulationDates[index] as IsoDate;
           const offset = differenceInDays(date, ovulation);
-          if (offset >= fertileWindow.start && offset <= fertileWindow.end) {
+          if (offset > fertileWindow.end) {
+            break;
+          }
+          if (offset >= fertileWindow.start) {
             estimate = offset === 0 ? "ovulation" : "fertile";
+            break;
           }
         }
       }

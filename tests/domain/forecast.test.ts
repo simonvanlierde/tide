@@ -211,6 +211,25 @@ describe("forecast timeline", () => {
     expect(future.dayInfo("2026-04-28").estimate).toBe("predicted-period");
   });
 
+  it("lets the later of two overlapping fertile windows win", () => {
+    // Cycles of 10 and 30 days widen the window to its cap (-10..+6), so the
+    // 01-27 ovulation sits inside the next window, centred on 02-06.
+    const irregular = forecast({
+      today: "2026-03-24",
+      periodDays: [
+        "2026-01-01",
+        "2026-01-11",
+        "2026-02-10",
+        "2026-02-20",
+        "2026-03-22",
+      ],
+    });
+
+    expect(irregular.fertileWindow).toEqual({ start: -10, end: 6 });
+    expect(irregular.dayInfo("2026-01-27").estimate).toBe("fertile");
+    expect(irregular.dayInfo("2026-02-06").estimate).toBe("ovulation");
+  });
+
   it("drops a stale forecast but keeps past fertile windows", () => {
     const stale = forecast({
       today: "2026-08-22",
