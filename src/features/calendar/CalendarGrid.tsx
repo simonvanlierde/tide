@@ -1,5 +1,5 @@
 import { type KeyboardEvent, useMemo, useState } from "react";
-import type { IsoDate, LoggedFlow } from "../../domain/types";
+import type { DayEstimate, IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
 import {
@@ -7,39 +7,29 @@ import {
   getWeekdayLabels,
   parseIsoDate,
 } from "../../utils/date";
-import type { CalendarDay, DayMarker } from "./calendar";
+import type { CalendarCell } from "./calendar";
 
-const MARKER_CLASS: Record<DayMarker, string> = {
+const MARKER_CLASS: Record<DayEstimate, string> = {
   fertile: "is-fertile",
   ovulation: "is-ovulation",
   "predicted-period": "is-predicted-period",
 };
 
-const MARKER_LABEL_KEY: Record<DayMarker, MessageKey> = {
+const MARKER_LABEL_KEY: Record<DayEstimate, MessageKey> = {
   fertile: "marker.fertile",
   ovulation: "marker.ovulation",
   "predicted-period": "marker.predictedPeriod",
 };
 
 interface CalendarGridProps {
-  monthDays: CalendarDay[];
-  loggedDays: Set<IsoDate>;
-  dayIntensity: Map<IsoDate, LoggedFlow>;
-  cycleDayNumbers: Map<IsoDate, number>;
-  showCycleDayNumbers: boolean;
-  cycleMarkers: Map<IsoDate, DayMarker>;
+  days: CalendarCell[];
   selectedDay: IsoDate | null;
   justLoggedDay: IsoDate | null;
   onSelectDay: (day: IsoDate) => void;
 }
 
 export function CalendarGrid({
-  monthDays,
-  loggedDays,
-  dayIntensity,
-  cycleDayNumbers,
-  showCycleDayNumbers,
-  cycleMarkers,
+  days,
   selectedDay,
   justLoggedDay,
   onSelectDay,
@@ -52,9 +42,7 @@ export function CalendarGrid({
   // it is a wall. The stop is the selected day, else today, else the first
   // loggable day.
   const [focusedDay, setFocusedDay] = useState<IsoDate | null>(null);
-  const loggableDays = monthDays.filter(
-    (day) => !day.isFuture || loggedDays.has(day.value),
-  );
+  const loggableDays = days.filter((day) => !day.isFuture || day.isLogged);
   const tabStop =
     [focusedDay, selectedDay].find(
       (day) => day && loggableDays.some((entry) => entry.value === day),
@@ -81,8 +69,8 @@ export function CalendarGrid({
       return;
     }
     event.preventDefault();
-    const day = monthDays[target];
-    if (!day || (day.isFuture && !loggedDays.has(day.value))) {
+    const day = days[target];
+    if (!day || (day.isFuture && !day.isLogged)) {
       return;
     }
     setFocusedDay(day.value);
@@ -91,7 +79,7 @@ export function CalendarGrid({
       ?.querySelectorAll<HTMLButtonElement>(".calendar-grid__day")
       [target]?.focus();
   }
-  const weekStarts = monthDays
+  const weekStarts = days
     .map((_, index) => index)
     .filter((index) => index % 7 === 0);
 
@@ -109,23 +97,12 @@ export function CalendarGrid({
       </thead>
       <tbody className="calendar-grid__body">
         {weekStarts.map((weekStart) => (
-          <tr key={monthDays[weekStart]?.key} className="calendar-grid__week">
-            {monthDays.slice(weekStart, weekStart + 7).map((day, offset) => {
+          <tr key={days[weekStart]?.key} className="calendar-grid__week">
+            {days.slice(weekStart, weekStart + 7).map((day, offset) => {
               const index = weekStart + offset;
-              const value = day.value;
-              const isLogged = loggedDays.has(value);
-              // One series only: the running cycle-day count, on days that have
-              // happened. The coral run already says which period day a logged
-              // cell is, and a number on a future cell would read as a fact.
-              const dayNumber =
-                showCycleDayNumbers && !isLogged && !day.isFuture
-                  ? cycleDayNumbers.get(value)
-                  : undefined;
               // Logged days take the coral fill, deepened by flow level; without a
-              // chosen level the base .is-logged coral stands. A prediction only
-              // shows on days that aren't already logged.
-              const flow = isLogged ? (dayIntensity.get(value) ?? null) : null;
-              const marker = isLogged ? undefined : cycleMarkers.get(value);
+              // chosen level the base .is-logged coral stands.
+              const { value, isLogged, flow, estimate: marker } = day;
               const isSelected = value === selectedDay;
               const className = [
                 "calendar-grid__day",
@@ -175,12 +152,12 @@ export function CalendarGrid({
                     onClick={() => onSelectDay(value)}
                   >
                     {parseIsoDate(value).getUTCDate()}
-                    {dayNumber ? (
+                    {day.cycleDay ? (
                       <span
                         className="calendar-grid__period-day"
                         aria-hidden="true"
                       >
-                        {dayNumber}
+                        {day.cycleDay}
                       </span>
                     ) : null}
                   </button>
