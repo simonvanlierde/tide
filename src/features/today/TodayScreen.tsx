@@ -13,8 +13,7 @@ import {
   type Translate,
   useAppState,
   useAppStateActions,
-  useCycleStats,
-  useCycleSummary,
+  useForecast,
   useIsReadOnly,
   useLocale,
   useT,
@@ -40,8 +39,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const actions = useAppStateActions();
   const t = useT();
   const locale = useLocale();
-  const summary = useCycleSummary(today);
-  const stats = useCycleStats(today);
+  const forecast = useForecast(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const insightsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
@@ -49,7 +47,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const showFertility = state.settings.showFertility === true;
   const askFertility =
     state.settings.showFertility === null &&
-    summary.ovulationDate !== null &&
+    forecast.ovulationDate !== null &&
     !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
@@ -68,24 +66,24 @@ export function TodayScreen(props: TodayScreenProps) {
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
     today,
-    nextPeriodDate: summary.nextPeriod.date,
+    nextPeriodDate: forecast.nextPeriod.date,
     isTodayLogged,
     dismissedOn: state.settings.dismissedOn,
   });
-  const learningNote = getLearningNote(t, summary.estimateMode);
+  const learningNote = getLearningNote(t, forecast.estimateMode);
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
   // today is logged it drops to calm: "Remove" is a secondary, undo-style action.
   const isOverdue =
-    summary.nextPeriod.daysUntil !== null && summary.nextPeriod.daysUntil < 0;
+    forecast.nextPeriod.daysUntil !== null && forecast.nextPeriod.daysUntil < 0;
   // Prominent when a fresh bleed is plausible, and on first run: with nothing
   // logged, the log button is the only thing to do, so it must read as the
   // one action. Once today is logged the whole block turns calm.
   const logVariant =
     !isTodayLogged &&
-    (summary.phaseLabel === "menstrual" ||
+    (forecast.phaseLabel === "menstrual" ||
       reminderState.isExpectedSoon ||
-      summary.estimateMode === "insufficient")
+      forecast.estimateMode === "insufficient")
       ? "primary"
       : "quiet";
 
@@ -93,14 +91,14 @@ export function TodayScreen(props: TodayScreenProps) {
     <section className="today-screen">
       <h1 className="visually-hidden">
         {t("today.srCycleDay", {
-          day: summary.cycleDay ?? t("common.unknown"),
-          phase: getPhaseWord(t, summary.phaseLabel),
+          day: forecast.cycleDay ?? t("common.unknown"),
+          phase: getPhaseWord(t, forecast.phaseLabel),
         })}
       </h1>
       <CycleDial
-        summary={summary}
+        summary={forecast}
         phaseLabel={
-          isOverdue ? t("phaseLine.late") : getPhaseLine(t, summary.phaseLabel)
+          isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)
         }
         periodDays={getPeriodDays(state.intensityByDay)}
         intensityByDay={state.intensityByDay}
@@ -125,7 +123,7 @@ export function TodayScreen(props: TodayScreenProps) {
       <div className="fact-list">
         {/* With no estimate, the learning note above is the one line that
             says so; empty rows would only repeat it. */}
-        {summary.estimateMode === "insufficient" ? null : (
+        {forecast.estimateMode === "insufficient" ? null : (
           <dl className="fact-list__rows">
             {/* Once the forecast date has passed, "next period" with a date in
               the past contradicts itself; the row becomes "Period · N days
@@ -136,18 +134,18 @@ export function TodayScreen(props: TodayScreenProps) {
               </dt>
               <dd className="fact__value">
                 <span>
-                  {getNextPeriodPhrase(t, summary.nextPeriod.daysUntil)}
+                  {getNextPeriodPhrase(t, forecast.nextPeriod.daysUntil)}
                 </span>
-                {summary.nextPeriod.date ? (
+                {forecast.nextPeriod.date ? (
                   <span className="fact__meta">
                     {isOverdue
                       ? t("today.expectedOn", {
                           date: formatShortDate(
-                            summary.nextPeriod.date,
+                            forecast.nextPeriod.date,
                             locale,
                           ),
                         })
-                      : formatShortDate(summary.nextPeriod.date, locale)}
+                      : formatShortDate(forecast.nextPeriod.date, locale)}
                   </span>
                 ) : null}
               </dd>
@@ -170,19 +168,19 @@ export function TodayScreen(props: TodayScreenProps) {
                     // The cycle ran past its forecast, so this cycle's ovulation
                     // estimate is spent and the next one isn't known yet.
                     <span>{t("today.fertilityUnclear")}</span>
-                  ) : summary.ovulationDate ? (
+                  ) : forecast.ovulationDate ? (
                     <>
                       <span>
                         {getFertilityEstimate(
                           t,
-                          summary.phaseLabel,
-                          summary.fertile,
+                          forecast.phaseLabel,
+                          forecast.fertile,
                         )}
                       </span>
                       <span className="fact__meta">
                         {getOvulationPhrase(
                           t,
-                          differenceInDays(summary.ovulationDate, today),
+                          differenceInDays(forecast.ovulationDate, today),
                         )}
                       </span>
                       <span className="fact__meta">
@@ -220,8 +218,8 @@ export function TodayScreen(props: TodayScreenProps) {
 
       {insightsOpen ? (
         <CycleInsights
-          summary={summary}
-          stats={stats}
+          summary={forecast}
+          stats={forecast.stats}
           onClose={() => setInsightsOpen(false)}
         />
       ) : null}

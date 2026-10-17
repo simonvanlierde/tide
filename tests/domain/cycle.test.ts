@@ -1,9 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  buildCycleSummary,
+  forecast,
   getAveragePeriodLength,
   getCompletedCycleLengths,
-  getCycleStats,
   getPastOvulationDates,
 } from "../../src/domain/cycle";
 import type { IsoDate } from "../../src/domain/types";
@@ -117,9 +116,9 @@ describe("getAveragePeriodLength", () => {
   });
 });
 
-describe("buildCycleSummary", () => {
+describe("forecast", () => {
   it("ignores future-dated days when picking the current cycle start", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-08-22",
       periodDays: ["2026-08-01", "2026-08-02", "2026-08-03", "2099-01-01"],
     });
@@ -129,7 +128,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("stops forecasting once the expected period is long overdue", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-08-22",
       periodDays: ["2025-07-04", "2025-08-01", "2025-08-02"],
     });
@@ -148,7 +147,7 @@ describe("buildCycleSummary", () => {
       "2026-06-04",
       "2026-06-05",
     ] as const;
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-06-10",
       periodDays: [...periodDays],
     });
@@ -159,7 +158,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("uses a 28-day fallback cycle model when only one cycle start exists", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-19",
       periodDays: ["2026-04-19", "2026-04-20"],
     });
@@ -172,7 +171,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("calculates the current cycle day from the most recent cycle start", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-18",
       periodDays: [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"],
     });
@@ -181,7 +180,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("shows the next period as an estimate in X days", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-18",
       periodDays: [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"],
     });
@@ -191,7 +190,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("returns limited predictions when there is not enough history", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-18",
       periodDays: [],
     });
@@ -204,7 +203,7 @@ describe("buildCycleSummary", () => {
   it("resists an outlier cycle via the median and widens the fertile window when irregular", () => {
     // 45 is an anomalous cycle (illness/travel). A flat mean would drag the
     // estimate to ~31; the median holds at 28.
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-04",
       periodDays: [
         ...startsEndingOn("2026-04-02", [27, 28, 45, 28, 29]),
@@ -220,7 +219,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("keeps the tight biological fertile window for a regular cycler", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-04",
       periodDays: [
         ...startsEndingOn("2026-04-02", [28, 28, 28, 28]),
@@ -250,7 +249,7 @@ describe("buildCycleSummary", () => {
     ];
     expect(getCompletedCycleLengths(periodDays)).toEqual([29, 27, 28]);
 
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-06-24",
       periodDays,
     });
@@ -260,7 +259,7 @@ describe("buildCycleSummary", () => {
 
   it("widens by a whole day only once cycle-length spread reaches a full day", () => {
     // Cycles 26/28/30 days apart: SD ≈ 1.6 days -> one day of widening each side.
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-04",
       periodDays: [...startsEndingOn("2026-04-02", [26, 28, 30]), "2026-04-03"],
     });
@@ -271,7 +270,7 @@ describe("buildCycleSummary", () => {
   it("only counts recent cycles, dropping stale history beyond the window", () => {
     // Six recent 30-day cycles; a run of old 21-day cycles should not pull the
     // estimate down once they fall outside the recency window.
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-04",
       periodDays: [
         ...startsEndingOn("2026-04-02", [21, 21, 21, 30, 30, 30, 30, 30, 30]),
@@ -283,7 +282,7 @@ describe("buildCycleSummary", () => {
   });
 
   it("uses the four user-facing phase names", () => {
-    const summary = buildCycleSummary({
+    const summary = forecast({
       today: "2026-04-18",
       periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
     });
@@ -294,22 +293,32 @@ describe("buildCycleSummary", () => {
   });
 });
 
-describe("getCycleStats", () => {
+describe("forecast stats", () => {
   it("reports no variability until two cycles exist, then the recent spread", () => {
     // One completed cycle: cyclesTracked 1, nothing to compare yet.
-    const one = getCycleStats(["2026-01-01", "2026-01-29"]);
+    const one = forecast({
+      today: "2026-12-31",
+      periodDays: ["2026-01-01", "2026-01-29"],
+    }).stats;
     expect(one.cyclesTracked).toBe(1);
     expect(one.variabilityDays).toBeNull();
 
     // Three cycle starts 28/30 days apart -> two completed cycles [28, 30],
     // with a small non-zero spread. (Cycle length itself lives on the summary.)
-    const many = getCycleStats(["2026-01-01", "2026-01-29", "2026-02-28"]);
+    const many = forecast({
+      today: "2026-12-31",
+      periodDays: ["2026-01-01", "2026-01-29", "2026-02-28"],
+    }).stats;
     expect(many.cyclesTracked).toBe(2);
     expect(many.variabilityDays).toBeGreaterThan(0);
   });
 
   it("reports no tracked cycles with no completed cycles", () => {
-    expect(getCycleStats([]).cyclesTracked).toBe(0);
-    expect(getCycleStats([]).variabilityDays).toBeNull();
+    expect(
+      forecast({ today: "2026-12-31", periodDays: [] }).stats.cyclesTracked,
+    ).toBe(0);
+    expect(
+      forecast({ today: "2026-12-31", periodDays: [] }).stats.variabilityDays,
+    ).toBeNull();
   });
 });

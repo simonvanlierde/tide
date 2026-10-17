@@ -1,7 +1,7 @@
 // Backtest the next-period prediction against real cycle histories.
 // Downloads the Utah Creighton Model dataset (CC BY-NC 3.0, not committed),
 // checks its hash, then walks each woman's cycles forward through the app's own
-// buildCycleSummary. Results and limits: docs/backtest.md.
+// forecast. Results and limits: docs/backtest.md.
 import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { runnerImport } from "vite";
@@ -81,7 +81,7 @@ const { module: cycle } = await runnerImport("/src/domain/cycle.ts", {
 const { module: date } = await runnerImport("/src/utils/date.ts", {
   configFile: false,
 });
-const { buildCycleSummary, DEFAULT_CYCLE_LENGTH } = cycle;
+const { forecast, DEFAULT_CYCLE_LENGTH } = cycle;
 const { addDays, differenceInDays } = date;
 
 const stretches = parseStretches(await loadCsv());
@@ -102,7 +102,7 @@ for (const stretch of stretches) {
     }
     // The data has start dates only, so each period is logged as its first day.
     const periodDays = stretch.slice(0, k + 1).map((c) => c.start);
-    const summary = buildCycleSummary({ today: current.start, periodDays });
+    const summary = forecast({ today: current.start, periodDays });
     const actual = addDays(current.start, current.length);
     const lastLength = stretch[k - 1]?.length ?? DEFAULT_CYCLE_LENGTH;
     records.push({

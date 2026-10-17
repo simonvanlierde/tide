@@ -36,6 +36,33 @@ export interface CycleSummary {
   estimateMode: CycleEstimateMode;
 }
 
+/** An estimate drawn on one day. */
+export type DayEstimate = "fertile" | "ovulation" | "predicted-period";
+
+export interface DayInfo {
+  /** Day number within the current cycle (1 on its first day); null outside it. */
+  cycleDay: number | null;
+  /**
+   * The estimate on this day, if any. An expected period wins over the fertile
+   * window, and each window's ovulation day wins over its fertile days.
+   */
+  estimate: DayEstimate | null;
+}
+
+/** The cycle summary plus the whole timeline it implies, built once. */
+export interface Forecast extends CycleSummary {
+  /** First day of the current cycle; null without a live forecast. */
+  cycleStart: IsoDate | null;
+  /**
+   * Last day of the current cycle: the day before the next expected period,
+   * or today once that period is overdue. Null without a live forecast.
+   */
+  cycleEnd: IsoDate | null;
+  stats: CycleStats;
+  /** What the forecast says about any date, past or future. */
+  dayInfo: (date: IsoDate) => DayInfo;
+}
+
 export interface CycleStats {
   /** Completed cycles observed so far — the history the estimate is built on. */
   cyclesTracked: number;

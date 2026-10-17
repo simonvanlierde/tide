@@ -1,12 +1,15 @@
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { getPastOvulationDates } from "../../domain/cycle";
-import { getPeriodDays, getPeriodRange } from "../../domain/flow";
+import {
+  getPeriodDays,
+  getPeriodRange,
+  getPredictionDays,
+} from "../../domain/flow";
 import type { FlowIntensity, IsoDate, LoggedFlow } from "../../domain/types";
-import { selectPastPredictionDays } from "../../state/core";
 import {
   useAppState,
   useAppStateActions,
-  useCycleSummary,
+  useForecast,
   useLocale,
 } from "../../state/provider";
 import { addMonths, formatMonthLabel } from "../../utils/date";
@@ -20,7 +23,7 @@ import {
 export function useCalendar(today: IsoDate) {
   const state = useAppState();
   const actions = useAppStateActions();
-  const summary = useCycleSummary(today);
+  const summary = useForecast(today);
   const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
@@ -51,8 +54,8 @@ export function useCalendar(today: IsoDate) {
   // The same set the cycle summary predicts from, so cycle-start detection
   // (numbering, past ovulation) can't diverge from it.
   const predictionDays = useMemo(
-    () => selectPastPredictionDays(state, today),
-    [state, today],
+    () => getPredictionDays(state.intensityByDay).filter((day) => day <= today),
+    [state.intensityByDay, today],
   );
   const loggedDays = useMemo(() => new Set(periodDays), [periodDays]);
   const dayIntensity = useMemo(

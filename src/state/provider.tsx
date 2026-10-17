@@ -24,13 +24,7 @@ import type {
   ThemePreference,
 } from "../domain/types";
 import { type MessageKey, resolveLanguage, translate } from "../i18n";
-import { getTodayIsoDate } from "../utils/date";
-import {
-  type AppStateAction,
-  appStateReducer,
-  selectCycleStats,
-  selectCycleSummary,
-} from "./core";
+import { type AppStateAction, appStateReducer, selectForecast } from "./core";
 
 const AppStateContext = createContext<AppState | null>(null);
 const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(
@@ -235,12 +229,9 @@ export function useAppStateActions() {
   );
 }
 
-export function useCycleSummary(today: IsoDate = getTodayIsoDate()) {
+// The forecast for `today`. Callers pass the day they render for (useToday, or
+// a fixed day in tests), so the app has one clock.
+export function useForecast(today: IsoDate) {
   const state = useAppState();
-  return useMemo(() => selectCycleSummary(state, today), [state, today]);
-}
-
-export function useCycleStats(today: IsoDate) {
-  const state = useAppState();
-  return useMemo(() => selectCycleStats(state, today), [state, today]);
+  return useMemo(() => selectForecast(state, today), [state, today]);
 }

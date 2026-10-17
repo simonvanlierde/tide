@@ -1,4 +1,4 @@
-import { buildCycleSummary, getCycleStats } from "../domain/cycle";
+import { forecast } from "../domain/cycle";
 import { getPeriodRange, getPredictionDays } from "../domain/flow";
 import type {
   AppSettings,
@@ -110,19 +110,9 @@ export function appStateReducer(
   }
 }
 
-// Future-dated days (imported, or left by a clock that moved back) must not
-// feed the cycle-length history, the stats, or the past fertile windows.
-export function selectPastPredictionDays(state: AppState, today: IsoDate) {
-  return getPredictionDays(state.intensityByDay).filter((day) => day <= today);
-}
-
-export function selectCycleSummary(state: AppState, today: IsoDate) {
-  return buildCycleSummary({
+export function selectForecast(state: AppState, today: IsoDate) {
+  return forecast({
     today,
-    periodDays: selectPastPredictionDays(state, today),
+    periodDays: getPredictionDays(state.intensityByDay),
   });
-}
-
-export function selectCycleStats(state: AppState, today: IsoDate) {
-  return getCycleStats(selectPastPredictionDays(state, today));
 }
