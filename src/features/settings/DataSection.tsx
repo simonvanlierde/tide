@@ -12,7 +12,7 @@ import {
   mergeImportedDays,
   parseImportedState,
 } from "../../data/transfer";
-import type { AppState } from "../../domain/types";
+import type { AppState, IsoDate } from "../../domain/types";
 import { plural } from "../../i18n";
 import {
   useAppState,
@@ -21,7 +21,6 @@ import {
   useT,
 } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
-import { getTodayIsoDate } from "../../utils/date";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { InfoPopover } from "./InfoPopover";
 
@@ -30,7 +29,12 @@ const MAX_IMPORT_BYTES = 5_000_000;
 /** What the last export or import did, so neither happens in silence. */
 type DataStatus = { kind: "imported"; days: number } | { kind: "exported" };
 
-export function DataSection() {
+interface DataSectionProps {
+  /** Another app's days after this one are dropped on import. */
+  today: IsoDate;
+}
+
+export function DataSection({ today }: DataSectionProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const t = useT();
@@ -84,7 +88,7 @@ export function DataSection() {
     } catch {
       // Not a Tide backup: try the other apps' formats, loaded only now.
       const { parseOtherAppExport } = await import("../../data/otherApps");
-      const other = parseOtherAppExport(text, getTodayIsoDate());
+      const other = parseOtherAppExport(text, today);
       if (!other) {
         setStatus(null);
         setError(t("settings.importError"));

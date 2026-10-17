@@ -280,6 +280,29 @@ describe("SettingsScreen", () => {
     );
   });
 
+  it("drops Clue days after the day the screen renders for", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<SettingsScreen today="2026-03-02" />, {
+      state: createAppState(),
+    });
+    const clue = [
+      { date: "2026-03-01", type: "period", value: { option: "heavy" } },
+      { date: "2026-03-02", type: "period", value: {} },
+      { date: "2026-03-03", type: "period", value: {} },
+    ];
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(clue)], "measurements.json", {
+        type: "application/json",
+      }),
+    );
+
+    const dialog = await screen.findByRole("dialog");
+    expect(
+      within(dialog).getByText(/this file holds 2 logged days/i),
+    ).toBeInTheDocument();
+  });
+
   it("keeps a day another tab saved while the Clue dialog was open", async () => {
     const user = userEvent.setup();
     renderSettings(createAppState({ periodDays: ["2026-03-02"] }));

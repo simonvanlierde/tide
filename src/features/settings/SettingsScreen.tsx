@@ -1,11 +1,19 @@
+import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useT } from "../../state/provider";
+import { useToday } from "../../state/useToday";
 import { AboutSection } from "./AboutSection";
 import { DataSection } from "./DataSection";
 import { LanguageSection } from "./LanguageSection";
 import { SwitchRow } from "./SwitchRow";
 import { ThemeSection } from "./ThemeSection";
 
-export function SettingsScreen() {
+interface SettingsScreenProps {
+  today?: IsoDate;
+}
+
+export function SettingsScreen(props: SettingsScreenProps) {
+  const liveToday = useToday();
+  const today = props.today ?? liveToday;
   const { settings } = useAppState();
   const actions = useAppStateActions();
   const t = useT();
@@ -36,7 +44,7 @@ export function SettingsScreen() {
           />
         </div>
       </article>
-      <DataSection />
+      <DataSection today={today} />
       <AboutSection />
     </section>
   );
