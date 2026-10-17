@@ -841,11 +841,14 @@
     padding-top: 12px;
   }
 
-  /* Segmented control: one track, the active option raised out of it. */
+  /* Segmented control: one track, the active option raised out of it. Auto
+     columns size each option to its word and share out the rest, so a wide
+     system font (DejaVu Sans) still fits "Système" where equal thirds can't;
+     when space runs short they shrink and ellipsise rather than overflow. */
   .segmented {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 1fr;
+    grid-auto-columns: auto;
     gap: 4px;
     width: 100%;
     padding: 4px;
