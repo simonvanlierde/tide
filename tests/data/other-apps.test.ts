@@ -55,6 +55,47 @@ describe("parseOtherAppExport: Clue measurements.json", () => {
     });
   });
 
+  // The shape real exports carry: an id per record, dates not in order, and
+  // multi-select types holding a list of options. Values here are invented.
+  it("reads a record list in the shape of a real export", () => {
+    expect(
+      parse([
+        {
+          type: "period",
+          id: "4f0c1d2e-0000-4000-8000-000000000001",
+          date: "2026-02-03",
+          value: { option: "medium" },
+        },
+        {
+          type: "period",
+          id: "4f0c1d2e-0000-4000-8000-000000000002",
+          date: "2026-02-01",
+          value: { option: "light" },
+        },
+        {
+          type: "tests",
+          id: "4f0c1d2e-0000-4000-8000-000000000003",
+          date: "2026-02-15",
+          value: [{ option: "ovulation_positive" }],
+        },
+      ]),
+    ).toEqual({
+      source: "Clue",
+      days: { "2026-02-01": "light", "2026-02-03": "medium" },
+    });
+  });
+
+  it("does not read a period option of none as a bleeding day", () => {
+    expect(
+      parse([
+        { date: "2026-03-01", type: "period", value: { option: "none" } },
+        { date: "2026-03-02", type: "period", value: { option: "light" } },
+        { date: "2026-03-02", type: "period", value: { option: "none" } },
+      ]),
+    ).toEqual({ source: "Clue", days: { "2026-03-02": "light" } });
+    expect(parse({ data: [{ day: "2026-03-01", period: "none" }] })).toBeNull();
+  });
+
   it("imports a spotting-only history", () => {
     expect(parse([{ date: "2026-03-06", type: "spotting" }])).toEqual({
       source: "Clue",
