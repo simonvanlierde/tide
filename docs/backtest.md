@@ -31,7 +31,7 @@ Other datasets considered:
 ## Method
 
 For each woman, the script walks her cycles in order. At the start of each cycle it gives
-`buildCycleSummary` every earlier cycle start, asks for the next period date, and compares it
+`forecast` every earlier cycle start, asks for the next period date, and compares it
 with the real next start. It calls the app's own code; nothing is reimplemented.
 
 - The file only has start dates, so each period is logged as a single day. That does not
