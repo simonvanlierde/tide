@@ -1,5 +1,4 @@
 import { addDays, differenceInDays } from "../utils/date";
-import { REMINDER_OVERDUE_GRACE_DAYS } from "./reminders";
 import type { CycleStats, CycleSummary, IsoDate } from "./types";
 
 export const DEFAULT_CYCLE_LENGTH = 28;
@@ -33,6 +32,10 @@ export const RECENT_CYCLE_WINDOW = 6;
 export const FERTILE_WINDOW_START = -5;
 export const FERTILE_WINDOW_END = 1;
 const MAX_FERTILE_WIDENING = 5;
+// A forecast this many days overdue with nothing logged is stale (the user
+// stopped tracking): the summary drops it, and the reminder stops asking.
+// NOTE: fixed grace; learn a per-user threshold from cycle history if needed.
+export const OVERDUE_GRACE_DAYS = 10;
 
 interface BuildCycleSummaryInput {
   today: IsoDate;
@@ -230,12 +233,9 @@ export function buildCycleSummary(input: BuildCycleSummaryInput): CycleSummary {
   const ovulationDate = addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH);
   const periodLength = getAveragePeriodLength(periodDays, input.today);
 
-  // Long past the due date with nothing logged, the forecast is stale (the
-  // user stopped tracking) — same bound the reminder uses to stop nagging.
-  // The learned lengths are kept so the insights view still has history.
-  if (
-    differenceInDays(input.today, nextPeriodDate) > REMINDER_OVERDUE_GRACE_DAYS
-  ) {
+  // Long past the due date with nothing logged, the forecast is stale. The
+  // learned lengths are kept so the insights view still has history.
+  if (differenceInDays(input.today, nextPeriodDate) > OVERDUE_GRACE_DAYS) {
     return {
       ...INSUFFICIENT_SUMMARY,
       cycleLength,
