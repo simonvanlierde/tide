@@ -6,9 +6,11 @@ import { isIsoDate, normalizeIntensityByDay } from "./schema";
 // History exported by another tracker. Loaded on demand from the import path,
 // so the main bundle never carries it.
 //
-// The shapes below come from published format notes, not from real export
-// files, so every reader is lenient: unknown fields and types are skipped,
-// invalid dates are dropped, and odd input yields nothing rather than throwing.
+// Most shapes below come from published format notes and other converters;
+// Clue's measurements.json has been checked against a few real exports, which
+// held only bare dates and {option} period values. So every reader is lenient:
+// unknown fields and types are skipped, invalid dates are dropped, and odd
+// input yields nothing rather than throwing.
 
 export type OtherAppSource = "Clue" | "Flo";
 
@@ -26,8 +28,12 @@ const isObject = (value: unknown): value is Json =>
   !!value && typeof value === "object" && !Array.isArray(value);
 
 // Clue's flow words onto Tide's levels. "very_heavy" has no Tide level above
-// heavy. An unknown word still marks a bleeding day, with no level claimed.
-function clueFlow(option: unknown): LoggedFlow {
+// heavy. An unknown word still marks a bleeding day, with no level claimed,
+// but "none" (said by other converters to mean "not bleeding") marks nothing.
+function clueFlow(option: unknown): LoggedFlow | undefined {
+  if (option === "none") {
+    return undefined;
+  }
   if (option === "very_heavy") {
     return "heavy";
   }
@@ -44,9 +50,9 @@ const rank = (flow: LoggedFlow) =>
 function addDay(
   days: Record<string, LoggedFlow>,
   day: unknown,
-  flow: LoggedFlow,
+  flow: LoggedFlow | undefined,
 ) {
-  if (typeof day !== "string") {
+  if (typeof day !== "string" || flow === undefined) {
     return;
   }
   const key = day.slice(0, 10);
