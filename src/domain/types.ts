@@ -93,9 +93,8 @@ export interface AppSettings {
 export interface AppState {
   /**
    * Flow level per logged day, keyed by ISO date — the single source of truth
-   * for which days are logged. A key here IS a logged day, and every logged day
-   * carries a flow (a one-tap log defaults to medium). Derive the sorted day
-   * list with getPeriodDays().
+   * for which days are logged. A key here IS a logged day; a one-tap log stores
+   * null (no flow level). Derive the sorted day list with getPeriodDays().
    */
   intensityByDay: Record<IsoDate, LoggedFlow>;
   settings: AppSettings;
