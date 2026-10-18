@@ -6,14 +6,12 @@ const CYCLES: ExpectedCycle[] = [
   {
     id: "2026-03-04-4",
     periodStart: "2026-04-29",
-    ovulation: "2026-04-15",
     fertileFrom: "2026-04-10",
     fertileTo: "2026-04-16",
   },
   {
     id: "2026-03-04-5",
     periodStart: "2026-05-27",
-    ovulation: "2026-05-13",
     fertileFrom: "2026-05-08",
     fertileTo: "2026-05-14",
   },

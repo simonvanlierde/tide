@@ -447,7 +447,6 @@ export interface ExpectedCycle {
    */
   id: string;
   periodStart: IsoDate;
-  ovulation: IsoDate;
   fertileFrom: IsoDate;
   fertileTo: IsoDate;
 }
@@ -474,7 +473,6 @@ export function getExpectedCycles(
       // cyclesTracked completed cycles, plus the current one, come before.
       id: `${f.stats.firstCycleStart}-${f.stats.cyclesTracked + 2 + step}`,
       periodStart,
-      ovulation,
       fertileFrom: addDays(ovulation, f.fertileWindow.start),
       fertileTo: addDays(ovulation, f.fertileWindow.end),
     });
