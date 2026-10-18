@@ -24,12 +24,12 @@ export const en = {
   "today.expectedToday": "Expected today",
   "today.inDays.one": "In {n} day",
   "today.inDays.other": "In {n} days",
-  "today.higherToday": "More likely today (estimate)",
-  "today.lowerToday": "Less likely today (estimate)",
+  "today.higherToday": "In the fertile window (estimate)",
+  "today.lowerToday": "Outside the fertile window (estimate)",
   "today.notBirthControl": "Not birth control",
   "fertilityAsk.title": "Show fertility estimates?",
   "fertilityAsk.body":
-    "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control.",
+    "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control. You can change this in Settings.",
   "fertilityAsk.show": "Show",
   "fertilityAsk.hide": "Don't show",
   "today.privacy": "Stored only on this device.",
@@ -102,7 +102,7 @@ export const en = {
 
   // Marker legend, shared by the Today dial and the calendar
   "legend.period": "Period",
-  "legend.expected": "Expected",
+  "legend.expected": "Expected period",
   "legend.fertileWindow": "Fertile window",
   "legend.ovulation": "Ovulation",
 
@@ -148,7 +148,7 @@ export const en = {
   "calendar.dayUnavailable": "{label} unavailable",
   "calendar.dayWithMarker": "{label}, {marker}",
   "marker.fertile": "fertile window",
-  "marker.ovulation": "likely ovulation",
+  "marker.ovulation": "expected ovulation",
   "marker.predictedPeriod": "expected period",
   "calendar.notBleeding": "Not bleeding that day",
 
@@ -182,7 +182,7 @@ export const en = {
   "settings.showFertility": "Show fertility estimates",
   "settings.fertilityInfo": "About fertility estimates",
   "settings.fertilityHelp":
-    "Shows fertile-window and ovulation estimates on the home screen and calendar.",
+    "Shows the fertile window and expected ovulation on Today and in the calendar.",
   "settings.showCycleNumbers": "Show cycle day numbers",
   "settings.cycleNumbersInfo": "About cycle day numbers",
   "settings.cycleNumbersHelp":
@@ -190,14 +190,16 @@ export const en = {
   "settings.about": "About",
   "settings.privacy": "Your data never leaves this device.",
   "settings.fertilityDisclaimer":
-    "Fertility estimates are informational, not a birth control method.",
+    "Fertility estimates are for information only. They are not birth control.",
   "settings.fertilityMethod":
-    "Higher around your predicted ovulation. Estimated from your recent cycle lengths.",
+    "The fertile window is the days around your expected ovulation, estimated from your recent cycle lengths.",
   "settings.sourceCode": "Source code (v{version}), opens in a new tab",
   "settings.data": "Data",
   "settings.dataInfo": "About import and export",
   "settings.dataHelp":
     "Export saves your days to a file. Import replaces them from a Tide backup, or adds days from Clue or Flo.",
+  "settings.importSources":
+    "You can import a Tide backup, or an export from Clue or Flo.",
   "settings.export": "Export",
   "settings.exportSuccess": "Backup saved to your downloads.",
   "settings.import": "Import",

@@ -20,16 +20,17 @@ export const de: Dictionary = {
   "today.expectedToday": "Heute erwartet",
   "today.inDays.one": "in {n} Tag",
   "today.inDays.other": "in {n} Tagen",
-  "today.higherToday": "Heute wahrscheinlicher (Schätzung)",
-  "today.lowerToday": "Heute weniger wahrscheinlich (Schätzung)",
+  "today.higherToday": "Im fruchtbaren Fenster (Schätzung)",
+  "today.lowerToday": "Außerhalb des fruchtbaren Fensters (Schätzung)",
   "today.notBirthControl": "Keine Verhütungsmethode",
   "fertilityAsk.title": "Fruchtbarkeitsschätzungen anzeigen?",
   "fertilityAsk.body":
-    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode.",
+    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.privacy": "Nur auf diesem Gerät gespeichert.",
-  "today.importPrompt": "Hast du ein Tide-Backup oder Daten aus Clue oder Flo?",
+  "today.importPrompt":
+    "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?",
   "today.importLink": "Importieren",
   "today.fertilityUnclear": "Unklar bei Verspätung",
   "today.periodLate": "Periode",
@@ -95,7 +96,7 @@ export const de: Dictionary = {
     "Das fruchtbare Fenster reicht von {before} Tagen vor bis {after} Tag nach dem Eisprung und wird breiter, wenn deine Zyklen stärker schwanken.",
 
   "legend.period": "Periode",
-  "legend.expected": "Erwartet",
+  "legend.expected": "Erwartete Periode",
   "legend.fertileWindow": "Fruchtbares Fenster",
   "legend.ovulation": "Eisprung",
 
@@ -143,7 +144,7 @@ export const de: Dictionary = {
   "calendar.dayUnavailable": "{label} nicht verfügbar",
   "calendar.dayWithMarker": "{label}, {marker}",
   "marker.fertile": "fruchtbares Fenster",
-  "marker.ovulation": "wahrscheinlicher Eisprung",
+  "marker.ovulation": "erwarteter Eisprung",
   "marker.predictedPeriod": "erwartete Periode",
   "calendar.notBleeding": "Keine Blutung an diesem Tag",
 
@@ -175,7 +176,7 @@ export const de: Dictionary = {
   "settings.showFertility": "Fruchtbarkeitsschätzungen anzeigen",
   "settings.fertilityInfo": "Über Fruchtbarkeitsschätzungen",
   "settings.fertilityHelp":
-    "Zeigt Schätzungen zum fruchtbaren Fenster und zum Eisprung auf dem Startbildschirm und im Kalender.",
+    "Zeigt das fruchtbare Fenster und den erwarteten Eisprung unter Heute und im Kalender.",
   "settings.showCycleNumbers": "Zyklustagnummern anzeigen",
   "settings.cycleNumbersInfo": "Über Zyklustagnummern",
   "settings.cycleNumbersHelp":
@@ -183,14 +184,16 @@ export const de: Dictionary = {
   "settings.about": "Über",
   "settings.privacy": "Deine Daten verlassen dieses Gerät nie.",
   "settings.fertilityDisclaimer":
-    "Fruchtbarkeitsschätzungen dienen der Information und sind keine Verhütungsmethode.",
+    "Fruchtbarkeitsschätzungen dienen nur der Information. Sie sind keine Verhütungsmethode.",
   "settings.fertilityMethod":
-    "Höher rund um deinen vorhergesagten Eisprung. Geschätzt anhand deiner letzten Zykluslängen.",
+    "Das fruchtbare Fenster sind die Tage rund um deinen erwarteten Eisprung, geschätzt anhand deiner letzten Zykluslängen.",
   "settings.sourceCode": "Quellcode (v{version}), öffnet in einem neuen Tab",
   "settings.data": "Daten",
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":
     "Der Export speichert deine Tage in einer Datei. Der Import ersetzt sie aus einer Tide-Sicherung oder fügt Tage aus Clue oder Flo hinzu.",
+  "settings.importSources":
+    "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.import": "Importieren",

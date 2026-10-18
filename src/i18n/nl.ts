@@ -19,12 +19,12 @@ export const nl: Dictionary = {
   "today.expectedToday": "Vandaag verwacht",
   "today.inDays.one": "Over {n} dag",
   "today.inDays.other": "Over {n} dagen",
-  "today.higherToday": "Vandaag waarschijnlijker (schatting)",
-  "today.lowerToday": "Vandaag minder waarschijnlijk (schatting)",
+  "today.higherToday": "In de vruchtbare periode (schatting)",
+  "today.lowerToday": "Buiten de vruchtbare periode (schatting)",
   "today.notBirthControl": "Geen anticonceptie",
   "fertilityAsk.title": "Vruchtbaarheidsschattingen tonen?",
   "fertilityAsk.body":
-    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie.",
+    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie. Je kunt dit wijzigen in Instellingen.",
   "fertilityAsk.show": "Tonen",
   "fertilityAsk.hide": "Niet tonen",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
@@ -95,7 +95,7 @@ export const nl: Dictionary = {
     "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
 
   "legend.period": "Menstruatie",
-  "legend.expected": "Verwacht",
+  "legend.expected": "Verwachte menstruatie",
   "legend.fertileWindow": "Vruchtbare periode",
   "legend.ovulation": "Eisprong",
 
@@ -143,7 +143,7 @@ export const nl: Dictionary = {
   "calendar.dayUnavailable": "{label} niet beschikbaar",
   "calendar.dayWithMarker": "{label}, {marker}",
   "marker.fertile": "vruchtbare periode",
-  "marker.ovulation": "waarschijnlijke eisprong",
+  "marker.ovulation": "verwachte eisprong",
   "marker.predictedPeriod": "verwachte menstruatie",
   "calendar.notBleeding": "Geen bloedverlies die dag",
 
@@ -174,7 +174,7 @@ export const nl: Dictionary = {
   "settings.showFertility": "Vruchtbaarheidsschattingen tonen",
   "settings.fertilityInfo": "Over vruchtbaarheidsschattingen",
   "settings.fertilityHelp":
-    "Toont schattingen van de vruchtbare periode en eisprong op het startscherm en de kalender.",
+    "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender.",
   "settings.showCycleNumbers": "Cyclusdagnummers tonen",
   "settings.cycleNumbersInfo": "Over cyclusdagnummers",
   "settings.cycleNumbersHelp":
@@ -182,14 +182,16 @@ export const nl: Dictionary = {
   "settings.about": "Over",
   "settings.privacy": "Je gegevens verlaten dit apparaat nooit.",
   "settings.fertilityDisclaimer":
-    "Vruchtbaarheidsschattingen zijn informatief, geen anticonceptiemethode.",
+    "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
   "settings.fertilityMethod":
-    "Hoger rond je voorspelde eisprong. Geschat op basis van je recente cycluslengtes.",
+    "De vruchtbare periode zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes.",
   "settings.sourceCode": "Broncode (v{version}), opent in een nieuw tabblad",
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
     "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een Tide-back-up, of voegt dagen toe uit Clue of Flo.",
+  "settings.importSources":
+    "Je kunt een Tide-back-up importeren, of een export uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.import": "Importeren",

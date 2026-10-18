@@ -154,7 +154,7 @@ export function DataSection({ today }: DataSectionProps) {
             type="button"
             className="secondary-action"
             disabled={readOnly}
-            aria-describedby={readOnly ? "newer-data-notice" : undefined}
+            aria-describedby={readOnly ? "newer-data-notice" : "import-sources"}
             onClick={() => {
               // A stale message from the last attempt shouldn't outlive a new pick.
               setError(null);
@@ -168,6 +168,11 @@ export function DataSection({ today }: DataSectionProps) {
             </span>
           </button>
         </div>
+        {/* Someone arriving from Clue or Flo should see that Import is their
+            way in without opening the info popover. */}
+        <p id="import-sources" className="supporting-note">
+          {t("settings.importSources")}
+        </p>
         <input
           ref={fileInput}
           type="file"

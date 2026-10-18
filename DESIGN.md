@@ -8,7 +8,6 @@ colors:
   tide-tint: "rgba(47, 143, 138, 0.1)"
   coral: "#e26d5a"
   coral-deep: "#cf5741"
-  coral-ink: "#b8452f"
   flow-heavy: "#d45d47"
   flow-spotting: "#f0c1b6"
   flow-light: "#e89a88"
@@ -160,8 +159,6 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
 
 - **Coral** (`coral`): bleeding, and nothing else. Logged days, the log button, the dial's
   period arc. The dashed expected outline uses `coral-deep` in light and `coral` in dark.
-- **Coral Ink** (`coral-ink`): coral for text on light surfaces, where `coral-deep` at
-  4.1:1 fails AA.
 - **Flow ramp** (`flow-spotting` → `flow-light` → coral → `flow-heavy`): rising intensity.
   Heavy gets its own step so the near-black number on it still passes AA.
 
@@ -192,8 +189,10 @@ accent that isn't about the period.
 
 **The Outline Rule.** Every estimate is a dashed outline in its colour, with no fill: the
 expected period, the fertile window and ovulation, on the dial, the calendar and both
-legends, in both themes. Only logged days get a fill. Each outline passes 3:1 against the
-card and the page ground.
+legends, in both themes. Only logged days get a fill. The outline is the whole encoding:
+an estimated day's number keeps its ordinary colour, so the expected period looks no more
+certain than the fertile window. Each outline passes 3:1 against the card and the page
+ground.
 
 **The Paired Themes Rule.** Dark is not light inverted. Tune every fill and ink step again
 for the dark ground, so `ink-on-fill` still passes AA on it.

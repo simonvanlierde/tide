@@ -138,7 +138,9 @@ test("the fertility question is accessible and its answer is saved", async ({
     .getByRole("button", { name: en["fertilityAsk.show"], exact: true })
     .click();
   await expect(question).toHaveCount(0);
-  await expect(page.getByText(en["today.notBirthControl"])).toBeVisible();
+  await expect(
+    page.getByText(en["today.notBirthControl"], { exact: true }),
+  ).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
   const saved = await page.evaluate(() =>
@@ -160,11 +162,23 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
 });
 
 test("Today's import link lands on the Import button", async ({ page }) => {
+  // A first run: nothing stored, so Today shows the empty state.
   await page.goto("/");
+  await expect(page.getByText(en["today.learningInsufficient"])).toBeVisible();
 
   await page.getByRole("link", { name: en["today.importLink"] }).click();
   await expect(page).toHaveURL(/\/settings#import$/);
+  const importButton = page.getByRole("button", {
+    name: en["settings.import"],
+    exact: true,
+  });
+  await expect(importButton).toBeFocused();
+  // Someone coming from Clue or Flo can see this is their way in.
+  await expect(importButton).toHaveAccessibleDescription(
+    en["settings.importSources"],
+  );
+  // Fertility estimates stay off until asked for.
   await expect(
-    page.getByRole("button", { name: en["settings.import"], exact: true }),
-  ).toBeFocused();
+    page.getByRole("switch", { name: en["settings.showFertility"] }),
+  ).not.toBeChecked();
 });

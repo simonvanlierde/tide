@@ -19,6 +19,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   or undo the whole range with one tap.
 - Before anything is logged, Today asks "Have a Tide backup, or history in Clue
   or Flo?" Its "Import it" link opens Settings at the Import button.
+- Settings → Data says under the buttons that Import takes a Tide backup or an
+  export from Clue or Flo, so you don't have to open the info button to find out.
+- The fertility question on Today says you can change your answer in Settings.
 - A backtest of the next-period estimate on a public cycle dataset, with the
   results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
   `pnpm backtest`.
@@ -35,11 +38,20 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   switch still changes the answer.
 - Every estimate looks like an estimate: the expected period, the fertile
   window and ovulation are dashed outlines on both the dial and the calendar,
-  and in both legends. Only logged days are filled.
-- The Today fertility line says "More likely today (estimate)" or "Less likely
-  today (estimate)", with "Not birth control" right under it.
+  and in both legends. Only logged days are filled. The outline is the only
+  cue: an expected period day no longer also turns its number coral, so it
+  looks no more certain than a fertile day.
+- The Today fertility line says "In the fertile window (estimate)" or "Outside
+  the fertile window (estimate)", with "Not birth control" right under it. It
+  names the same fertile window as the legends, and no longer says a day is
+  "less likely", which could read as a safe day.
 - The calendar legend uses the same words as the Today legend: Period,
-  Expected, Fertile window, Ovulation.
+  Expected period, Fertile window, Ovulation.
+- One word for every forecast in all five languages: "expected" (the expected
+  period, expected ovulation), where some screens said "predicted" or "likely".
+  Settings explains the fertile window in those words and says the estimates
+  are for information only and not birth control.
+- German and Spanish use one word for a Tide backup everywhere.
 - Before the first log, Today shows one line, "Log your period to see a
   forecast", instead of a "--" cycle day and two "Not enough data yet" rows.
 

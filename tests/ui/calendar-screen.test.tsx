@@ -64,7 +64,7 @@ describe("CalendarScreen", () => {
       state: createAppState({ periodDays: ["2026-04-02"] }),
     });
     expect(
-      screen.queryByRole("button", { name: /likely ovulation/i }),
+      screen.queryByRole("button", { name: /expected ovulation/i }),
     ).not.toBeInTheDocument();
     unasked.unmount();
 
@@ -75,7 +75,7 @@ describe("CalendarScreen", () => {
       }),
     });
     expect(
-      screen.getByRole("button", { name: /likely ovulation/i }),
+      screen.getByRole("button", { name: /expected ovulation/i }),
     ).toBeInTheDocument();
     shown.unmount();
 
@@ -86,7 +86,7 @@ describe("CalendarScreen", () => {
       }),
     });
     expect(
-      screen.queryByRole("button", { name: /likely ovulation/i }),
+      screen.queryByRole("button", { name: /expected ovulation/i }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: /fertile window/i }),

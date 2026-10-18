@@ -19,19 +19,19 @@ export const fr: Dictionary = {
   "today.expectedToday": "Prévues aujourd’hui",
   "today.inDays.one": "dans {n} jour",
   "today.inDays.other": "dans {n} jours",
-  "today.higherToday": "Plus probable aujourd’hui (estimation)",
-  "today.lowerToday": "Moins probable aujourd’hui (estimation)",
+  "today.higherToday": "Dans la fenêtre de fertilité (estimation)",
+  "today.lowerToday": "Hors de la fenêtre de fertilité (estimation)",
   "today.notBirthControl": "Pas une contraception",
   "fertilityAsk.title": "Afficher les estimations de fertilité ?",
   "fertilityAsk.body":
-    "Tide peut indiquer les jours où vous êtes le plus susceptible d’être fertile, calculés à partir des règles que vous enregistrez. C’est une estimation, pas une contraception.",
+    "Tide peut indiquer les jours où vous êtes le plus susceptible d’être fertile, calculés à partir des règles que vous enregistrez. C’est une estimation, pas une contraception. Vous pourrez changer d’avis dans les Réglages.",
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
   "today.privacy": "Stocké uniquement sur cet appareil.",
   "today.importPrompt":
     "Vous avez une sauvegarde Tide ou un historique Clue ou Flo ?",
   "today.importLink": "L’importer",
-  "today.fertilityUnclear": "Incertaine en retard",
+  "today.fertilityUnclear": "Incertaine en cas de retard",
   "today.periodLate": "Règles",
   "today.daysLate.one": "{n} jour de retard",
   "today.daysLate.other": "{n} jours de retard",
@@ -95,7 +95,7 @@ export const fr: Dictionary = {
     "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand vos cycles varient davantage.",
 
   "legend.period": "Règles",
-  "legend.expected": "Attendu",
+  "legend.expected": "Règles prévues",
   "legend.fertileWindow": "Fenêtre de fertilité",
   "legend.ovulation": "Ovulation",
 
@@ -143,7 +143,7 @@ export const fr: Dictionary = {
   "calendar.dayUnavailable": "{label} indisponible",
   "calendar.dayWithMarker": "{label}, {marker}",
   "marker.fertile": "fenêtre de fertilité",
-  "marker.ovulation": "ovulation probable",
+  "marker.ovulation": "ovulation prévue",
   "marker.predictedPeriod": "règles prévues",
   "calendar.notBleeding": "Pas de saignement ce jour-là",
 
@@ -174,7 +174,7 @@ export const fr: Dictionary = {
   "settings.showFertility": "Afficher les estimations de fertilité",
   "settings.fertilityInfo": "À propos des estimations de fertilité",
   "settings.fertilityHelp":
-    "Affiche les estimations de la fenêtre de fertilité et de l’ovulation sur l’écran d’accueil et le calendrier.",
+    "Affiche la fenêtre de fertilité et l’ovulation prévue dans Aujourd’hui et dans le calendrier.",
   "settings.showCycleNumbers": "Afficher les numéros de jour du cycle",
   "settings.cycleNumbersInfo": "À propos des numéros de jour du cycle",
   "settings.cycleNumbersHelp":
@@ -182,15 +182,17 @@ export const fr: Dictionary = {
   "settings.about": "À propos",
   "settings.privacy": "Vos données ne quittent jamais cet appareil.",
   "settings.fertilityDisclaimer":
-    "Les estimations de fertilité sont informatives et ne constituent pas une méthode de contraception.",
+    "Les estimations de fertilité sont données à titre indicatif. Elles ne sont pas une contraception.",
   "settings.fertilityMethod":
-    "Plus élevée autour de votre ovulation prévue. Estimée à partir de vos durées de cycle récentes.",
+    "La fenêtre de fertilité, ce sont les jours autour de votre ovulation prévue, estimée à partir de vos durées de cycle récentes.",
   "settings.sourceCode":
     "Code source (v{version}), s’ouvre dans un nouvel onglet",
   "settings.data": "Données",
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":
     "L’export enregistre vos jours dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours depuis Clue ou Flo.",
+  "settings.importSources":
+    "Vous pouvez importer une sauvegarde Tide, ou un export de Clue ou Flo.",
   "settings.export": "Exporter",
   "settings.exportSuccess": "Sauvegarde enregistrée dans vos téléchargements.",
   "settings.import": "Importer",

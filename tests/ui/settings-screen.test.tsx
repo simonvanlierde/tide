@@ -68,7 +68,7 @@ describe("SettingsScreen", () => {
     renderSettings();
 
     expect(
-      screen.getByText(/fertility estimates are informational/i),
+      screen.getByText(/fertility estimates are for information only/i),
     ).toBeInTheDocument();
   });
 
