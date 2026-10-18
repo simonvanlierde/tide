@@ -127,6 +127,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   lines. Screen readers still hear the full day name.
 - "How predictions work" in Cycle insights opens with the same chevron as the
   rest of the app, turning down when open, instead of the browser's triangle.
+- Settings labels no longer break words at random syllables ("an-zeigen").
+  Long German and Dutch compounds break only between their parts
+  ("Fruchtbarkeits-schätzungen"), and only when they don't fit.
 
 ### Security
 

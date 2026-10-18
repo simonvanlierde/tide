@@ -180,11 +180,11 @@ export const de: Dictionary = {
   "language.de": "Deutsch",
   "language.fr": "Français",
   "language.es": "Español",
-  "settings.showFertility": "Fruchtbarkeitsschätzungen anzeigen",
+  "settings.showFertility": "Fruchtbarkeits\u00adschätzungen anzeigen",
   "settings.fertilityInfo": "Über Fruchtbarkeitsschätzungen",
   "settings.fertilityHelp":
     "Zeigt das fruchtbare Fenster und den erwarteten Eisprung unter Heute und im Kalender.",
-  "settings.showCycleNumbers": "Zyklustagnummern anzeigen",
+  "settings.showCycleNumbers": "Zyklustag\u00adnummern anzeigen",
   "settings.cycleNumbersInfo": "Über Zyklustagnummern",
   "settings.cycleNumbersHelp":
     "Nummeriert die Tage deines aktuellen Zyklus (1, 2, 3, ...) im Kalender, bis zu deiner nächsten erwarteten Periode.",

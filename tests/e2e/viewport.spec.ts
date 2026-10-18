@@ -150,6 +150,36 @@ const SCREENS: {
 // "Exportieren"), and none of them may clip or overlap.
 const LANGUAGES = ["en", "de", "fr", "nl", "es"] as const;
 
+// Every word part (a word, or the piece of a compound between soft hyphens)
+// in the matching labels whose first and last letters sit on different
+// lines. Letters, not the whole part: Chromium hands a soft hyphen's rendered
+// "-" to the letter after it, so a clean break at the hyphen would look split.
+// The info button's hidden text is left out.
+function splitWordParts(page: Page, selector: string) {
+  return page.locator(selector).evaluateAll((labels) =>
+    labels.flatMap((label) => {
+      const split: string[] = [];
+      const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT);
+      const lineOf = (node: Node, offset: number) => {
+        const range = document.createRange();
+        range.setStart(node, offset);
+        range.setEnd(node, offset + 1);
+        return [...range.getClientRects()].at(-1)?.top;
+      };
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (node.parentElement?.closest(".info-popover")) continue;
+        for (const part of (node.textContent ?? "").matchAll(/[^\s\u00ad]+/g)) {
+          const last = part.index + part[0].length - 1;
+          if (lineOf(node, part.index) !== lineOf(node, last)) {
+            split.push(part[0]);
+          }
+        }
+      }
+      return split;
+    }),
+  );
+}
+
 for (const size of SIZES) {
   for (const language of LANGUAGES) {
     test.describe(`${size.name} ${language} overflow`, () => {
@@ -244,29 +274,21 @@ for (const size of SIZES) {
         expect(lines).toEqual([1, 1]);
       });
 
-      // A fact label wraps between words or stacks over its value, but never
-      // hyphenates ("FER-TI-LITÉ"): a word split over two lines has two rects.
-      test("keeps each fact label word on one line", async ({ page }) => {
-        await page.goto("/");
-        const split = await page.locator(".fact__label").evaluateAll((labels) =>
-          labels.flatMap((label) =>
-            [...label.childNodes]
-              .filter((node) => node.nodeType === Node.TEXT_NODE)
-              .flatMap((node) =>
-                [...(node.textContent ?? "").matchAll(/\S+/g)].filter(
-                  (word) => {
-                    const range = document.createRange();
-                    range.setStart(node, word.index);
-                    range.setEnd(node, word.index + word[0].length);
-                    return range.getClientRects().length > 1;
-                  },
-                ),
-              )
-              .map((word) => word[0]),
-          ),
-        );
-        expect(split).toEqual([]);
-      });
+      // A fact label wraps between words or stacks over its value, and never
+      // hyphenates ("FER-TI-LITÉ"). A settings label breaks a word only at a
+      // soft hyphen between the parts of a compound ("Fruchtbarkeits-
+      // schätzungen"), never inside a part ("an-zeigen").
+      for (const [path, selector] of [
+        ["/", ".fact__label"],
+        ["/settings", ".settings-label"],
+      ] as const) {
+        test(`keeps each ${selector} word part on one line`, async ({
+          page,
+        }) => {
+          await page.goto(path);
+          expect(await splitWordParts(page, selector)).toEqual([]);
+        });
+      }
 
       // The switch stays level with the first line of its label; a long label
       // wraps beside it instead of pushing it onto a line of its own.

@@ -178,11 +178,12 @@ export const nl: Dictionary = {
   "language.de": "Deutsch",
   "language.fr": "Français",
   "language.es": "Español",
-  "settings.showFertility": "Vruchtbaarheidsschattingen tonen",
+  // biome-ignore lint/security/noSecrets: a label with soft hyphens, not a credential
+  "settings.showFertility": "Vrucht\u00adbaarheids\u00adschattingen tonen",
   "settings.fertilityInfo": "Over vruchtbaarheidsschattingen",
   "settings.fertilityHelp":
     "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender.",
-  "settings.showCycleNumbers": "Cyclusdagnummers tonen",
+  "settings.showCycleNumbers": "Cyclusdag\u00adnummers tonen",
   "settings.cycleNumbersInfo": "Over cyclusdagnummers",
   "settings.cycleNumbersHelp":
     "Nummert de dagen van je huidige cyclus (1, 2, 3, ...) op de kalender, tot je volgende verwachte menstruatie.",

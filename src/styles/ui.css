@@ -875,11 +875,15 @@
     outline-offset: 2px;
   }
 
+  /* Words break only at the soft hyphens the dictionaries put between the
+     parts of a long compound ("Fruchtbarkeits-schätzungen"), never at a
+     syllable the browser picks ("an-zeigen"). */
   .settings-label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
     flex-wrap: wrap;
+    hyphens: manual;
   }
 
   /* A switch stays level with the first line of its label, and a long label
