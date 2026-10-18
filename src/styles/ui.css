@@ -300,7 +300,8 @@
     inset-inline-end: auto;
   }
 
-  .info-popover__content p {
+  .info-popover__content p,
+  .confirm-dialog__body p {
     margin: 0;
   }
 
@@ -371,10 +372,6 @@
     color: var(--ink-soft);
     font-size: var(--text-md);
     line-height: 1.45;
-  }
-
-  .confirm-dialog__body p {
-    margin: 0;
   }
 
   .confirm-dialog__actions {
@@ -1445,11 +1442,31 @@
     margin-top: 16px;
   }
 
+  /* The app's own chevron instead of the browser's triangle: it points at
+     the steps while closed and turns down once they show. */
   .insights__how-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
     cursor: pointer;
     color: var(--tide-strong);
     font-size: var(--text-md);
     font-weight: 500;
+  }
+
+  .insights__how-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .insights__how-icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+
+  .insights__how[open] .insights__how-icon {
+    transform: rotate(90deg);
   }
 
   .insights__how-summary:focus-visible {
@@ -1468,6 +1485,10 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    .insights__how-icon {
+      transition: transform 160ms ease;
+    }
+
     .insights[open] {
       animation: insights-in 160ms ease-out;
     }

@@ -112,6 +112,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - On phones up to about 400 px wide, the calendar's weekday headers show one
   letter ("M", "T") instead of splitting a short name like "MON" over two
   lines. Screen readers still hear the full day name.
+- "How predictions work" in Cycle insights opens with the same chevron as the
+  rest of the app, turning down when open, instead of the browser's triangle.
 
 ### Security
 
