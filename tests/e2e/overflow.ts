@@ -46,11 +46,15 @@ export function findOverflow(page: Page): Promise<string[]> {
     // For the box check, a floating panel is lifted out of its anchor, which
     // it overlaps by design, and pseudo-elements are left out: here they are
     // hit areas and decoration that reach past their box on purpose (a 44px
-    // target around a 24px icon).
+    // target around a 24px icon). The dial's marker and ghost spokes are
+    // measured unturned: their ends stay on the dial's circle at any angle,
+    // but Chromium counts a turned box's overflow a few pixels past the dial
+    // (today's marker low on the ring of a 280px dial).
     const lift = document.createElement("style");
     lift.textContent = `
       .info-popover__content { position: fixed !important; }
-      *::before, *::after { content: none !important; }`;
+      *::before, *::after { content: none !important; }
+      .cycle-dial__marker, .cycle-dial__ghost { transform: none !important; }`;
     document.head.append(lift);
     for (const el of rendered) {
       if (!(el instanceof HTMLElement)) continue;
