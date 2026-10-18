@@ -119,6 +119,7 @@ describe("getAveragePeriodLength", () => {
 describe("forecast", () => {
   it("ignores future-dated days when picking the current cycle start", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-08-22",
       periodDays: ["2026-08-01", "2026-08-02", "2026-08-03", "2099-01-01"],
     });
@@ -129,6 +130,7 @@ describe("forecast", () => {
 
   it("stops forecasting once the expected period is long overdue", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-08-22",
       periodDays: ["2025-07-04", "2025-08-01", "2025-08-02"],
     });
@@ -148,6 +150,7 @@ describe("forecast", () => {
       "2026-06-05",
     ] as const;
     const summary = forecast({
+      fertility: true,
       today: "2026-06-10",
       periodDays: [...periodDays],
     });
@@ -159,6 +162,7 @@ describe("forecast", () => {
 
   it("uses a 28-day fallback cycle model when only one cycle start exists", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-04-19",
       periodDays: ["2026-04-19", "2026-04-20"],
     });
@@ -172,6 +176,7 @@ describe("forecast", () => {
 
   it("calculates the current cycle day from the most recent cycle start", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-04-18",
       periodDays: [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"],
     });
@@ -181,6 +186,7 @@ describe("forecast", () => {
 
   it("shows the next period as an estimate in X days", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-04-18",
       periodDays: [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"],
     });
@@ -191,6 +197,7 @@ describe("forecast", () => {
 
   it("returns limited predictions when there is not enough history", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-04-18",
       periodDays: [],
     });
@@ -204,6 +211,7 @@ describe("forecast", () => {
     // 45 is an anomalous cycle (illness/travel). A flat mean would drag the
     // estimate to ~31; the median holds at 28.
     const summary = forecast({
+      fertility: true,
       today: "2026-04-04",
       periodDays: [
         ...startsEndingOn("2026-04-02", [27, 28, 45, 28, 29]),
@@ -220,6 +228,7 @@ describe("forecast", () => {
 
   it("keeps the tight biological fertile window for a regular cycler", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-04-04",
       periodDays: [
         ...startsEndingOn("2026-04-02", [28, 28, 28, 28]),
@@ -250,6 +259,7 @@ describe("forecast", () => {
     expect(getCompletedCycleLengths(periodDays)).toEqual([29, 27, 28]);
 
     const summary = forecast({
+      fertility: true,
       today: "2026-06-24",
       periodDays,
     });
@@ -260,6 +270,7 @@ describe("forecast", () => {
   it("widens by a whole day only once cycle-length spread reaches a full day", () => {
     // Cycles 26/28/30 days apart: SD ≈ 1.6 days -> one day of widening each side.
     const summary = forecast({
+      fertility: true,
       today: "2026-04-04",
       periodDays: [...startsEndingOn("2026-04-02", [26, 28, 30]), "2026-04-03"],
     });
@@ -271,6 +282,7 @@ describe("forecast", () => {
     // Six recent 30-day cycles; a run of old 21-day cycles should not pull the
     // estimate down once they fall outside the recency window.
     const summary = forecast({
+      fertility: true,
       today: "2026-04-04",
       periodDays: [
         ...startsEndingOn("2026-04-02", [21, 21, 21, 30, 30, 30, 30, 30, 30]),
@@ -283,6 +295,7 @@ describe("forecast", () => {
 
   it("uses the four user-facing phase names", () => {
     const summary = forecast({
+      fertility: true,
       today: "2026-04-18",
       periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
     });
@@ -297,6 +310,7 @@ describe("forecast stats", () => {
   it("reports no variability until two cycles exist, then the recent spread", () => {
     // One completed cycle: cyclesTracked 1, nothing to compare yet.
     const one = forecast({
+      fertility: true,
       today: "2026-12-31",
       periodDays: ["2026-01-01", "2026-01-29"],
     }).stats;
@@ -306,6 +320,7 @@ describe("forecast stats", () => {
     // Three cycle starts 28/30 days apart -> two completed cycles [28, 30],
     // with a small non-zero spread. (Cycle length itself lives on the summary.)
     const many = forecast({
+      fertility: true,
       today: "2026-12-31",
       periodDays: ["2026-01-01", "2026-01-29", "2026-02-28"],
     }).stats;
@@ -315,10 +330,12 @@ describe("forecast stats", () => {
 
   it("reports no tracked cycles with no completed cycles", () => {
     expect(
-      forecast({ today: "2026-12-31", periodDays: [] }).stats.cyclesTracked,
+      forecast({ fertility: true, today: "2026-12-31", periodDays: [] }).stats
+        .cyclesTracked,
     ).toBe(0);
     expect(
-      forecast({ today: "2026-12-31", periodDays: [] }).stats.variabilityDays,
+      forecast({ fertility: true, today: "2026-12-31", periodDays: [] }).stats
+        .variabilityDays,
     ).toBeNull();
   });
 });

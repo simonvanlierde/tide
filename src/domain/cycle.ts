@@ -47,6 +47,12 @@ interface ForecastInput {
   today: IsoDate;
   /** Logged days that count toward predictions (spotting already left out). */
   periodDays: IsoDate[];
+  /**
+   * Estimate ovulation and the fertile window. Off, the forecast says nothing
+   * that rests on an ovulation estimate: the phase is only menstrual or
+   * between periods, and the timeline marks only the expected period.
+   */
+  fertility: boolean;
 }
 
 function getCycleStarts(periodDays: IsoDate[]) {
@@ -177,10 +183,14 @@ function getFertileWindow(completedCycleLengths: number[]) {
 function getPhaseLabel(
   today: IsoDate,
   periodDays: IsoDate[],
-  ovulationDate: IsoDate,
+  ovulationDate: IsoDate | null,
 ) {
   if (periodDays.includes(today)) {
     return "menstrual" as const;
+  }
+
+  if (ovulationDate === null) {
+    return "between" as const;
   }
 
   const ovulationOffset = differenceInDays(today, ovulationDate);
@@ -198,9 +208,12 @@ function getPhaseLabel(
 
 function isWithinFertileWindow(
   today: IsoDate,
-  ovulationDate: IsoDate,
+  ovulationDate: IsoDate | null,
   window: { start: number; end: number },
 ) {
+  if (ovulationDate === null) {
+    return false;
+  }
   const ovulationOffset = differenceInDays(today, ovulationDate);
   return ovulationOffset >= window.start && ovulationOffset <= window.end;
 }
@@ -227,7 +240,9 @@ export function forecast(input: ForecastInput): Forecast {
   const completedCycleLengths = getCompletedCycleLengths(periodDays);
   const lastCycleStart = getCycleStarts(periodDays).at(-1);
   const stats = cycleStats(completedCycleLengths);
-  const pastOvulationDates = getPastOvulationDates(periodDays);
+  const pastOvulationDates = input.fertility
+    ? getPastOvulationDates(periodDays)
+    : [];
 
   if (!lastCycleStart) {
     return withTimeline(INSUFFICIENT_SUMMARY, stats, null, null, []);
@@ -240,7 +255,9 @@ export function forecast(input: ForecastInput): Forecast {
     differenceInDays(input.today, lastCycleStart) + 1,
   );
   const nextPeriodDate = addDays(lastCycleStart, cycleLength);
-  const ovulationDate = addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH);
+  const ovulationDate = input.fertility
+    ? addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH)
+    : null;
   const periodLength = getAveragePeriodLength(periodDays, input.today);
 
   // Long past the due date with nothing logged, the forecast is stale. The
@@ -276,7 +293,9 @@ export function forecast(input: ForecastInput): Forecast {
     // The current cycle runs up to the day before the next expected period;
     // once that is overdue, it is simply running long, through today.
     input.today >= nextPeriodDate ? input.today : addDays(nextPeriodDate, -1),
-    [...pastOvulationDates, ovulationDate],
+    ovulationDate === null
+      ? pastOvulationDates
+      : [...pastOvulationDates, ovulationDate],
   );
 }
 

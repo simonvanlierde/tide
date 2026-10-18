@@ -52,11 +52,13 @@ export const de: Dictionary = {
   "phase.ovulation": "Eisprung",
   "phase.luteal": "Luteal",
   "phase.learning": "Lernen",
+  "phase.between": "Zwischen den Perioden",
   "phaseLine.menstrual": "Menstruationsphase",
   "phaseLine.follicular": "Follikelphase",
   "phaseLine.ovulation": "Ovulationsphase",
   "phaseLine.luteal": "Lutealphase",
   "phaseLine.learning": "Lernen",
+  "phaseLine.between": "Zwischen den Perioden",
   "phaseLine.late": "Periode erwartet",
 
   "dial.overview": "Zyklusübersicht",
@@ -92,6 +94,8 @@ export const de: Dictionary = {
     "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
   "insights.how4":
     "Deine nächste Periode ist dein letzter Beginn plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",
+  "insights.howNextPeriod":
+    "Deine nächste Periode ist dein letzter Beginn plus diese Zykluslänge.",
   "insights.how5":
     "Das fruchtbare Fenster reicht von {before} Tagen vor bis {after} Tag nach dem Eisprung und wird breiter, wenn deine Zyklen stärker schwanken.",
 

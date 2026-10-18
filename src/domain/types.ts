@@ -7,6 +7,8 @@ export type CyclePhase =
   | "follicular"
   | "ovulation"
   | "luteal"
+  /** Any non-period day while fertility estimates are off. */
+  | "between"
   | "unknown";
 export type CycleEstimateMode = "learned" | "fallback" | "insufficient";
 export type ThemePreference = "system" | "light" | "dark";

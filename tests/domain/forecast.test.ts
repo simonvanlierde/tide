@@ -23,12 +23,14 @@ function datesFrom(from: IsoDate, to: IsoDate): IsoDate[] {
 // day 10. Next period 04-28, ovulation 04-14, and the past cycle's ovulation
 // 03-17.
 const LEARNED = forecast({
+  fertility: true,
   today: "2026-04-09",
   periodDays: periods(["2026-03-03", "2026-03-31"], 4),
 });
 
 // Same rhythm a cycle earlier, but today is 8 days past the 04-10 forecast.
 const OVERDUE = forecast({
+  fertility: true,
   today: "2026-04-18",
   periodDays: periods(["2026-02-13", "2026-03-13"], 4),
 });
@@ -88,6 +90,7 @@ describe("forecast timeline", () => {
 
   it("repeats a short learned cycle every cycleLength days, not 28", () => {
     const short = forecast({
+      fertility: true,
       today: "2026-06-06",
       periodDays: [...startsEndingOn("2026-06-01", [24, 24, 25]), "2026-06-02"],
     });
@@ -139,7 +142,11 @@ describe("forecast timeline", () => {
   });
 
   it("knows nothing about any day without history", () => {
-    const empty = forecast({ today: "2026-04-18", periodDays: [] });
+    const empty = forecast({
+      fertility: true,
+      today: "2026-04-18",
+      periodDays: [],
+    });
 
     expect(empty).toMatchObject({
       estimateMode: "insufficient",
@@ -157,6 +164,7 @@ describe("forecast timeline", () => {
 
   it("falls back to a 28-day cycle from a single period", () => {
     const one = forecast({
+      fertility: true,
       today: "2026-04-21",
       periodDays: periods(["2026-04-19"], 3),
     });
@@ -173,6 +181,7 @@ describe("forecast timeline", () => {
 
   it("learns from one completed cycle", () => {
     const one = forecast({
+      fertility: true,
       today: "2026-04-25",
       periodDays: periods(["2026-03-27", "2026-04-22"], 2),
     });
@@ -187,6 +196,7 @@ describe("forecast timeline", () => {
     // Older 40-day cycles fall outside the window; the last six median to 29.5,
     // rounded to 30.
     const windowed = forecast({
+      fertility: true,
       today: "2026-06-03",
       periodDays: startsEndingOn(
         "2026-06-01",
@@ -203,6 +213,7 @@ describe("forecast timeline", () => {
   it("keeps the estimate on a logged future day, which it ignores", () => {
     // The calendar is what hides estimates under logged days.
     const future = forecast({
+      fertility: true,
       today: "2026-04-09",
       periodDays: [...periods(["2026-03-03", "2026-03-31"], 4), "2026-04-28"],
     });
@@ -215,6 +226,7 @@ describe("forecast timeline", () => {
     // Cycles of 10 and 30 days widen the window to its cap (-10..+6), so the
     // 01-27 ovulation sits inside the next window, centred on 02-06.
     const irregular = forecast({
+      fertility: true,
       today: "2026-03-24",
       periodDays: [
         "2026-01-01",
@@ -232,6 +244,7 @@ describe("forecast timeline", () => {
 
   it("drops a stale forecast but keeps past fertile windows", () => {
     const stale = forecast({
+      fertility: true,
       today: "2026-08-22",
       periodDays: ["2026-06-04", "2026-07-02", "2026-07-03"],
     });
@@ -254,6 +267,7 @@ describe("forecast across calendar boundaries", () => {
     // 2026-10-25; a 23- or 25-hour day must still count as one.
     vi.stubEnv("TZ", "Europe/Amsterdam");
     const spring = forecast({
+      fertility: true,
       today: "2026-04-05",
       periodDays: periods(["2026-02-23", "2026-03-23"], 3),
     });
@@ -262,6 +276,7 @@ describe("forecast across calendar boundaries", () => {
     expect(spring.dayInfo("2026-03-30").cycleDay).toBe(8);
 
     const autumn = forecast({
+      fertility: true,
       today: "2026-10-28",
       periodDays: periods(["2026-09-22", "2026-10-20"], 3),
     });
@@ -272,6 +287,7 @@ describe("forecast across calendar boundaries", () => {
 
   it("runs the timeline over month ends and a leap day", () => {
     const leap = forecast({
+      fertility: true,
       today: "2028-01-20",
       periodDays: periods(["2027-12-08", "2028-01-05"], 4),
     });
@@ -284,5 +300,49 @@ describe("forecast across calendar boundaries", () => {
     expect(leap.dayInfo("2028-02-29").estimate).toBeNull();
     expect(leap.dayInfo("2028-03-01").estimate).toBe("predicted-period");
     expect(leap.dayInfo("2028-03-04").estimate).toBe("predicted-period");
+  });
+});
+
+describe("forecast without fertility estimates", () => {
+  // The LEARNED history again, but the user has not opted in.
+  const OFF = forecast({
+    today: "2026-04-09",
+    periodDays: periods(["2026-03-03", "2026-03-31"], 4),
+    fertility: false,
+  });
+
+  it("splits the cycle into period and the rest, with no ovulation", () => {
+    expect(OFF).toMatchObject({
+      cycleDay: 10,
+      phaseLabel: "between",
+      fertile: false,
+      ovulationDate: null,
+      nextPeriod: { date: "2026-04-28", daysUntil: 19 },
+      cycleStart: "2026-03-31",
+      cycleEnd: "2026-04-27",
+    });
+    expect(
+      forecast({
+        today: "2026-04-01",
+        periodDays: periods(["2026-03-03", "2026-03-31"], 4),
+        fertility: false,
+      }).phaseLabel,
+    ).toBe("menstrual");
+  });
+
+  it("draws only the expected period on the timeline", () => {
+    const estimates = new Set(
+      datesFrom("2026-03-01", "2026-06-30").map(
+        (date) => OFF.dayInfo(date).estimate,
+      ),
+    );
+    expect(estimates).toEqual(new Set([null, "predicted-period"]));
+    expect(OFF.dayInfo("2026-04-28").estimate).toBe("predicted-period");
+    expect(OFF.dayInfo("2026-04-14").cycleDay).toBe(15);
+  });
+
+  it("keeps the ovulation phases when fertility estimates are on", () => {
+    expect(LEARNED.phaseLabel).toBe("follicular");
+    expect(LEARNED.dayInfo("2026-04-14").estimate).toBe("ovulation");
   });
 });

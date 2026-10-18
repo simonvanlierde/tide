@@ -17,6 +17,7 @@ import { useT } from "../../state/provider";
 interface CycleInsightsProps {
   summary: CycleSummary;
   stats: CycleStats;
+  showFertility: boolean;
   onClose: () => void;
 }
 
@@ -24,7 +25,12 @@ interface CycleInsightsProps {
 // worked out. A native <dialog> gives us the focus trap, Esc-to-close, and
 // backdrop for free. Mounted only while open, so it's shown on mount and a
 // native close (Esc, backdrop) unmounts it via onClose.
-export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
+export function CycleInsights({
+  summary,
+  stats,
+  showFertility,
+  onClose,
+}: CycleInsightsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const t = useT();
 
@@ -128,13 +134,19 @@ export function CycleInsights({ summary, stats, onClose }: CycleInsightsProps) {
               max: MAX_PERIOD_LENGTH,
             })}
           </li>
-          <li>{t("insights.how4", { luteal: DEFAULT_LUTEAL_LENGTH })}</li>
-          <li>
-            {t("insights.how5", {
-              before: Math.abs(FERTILE_WINDOW_START),
-              after: FERTILE_WINDOW_END,
-            })}
-          </li>
+          {showFertility ? (
+            <>
+              <li>{t("insights.how4", { luteal: DEFAULT_LUTEAL_LENGTH })}</li>
+              <li>
+                {t("insights.how5", {
+                  before: Math.abs(FERTILE_WINDOW_START),
+                  after: FERTILE_WINDOW_END,
+                })}
+              </li>
+            </>
+          ) : (
+            <li>{t("insights.howNextPeriod")}</li>
+          )}
         </ul>
       </details>
     </dialog>

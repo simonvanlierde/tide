@@ -64,6 +64,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   the sheet, and the regularity line wraps under its label.
 - The language menu in Settings no longer runs past the card on very narrow
   screens.
+- Until you turn on fertility estimates, the cycle dial no longer names an
+  ovulation, follicular or luteal phase, on screen or to a screen reader. It
+  shows the period and "Between periods", and Cycle insights leaves out how
+  ovulation is estimated.
 - The theme picker in Settings no longer cuts "Système" or "Systeem" short on
   phones about 390px wide when the system font runs wide, as DejaVu Sans does
   on many Linux setups.

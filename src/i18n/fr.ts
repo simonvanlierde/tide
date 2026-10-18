@@ -51,11 +51,13 @@ export const fr: Dictionary = {
   "phase.ovulation": "Ovulation",
   "phase.luteal": "Lutéale",
   "phase.learning": "Apprentissage",
+  "phase.between": "Entre deux règles",
   "phaseLine.menstrual": "Phase menstruelle",
   "phaseLine.follicular": "Phase folliculaire",
   "phaseLine.ovulation": "Phase d’ovulation",
   "phaseLine.luteal": "Phase lutéale",
   "phaseLine.learning": "Apprentissage",
+  "phaseLine.between": "Entre deux règles",
   "phaseLine.late": "Règles attendues",
 
   "dial.overview": "Aperçu du cycle",
@@ -91,6 +93,8 @@ export const fr: Dictionary = {
     "La durée des règles est votre moyenne récente, limitée à une normale de {min} à {max} jours.",
   "insights.how4":
     "Vos prochaines règles correspondent à votre dernier début plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",
+  "insights.howNextPeriod":
+    "Vos prochaines règles correspondent à votre dernier début plus cette durée de cycle.",
   "insights.how5":
     "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand vos cycles varient davantage.",
 

@@ -46,7 +46,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const showFertility = state.settings.showFertility === true;
   const askFertility =
     state.settings.showFertility === null &&
-    forecast.ovulationDate !== null &&
+    forecast.nextPeriod.date !== null &&
     !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
@@ -101,7 +101,6 @@ export function TodayScreen(props: TodayScreenProps) {
         }
         intensityByDay={state.intensityByDay}
         today={today}
-        showFertility={showFertility}
       />
 
       {learningNote ? (
@@ -218,6 +217,7 @@ export function TodayScreen(props: TodayScreenProps) {
         <CycleInsights
           summary={forecast}
           stats={forecast.stats}
+          showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
         />
       ) : null}

@@ -48,25 +48,26 @@ describe("calendar helpers", () => {
     "2026-03-31": "heavy",
     "2026-04-01": null,
   };
-  const learned = forecast({
-    today: "2026-04-09",
-    periodDays: [
-      "2026-03-03",
-      "2026-03-04",
-      "2026-03-05",
-      "2026-03-06",
-      "2026-03-31",
-      "2026-04-01",
-      "2026-04-02",
-      "2026-04-03",
-    ],
-  });
+  const learned = (fertility: boolean) =>
+    forecast({
+      fertility,
+      today: "2026-04-09",
+      periodDays: [
+        "2026-03-03",
+        "2026-03-04",
+        "2026-03-05",
+        "2026-03-06",
+        "2026-03-31",
+        "2026-04-01",
+        "2026-04-02",
+        "2026-04-03",
+      ],
+    });
   function cells(month: IsoDate, showFertility: boolean, numbers = true) {
     const all = buildCalendarCells(
       buildMonthDays(month, "2026-04-09"),
-      learned,
+      learned(showFertility),
       intensityByDay,
-      showFertility,
       numbers,
     );
     return (date: IsoDate) => all.find((cell) => cell.value === date);

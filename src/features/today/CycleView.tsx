@@ -25,7 +25,6 @@ export function buildCycleSegments(
   forecast: Forecast,
   intensityByDay: Record<IsoDate, LoggedFlow>,
   today: IsoDate,
-  showFertility: boolean,
 ): CycleSegment[] {
   const { cycleStart, cycleEnd } = forecast;
   if (cycleStart === null || cycleEnd === null) {
@@ -57,9 +56,8 @@ export function buildCycleSegments(
         // shows it in base coral (see phaseColor, which keys off isPeriod).
         flow: isPeriod ? (intensityByDay[date] ?? null) : null,
         // The ovulation day is part of the fertile window too.
-        isFertile:
-          showFertility && (estimate === "fertile" || estimate === "ovulation"),
-        isOvulation: showFertility && estimate === "ovulation",
+        isFertile: estimate === "fertile" || estimate === "ovulation",
+        isOvulation: estimate === "ovulation",
       };
     },
   );
@@ -91,7 +89,12 @@ export function getSegmentStatus(
     return "status.periodExpected";
   }
 
-  if (segment.date !== null && summary.ovulationDate !== null) {
+  // A dated day has a live forecast, so a missing ovulation date means
+  // fertility estimates are off.
+  if (segment.date !== null) {
+    if (summary.ovulationDate === null) {
+      return "phase.between";
+    }
     return differenceInDays(segment.date, summary.ovulationDate) > 0
       ? "phase.luteal"
       : "phase.follicular";

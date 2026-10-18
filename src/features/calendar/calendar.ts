@@ -54,15 +54,14 @@ export interface CalendarCell extends CalendarDay {
 }
 
 // What the grid shows on each day. A logged day shows its flow and nothing
-// else. Any other day shows the forecast's estimate (fertility only when the
-// user asked for it) and, once it has happened, its cycle-day number: the
+// else. Any other day shows the forecast's estimate (the forecast leaves out
+// fertility unless the user asked for it) and, once it has happened, its cycle-day number: the
 // coral run already says which period day a logged cell is, and a number on a
 // future cell would read as a fact.
 export function buildCalendarCells(
   monthDays: CalendarDay[],
   forecast: Forecast,
   intensityByDay: Record<IsoDate, LoggedFlow>,
-  showFertility: boolean,
   showCycleDayNumbers: boolean,
 ): CalendarCell[] {
   return monthDays.map((day) => {
@@ -72,10 +71,7 @@ export function buildCalendarCells(
       ...day,
       isLogged,
       flow: isLogged ? (intensityByDay[day.value] ?? null) : null,
-      estimate:
-        isLogged || (!showFertility && estimate !== "predicted-period")
-          ? null
-          : estimate,
+      estimate: isLogged ? null : estimate,
       cycleDay:
         showCycleDayNumbers && !isLogged && !day.isFuture ? cycleDay : null,
     };

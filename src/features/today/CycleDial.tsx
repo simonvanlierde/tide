@@ -21,7 +21,6 @@ interface CycleDialProps {
   phaseLabel: string;
   intensityByDay: Record<IsoDate, LoggedFlow>;
   today: IsoDate;
-  showFertility: boolean;
 }
 
 // Day-boundary tick, drawn on its own masked layer near the outer rim (see
@@ -156,7 +155,6 @@ export function CycleDial({
   phaseLabel,
   intensityByDay,
   today,
-  showFertility,
 }: CycleDialProps) {
   const t = useT();
   const locale = useLocale();
@@ -181,8 +179,8 @@ export function CycleDial({
   const dragRect = useRef<DOMRect | null>(null);
 
   const segments = useMemo(
-    () => buildCycleSegments(forecast, intensityByDay, today, showFertility),
-    [forecast, intensityByDay, today, showFertility],
+    () => buildCycleSegments(forecast, intensityByDay, today),
+    [forecast, intensityByDay, today],
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
 
@@ -429,7 +427,7 @@ export function CycleDial({
         // ovulation estimate.
         showPeriod={Object.keys(intensityByDay).length > 0}
         showExpected={hasPrediction}
-        showFertility={showFertility && forecast.ovulationDate !== null}
+        showFertility={forecast.ovulationDate !== null}
       />
     </section>
   );
