@@ -24,7 +24,7 @@ export const fr: Dictionary = {
   "today.notBirthControl": "Pas une contraception",
   "fertilityAsk.title": "Afficher les estimations de fertilité ?",
   "fertilityAsk.body":
-    "Tide peut indiquer les jours où vous êtes le plus susceptible d’être fertile, calculés à partir des règles que vous enregistrez. C’est une estimation, pas une contraception.",
+    "Tide peut indiquer les jours où vous êtes le plus susceptible d’être fertile, calculés à partir des règles que vous enregistrez. C’est une estimation, pas une contraception. Vous pourrez changer d’avis dans les Réglages.",
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
   "today.privacy": "Stocké uniquement sur cet appareil.",
@@ -191,6 +191,8 @@ export const fr: Dictionary = {
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":
     "L’export enregistre vos jours dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours depuis Clue ou Flo.",
+  "settings.importSources":
+    "Vous pouvez importer une sauvegarde Tide, ou un export de Clue ou Flo.",
   "settings.export": "Exporter",
   "settings.exportSuccess": "Sauvegarde enregistrée dans vos téléchargements.",
   "settings.import": "Importer",

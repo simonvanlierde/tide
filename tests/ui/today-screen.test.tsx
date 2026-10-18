@@ -232,6 +232,8 @@ describe("TodayScreen", () => {
       name: "Show fertility estimates?",
     });
     expect(question).toHaveTextContent(/an estimate, not birth control/i);
+    // The answer is not final, and the card says where to change it.
+    expect(question).toHaveTextContent(/change this in settings/i);
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
     expect(
       document.querySelector(".cycle-dial__estimates")?.getAttribute("style"),

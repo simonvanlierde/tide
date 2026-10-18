@@ -24,7 +24,7 @@ export const nl: Dictionary = {
   "today.notBirthControl": "Geen anticonceptie",
   "fertilityAsk.title": "Vruchtbaarheidsschattingen tonen?",
   "fertilityAsk.body":
-    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie.",
+    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie. Je kunt dit wijzigen in Instellingen.",
   "fertilityAsk.show": "Tonen",
   "fertilityAsk.hide": "Niet tonen",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
@@ -190,6 +190,8 @@ export const nl: Dictionary = {
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
     "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een Tide-back-up, of voegt dagen toe uit Clue of Flo.",
+  "settings.importSources":
+    "Je kunt een Tide-back-up importeren, of een export uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.import": "Importeren",

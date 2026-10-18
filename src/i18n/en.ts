@@ -29,7 +29,7 @@ export const en = {
   "today.notBirthControl": "Not birth control",
   "fertilityAsk.title": "Show fertility estimates?",
   "fertilityAsk.body":
-    "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control.",
+    "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control. You can change this in Settings.",
   "fertilityAsk.show": "Show",
   "fertilityAsk.hide": "Don't show",
   "today.privacy": "Stored only on this device.",
@@ -198,6 +198,8 @@ export const en = {
   "settings.dataInfo": "About import and export",
   "settings.dataHelp":
     "Export saves your days to a file. Import replaces them from a Tide backup, or adds days from Clue or Flo.",
+  "settings.importSources":
+    "You can import a Tide backup, or an export from Clue or Flo.",
   "settings.export": "Export",
   "settings.exportSuccess": "Backup saved to your downloads.",
   "settings.import": "Import",

@@ -25,7 +25,7 @@ export const de: Dictionary = {
   "today.notBirthControl": "Keine Verhütungsmethode",
   "fertilityAsk.title": "Fruchtbarkeitsschätzungen anzeigen?",
   "fertilityAsk.body":
-    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode.",
+    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.privacy": "Nur auf diesem Gerät gespeichert.",
@@ -191,6 +191,8 @@ export const de: Dictionary = {
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":
     "Der Export speichert deine Tage in einer Datei. Der Import ersetzt sie aus einer Tide-Sicherung oder fügt Tage aus Clue oder Flo hinzu.",
+  "settings.importSources":
+    "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.import": "Importieren",

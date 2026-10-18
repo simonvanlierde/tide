@@ -18,6 +18,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   or undo the whole range with one tap.
 - Before anything is logged, Today asks "Have a Tide backup, or history in Clue
   or Flo?" Its "Import it" link opens Settings at the Import button.
+- Settings → Data says under the buttons that Import takes a Tide backup or an
+  export from Clue or Flo, so you don't have to open the info button to find out.
+- The fertility question on Today says you can change your answer in Settings.
 - A backtest of the next-period estimate on a public cycle dataset, with the
   results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
   `pnpm backtest`.
