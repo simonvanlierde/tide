@@ -148,7 +148,7 @@ export function useCalendar(today: IsoDate) {
     goToToday() {
       setMonth(today);
     },
-    // Empty day → one-tap log at the default flow (medium). Logged day → open
+    // Empty day → one-tap log with no flow level. Logged day → open
     // its picker to change the flow or remove it; tapping the open day closes.
     selectDay(day: IsoDate) {
       setJustLoggedRange(null);

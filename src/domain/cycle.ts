@@ -327,6 +327,8 @@ function withTimeline(
       ) {
         estimate = "predicted-period";
       } else {
+        // NOTE: fertile and ovulation estimates stop after the current cycle on
+        // purpose; only the predicted period repeats indefinitely.
         // Latest window first, so where two overlap the later one wins, and
         // the windows that ended before this date are never visited.
         for (let index = ovulationDates.length - 1; index >= 0; index--) {
