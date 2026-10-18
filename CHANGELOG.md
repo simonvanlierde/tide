@@ -37,7 +37,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   switch still changes the answer.
 - Every estimate looks like an estimate: the expected period, the fertile
   window and ovulation are dashed outlines on both the dial and the calendar,
-  and in both legends. Only logged days are filled.
+  and in both legends. Only logged days are filled. The outline is the only
+  cue: an expected period day no longer also turns its number coral, so it
+  looks no more certain than a fertile day.
 - The Today fertility line says "In the fertile window (estimate)" or "Outside
   the fertile window (estimate)", with "Not birth control" right under it. It
   names the same fertile window as the legends, and no longer says a day is

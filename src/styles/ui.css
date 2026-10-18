@@ -1140,8 +1140,10 @@
   }
 
   /* Estimates: a dashed outline in the estimate's colour and no fill, so no
-     estimate reads as a logged day. Placed after the future/disabled rules,
-     and at full opacity, so the outline keeps its 3:1 contrast. */
+     estimate reads as a logged day. The outline is the only cue: the day
+     number keeps its own colour, as on every other estimate. Placed after
+     the future/disabled rules, and at full opacity, so the outline keeps its
+     3:1 contrast. */
   .calendar-grid__day.is-fertile,
   .calendar-grid__day.is-ovulation,
   .calendar-grid__day.is-predicted-period {
@@ -1156,7 +1158,6 @@
 
   .calendar-grid__day.is-predicted-period {
     border-color: var(--estimate-period);
-    color: var(--bleed-ink);
   }
 
   .calendar-grid__day.is-logged {
