@@ -31,7 +31,7 @@ export const fr: Dictionary = {
   "today.importPrompt":
     "Vous avez une sauvegarde Tide ou un historique Clue ou Flo ?",
   "today.importLink": "L’importer",
-  "today.fertilityUnclear": "Incertaine en retard",
+  "today.fertilityUnclear": "Incertaine en cas de retard",
   "today.periodLate": "Règles",
   "today.daysLate.one": "{n} jour de retard",
   "today.daysLate.other": "{n} jours de retard",
