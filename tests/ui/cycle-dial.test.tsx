@@ -8,11 +8,10 @@ import { CycleDial } from "../../src/features/today/CycleDial";
 function renderDial(starts: IsoDate[], today: IsoDate) {
   render(
     <CycleDial
-      forecast={forecast({ today, periodDays: starts })}
+      forecast={forecast({ fertility: true, today, periodDays: starts })}
       phaseLabel="Luteal phase"
       intensityByDay={{}}
       today={today}
-      showFertility
     />,
   );
   return screen.getByRole("slider");

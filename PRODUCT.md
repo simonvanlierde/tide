@@ -54,7 +54,8 @@ out: import it to bring your history, export it to leave.
 - Light and dark themes, following the system or a manual choice.
 - CI checks bundle size, coverage, and accessibility with axe in the end-to-end tests.
 - Words we use: "bleeding" or "period" for what you log, "cycle day", "phase" (menstrual,
-  follicular, ovulation, luteal), "fertile window", and "expected" for a predicted day.
+  follicular, ovulation, luteal; "between periods" while fertility estimates are off),
+  "fertile window", and "expected" for a predicted day.
 
 ## Brand Commitments
 

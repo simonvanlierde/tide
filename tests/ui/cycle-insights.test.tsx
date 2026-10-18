@@ -20,7 +20,14 @@ function renderInsights(
   onClose = vi.fn(),
   summary: CycleSummary = SUMMARY,
 ) {
-  render(<CycleInsights summary={summary} stats={stats} onClose={onClose} />);
+  render(
+    <CycleInsights
+      summary={summary}
+      stats={stats}
+      showFertility
+      onClose={onClose}
+    />,
+  );
   return onClose;
 }
 

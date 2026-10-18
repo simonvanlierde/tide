@@ -34,8 +34,6 @@ export function useCalendar(today: IsoDate) {
     added: IsoDate[];
   } | null>(null);
 
-  // null (not asked yet) hides the estimates, like an explicit "no".
-  const showFertility = state.settings.showFertility === true;
   const { showCycleDayNumbers } = state.settings;
   const days = useMemo(
     () =>
@@ -43,17 +41,9 @@ export function useCalendar(today: IsoDate) {
         buildMonthDays(visibleMonth, today),
         forecast,
         state.intensityByDay,
-        showFertility,
         showCycleDayNumbers,
       ),
-    [
-      visibleMonth,
-      today,
-      forecast,
-      state.intensityByDay,
-      showFertility,
-      showCycleDayNumbers,
-    ],
+    [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers],
   );
   const isLogged = (day: IsoDate) => day in state.intensityByDay;
   const helpKey: MessageKey =

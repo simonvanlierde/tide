@@ -549,3 +549,77 @@ describe("TodayScreen", () => {
     ).toBeInTheDocument();
   });
 });
+
+describe("TodayScreen before the fertility opt-in", () => {
+  const OVULATION_WORDS = /ovulation|follicular|luteal|fertile/i;
+
+  // Every day the dial can preview, read the way a screen reader hears it.
+  function scrubAllDays() {
+    const dial = screen.getByRole("slider", { name: /cycle days/i });
+    const readouts = [dial.getAttribute("aria-valuetext") ?? ""];
+    for (let i = 0; i < 40; i += 1) {
+      fireEvent.keyDown(dial, { key: "ArrowLeft" });
+    }
+    for (let i = 0; i < 40; i += 1) {
+      fireEvent.keyDown(dial, { key: "ArrowRight" });
+      readouts.push(
+        dial.getAttribute("aria-valuetext") ?? "",
+        screen.getByLabelText(/cycle overview/i).textContent ?? "",
+      );
+    }
+    return readouts;
+  }
+
+  it.each([
+    ["unanswered", null],
+    ["off", false],
+  ] as const)("shows no ovulation phase on the dial while %s", (_, show) => {
+    renderToday(
+      "2026-04-18",
+      createAppState({
+        periodDays: LEARNED_PERIOD_DAYS,
+        settings: { showFertility: show },
+      }),
+    );
+
+    const dial = screen.getByLabelText(/cycle overview/i);
+    expect(dial.textContent).not.toMatch(OVULATION_WORDS);
+    expect(dial).toHaveTextContent(/between periods/i);
+    expect(screen.getByRole("heading", { level: 1 }).textContent).not.toMatch(
+      OVULATION_WORDS,
+    );
+    expect(
+      document.querySelector(".cycle-dial__estimates")?.getAttribute("style"),
+    ).not.toMatch(/--estimate-(fertile|ovulation)/);
+    for (const readout of scrubAllDays()) {
+      expect(readout).not.toMatch(OVULATION_WORDS);
+    }
+  });
+
+  it("keeps ovulation out of the insights sheet while off", async () => {
+    const user = userEvent.setup();
+    renderToday(
+      "2026-04-18",
+      createAppState({
+        periodDays: LEARNED_PERIOD_DAYS,
+        settings: { showFertility: false },
+      }),
+    );
+
+    await user.click(screen.getByRole("button", { name: /cycle insights/i }));
+
+    expect(screen.getByRole("dialog").textContent).not.toMatch(OVULATION_WORDS);
+    expect(
+      screen.getByText(/last start plus that cycle length/i),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps the ovulation phases on the dial once fertility is on", () => {
+    renderToday("2026-04-18");
+
+    expect(screen.getByLabelText(/cycle overview/i)).toHaveTextContent(
+      /luteal phase/i,
+    );
+    expect(scrubAllDays().join(" ")).toMatch(/Ovulation expected/);
+  });
+});

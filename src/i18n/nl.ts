@@ -51,11 +51,13 @@ export const nl: Dictionary = {
   "phase.ovulation": "Eisprong",
   "phase.luteal": "Luteaal",
   "phase.learning": "Leren",
+  "phase.between": "Tussen menstruaties",
   "phaseLine.menstrual": "Menstruatiefase",
   "phaseLine.follicular": "Folliculaire fase",
   "phaseLine.ovulation": "Ovulatiefase",
   "phaseLine.luteal": "Luteale fase",
   "phaseLine.learning": "Leren",
+  "phaseLine.between": "Tussen menstruaties",
   "phaseLine.late": "Menstruatie verwacht",
 
   "dial.overview": "Cyclusoverzicht",
@@ -91,6 +93,8 @@ export const nl: Dictionary = {
     "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
   "insights.how4":
     "Je volgende menstruatie is je laatste start plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
+  "insights.howNextPeriod":
+    "Je volgende menstruatie is je laatste start plus die cycluslengte.",
   "insights.how5":
     "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
 

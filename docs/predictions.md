@@ -18,6 +18,9 @@ device. The code is in `src/domain/cycle.ts`.
 - **Fertile window.** From 5 days before ovulation to 1 day after, because sperm survive about
   5 days and the egg about 1. It **widens with the standard deviation of your recent cycles**
   (capped at ±5 days), so it stays tight for regular cycles and gets wider for irregular ones.
+- **Phase.** Menstrual on a logged bleeding day. Otherwise follicular, ovulation (the estimate
+  ±1 day) or luteal, read from the ovulation estimate. With fertility estimates off, Tide makes no
+  ovulation estimate, so every other day is simply "between periods".
 
 To see how close the next-period estimate lands on real cycle data, read
 [backtest.md](backtest.md).

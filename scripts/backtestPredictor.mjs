@@ -102,7 +102,11 @@ for (const stretch of stretches) {
     }
     // The data has start dates only, so each period is logged as its first day.
     const periodDays = stretch.slice(0, k + 1).map((c) => c.start);
-    const summary = forecast({ today: current.start, periodDays });
+    const summary = forecast({
+      today: current.start,
+      periodDays,
+      fertility: false,
+    });
     const actual = addDays(current.start, current.length);
     const lastLength = stretch[k - 1]?.length ?? DEFAULT_CYCLE_LENGTH;
     records.push({

@@ -55,11 +55,13 @@ export const en = {
   "phase.ovulation": "Ovulation",
   "phase.luteal": "Luteal",
   "phase.learning": "Learning",
+  "phase.between": "Between periods",
   "phaseLine.menstrual": "Menstrual phase",
   "phaseLine.follicular": "Follicular phase",
   "phaseLine.ovulation": "Ovulation phase",
   "phaseLine.luteal": "Luteal phase",
   "phaseLine.learning": "Learning",
+  "phaseLine.between": "Between periods",
   "phaseLine.late": "Period expected",
 
   // Cycle dial + segment status (shown in the dial centre and read aloud)
@@ -97,6 +99,8 @@ export const en = {
     "Period length is your recent average, kept to a normal {min}–{max} days.",
   "insights.how4":
     "Your next period is your last start plus that cycle length; ovulation is estimated {luteal} days before it.",
+  "insights.howNextPeriod":
+    "Your next period is your last start plus that cycle length.",
   "insights.how5":
     "The fertile window runs {before} days before to {after} day after ovulation, and widens when your cycles vary more.",
 

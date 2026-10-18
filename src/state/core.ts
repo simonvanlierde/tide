@@ -114,5 +114,7 @@ export function selectForecast(state: AppState, today: IsoDate) {
   return forecast({
     today,
     periodDays: getPredictionDays(state.intensityByDay),
+    // null (not asked yet) counts as off.
+    fertility: state.settings.showFertility === true,
   });
 }
