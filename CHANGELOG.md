@@ -12,7 +12,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Import, the same button as for a Tide backup. Tide shows how many days the
   file holds and asks before adding them. Days you already logged in Tide stay
   as they are. From Clue, use `measurements.json` from the export zip or an
-  older `.cluedata` backup.
+  older `.cluedata` backup. Days where Clue recorded a period of "none" are
+  skipped, not imported as period days.
 - Log a past period in one go from the Calendar: pick its first and last day,
   up to 14 days, and every day between is logged. Set each day's flow after,
   or undo the whole range with one tap.
@@ -49,6 +50,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   on many Linux setups.
 - When a newer version of Tide saved your data, Settings showed the notice
   twice. It now shows once, at the top, with the Reload button.
+- Screen readers now announce that notice when another tab saves newer data.
+  Before, it appeared already filled in, so many screen readers stayed silent.
 - An app left open overnight now moves to the new day, so logging today no
   longer logs yesterday.
 - Importing a JSON file that is not a Tide backup now shows an error instead of
@@ -228,8 +231,8 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
 [Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.4.0...HEAD
-[0.4.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.4.0
-[0.3.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.3.0
-[0.2.1]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.1
-[0.2.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.2.0
+[0.4.0]: https://github.com/simonvanlierde/tide/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/simonvanlierde/tide/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/simonvanlierde/tide/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/simonvanlierde/tide/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/simonvanlierde/tide/releases/tag/v0.1.0
