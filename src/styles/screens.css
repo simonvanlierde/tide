@@ -361,9 +361,6 @@
     width: 100%;
   }
 
-  /* The key wraps to whatever fits: one row of four on most phones, two
-     rows on narrow shells or at large text. Centred so a short last row
-     doesn't hang left. */
   /* A caption under the grid, not a row of chips. Compact enough to hold every
      marker on one line at phone width, and left-aligned so the wrap at 320 px
      reads as a list continuing rather than a stray centred item. */

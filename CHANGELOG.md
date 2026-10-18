@@ -107,6 +107,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - The switches in Settings stay beside the first line of their label. A long
   label such as "Fruchtbarkeitsschätzungen anzeigen" wraps next to the switch,
   instead of pushing the switch and the info button onto lines of their own.
+- Cycle insights dims the screen behind it the same way as the other dialogs,
+  without a blur.
 
 ### Security
 

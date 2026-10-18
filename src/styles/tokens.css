@@ -53,6 +53,9 @@
        stays near-black in both themes (not overridden in the dark block) to
        clear AA on coral, sand, and amber. */
     --ink-on-fill: #0c191e;
+    /* White on the solid deep-tide fills (commit button, switch knob when on);
+       --accent-solid stays deep in both themes, so this does too. */
+    --ink-on-solid: #ffffff;
 
     --shadow-soft: 0 18px 44px rgba(20, 48, 58, 0.1);
     --shadow-card: 0 10px 28px rgba(20, 48, 58, 0.06);
