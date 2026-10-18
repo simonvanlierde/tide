@@ -62,18 +62,6 @@ describe("buildCalendar", () => {
     expect(ics).not.toContain("fertile");
   });
 
-  it("keeps the same UIDs from one export to the next", () => {
-    const later = buildCalendar(CYCLES, {
-      today: "2026-04-22",
-      fertility: false,
-      words: WORDS,
-      now: new Date("2026-04-22T10:00:00Z"),
-    });
-    const uids = (ics: string) => ics.match(/^UID:.*$/gm);
-
-    expect(uids(later)).toEqual(uids(build(false)));
-  });
-
   it("adds fertile windows only when asked, skipping one that is over", () => {
     const ics = build(true);
 

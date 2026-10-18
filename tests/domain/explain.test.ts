@@ -124,6 +124,39 @@ describe("getExpectedCycles", () => {
     ]);
   });
 
+  it("keeps the numbers of the cycles still ahead once a period is logged", () => {
+    const periodDays = startsEndingOn("2026-04-01", [28, 28]);
+    const before = getExpectedCycles(
+      forecast({ today: TODAY, periodDays, fertility: false }),
+      TODAY,
+      3,
+    );
+    // The period expected on 04-29 comes two days late.
+    const later = "2026-05-02";
+    const after = getExpectedCycles(
+      forecast({
+        today: later,
+        periodDays: [...periodDays, "2026-05-01", "2026-05-02"],
+        fertility: false,
+      }),
+      later,
+      2,
+    );
+
+    // The same cycles keep their numbers, so a newer file moves them.
+    expect(after.map((c) => c.number)).toEqual(
+      before.slice(1).map((c) => c.number),
+    );
+    expect(after.map((c) => c.periodStart)).toEqual([
+      "2026-05-29",
+      "2026-06-26",
+    ]);
+    expect(before.slice(1).map((c) => c.periodStart)).toEqual([
+      "2026-05-27",
+      "2026-06-24",
+    ]);
+  });
+
   it("is empty without a forecast", () => {
     const f = forecast({ today: TODAY, periodDays: [], fertility: false });
     expect(getExpectedCycles(f, TODAY, 3)).toEqual([]);
