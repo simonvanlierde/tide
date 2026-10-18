@@ -133,18 +133,24 @@ export function DataSection({ today }: DataSectionProps) {
   }
 
   async function handleCalendarExport() {
-    // Loaded on first use, like the other apps' import formats.
-    const { downloadCalendar } = await import("../../data/calendarFile");
-    downloadCalendar(expectedCycles, {
-      today,
-      fertility: showFertility && calendarFertile,
-      words: {
-        period: t("legend.expected"),
-        fertile: t("legend.fertileWindow"),
-        disclaimer: t("settings.fertilityDisclaimer"),
-      },
-      now: new Date(),
-    });
+    try {
+      // Loaded on first use, like the other apps' import formats.
+      const { downloadCalendar } = await import("../../data/calendarFile");
+      downloadCalendar(expectedCycles, {
+        today,
+        fertility: showFertility && calendarFertile,
+        words: {
+          period: t("legend.expected"),
+          fertile: t("legend.fertileWindow"),
+          disclaimer: t("settings.fertilityDisclaimer"),
+        },
+        now: new Date(),
+      });
+    } catch {
+      setStatus(null);
+      setError(t("settings.calendarError"));
+      return;
+    }
     setError(null);
     setStatus({ kind: "calendar" });
   }

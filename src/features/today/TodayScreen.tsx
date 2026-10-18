@@ -1,12 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import {
-  lazy,
-  type MouseEvent,
-  Suspense,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type {
@@ -35,10 +28,7 @@ import { CycleDial } from "./CycleDial";
 import { CycleInsights } from "./CycleInsights";
 import { FertilityQuestion } from "./FertilityQuestion";
 
-// Loaded on first open: its words stay out of the main bundle.
-const ForecastExplainer = lazy(() =>
-  import("./ForecastExplainer").then((m) => ({ default: m.ForecastExplainer })),
-);
+type Explainer = typeof import("./ForecastExplainer").ForecastExplainer;
 
 interface TodayScreenProps {
   today?: IsoDate;
@@ -53,7 +43,18 @@ export function TodayScreen(props: TodayScreenProps) {
   const locale = useLocale();
   const forecast = useForecast(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  // The sheet loads on first open, so its words stay out of the main bundle.
+  // Null until loaded; false when loading it failed.
+  const [Explainer, setExplainer] = useState<Explainer | null | false>(null);
   const [explainOpen, setExplainOpen] = useState(false);
+  const openExplainer = () =>
+    import("./ForecastExplainer").then(
+      (m) => {
+        setExplainer(() => m.ForecastExplainer);
+        setExplainOpen(true);
+      },
+      () => setExplainer(false),
+    );
   const insightsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
@@ -219,7 +220,7 @@ export function TodayScreen(props: TodayScreenProps) {
           <button
             type="button"
             className="fact-list__more"
-            onClick={() => setExplainOpen(true)}
+            onClick={openExplainer}
           >
             {t("today.howWorkedOut")}
             <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
@@ -247,13 +248,17 @@ export function TodayScreen(props: TodayScreenProps) {
         />
       ) : null}
 
-      {explainOpen && explanation ? (
-        <Suspense fallback={null}>
-          <ForecastExplainer
-            explanation={explanation}
-            onClose={() => setExplainOpen(false)}
-          />
-        </Suspense>
+      {Explainer === false ? (
+        <p className="today-screen__note" role="alert">
+          {t("today.explainError")}
+        </p>
+      ) : null}
+
+      {explainOpen && explanation && Explainer ? (
+        <Explainer
+          explanation={explanation}
+          onClose={() => setExplainOpen(false)}
+        />
       ) : null}
 
       {reminderState.shouldPrompt && reminderState.expectedDate ? (

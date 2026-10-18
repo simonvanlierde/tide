@@ -20,6 +20,7 @@ export const en = {
   "today.fertilityInfoLabel": "How fertility is estimated",
   "today.cycleInsights": "Cycle insights",
   "today.howWorkedOut": "How was this worked out?",
+  "today.explainError": "This couldn't be opened. Reload Tide and try again.",
   "today.daysAgo.one": "{n} day ago",
   "today.daysAgo.other": "{n} days ago",
   "today.expectedToday": "Expected today",
@@ -212,6 +213,8 @@ export const en = {
     "Saves your next 3 expected periods as a file your calendar app can open.",
   "settings.calendarFertility": "Include fertile windows",
   "settings.calendarSuccess": "Calendar file saved to your downloads.",
+  "settings.calendarError":
+    "The calendar file couldn't be made. Reload Tide and try again.",
   "settings.import": "Import",
   "settings.importFile": "Import data file",
   "settings.importError":

@@ -15,6 +15,8 @@ export const fr: Dictionary = {
   "today.fertilityInfoLabel": "Comment la fertilité est estimée",
   "today.cycleInsights": "Aperçu du cycle",
   "today.howWorkedOut": "Comment est-ce calculé ?",
+  "today.explainError":
+    "Impossible d’ouvrir ceci. Rechargez Tide et réessayez.",
   "today.daysAgo.one": "il y a {n} jour",
   "today.daysAgo.other": "il y a {n} jours",
   "today.expectedToday": "Prévues aujourd’hui",
@@ -206,6 +208,8 @@ export const fr: Dictionary = {
   "settings.calendarFertility": "Inclure les fenêtres de fertilité",
   "settings.calendarSuccess":
     "Fichier de calendrier enregistré dans vos téléchargements.",
+  "settings.calendarError":
+    "Impossible de créer le fichier de calendrier. Rechargez Tide et réessayez.",
   "settings.import": "Importer",
   "settings.importFile": "Importer un fichier de données",
   "settings.importError":

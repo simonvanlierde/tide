@@ -15,6 +15,8 @@ export const nl: Dictionary = {
   "today.fertilityInfoLabel": "Hoe vruchtbaarheid wordt geschat",
   "today.cycleInsights": "Cyclusinzichten",
   "today.howWorkedOut": "Hoe is dit berekend?",
+  "today.explainError":
+    "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
   "today.daysAgo.one": "{n} dag geleden",
   "today.daysAgo.other": "{n} dagen geleden",
   "today.expectedToday": "Vandaag verwacht",
@@ -204,6 +206,8 @@ export const nl: Dictionary = {
     "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen.",
   "settings.calendarFertility": "Vruchtbare periodes meenemen",
   "settings.calendarSuccess": "Agendabestand opgeslagen in je downloads.",
+  "settings.calendarError":
+    "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError":
