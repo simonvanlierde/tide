@@ -15,6 +15,15 @@
     /* Five languages, some with long compounds ("Fruchtbarkeitsschätzungen"):
        a word that can't fit its box breaks rather than widening the page. */
     overflow-wrap: break-word;
+  }
+
+  /* Running text hyphenates. Headings, labels and buttons don't: there a
+     word breaks only at a soft hyphen the dictionary puts between the parts
+     of a compound ("Fruchtbarkeits-schätzungen"), never at a syllable the
+     browser picks ("an-zeigen", "FER-TI-LITÉ"). */
+  p,
+  li,
+  dd {
     hyphens: auto;
   }
 

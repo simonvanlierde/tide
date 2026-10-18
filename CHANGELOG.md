@@ -130,6 +130,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Settings labels no longer break words at random syllables ("an-zeigen").
   Long German and Dutch compounds break only between their parts
   ("Fruchtbarkeits-schätzungen"), and only when they don't fit.
+- Headings, labels and buttons no longer break words at random syllables
+  ("an-zeigen", "Abun-dante"). Long German and Dutch compounds break only
+  between their parts ("Fruchtbarkeits-schätzungen"), and only when they don't
+  fit. Running text still hyphenates.
+- On phones, the flow levels sit two by two and the Cycle insights numbers
+  stack as rows, so "Gemiddeld", "Abundante" and "Menstruatieduur" fit whole.
 
 ### Security
 

@@ -150,34 +150,66 @@ const SCREENS: {
 // "Exportieren"), and none of them may clip or overlap.
 const LANGUAGES = ["en", "de", "fr", "nl", "es"] as const;
 
-// Every word part (a word, or the piece of a compound between soft hyphens)
-// in the matching labels whose first and last letters sit on different
+// Headings, labels and button words. Their words break only at a soft
+// hyphen between the parts of a compound ("Fruchtbarkeits-schätzungen"),
+// never at a syllable the browser picks ("an-zeigen", "FER-TI-LITÉ"). Body
+// text keeps the browser's hyphenation.
+const LABELS = [
+  "h1",
+  "h2",
+  "h3",
+  "button",
+  "label",
+  "summary",
+  "legend",
+  "dt",
+  ".settings-label",
+  ".section-title",
+  ".segmented__label",
+  ".status-chip",
+  ".tab-item__label",
+  ".insights__stat-label",
+  ".insights__regularity-label",
+  ".flow-gauge__label",
+  ".cycle-dial__eyebrow",
+  ".cycle-dial__phase",
+  ".app-header__title",
+].join(", ");
+
+// Every word part (a word, or the piece of a compound between soft or hard
+// hyphens)
+// in the matching elements whose first and last letters sit on different
 // lines. Letters, not the whole part: Chromium hands a soft hyphen's rendered
 // "-" to the letter after it, so a clean break at the hyphen would look split.
-// The info button's hidden text is left out.
+// Screen-reader-only text and the info button's hidden text are left out.
 function splitWordParts(page: Page, selector: string) {
-  return page.locator(selector).evaluateAll((labels) =>
-    labels.flatMap((label) => {
-      const split: string[] = [];
+  return page.locator(selector).evaluateAll((labels) => {
+    const nodes = new Set<Node>();
+    for (const label of labels) {
       const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT);
-      const lineOf = (node: Node, offset: number) => {
-        const range = document.createRange();
-        range.setStart(node, offset);
-        range.setEnd(node, offset + 1);
-        return [...range.getClientRects()].at(-1)?.top;
-      };
       for (let node = walker.nextNode(); node; node = walker.nextNode()) {
-        if (node.parentElement?.closest(".info-popover")) continue;
-        for (const part of (node.textContent ?? "").matchAll(/[^\s\u00ad]+/g)) {
-          const last = part.index + part[0].length - 1;
-          if (lineOf(node, part.index) !== lineOf(node, last)) {
-            split.push(part[0]);
-          }
+        if (!node.parentElement?.closest(".info-popover, .visually-hidden")) {
+          nodes.add(node);
         }
       }
-      return split;
-    }),
-  );
+    }
+    const lineOf = (node: Node, offset: number) => {
+      const range = document.createRange();
+      range.setStart(node, offset);
+      range.setEnd(node, offset + 1);
+      return [...range.getClientRects()].at(-1)?.top;
+    };
+    const split: string[] = [];
+    for (const node of nodes) {
+      for (const part of (node.textContent ?? "").matchAll(/[^\s\u00ad-]+/g)) {
+        const last = part.index + part[0].length - 1;
+        if (lineOf(node, part.index) !== lineOf(node, last)) {
+          split.push(part[0]);
+        }
+      }
+    }
+    return split;
+  });
 }
 
 for (const size of SIZES) {
@@ -188,7 +220,7 @@ for (const size of SIZES) {
       // The document can fit while a word spills out of its own box: a flow
       // label running into its neighbour, or a clipped button.
       for (const screen of SCREENS) {
-        test(`${screen.name} fits every element in its box and the viewport`, async ({
+        test(`${screen.name} fits every element in its box and the viewport, words whole`, async ({
           page,
         }) => {
           await seedAppState(page, language, screen.settings, screen.days);
@@ -196,6 +228,7 @@ for (const size of SIZES) {
           await expect(page.locator(".tab-bar")).toBeVisible();
           await screen.open?.(page);
           const overflowing = await findOverflow(page);
+          const splitWords = await splitWordParts(page, LABELS);
 
           // Opening one info popover closes the others, so check each in turn.
           if (!screen.open) {
@@ -210,6 +243,7 @@ for (const size of SIZES) {
           }
 
           expect(overflowing).toEqual([]);
+          expect(splitWords).toEqual([]);
         });
       }
     });
@@ -273,22 +307,6 @@ for (const size of SIZES) {
           );
         expect(lines).toEqual([1, 1]);
       });
-
-      // A fact label wraps between words or stacks over its value, and never
-      // hyphenates ("FER-TI-LITÉ"). A settings label breaks a word only at a
-      // soft hyphen between the parts of a compound ("Fruchtbarkeits-
-      // schätzungen"), never inside a part ("an-zeigen").
-      for (const [path, selector] of [
-        ["/", ".fact__label"],
-        ["/settings", ".settings-label"],
-      ] as const) {
-        test(`keeps each ${selector} word part on one line`, async ({
-          page,
-        }) => {
-          await page.goto(path);
-          expect(await splitWordParts(page, selector)).toEqual([]);
-        });
-      }
 
       // The switch stays level with the first line of its label; a long label
       // wraps beside it instead of pushing it onto a line of its own.

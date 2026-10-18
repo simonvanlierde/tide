@@ -237,6 +237,10 @@ keeps 0.06em.
 
 **The Tabular Rule.** Any numeral that can change uses `tabular-nums`.
 
+**The Whole Word Rule.** Headings, labels and buttons never hyphenate. A long compound
+carries soft hyphens between its parts in the dictionary, and breaks only there. Running
+text (paragraphs, list items, fact values) hyphenates as usual.
+
 ## Layout
 
 One centred column, 460 px at most, with 20 px gutters, over the full dynamic viewport
