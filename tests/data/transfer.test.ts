@@ -85,6 +85,24 @@ describe("parseImportedState", () => {
     }
   });
 
+  it("drops days after today", () => {
+    const parsed = parseImportedState(
+      JSON.stringify({ days: { "2099-01-01": null, "2026-04-02": "heavy" } }),
+      "2026-05-01",
+    );
+    expect(parsed.intensityByDay).toEqual({ "2026-04-02": "heavy" });
+    expect(
+      parseImportedState(JSON.stringify({ days: { "2099-01-01": null } }))
+        .intensityByDay,
+    ).toEqual({});
+  });
+  it("refuses a backup from a newer schema", () => {
+    expect(() =>
+      parseImportedState(
+        JSON.stringify({ schemaVersion: 99, days: { "2026-04-02": "heavy" } }),
+      ),
+    ).toThrow();
+  });
   it("still reads the legacy versioned envelope", () => {
     const parsed = parseImportedState(
       JSON.stringify({

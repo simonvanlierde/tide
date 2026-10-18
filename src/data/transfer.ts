@@ -59,8 +59,14 @@ export function downloadRawState(raw: string) {
 // Parse an exported backup back into a valid AppState. Throws on unparseable
 // JSON and on JSON with no logged-days map at all (some other app's file),
 // which would otherwise import as an empty history and replace the real one.
-// normalizeAppState then drops anything malformed inside a real backup.
-export function parseImportedState(text: string): AppState {
+// A backup from a newer build is refused too: importing it would drop the
+// fields this build does not know and save the rest as the current version.
+// normalizeAppState then drops anything malformed inside a real backup, and
+// days after `today` go too: Tide never logs one.
+export function parseImportedState(
+  text: string,
+  today: IsoDate = getTodayIsoDate(),
+): AppState {
   const parsed: unknown = JSON.parse(text);
   const candidate =
     parsed && typeof parsed === "object" && "state" in parsed
@@ -73,7 +79,17 @@ export function parseImportedState(text: string): AppState {
   ) {
     throw new Error("Not a Tide backup");
   }
-  return normalizeAppState(parsed);
+  const version = (parsed as { schemaVersion?: unknown }).schemaVersion;
+  if (typeof version === "number" && version > SCHEMA_VERSION) {
+    throw new Error("Backup is from a newer Tide");
+  }
+  const state = normalizeAppState(parsed);
+  return {
+    ...state,
+    intensityByDay: Object.fromEntries(
+      Object.entries(state.intensityByDay).filter(([day]) => day <= today),
+    ),
+  };
 }
 
 // Days from another app's export (see otherApps.ts). Kept here, not in the

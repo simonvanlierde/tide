@@ -84,7 +84,7 @@ export function DataSection({ today }: DataSectionProps) {
     const text = await file.text();
     let next: AppState;
     try {
-      next = parseImportedState(text);
+      next = parseImportedState(text, today);
     } catch {
       // Not a Tide backup: try the other apps' formats, loaded only now.
       const { parseOtherAppExport } = await import("../../data/otherApps");
