@@ -22,6 +22,7 @@ export async function seedAppState(
   page: Page,
   language = "system",
   settings: Record<string, unknown> = {},
+  intensityByDay: Record<string, string> = SEED_STATE.intensityByDay,
 ) {
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(
@@ -30,6 +31,7 @@ export async function seedAppState(
     },
     {
       ...SEED_STATE,
+      intensityByDay,
       settings: { ...SEED_STATE.settings, language, ...settings },
     },
   );
