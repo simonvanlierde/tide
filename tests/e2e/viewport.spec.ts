@@ -4,12 +4,14 @@ import { seedAppState } from "./seed";
 
 // Widths we commit to supporting, plus one short-height case for the fixed tab
 // bar. 320x568 is the hard floor (iPhone SE 1st gen); 280 is the foldable
-// cover-screen edge; 360/390 are the common Android/iPhone widths.
+// cover-screen edge; 360/390 are the common Android/iPhone widths; 430 is the
+// largest iPhone, just under the 460px shell.
 const SIZES = [
   { name: "fold cover 280x720", width: 280, height: 720 },
   { name: "small 320x568", width: 320, height: 568 },
   { name: "android 360x800", width: 360, height: 800 },
   { name: "iphone 390x844", width: 390, height: 844 },
+  { name: "pro max 430x932", width: 430, height: 932 },
   { name: "short 360x500", width: 360, height: 500 },
 ] as const;
 
@@ -391,9 +393,9 @@ test.describe("theme segmented control", () => {
   test("sits beside its label once the shell is wide enough", async ({
     page,
   }) => {
-    // Side by side only while the shell (the container) is wider than 410px,
-    // i.e. large phones and up.
-    await page.setViewportSize({ width: 440, height: 780 });
+    // Side by side only while the shell (the container) is wider than 448px:
+    // the full 460px shell, not a phone.
+    await page.setViewportSize({ width: 460, height: 780 });
     expect(await labelWidth(page)).toBeGreaterThan(10);
     expect(await isStacked(page)).toBe(false);
   });

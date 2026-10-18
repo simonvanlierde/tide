@@ -905,7 +905,7 @@
 
   /* Theme picker: label on the left, segmented control on the right while it
      fits (nowrap, so the control shrinks before the row would break); below
-     410px of shell width a container query stacks it under the label. */
+     450px of shell width a container query stacks it under the label. */
   .theme-field {
     flex-wrap: nowrap;
   }
@@ -988,12 +988,13 @@
     flex: none;
   }
 
-  /* Below ~410px of shell width the three worded options no longer fit
-     beside the "Theme" label, so the control stacks underneath and spans the
-     row. The words stay: a monitor icon alone doesn't say "follow system". */
+  /* Below ~450px of shell width the three worded options ("Système",
+     "Systeem") no longer fit beside the "Theme" label, so the control stacks
+     underneath and spans the row: on every phone, side by side only on the
+     full 460px shell. The words stay: a monitor icon alone doesn't say "follow system". */
   /* em, not px: at 200% text the em threshold doubles with it, so large-text
      users get the stacked layout on widths where the worded row can't fit. */
-  @container (max-width: 26em) {
+  @container (max-width: 28em) {
     .theme-field {
       flex-direction: column;
       align-items: stretch;

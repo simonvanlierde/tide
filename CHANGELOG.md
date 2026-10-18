@@ -136,6 +136,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   fit. Running text still hyphenates.
 - On phones, the flow levels sit two by two and the Cycle insights numbers
   stack as rows, so "Gemiddeld", "Abundante" and "Menstruatieduur" fit whole.
+- On large phones (430px), the theme picker in Settings sits under its label,
+  so "Système" and "Systeem" are no longer cut short.
 
 ### Security
 

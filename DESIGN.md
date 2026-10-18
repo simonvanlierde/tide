@@ -254,6 +254,9 @@ calendar tightens its gaps below 400 px, where the weekday headers also drop to 
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
 reads as the list going on. The dial is `min(17.5rem, 64vw)` and is a
+28em the theme control moves under its label, and below 24em its options stack too. The
+calendar tightens its gaps below 400 px and trims the card's side padding below 350 px.
+Its legend is a centred row that wraps. The dial is `min(17.5rem, 64vw)` and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
