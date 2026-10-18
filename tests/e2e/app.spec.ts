@@ -138,7 +138,9 @@ test("the fertility question is accessible and its answer is saved", async ({
     .getByRole("button", { name: en["fertilityAsk.show"], exact: true })
     .click();
   await expect(question).toHaveCount(0);
-  await expect(page.getByText(en["today.notBirthControl"])).toBeVisible();
+  await expect(
+    page.getByText(en["today.notBirthControl"], { exact: true }),
+  ).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
   const saved = await page.evaluate(() =>

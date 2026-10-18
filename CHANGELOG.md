@@ -38,10 +38,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Every estimate looks like an estimate: the expected period, the fertile
   window and ovulation are dashed outlines on both the dial and the calendar,
   and in both legends. Only logged days are filled.
-- The Today fertility line says "More likely today (estimate)" or "Less likely
-  today (estimate)", with "Not birth control" right under it.
+- The Today fertility line says "In the fertile window (estimate)" or "Outside
+  the fertile window (estimate)", with "Not birth control" right under it. It
+  names the same fertile window as the legends, and no longer says a day is
+  "less likely", which could read as a safe day.
 - The calendar legend uses the same words as the Today legend: Period,
-  Expected, Fertile window, Ovulation.
+  Expected period, Fertile window, Ovulation.
+- One word for every forecast in all five languages: "expected" (the expected
+  period, expected ovulation), where some screens said "predicted" or "likely".
+  Settings explains the fertile window in those words and says the estimates
+  are for information only and not birth control.
+- German and Spanish use one word for a Tide backup everywhere.
 - Before the first log, Today shows one line, "Log your period to see a
   forecast", instead of a "--" cycle day and two "Not enough data yet" rows.
 

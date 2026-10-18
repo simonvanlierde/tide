@@ -29,7 +29,7 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/less likely today \(estimate\)/i),
+      screen.getByText(/outside the fertile window \(estimate\)/i),
     ).toBeInTheDocument();
     expect(
       screen.getByLabelText(/how fertility is estimated/i),
@@ -190,7 +190,7 @@ describe("TodayScreen", () => {
 
     expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/more likely today \(estimate\)/i),
+      screen.getByText(/^in the fertile window \(estimate\)$/i),
     ).toBeInTheDocument();
   });
 
@@ -201,7 +201,7 @@ describe("TodayScreen", () => {
     await user.click(screen.getByLabelText(/how fertility is estimated/i));
 
     expect(
-      screen.getByText(/informational, not a birth control method/i),
+      screen.getByText(/for information only\. they are not birth control/i),
     ).toBeInTheDocument();
   });
 
@@ -215,7 +215,9 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(screen.queryByText(/likely today/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/fertile window \(estimate\)/i),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByLabelText(/how fertility is estimated/i),
     ).not.toBeInTheDocument();
@@ -348,7 +350,7 @@ describe("TodayScreen", () => {
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/less likely today \(estimate\)/i),
+      screen.queryByText(/outside the fertile window \(estimate\)/i),
     ).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();

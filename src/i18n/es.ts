@@ -19,9 +19,9 @@ export const es: Dictionary = {
   "today.expectedToday": "Previsto hoy",
   "today.inDays.one": "en {n} día",
   "today.inDays.other": "en {n} días",
-  "today.higherToday": "Más probable hoy (estimación)",
-  "today.lowerToday": "Menos probable hoy (estimación)",
-  "today.notBirthControl": "No es un anticonceptivo",
+  "today.higherToday": "En la ventana fértil (estimación)",
+  "today.lowerToday": "Fuera de la ventana fértil (estimación)",
+  "today.notBirthControl": "No es un método anticonceptivo",
   "fertilityAsk.title": "¿Mostrar estimaciones de fertilidad?",
   "fertilityAsk.body":
     "Tide puede marcar los días en que es más probable que seas fértil, calculados a partir de los períodos que registras. Es una estimación, no un método anticonceptivo. Puedes cambiarlo en Ajustes.",
@@ -94,7 +94,7 @@ export const es: Dictionary = {
     "La ventana fértil va de {before} días antes a {after} día después de la ovulación, y se amplía cuando tus ciclos varían más.",
 
   "legend.period": "Período",
-  "legend.expected": "Prevista",
+  "legend.expected": "Período previsto",
   "legend.fertileWindow": "Ventana fértil",
   "legend.ovulation": "Ovulación",
 
@@ -141,7 +141,7 @@ export const es: Dictionary = {
   "calendar.dayUnavailable": "{label} no disponible",
   "calendar.dayWithMarker": "{label}, {marker}",
   "marker.fertile": "ventana fértil",
-  "marker.ovulation": "ovulación probable",
+  "marker.ovulation": "ovulación prevista",
   "marker.predictedPeriod": "período previsto",
   "calendar.notBleeding": "Sin sangrado ese día",
 
@@ -172,7 +172,7 @@ export const es: Dictionary = {
   "settings.showFertility": "Mostrar estimaciones de fertilidad",
   "settings.fertilityInfo": "Acerca de las estimaciones de fertilidad",
   "settings.fertilityHelp":
-    "Muestra estimaciones de la ventana fértil y la ovulación en la pantalla de inicio y el calendario.",
+    "Muestra la ventana fértil y la ovulación prevista en Hoy y en el calendario.",
   "settings.showCycleNumbers": "Mostrar números de día del ciclo",
   "settings.cycleNumbersInfo": "Acerca de los números de día del ciclo",
   "settings.cycleNumbersHelp":
@@ -180,23 +180,23 @@ export const es: Dictionary = {
   "settings.about": "Acerca de",
   "settings.privacy": "Tus datos nunca salen de este dispositivo.",
   "settings.fertilityDisclaimer":
-    "Las estimaciones de fertilidad son informativas, no un método anticonceptivo.",
+    "Las estimaciones de fertilidad son solo informativas. No son un método anticonceptivo.",
   "settings.fertilityMethod":
-    "Más alta alrededor de tu ovulación prevista. Estimada a partir de tus duraciones de ciclo recientes.",
+    "La ventana fértil son los días alrededor de tu ovulación prevista, estimada a partir de tus duraciones de ciclo recientes.",
   "settings.sourceCode":
     "Código fuente (v{version}), se abre en una pestaña nueva",
   "settings.data": "Datos",
   "settings.dataInfo": "Acerca de importar y exportar",
   "settings.dataHelp":
-    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de Tide, o añade días desde Clue o Flo.",
+    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de seguridad de Tide, o añade días desde Clue o Flo.",
   "settings.importSources":
     "Puedes importar una copia de seguridad de Tide o una exportación de Clue o Flo.",
   "settings.export": "Exportar",
-  "settings.exportSuccess": "Copia guardada en tus descargas.",
+  "settings.exportSuccess": "Copia de seguridad guardada en tus descargas.",
   "settings.import": "Importar",
   "settings.importFile": "Importar archivo de datos",
   "settings.importError":
-    "Ese archivo no es una copia de Tide ni una exportación de Clue o Flo.",
+    "Ese archivo no es una copia de seguridad de Tide ni una exportación de Clue o Flo.",
   "settings.importSuccess.one": "{n} día registrado importado.",
   "settings.importSuccess.other": "{n} días registrados importados.",
   "settings.importConfirmTitle": "¿Reemplazar tus datos?",
