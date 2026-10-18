@@ -331,6 +331,16 @@ describe("SettingsScreen", () => {
     );
   });
 
+  it("shows the import error when the file cannot be read", async () => {
+    const user = userEvent.setup();
+    renderSettings();
+    const file = new File(["{}"], "tide.json", { type: "application/json" });
+    vi.spyOn(file, "text").mockRejectedValue(new Error("unreadable"));
+    await user.upload(screen.getByLabelText(/import data file/i), file);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      /tide backup or a clue or flo export/i,
+    );
+  });
   it("names the supported sources when a JSON file is from none of them", async () => {
     const user = userEvent.setup();
     renderSettings();

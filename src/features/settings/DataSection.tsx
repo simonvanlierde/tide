@@ -81,7 +81,14 @@ export function DataSection({ today }: DataSectionProps) {
       return;
     }
 
-    const text = await file.text();
+    let text: string;
+    try {
+      text = await file.text();
+    } catch {
+      setStatus(null);
+      setError(t("settings.importError"));
+      return;
+    }
     let next: AppState;
     try {
       next = parseImportedState(text, today);
