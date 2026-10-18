@@ -1,4 +1,5 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 
 // Widths we commit to supporting, plus one short-height case for the fixed tab
@@ -14,9 +15,121 @@ const SIZES = [
 
 const ROUTES = ["/", "/calendar", "/settings"] as const;
 
+// Every screen, and every sheet, dialog and popover it can open, in the states
+// that change what is on it. Each must fit at every size in every language.
+const SCREENS: {
+  name: string;
+  path: string;
+  settings?: Record<string, unknown>;
+  days?: Record<string, string>;
+  open?: (page: Page) => Promise<unknown>;
+}[] = [
+  { name: "today, logged", path: "/" },
+  {
+    name: "today, period late",
+    path: "/",
+    days: Object.fromEntries(
+      ["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04"].map((day) => [
+        day,
+        "medium",
+      ]),
+    ),
+  },
+  { name: "today, nothing logged", path: "/", days: {} },
+  {
+    name: "today, fertility question",
+    path: "/",
+    settings: { showFertility: null },
+  },
+  {
+    name: "cycle insights sheet",
+    path: "/",
+    open: async (page) => {
+      await page.locator(".fact-list__more").click();
+      await page.locator(".insights__how > summary").click();
+    },
+  },
+  { name: "calendar", path: "/calendar" },
+  {
+    name: "calendar flow picker",
+    path: "/calendar",
+    open: (page) =>
+      page.locator(".calendar-grid__day.is-logged").first().click(),
+  },
+  {
+    name: "calendar month picker",
+    path: "/calendar",
+    open: (page) => page.locator(".calendar__month-button").click(),
+  },
+  {
+    name: "calendar past period",
+    path: "/calendar",
+    open: (page) => page.locator(".calendar__range").click(),
+  },
+  { name: "settings", path: "/settings" },
+  {
+    name: "settings delete dialog",
+    path: "/settings",
+    open: (page) => page.locator(".data-actions ~ .text-action").click(),
+  },
+  {
+    name: "settings import dialog",
+    path: "/settings",
+    open: (page) =>
+      // Picks a one-day Clue export, built in the page so no file is needed.
+      page.locator('input[type="file"]').evaluate((input: HTMLInputElement) => {
+        const clue = [{ date: "2026-03-01", type: "period", value: {} }];
+        const files = new DataTransfer();
+        files.items.add(
+          new File([JSON.stringify(clue)], "measurements.json", {
+            type: "application/json",
+          }),
+        );
+        input.files = files.files;
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }),
+  },
+];
+
 // Every shipped language: German and French run longest ("Schmierblutung",
 // "Exportieren"), and none of them may clip or overlap.
 const LANGUAGES = ["en", "de", "fr", "nl", "es"] as const;
+
+for (const size of SIZES) {
+  for (const language of LANGUAGES) {
+    test.describe(`${size.name} ${language} overflow`, () => {
+      test.use({ viewport: { width: size.width, height: size.height } });
+
+      // The document can fit while a word spills out of its own box: a flow
+      // label running into its neighbour, or a clipped button.
+      for (const screen of SCREENS) {
+        test(`${screen.name} fits every element in its box and the viewport`, async ({
+          page,
+        }) => {
+          await seedAppState(page, language, screen.settings, screen.days);
+          await page.goto(screen.path);
+          await expect(page.locator(".tab-bar")).toBeVisible();
+          await screen.open?.(page);
+          const overflowing = await findOverflow(page);
+
+          // Opening one info popover closes the others, so check each in turn.
+          if (!screen.open) {
+            const triggers = page.locator("#main .info-popover__trigger");
+            for (let i = 0; i < (await triggers.count()); i++) {
+              await triggers.nth(i).click();
+              for (const found of await findOverflow(page)) {
+                overflowing.push(`info popover ${i + 1}: ${found}`);
+              }
+              await page.keyboard.press("Escape");
+            }
+          }
+
+          expect(overflowing).toEqual([]);
+        });
+      }
+    });
+  }
+}
 
 for (const size of SIZES) {
   for (const language of LANGUAGES) {
@@ -28,43 +141,6 @@ for (const size of SIZES) {
       });
 
       for (const path of ROUTES) {
-        test(`${path} has no horizontal overflow`, async ({ page }) => {
-          await page.goto(path);
-          await expect(page.locator(".tab-bar")).toBeVisible();
-
-          const { scrollWidth, clientWidth } = await page.evaluate(() => ({
-            scrollWidth: document.documentElement.scrollWidth,
-            clientWidth: document.documentElement.clientWidth,
-          }));
-
-          // +1 tolerates sub-pixel rounding, not a real overflowing element.
-          expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
-        });
-
-        // The document can fit while a word spills out of its own box: a flow
-        // label running into its neighbour, or a clipped or ellipsised button.
-        test(`${path} fits every label and button in its box`, async ({
-          page,
-        }) => {
-          await page.goto(path);
-          await expect(page.locator(".tab-bar")).toBeVisible();
-
-          const overflowing = await page.evaluate(() =>
-            [
-              ...document.querySelectorAll<HTMLElement>(
-                "#main button, #main label, #main .segmented__label, #main .flow-gauge__label",
-              ),
-            ]
-              .filter(
-                (el) =>
-                  el.clientWidth > 0 && el.scrollWidth > el.clientWidth + 1,
-              )
-              .map((el) => el.textContent?.trim()),
-          );
-
-          expect(overflowing).toEqual([]);
-        });
-
         test(`${path} keeps interactive content clear of the tab bar`, async ({
           page,
         }) => {
