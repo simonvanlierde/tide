@@ -99,12 +99,8 @@ export function CalendarGrid({
           {/* Both forms render and CSS shows one: the narrow letter where a
               column can't hold "WED". The full name is what screen readers say. */}
           {weekdays.map((day) => (
-            <th
-              key={day.long}
-              scope="col"
-              className="calendar-grid__weekday"
-              aria-label={day.long}
-            >
+            <th key={day.long} scope="col" className="calendar-grid__weekday">
+              <span className="visually-hidden">{day.long}</span>
               <span className="calendar-grid__weekday-short" aria-hidden="true">
                 {day.short}
               </span>
