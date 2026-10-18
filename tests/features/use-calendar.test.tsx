@@ -19,11 +19,11 @@ describe("useCalendar", () => {
       wrapper,
     });
 
-    act(() => result.current.selectDay("2026-04-02"));
-    expect(result.current.selectedDay).toBe("2026-04-02");
+    act(() => result.current.log.selectDay("2026-04-02"));
+    expect(result.current.log.selectedDay).toBe("2026-04-02");
 
-    act(() => result.current.closePicker());
-    expect(result.current.selectedDay).toBeNull();
+    act(() => result.current.log.closePicker());
+    expect(result.current.log.selectedDay).toBeNull();
   });
 
   it("jumps to a month and year selected from the picker", () => {
@@ -32,8 +32,8 @@ describe("useCalendar", () => {
     });
 
     // monthIndex is 0-based: 10 → November.
-    act(() => result.current.monthPicker.onSelect(2025, 10));
-    expect(result.current.monthLabel).toBe("November 2025");
+    act(() => result.current.month.picker.onSelect(2025, 10));
+    expect(result.current.month.label).toBe("November 2025");
   });
 
   it("offers a buffered window around the logged and current years", () => {
@@ -43,7 +43,7 @@ describe("useCalendar", () => {
 
     // Fixture logs only 2026, so the span is just this year padded a year each
     // side. An older backup widens the low end (see the next test).
-    expect(result.current.monthPicker.years).toEqual([2025, 2026, 2027]);
+    expect(result.current.month.picker.years).toEqual([2025, 2026, 2027]);
   });
 
   it("reaches back to the earliest logged year plus a buffer", () => {
@@ -60,7 +60,7 @@ describe("useCalendar", () => {
     });
 
     // Logs span 2022–2024, today is 2026: cover 2022–2026, pad to 2021–2027.
-    expect(result.current.monthPicker.years).toEqual([
+    expect(result.current.month.picker.years).toEqual([
       2021, 2022, 2023, 2024, 2025, 2026, 2027,
     ]);
   });
@@ -70,7 +70,7 @@ describe("useCalendar", () => {
       wrapper,
     });
 
-    act(() => result.current.monthPicker.onSelect(2030, 0));
-    expect(result.current.monthPicker.years).toContain(2030);
+    act(() => result.current.month.picker.onSelect(2030, 0));
+    expect(result.current.month.picker.years).toContain(2030);
   });
 });

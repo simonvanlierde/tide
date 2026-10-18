@@ -31,7 +31,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
   // month to actually render (isCurrentMonth flips true) before reaching for the
   // cell. Skip the pop under reduced motion, but still clear the request.
   useEffect(() => {
-    if (!wantPinpoint.current || !model.isCurrentMonth) {
+    if (!wantPinpoint.current || !model.month.isCurrent) {
       return;
     }
     wantPinpoint.current = false;
@@ -51,16 +51,16 @@ export function CalendarScreen(props: CalendarScreenProps) {
         { duration: 460, easing: "ease-out" },
       );
     }
-  }, [model.isCurrentMonth]);
+  }, [model.month.isCurrent]);
 
   function handleGoToToday() {
     wantPinpoint.current = true;
-    model.goToToday();
+    model.month.goToToday();
   }
 
   // Picking a range happens on the grid, so start there: focus its tab stop.
   function handleStartRange() {
-    model.startRangePick();
+    model.log.startRangePick();
     articleRef.current
       ?.querySelector<HTMLElement>('.calendar-grid__day[tabindex="0"]')
       ?.focus();
@@ -91,9 +91,9 @@ export function CalendarScreen(props: CalendarScreenProps) {
     }
 
     if (dx < 0) {
-      model.goToNextMonth();
+      model.month.goToNext();
     } else {
-      model.goToPreviousMonth();
+      model.month.goToPrevious();
     }
   }
 
@@ -107,14 +107,14 @@ export function CalendarScreen(props: CalendarScreenProps) {
     ) {
       return;
     }
-    if (event.key === "Escape" && model.rangePick) {
-      model.cancelRangePick();
+    if (event.key === "Escape" && model.log.rangePick) {
+      model.log.cancelRangePick();
     } else if (event.key === "PageUp") {
       event.preventDefault();
-      model.goToPreviousMonth();
+      model.month.goToPrevious();
     } else if (event.key === "PageDown") {
       event.preventDefault();
-      model.goToNextMonth();
+      model.month.goToNext();
     }
   }
 
@@ -132,18 +132,18 @@ export function CalendarScreen(props: CalendarScreenProps) {
             type="button"
             className="calendar__nav"
             aria-label={t("calendar.previousMonth")}
-            onClick={model.goToPreviousMonth}
+            onClick={model.month.goToPrevious}
           >
             <ChevronLeft aria-hidden="true" size={18} />
           </button>
           <button
             type="button"
             className="calendar-picker-button calendar__month-button"
-            aria-expanded={model.monthPicker.isPickerOpen}
+            aria-expanded={model.month.picker.isPickerOpen}
             aria-controls="calendar-month-picker"
-            onClick={model.openPicker}
+            onClick={model.month.togglePicker}
           >
-            {model.monthLabel}
+            {model.month.label}
             <ChevronDown
               aria-hidden="true"
               size={16}
@@ -154,12 +154,12 @@ export function CalendarScreen(props: CalendarScreenProps) {
             type="button"
             className="calendar__nav"
             aria-label={t("calendar.nextMonth")}
-            onClick={model.goToNextMonth}
+            onClick={model.month.goToNext}
           >
             <ChevronRight aria-hidden="true" size={18} />
           </button>
         </div>
-        <CalendarMonthPicker {...model.monthPicker} />
+        <CalendarMonthPicker {...model.month.picker} />
         <div
           className="calendar-swipe"
           onTouchStart={handleTouchStart}
@@ -167,55 +167,62 @@ export function CalendarScreen(props: CalendarScreenProps) {
         >
           <CalendarGrid
             days={model.days}
-            selectedDay={model.selectedDay ?? model.rangePick?.from ?? null}
-            justLoggedDay={model.justLoggedDay}
-            onSelectDay={model.selectDay}
+            selectedDay={
+              model.log.selectedDay ?? model.log.rangePick?.from ?? null
+            }
+            justLoggedDay={model.log.justLoggedDay}
+            onSelectDay={model.log.selectDay}
           />
         </div>
         <CalendarLegend days={model.days} />
-        {model.selectedDay ? (
+        {model.log.selectedDay ? (
           <DayFlowPicker
-            day={model.selectedDay}
-            intensity={model.selectedIntensity}
-            isLogged={model.isSelectedLogged}
+            day={model.log.selectedDay}
+            intensity={model.log.selectedIntensity}
+            isLogged={model.log.isSelectedLogged}
             onSelect={(intensity) =>
-              model.setDayIntensity(model.selectedDay as IsoDate, intensity)
+              model.log.setDayIntensity(
+                model.log.selectedDay as IsoDate,
+                intensity,
+              )
             }
-            onRemove={() => model.removeDay(model.selectedDay as IsoDate)}
-            onClose={model.closePicker}
+            onRemove={() =>
+              model.log.removeDay(model.log.selectedDay as IsoDate)
+            }
+            onClose={model.log.closePicker}
           />
-        ) : model.rangePick ? (
+        ) : model.log.rangePick ? (
           <p className="supporting-note calendar__help" role="status">
-            {model.rangePick.from === null
+            {model.log.rangePick.from === null
               ? t("calendar.rangePickFirst")
               : t(
-                  model.rangePick.tooLong
+                  model.log.rangePick.tooLong
                     ? "calendar.rangeTooLong"
                     : "calendar.rangePickLast",
                   {
-                    date: formatShortDate(model.rangePick.from, locale),
+                    date: formatShortDate(model.log.rangePick.from, locale),
                     max: MAX_PERIOD_RANGE_DAYS,
                   },
                 )}
           </p>
-        ) : model.justLoggedDay || model.justLoggedRange ? (
+        ) : model.log.justLoggedDay || model.log.justLoggedRange ? (
           // A one-tap log or a range wrote data; say what, and make undo one
           // tap too.
           <p className="supporting-note calendar__help" role="status">
             {t(
-              model.forecastMoved
+              model.log.forecastMoved
                 ? "calendar.justLoggedForecast"
                 : "calendar.justLogged",
               {
-                date: model.justLoggedRange
-                  ? `${formatShortDate(model.justLoggedRange.from, locale)} – ${formatShortDate(model.justLoggedRange.to, locale)}`
-                  : formatShortDate(model.justLoggedDay as IsoDate, locale),
+                date: model.log.justLoggedRange
+                  ? `${formatShortDate(model.log.justLoggedRange.from, locale)} – ${formatShortDate(model.log.justLoggedRange.to, locale)}`
+                  : formatShortDate(model.log.justLoggedDay as IsoDate, locale),
               },
             )}{" "}
             <button
               type="button"
               className="text-action calendar__undo"
-              onClick={model.undoJustLogged}
+              onClick={model.log.undoJustLogged}
             >
               {t("calendar.undo")}
             </button>
@@ -223,18 +230,20 @@ export function CalendarScreen(props: CalendarScreenProps) {
         ) : (
           <p className="supporting-note calendar__help">{t(model.helpKey)}</p>
         )}
-        {model.selectedDay ? null : (
+        {model.log.selectedDay ? null : (
           // One button that turns into Cancel, so focus stays put when a
           // pick is cancelled.
           <button
             type="button"
             className="text-action calendar__range"
-            onClick={model.rangePick ? model.cancelRangePick : handleStartRange}
+            onClick={
+              model.log.rangePick ? model.log.cancelRangePick : handleStartRange
+            }
           >
-            {t(model.rangePick ? "common.cancel" : "calendar.logRange")}
+            {t(model.log.rangePick ? "common.cancel" : "calendar.logRange")}
           </button>
         )}
-        {model.isCurrentMonth ? null : (
+        {model.month.isCurrent ? null : (
           <button
             type="button"
             className="calendar__today"

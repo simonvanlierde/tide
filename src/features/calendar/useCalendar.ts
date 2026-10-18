@@ -11,28 +11,14 @@ import {
 import { addMonths, formatMonthLabel } from "../../utils/date";
 import { buildCalendarCells, buildMonthDays } from "./calendar";
 
+// The calendar screen's model, in two parts: `month` moves between months and
+// `log` selects and logs days. Changing month clears what `log` is showing.
 export function useCalendar(today: IsoDate) {
   const state = useAppState();
-  const actions = useAppStateActions();
   const forecast = useForecast(today);
-  const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
-  const [isPickerOpen, setIsPickerOpen] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
-  // The day just logged by a one-tap; drives its one-shot "tap to edit" pulse.
-  const [justLoggedDay, setJustLoggedDay] = useState<IsoDate | null>(null);
-  // Logging a past period in one go: null when not picking, else the first
-  // day picked so far (null until tapped) and whether the last tap ran past
-  // the cap.
-  const [rangePick, setRangePick] = useState<{
-    from: IsoDate | null;
-    tooLong: boolean;
-  } | null>(null);
-  // The range just logged, and the days it added, for its status line and undo.
-  const [justLoggedRange, setJustLoggedRange] = useState<{
-    from: IsoDate;
-    to: IsoDate;
-    added: IsoDate[];
-  } | null>(null);
+  const log = useDayLog(today, forecast.nextPeriod.date);
+  const month = useMonth(today, log.clear);
+  const { visibleMonth } = month;
 
   const { showCycleDayNumbers } = state.settings;
   const days = useMemo(
@@ -45,7 +31,6 @@ export function useCalendar(today: IsoDate) {
       ),
     [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers],
   );
-  const isLogged = (day: IsoDate) => day in state.intensityByDay;
   const helpKey: MessageKey =
     Object.keys(state.intensityByDay).length === 0
       ? "calendar.emptyHelp"
@@ -53,23 +38,16 @@ export function useCalendar(today: IsoDate) {
         ? "calendar.futureHelp"
         : "calendar.tapHelp";
 
-  // A log can move the next-period date (a big enough gap starts a new cycle),
-  // which repaints every forecast fill in the month. Say so rather than letting
-  // the grid change under the user's hand. No timer on the status line: it
-  // stands until the next tap, month change, or undo makes it stale, so Undo is
-  // never snatched away mid-read.
-  const previousForecast = useRef(forecast.nextPeriod.date);
-  const [forecastMoved, setForecastMoved] = useState(false);
-  useEffect(() => {
-    const moved = previousForecast.current !== forecast.nextPeriod.date;
-    previousForecast.current = forecast.nextPeriod.date;
-    if (moved && (justLoggedDay || justLoggedRange)) {
-      setForecastMoved(true);
-    }
-  }, [forecast.nextPeriod.date, justLoggedDay, justLoggedRange]);
+  return { days, helpKey, month, log };
+}
+
+function useMonth(today: IsoDate, onChange: () => void) {
+  const state = useAppState();
+  const [visibleMonth, setVisibleMonth] = useState<IsoDate>(today);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const locale = useLocale();
-  const monthLabel = useMemo(
+  const label = useMemo(
     () => formatMonthLabel(visibleMonth, locale),
     [visibleMonth, locale],
   );
@@ -88,14 +66,88 @@ export function useCalendar(today: IsoDate) {
       if (!keepPickerOpen) {
         setIsPickerOpen(false);
       }
-      // Close the flow picker too: it edits a specific day, which the new month
-      // no longer shows.
-      setSelectedDay(null);
-      setJustLoggedDay(null);
-      setJustLoggedRange(null);
-      setForecastMoved(false);
-      // A range pick stays open: a period can run across the month boundary.
+      onChange();
     });
+  }
+
+  return {
+    visibleMonth,
+    label,
+    // Same year-month as today → the "Today" reset would be a no-op, so the
+    // screen hides it. IsoDate is YYYY-MM-DD, so the first 7 chars are the month.
+    isCurrent: visibleMonth.slice(0, 7) === today.slice(0, 7),
+    togglePicker() {
+      setIsPickerOpen((open) => !open);
+    },
+    goToPrevious() {
+      setMonth((current) => addMonths(current, -1));
+    },
+    goToNext() {
+      setMonth((current) => addMonths(current, 1));
+    },
+    goToToday() {
+      setMonth(today);
+    },
+    picker: {
+      isPickerOpen,
+      year: Number(visibleMonth.slice(0, 4)),
+      monthIndex: Number(visibleMonth.slice(5, 7)) - 1,
+      years: buildYearOptions(
+        Object.keys(state.intensityByDay) as IsoDate[],
+        today,
+        visibleMonth,
+      ),
+      onSelect(year: number, monthIndex: number) {
+        const month = String(monthIndex + 1).padStart(2, "0");
+        setMonth(`${year}-${month}-01` as IsoDate, true);
+      },
+    },
+  };
+}
+
+function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
+  const state = useAppState();
+  const actions = useAppStateActions();
+  const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
+  // The day just logged by a one-tap; drives its one-shot "tap to edit" pulse.
+  const [justLoggedDay, setJustLoggedDay] = useState<IsoDate | null>(null);
+  // Logging a past period in one go: null when not picking, else the first
+  // day picked so far (null until tapped) and whether the last tap ran past
+  // the cap.
+  const [rangePick, setRangePick] = useState<{
+    from: IsoDate | null;
+    tooLong: boolean;
+  } | null>(null);
+  // The range just logged, and the days it added, for its status line and undo.
+  const [justLoggedRange, setJustLoggedRange] = useState<{
+    from: IsoDate;
+    to: IsoDate;
+    added: IsoDate[];
+  } | null>(null);
+  const isLogged = (day: IsoDate) => day in state.intensityByDay;
+
+  // A log can move the next-period date (a big enough gap starts a new cycle),
+  // which repaints every forecast fill in the month. Say so rather than letting
+  // the grid change under the user's hand. No timer on the status line: it
+  // stands until the next tap, month change, or undo makes it stale, so Undo is
+  // never snatched away mid-read.
+  const previousForecast = useRef(nextPeriodDate);
+  const [forecastMoved, setForecastMoved] = useState(false);
+  useEffect(() => {
+    const moved = previousForecast.current !== nextPeriodDate;
+    previousForecast.current = nextPeriodDate;
+    if (moved && (justLoggedDay || justLoggedRange)) {
+      setForecastMoved(true);
+    }
+  }, [nextPeriodDate, justLoggedDay, justLoggedRange]);
+
+  // Drops the open flow picker and the just-logged status line. A range pick
+  // stays open: a period can run across the month boundary.
+  function clear() {
+    setSelectedDay(null);
+    setJustLoggedDay(null);
+    setJustLoggedRange(null);
+    setForecastMoved(false);
   }
 
   function pickRangeDay(from: IsoDate | null, day: IsoDate) {
@@ -117,17 +169,7 @@ export function useCalendar(today: IsoDate) {
     });
   }
 
-  function openPicker() {
-    setIsPickerOpen((open) => !open);
-  }
-
   return {
-    // Same year-month as today → the "Today" reset would be a no-op, so the
-    // screen hides it. IsoDate is YYYY-MM-DD, so the first 7 chars are the month.
-    isCurrentMonth: visibleMonth.slice(0, 7) === today.slice(0, 7),
-    monthLabel,
-    days,
-    helpKey,
     selectedDay,
     justLoggedDay,
     forecastMoved,
@@ -138,16 +180,9 @@ export function useCalendar(today: IsoDate) {
         ? state.intensityByDay[selectedDay]
         : undefined,
     isSelectedLogged: selectedDay ? isLogged(selectedDay) : false,
-    openPicker,
-    goToPreviousMonth() {
-      setMonth((current) => addMonths(current, -1));
-    },
-    goToNextMonth() {
-      setMonth((current) => addMonths(current, 1));
-    },
-    goToToday() {
-      setMonth(today);
-    },
+    rangePick,
+    justLoggedRange,
+    clear,
     // Empty day → one-tap log with no flow level. Logged day → open
     // its picker to change the flow or remove it; tapping the open day closes.
     selectDay(day: IsoDate) {
@@ -170,14 +205,9 @@ export function useCalendar(today: IsoDate) {
       setForecastMoved(false);
       setSelectedDay((current) => (current === day ? null : day));
     },
-    rangePick,
-    justLoggedRange,
     startRangePick() {
       setRangePick({ from: null, tooLong: false });
-      setSelectedDay(null);
-      setJustLoggedDay(null);
-      setJustLoggedRange(null);
-      setForecastMoved(false);
+      clear();
     },
     cancelRangePick() {
       setRangePick(null);
@@ -206,20 +236,6 @@ export function useCalendar(today: IsoDate) {
     removeDay(day: IsoDate) {
       actions.togglePeriodDay(day, today);
       setSelectedDay(null);
-    },
-    monthPicker: {
-      isPickerOpen,
-      year: Number(visibleMonth.slice(0, 4)),
-      monthIndex: Number(visibleMonth.slice(5, 7)) - 1,
-      years: buildYearOptions(
-        Object.keys(state.intensityByDay) as IsoDate[],
-        today,
-        visibleMonth,
-      ),
-      onSelect(year: number, monthIndex: number) {
-        const month = String(monthIndex + 1).padStart(2, "0");
-        setMonth(`${year}-${month}-01` as IsoDate, true);
-      },
     },
   };
 }

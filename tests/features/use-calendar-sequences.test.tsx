@@ -60,8 +60,8 @@ type Model = ReturnType<typeof useCalendar>;
 // Everything the screen reads from the hook, by name.
 function view(model: Model) {
   return {
-    isCurrentMonth: model.isCurrentMonth,
-    monthLabel: model.monthLabel,
+    isCurrentMonth: model.month.isCurrent,
+    monthLabel: model.month.label,
     days: model.days
       .map(
         (day) =>
@@ -69,39 +69,39 @@ function view(model: Model) {
       )
       .join(","),
     helpKey: model.helpKey,
-    selectedDay: model.selectedDay,
-    justLoggedDay: model.justLoggedDay,
-    forecastMoved: model.forecastMoved,
-    selectedIntensity: model.selectedIntensity,
-    isSelectedLogged: model.isSelectedLogged,
-    rangePick: model.rangePick,
-    justLoggedRange: model.justLoggedRange,
-    picker: model.monthPicker,
+    selectedDay: model.log.selectedDay,
+    justLoggedDay: model.log.justLoggedDay,
+    forecastMoved: model.log.forecastMoved,
+    selectedIntensity: model.log.selectedIntensity,
+    isSelectedLogged: model.log.isSelectedLogged,
+    rangePick: model.log.rangePick,
+    justLoggedRange: model.log.justLoggedRange,
+    picker: model.month.picker,
   };
 }
 
 function step(next: () => number, model: Model) {
   const day = pick(next, model.days).value;
-  const selected = model.selectedDay;
+  const selected = model.log.selectedDay;
   const actions = [
-    () => model.selectDay(day),
-    () => model.selectDay(day),
-    () => model.selectDay(day),
-    () => model.goToPreviousMonth(),
-    () => model.goToNextMonth(),
-    () => model.goToToday(),
-    () => model.openPicker(),
+    () => model.log.selectDay(day),
+    () => model.log.selectDay(day),
+    () => model.log.selectDay(day),
+    () => model.month.goToPrevious(),
+    () => model.month.goToNext(),
+    () => model.month.goToToday(),
+    () => model.month.togglePicker(),
     () =>
-      model.monthPicker.onSelect(
-        pick(next, model.monthPicker.years),
+      model.month.picker.onSelect(
+        pick(next, model.month.picker.years),
         Math.floor(next() * 12),
       ),
-    () => model.startRangePick(),
-    () => model.cancelRangePick(),
-    () => model.closePicker(),
-    () => model.undoJustLogged(),
-    () => selected && model.setDayIntensity(selected, pick(next, FLOWS)),
-    () => selected && model.removeDay(selected),
+    () => model.log.startRangePick(),
+    () => model.log.cancelRangePick(),
+    () => model.log.closePicker(),
+    () => model.log.undoJustLogged(),
+    () => selected && model.log.setDayIntensity(selected, pick(next, FLOWS)),
+    () => selected && model.log.removeDay(selected),
   ];
   pick(next, actions)();
 }
