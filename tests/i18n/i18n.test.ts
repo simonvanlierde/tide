@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
-import { interpolate, resolveLanguage, translate } from "../../src/i18n";
+import {
+  interpolate,
+  plural,
+  resolveLanguage,
+  SUPPORTED_LANGUAGES,
+  translate,
+} from "../../src/i18n";
 
 describe("i18n", () => {
   it("resolves a concrete preference verbatim", () => {
@@ -30,5 +36,20 @@ describe("i18n", () => {
   it("interpolates {name} placeholders and leaves unknown ones visible", () => {
     expect(interpolate("Day {n}", { n: 3 })).toBe("Day 3");
     expect(interpolate("Hi {who}", {})).toBe("Hi {who}");
+  });
+
+  it("picks the plural form by each language's rules", () => {
+    expect(plural("k", 1.5, "fr")).toBe("k.one");
+    expect(plural("k", 1.5, "en")).toBe("k.other");
+    // French and Spanish "many" has no key of its own.
+    expect(plural("k", 1_000_000, "es")).toBe("k.other");
+  });
+
+  it("keeps the old forms for whole days in every language", () => {
+    for (const lang of SUPPORTED_LANGUAGES) {
+      for (const n of [1, 2, 5, 21, 101, 1_000_000]) {
+        expect(plural("k", n, lang)).toBe(n === 1 ? "k.one" : "k.other");
+      }
+    }
   });
 });

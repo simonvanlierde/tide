@@ -90,7 +90,7 @@ export function ForecastExplainer({
         </li>
         <li>
           {e.range
-            ? x(plural("explain.range", e.spreadDays ?? 0), {
+            ? x(plural("explain.range", e.spreadDays ?? 0, locale), {
                 spread: num(e.spreadDays ?? 0),
                 from: date(e.range.from),
                 to: date(e.range.to),
@@ -117,7 +117,7 @@ export function ForecastExplainer({
                 to: date(f.to),
               })}
               {f.widening > 0
-                ? ` ${x(plural("explain.widened", f.widening), { n: f.widening })}`
+                ? ` ${x(plural("explain.widened", f.widening, locale), { n: f.widening })}`
                 : null}{" "}
               {t("today.notBirthControl")}.
             </li>

@@ -8,7 +8,7 @@ import type {
   CycleSummary,
   IsoDate,
 } from "../../domain/types";
-import { plural } from "../../i18n";
+import { plural, type SupportedLanguage } from "../../i18n";
 import {
   type Translate,
   useAppState,
@@ -147,7 +147,11 @@ export function TodayScreen(props: TodayScreenProps) {
               </dt>
               <dd className="fact__value">
                 <span>
-                  {getNextPeriodPhrase(t, forecast.nextPeriod.daysUntil)}
+                  {getNextPeriodPhrase(
+                    t,
+                    locale,
+                    forecast.nextPeriod.daysUntil,
+                  )}
                 </span>
                 {forecast.nextPeriod.date ? (
                   <span className="fact__meta">
@@ -193,6 +197,7 @@ export function TodayScreen(props: TodayScreenProps) {
                       <span className="fact__meta">
                         {getOvulationPhrase(
                           t,
+                          locale,
                           differenceInDays(forecast.ovulationDate, today),
                         )}
                       </span>
@@ -308,6 +313,7 @@ function openImport(event: MouseEvent<HTMLAnchorElement>) {
 
 function getNextPeriodPhrase(
   t: Translate,
+  locale: SupportedLanguage,
   daysUntil: CycleSummary["nextPeriod"]["daysUntil"],
 ) {
   if (daysUntil === null) {
@@ -316,14 +322,14 @@ function getNextPeriodPhrase(
 
   if (daysUntil < 0) {
     const daysLate = Math.abs(daysUntil);
-    return t(plural("today.daysLate", daysLate), { n: daysLate });
+    return t(plural("today.daysLate", daysLate, locale), { n: daysLate });
   }
 
   if (daysUntil === 0) {
     return t("today.expectedToday");
   }
 
-  return t(plural("today.inDays", daysUntil), { n: daysUntil });
+  return t(plural("today.inDays", daysUntil, locale), { n: daysUntil });
 }
 
 function getPhaseWord(t: Translate, phaseLabel: CyclePhase) {
@@ -336,17 +342,23 @@ function getPhaseLine(t: Translate, phaseLabel: CyclePhase) {
   );
 }
 
-function getOvulationPhrase(t: Translate, daysUntil: number) {
+function getOvulationPhrase(
+  t: Translate,
+  locale: SupportedLanguage,
+  daysUntil: number,
+) {
   if (daysUntil < 0) {
     const daysAgo = Math.abs(daysUntil);
-    return t(plural("today.ovulationDaysAgo", daysAgo), { n: daysAgo });
+    return t(plural("today.ovulationDaysAgo", daysAgo, locale), { n: daysAgo });
   }
 
   if (daysUntil === 0) {
     return t("today.ovulationToday");
   }
 
-  return t(plural("today.ovulationInDays", daysUntil), { n: daysUntil });
+  return t(plural("today.ovulationInDays", daysUntil, locale), {
+    n: daysUntil,
+  });
 }
 
 function getFertilityEstimate(

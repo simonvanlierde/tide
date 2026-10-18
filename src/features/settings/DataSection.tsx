@@ -21,6 +21,7 @@ import {
   useAppStateActions,
   useForecast,
   useIsReadOnly,
+  useLocale,
   useT,
 } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
@@ -46,6 +47,7 @@ export function DataSection({ today }: DataSectionProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const t = useT();
+  const locale = useLocale();
   // A newer build saved the data and this tab never saves, so an import would
   // vanish on reload and a delete would wipe data this build can't read.
   const readOnly = useIsReadOnly();
@@ -263,7 +265,7 @@ export function DataSection({ today }: DataSectionProps) {
           <p className="status-row" role="status">
             <span className="status-chip">
               {status.kind === "imported"
-                ? t(plural("settings.importSuccess", status.days), {
+                ? t(plural("settings.importSuccess", status.days, locale), {
                     n: status.days,
                   })
                 : t(
@@ -296,16 +298,26 @@ export function DataSection({ today }: DataSectionProps) {
           body={
             <>
               <p>
-                {t(plural("settings.importFileDays", pendingImport.fileDays), {
-                  n: pendingImport.fileDays,
-                })}
+                {t(
+                  plural(
+                    "settings.importFileDays",
+                    pendingImport.fileDays,
+                    locale,
+                  ),
+                  {
+                    n: pendingImport.fileDays,
+                  },
+                )}
               </p>
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")
-                  : t(plural("settings.importReplaces", loggedDayCount), {
-                      n: loggedDayCount,
-                    })}
+                  : t(
+                      plural("settings.importReplaces", loggedDayCount, locale),
+                      {
+                        n: loggedDayCount,
+                      },
+                    )}
               </p>
             </>
           }
