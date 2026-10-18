@@ -44,6 +44,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- On narrow phones (320px wide), the four flow levels sit two by two, so
+  "Schmierblutung" and a bold "Medium" fit whole instead of breaking mid-word.
+  The calendar's day picker does the same on most phones.
+- Cycle insights fit on narrow phones: the three numbers no longer push past
+  the sheet, and the regularity line wraps under its label.
+- The language menu in Settings no longer runs past the card on very narrow
+  screens.
 - The theme picker in Settings no longer cuts "Système" or "Systeem" short on
   phones about 390px wide when the system font runs wide, as DejaVu Sans does
   on many Linux setups.

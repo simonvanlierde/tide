@@ -199,9 +199,12 @@
     color: var(--ink-muted);
   }
 
+  /* A zero-width spoke through the centre, rotated to the day. A full-size
+     square would grow corners past the dial (and past a narrow screen) as it
+     turns; the spoke's ends stay on the dial's own circle. */
   .cycle-dial__marker {
     position: absolute;
-    inset: 0;
+    inset: 0 50%;
     display: grid;
     justify-items: center;
     align-items: start;
@@ -222,7 +225,7 @@
      readable even when a fingertip covers it. */
   .cycle-dial__ghost {
     position: absolute;
-    inset: 0;
+    inset: 0 50%;
     display: grid;
     justify-items: center;
     align-items: start;
