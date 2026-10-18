@@ -19,6 +19,7 @@ export const en = {
   "today.fertility": "Fertility",
   "today.fertilityInfoLabel": "How fertility is estimated",
   "today.cycleInsights": "Cycle insights",
+  "today.howWorkedOut": "How was this worked out?",
   "today.daysAgo.one": "{n} day ago",
   "today.daysAgo.other": "{n} days ago",
   "today.expectedToday": "Expected today",
@@ -206,6 +207,11 @@ export const en = {
     "You can import a Tide backup, or an export from Clue or Flo.",
   "settings.export": "Export",
   "settings.exportSuccess": "Backup saved to your downloads.",
+  "settings.exportCalendar": "Add to calendar",
+  "settings.calendarHelp":
+    "Saves your next 3 expected periods as a file your calendar app can open.",
+  "settings.calendarFertility": "Include fertile windows",
+  "settings.calendarSuccess": "Calendar file saved to your downloads.",
   "settings.import": "Import",
   "settings.importFile": "Import data file",
   "settings.importError":

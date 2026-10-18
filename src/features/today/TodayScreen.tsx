@@ -1,5 +1,13 @@
 import { ChevronRight } from "lucide-react";
-import { type MouseEvent, useEffect, useRef, useState } from "react";
+import {
+  lazy,
+  type MouseEvent,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type {
   CycleEstimateMode,
@@ -27,6 +35,11 @@ import { CycleDial } from "./CycleDial";
 import { CycleInsights } from "./CycleInsights";
 import { FertilityQuestion } from "./FertilityQuestion";
 
+// Loaded on first open: its words stay out of the main bundle.
+const ForecastExplainer = lazy(() =>
+  import("./ForecastExplainer").then((m) => ({ default: m.ForecastExplainer })),
+);
+
 interface TodayScreenProps {
   today?: IsoDate;
 }
@@ -40,6 +53,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const locale = useLocale();
   const forecast = useForecast(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  const [explainOpen, setExplainOpen] = useState(false);
   const insightsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
@@ -69,6 +83,7 @@ export function TodayScreen(props: TodayScreenProps) {
     isTodayLogged,
     dismissedOn: state.settings.dismissedOn,
   });
+  const explanation = explainForecast(forecast);
   const learningNote = getLearningNote(t, forecast.estimateMode);
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
@@ -200,6 +215,16 @@ export function TodayScreen(props: TodayScreenProps) {
           {t("today.cycleInsights")}
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
+        {explanation ? (
+          <button
+            type="button"
+            className="fact-list__more"
+            onClick={() => setExplainOpen(true)}
+          >
+            {t("today.howWorkedOut")}
+            <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
+          </button>
+        ) : null}
       </div>
 
       {askFertility ? (
@@ -220,6 +245,15 @@ export function TodayScreen(props: TodayScreenProps) {
           showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
         />
+      ) : null}
+
+      {explainOpen && explanation ? (
+        <Suspense fallback={null}>
+          <ForecastExplainer
+            explanation={explanation}
+            onClose={() => setExplainOpen(false)}
+          />
+        </Suspense>
       ) : null}
 
       {reminderState.shouldPrompt && reminderState.expectedDate ? (

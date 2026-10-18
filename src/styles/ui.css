@@ -856,6 +856,30 @@
     flex: 1 1 max-content;
   }
 
+  /* A native checkbox at a 44px row height, label wrapping beside it. */
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    cursor: pointer;
+  }
+
+  .checkbox-row > input {
+    flex: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    accent-color: var(--tide-strong);
+  }
+
+  .checkbox-row > input:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
   .settings-label {
     display: inline-flex;
     align-items: center;

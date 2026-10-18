@@ -361,9 +361,114 @@ function cycleStats(completed: number[]): CycleStats {
   const recent = completed.slice(-RECENT_CYCLE_WINDOW);
   return {
     cyclesTracked: completed.length,
+    recentCycleLengths: recent,
     variabilityDays:
       recent.length >= 2
         ? Math.round(standardDeviation(recent) * 10) / 10
         : null,
   };
+}
+
+/** The numbers behind the next-period forecast, for "How was this worked out?". */
+export interface ForecastExplanation {
+  /** The cycle lengths the median is taken over, oldest first; empty on the default. */
+  cycleLengths: number[];
+  /** Their median before rounding; null when the default stands in. */
+  median: number | null;
+  cycleLength: number;
+  lastStart: IsoDate;
+  nextPeriod: IsoDate;
+  /** Standard deviation of those lengths; null below two cycles. */
+  spreadDays: number | null;
+  /** Next period ± the spread rounded up to whole days; null without a spread. */
+  range: { from: IsoDate; to: IsoDate } | null;
+  /** Only with fertility estimates on. */
+  fertility: {
+    ovulation: IsoDate;
+    lutealDays: number;
+    from: IsoDate;
+    to: IsoDate;
+    daysBefore: number;
+    daysAfter: number;
+    /** Days added on each side of the base window for irregular cycles. */
+    widening: number;
+  } | null;
+}
+
+// Null without a live forecast: nothing has been worked out to explain.
+export function explainForecast(f: Forecast): ForecastExplanation | null {
+  if (f.cycleStart === null || f.nextPeriod.date === null) {
+    return null;
+  }
+  const lengths = f.stats.recentCycleLengths;
+  const spread = f.stats.variabilityDays;
+  const halfRange = spread === null ? null : Math.ceil(spread);
+  const ovulation = f.ovulationDate;
+  return {
+    cycleLengths: lengths,
+    median: lengths.length > 0 ? median(lengths) : null,
+    cycleLength: f.cycleLength,
+    lastStart: f.cycleStart,
+    nextPeriod: f.nextPeriod.date,
+    spreadDays: spread,
+    range:
+      halfRange === null || halfRange === 0
+        ? null
+        : {
+            from: addDays(f.nextPeriod.date, -halfRange),
+            to: addDays(f.nextPeriod.date, halfRange),
+          },
+    fertility:
+      ovulation === null
+        ? null
+        : {
+            ovulation,
+            lutealDays: DEFAULT_LUTEAL_LENGTH,
+            from: addDays(ovulation, f.fertileWindow.start),
+            to: addDays(ovulation, f.fertileWindow.end),
+            daysBefore: -f.fertileWindow.start,
+            daysAfter: f.fertileWindow.end,
+            widening: f.fertileWindow.end - FERTILE_WINDOW_END,
+          },
+  };
+}
+
+/** One expected cycle ahead: its period start and the fertile window before it. */
+export interface ExpectedCycle {
+  /** Count of cycle starts since the first logged one, 1-based: stable across exports. */
+  number: number;
+  periodStart: IsoDate;
+  ovulation: IsoDate;
+  fertileFrom: IsoDate;
+  fertileTo: IsoDate;
+}
+
+// The next `count` expected period starts from today on. An overdue start is
+// skipped: it is already late, so a calendar entry for it says nothing new.
+export function getExpectedCycles(
+  f: Forecast,
+  today: IsoDate,
+  count: number,
+): ExpectedCycle[] {
+  const next = f.nextPeriod.date;
+  if (next === null) {
+    return [];
+  }
+  const cycles: ExpectedCycle[] = [];
+  for (let step = 0; cycles.length < count; step++) {
+    const periodStart = addDays(next, step * f.cycleLength);
+    if (periodStart < today) {
+      continue;
+    }
+    const ovulation = addDays(periodStart, -DEFAULT_LUTEAL_LENGTH);
+    cycles.push({
+      // cyclesTracked completed cycles, plus the current one, come before.
+      number: f.stats.cyclesTracked + 2 + step,
+      periodStart,
+      ovulation,
+      fertileFrom: addDays(ovulation, f.fertileWindow.start),
+      fertileTo: addDays(ovulation, f.fertileWindow.end),
+    });
+  }
+  return cycles;
 }

@@ -27,6 +27,26 @@ for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`accessibility (${colorScheme})`, () => {
     test.use({ colorScheme });
 
+    test("the forecast explainer has no serious accessibility violations", async ({
+      page,
+    }) => {
+      await seedAppState(page);
+      await page.goto("/");
+      await page.locator(".fact-list__more").nth(1).click();
+      await expect(page.getByRole("dialog")).toBeVisible();
+
+      const { violations } = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa"])
+        .analyze();
+      const impactful = violations.filter((violation) =>
+        ["moderate", "serious", "critical"].includes(violation.impact ?? ""),
+      );
+      expect(
+        impactful,
+        impactful.map((v) => `${v.id} (${v.impact}): ${v.help}`).join("\n"),
+      ).toEqual([]);
+    });
+
     for (const path of ROUTES) {
       test(`${path} has no serious accessibility violations`, async ({
         page,

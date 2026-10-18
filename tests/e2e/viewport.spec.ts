@@ -19,8 +19,22 @@ const medium = (days: string[]) =>
   Object.fromEntries(days.map((day) => [day, "medium"]));
 
 async function openInsights(page: Page) {
-  await page.locator(".fact-list__more").click();
+  await page.locator(".fact-list__more").first().click();
   await page.locator(".insights__how > summary").click();
+}
+
+// Four one-day period starts, cycles of 33, 27 and 31 days: the explainer
+// then shows its longest lines, a range and a widened fertile window.
+const VARIED_CYCLES = medium([
+  "2026-01-10",
+  "2026-02-12",
+  "2026-03-11",
+  "2026-04-11",
+]);
+
+async function openExplainer(page: Page) {
+  await page.locator(".fact-list__more").nth(1).click();
+  await page.getByRole("dialog").waitFor();
 }
 
 // A period that ended ten days before today, so the dial is between periods.
@@ -72,6 +86,18 @@ const SCREENS: {
     path: "/",
     settings: { showFertility: false },
     open: openInsights,
+  },
+  {
+    name: "forecast explainer sheet",
+    path: "/",
+    days: VARIED_CYCLES,
+    open: openExplainer,
+  },
+  {
+    name: "forecast explainer sheet, default cycle, fertility off",
+    path: "/",
+    settings: { showFertility: false },
+    open: openExplainer,
   },
   { name: "calendar", path: "/calendar" },
   {

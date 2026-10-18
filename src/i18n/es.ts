@@ -14,6 +14,7 @@ export const es: Dictionary = {
   "today.fertility": "Fertilidad",
   "today.fertilityInfoLabel": "Cómo se estima la fertilidad",
   "today.cycleInsights": "Detalles del ciclo",
+  "today.howWorkedOut": "¿Cómo se ha calculado?",
   "today.daysAgo.one": "hace {n} día",
   "today.daysAgo.other": "hace {n} días",
   "today.expectedToday": "Previsto hoy",
@@ -197,6 +198,12 @@ export const es: Dictionary = {
     "Puedes importar una copia de seguridad de Tide o una exportación de Clue o Flo.",
   "settings.export": "Exportar",
   "settings.exportSuccess": "Copia de seguridad guardada en tus descargas.",
+  "settings.exportCalendar": "Añadir al calendario",
+  "settings.calendarHelp":
+    "Guarda tus 3 próximos períodos previstos en un archivo que tu app de calendario puede abrir.",
+  "settings.calendarFertility": "Incluir ventanas fértiles",
+  "settings.calendarSuccess":
+    "Archivo de calendario guardado en tus descargas.",
   "settings.import": "Importar",
   "settings.importFile": "Importar archivo de datos",
   "settings.importError":

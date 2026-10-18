@@ -16,14 +16,14 @@ const SUMMARY: CycleSummary = {
 };
 
 function renderInsights(
-  stats: CycleStats,
+  stats: Omit<CycleStats, "recentCycleLengths">,
   onClose = vi.fn(),
   summary: CycleSummary = SUMMARY,
 ) {
   render(
     <CycleInsights
       summary={summary}
-      stats={stats}
+      stats={{ ...stats, recentCycleLengths: [] }}
       showFertility
       onClose={onClose}
     />,
