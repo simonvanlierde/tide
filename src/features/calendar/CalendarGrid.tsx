@@ -36,7 +36,15 @@ export function CalendarGrid({
 }: CalendarGridProps) {
   const t = useT();
   const locale = useLocale();
-  const weekdayLabels = useMemo(() => getWeekdayLabels(locale), [locale]);
+  const weekdays = useMemo(() => {
+    const narrow = getWeekdayLabels(locale, "narrow");
+    const long = getWeekdayLabels(locale, "long");
+    return getWeekdayLabels(locale).map((short, index) => ({
+      short,
+      narrow: narrow[index],
+      long: long[index],
+    }));
+  }, [locale]);
   // Roving tabindex: the grid is one tab stop, and arrow keys walk it. Tabbing
   // through 35-42 day buttons to reach the controls below is not navigation,
   // it is a wall. The stop is the selected day, else today, else the first
@@ -88,9 +96,24 @@ export function CalendarGrid({
     <table className="calendar-grid" aria-label={t("calendar.title")}>
       <thead>
         <tr className="calendar-grid__header">
-          {weekdayLabels.map((day) => (
-            <th key={day} scope="col" className="calendar-grid__weekday">
-              {day}
+          {/* Both forms render and CSS shows one: the narrow letter where a
+              column can't hold "WED". The full name is what screen readers say. */}
+          {weekdays.map((day) => (
+            <th
+              key={day.long}
+              scope="col"
+              className="calendar-grid__weekday"
+              aria-label={day.long}
+            >
+              <span className="calendar-grid__weekday-short" aria-hidden="true">
+                {day.short}
+              </span>
+              <span
+                className="calendar-grid__weekday-narrow"
+                aria-hidden="true"
+              >
+                {day.narrow}
+              </span>
             </th>
           ))}
         </tr>

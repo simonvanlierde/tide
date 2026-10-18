@@ -109,6 +109,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   instead of pushing the switch and the info button onto lines of their own.
 - Cycle insights dims the screen behind it the same way as the other dialogs,
   without a blur.
+- On phones up to about 400 px wide, the calendar's weekday headers show one
+  letter ("M", "T") instead of splitting a short name like "MON" over two
+  lines. Screen readers still hear the full day name.
 
 ### Security
 

@@ -407,6 +407,10 @@
     border-color: var(--estimate-ovulation);
   }
 
+  .calendar-grid__weekday-narrow {
+    display: none;
+  }
+
   /* Narrow shells: tighter gaps and card padding buy the day cells width.
      Seven 44px targets never fit in 320px; this gets them to ~34px with the
      full 46px height, and the weekday label stays above the 11px floor. */
@@ -419,6 +423,16 @@
     .calendar-grid__header,
     .calendar-grid__week {
       gap: 5px;
+    }
+
+    /* A column under about 40px can't hold "WED" or "LUN." in one piece, so the
+       header drops to the one-letter form instead of splitting the word. */
+    .calendar-grid__weekday-short {
+      display: none;
+    }
+
+    .calendar-grid__weekday-narrow {
+      display: inline;
     }
   }
 
