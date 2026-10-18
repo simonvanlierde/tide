@@ -205,7 +205,7 @@ export const de: Dictionary = {
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.exportCalendar": "Zum Kalender",
   "settings.calendarHelp":
-    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App.",
+    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Dort werden sie wie deine anderen Termine synchronisiert, liegen also auch im Konto des Kalenders.",
   "settings.calendarFertility": "Fruchtbare Fenster einschließen",
   "settings.calendarSuccess": "Kalenderdatei in deinen Downloads gespeichert.",
   "settings.calendarError":

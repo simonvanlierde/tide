@@ -64,7 +64,9 @@ function event(
     `DTEND;VALUE=DATE:${icsDate(addDays(last, 1))}`,
     `SUMMARY:${escapeText(summary)}`,
     ...(description ? [`DESCRIPTION:${escapeText(description)}`] : []),
-    // An estimate shouldn't mark the day as busy.
+    // Shared calendars show only "busy" or nothing, and an estimate
+    // shouldn't mark the day as busy at all.
+    "CLASS:PRIVATE",
     "TRANSP:TRANSPARENT",
     "END:VEVENT",
   ];

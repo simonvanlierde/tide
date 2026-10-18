@@ -210,7 +210,7 @@ export const en = {
   "settings.exportSuccess": "Backup saved to your downloads.",
   "settings.exportCalendar": "Add to calendar",
   "settings.calendarHelp":
-    "Saves your next 3 expected periods as a file your calendar app can open.",
+    "Saves your next 3 expected periods as a file your calendar app can open. Once added, they sync like your other events, so the calendar's account holds them too.",
   "settings.calendarFertility": "Include fertile windows",
   "settings.calendarSuccess": "Calendar file saved to your downloads.",
   "settings.calendarError":

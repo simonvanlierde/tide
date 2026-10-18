@@ -53,6 +53,7 @@ describe("buildCalendar", () => {
         "DTSTART;VALUE=DATE:20260429",
         "DTEND;VALUE=DATE:20260430",
         "SUMMARY:Expected period",
+        "CLASS:PRIVATE",
         "TRANSP:TRANSPARENT",
         "END:VEVENT",
       ].join("\r\n"),

@@ -204,7 +204,7 @@ export const fr: Dictionary = {
   "settings.exportSuccess": "Sauvegarde enregistrée dans vos téléchargements.",
   "settings.exportCalendar": "Ajouter au calendrier",
   "settings.calendarHelp":
-    "Enregistre vos 3 prochaines règles prévues dans un fichier que votre agenda peut ouvrir.",
+    "Enregistre vos 3 prochaines règles prévues dans un fichier que votre agenda peut ouvrir. Une fois ajoutées, elles se synchronisent comme vos autres événements, donc le compte de l’agenda les garde aussi.",
   "settings.calendarFertility": "Inclure les fenêtres de fertilité",
   "settings.calendarSuccess":
     "Fichier de calendrier enregistré dans vos téléchargements.",

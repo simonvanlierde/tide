@@ -203,7 +203,7 @@ export const nl: Dictionary = {
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.exportCalendar": "Naar agenda",
   "settings.calendarHelp":
-    "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen.",
+    "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen. Daar synchroniseren ze zoals je andere afspraken, dus ook het account van die agenda bewaart ze.",
   "settings.calendarFertility": "Vruchtbare periodes meenemen",
   "settings.calendarSuccess": "Agendabestand opgeslagen in je downloads.",
   "settings.calendarError":

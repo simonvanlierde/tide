@@ -202,7 +202,7 @@ export const es: Dictionary = {
   "settings.exportSuccess": "Copia de seguridad guardada en tus descargas.",
   "settings.exportCalendar": "Añadir al calendario",
   "settings.calendarHelp":
-    "Guarda tus 3 próximos períodos previstos en un archivo que tu app de calendario puede abrir.",
+    "Guarda tus 3 próximos períodos previstos en un archivo que tu app de calendario puede abrir. Una vez añadidos, se sincronizan como tus otros eventos, así que la cuenta del calendario también los guarda.",
   "settings.calendarFertility": "Incluir ventanas fértiles",
   "settings.calendarSuccess":
     "Archivo de calendario guardado en tus descargas.",
