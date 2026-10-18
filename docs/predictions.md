@@ -25,10 +25,13 @@ device. The code is in `src/domain/cycle.ts`.
   ±1 day) or luteal, read from the ovulation estimate. With fertility estimates off, Tide makes no
   ovulation estimate, so every other day is simply "between periods".
 
-On Today, **How was this worked out?** shows these steps with your own numbers. Settings → Data
-→ **Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
-made on your device. Each event is named by its cycle number, so importing a newer file moves it
-instead of adding a copy.
+On Today, **How was this worked out?** shows these steps with your own numbers. Settings → Data →
+**Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
+made on your device. The events are marked private, so most shared calendars hide their details, and
+they never mark you as busy. Each event is identified by your first logged period start and its
+cycle number, so importing a newer file moves it instead of adding a copy. Importing older history,
+or changing your earliest logged period, gives the events new identifiers: the next file then adds
+new events, and the old ones need deleting by hand.
 
 To see how close the next-period estimate lands on real cycle data, read
 [backtest.md](backtest.md).

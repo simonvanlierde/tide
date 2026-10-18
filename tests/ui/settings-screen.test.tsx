@@ -217,9 +217,9 @@ describe("SettingsScreen", () => {
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
     const ics = await blob.text();
     // The window before the 04-30 period ended on 04-17, before today.
-    expect(ics.match(/^UID:fertile-\d+/gm)).toEqual([
-      "UID:fertile-4",
-      "UID:fertile-5",
+    expect(ics.match(/^UID:fertile-[\d-]+/gm)).toEqual([
+      "UID:fertile-2026-03-05-4",
+      "UID:fertile-2026-03-05-5",
     ]);
   });
 

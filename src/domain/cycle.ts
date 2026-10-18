@@ -238,8 +238,9 @@ export function forecast(input: ForecastInput): Forecast {
   // would otherwise become the "last cycle start" and blow up every estimate.
   const periodDays = input.periodDays.filter((day) => day <= input.today);
   const completedCycleLengths = getCompletedCycleLengths(periodDays);
-  const lastCycleStart = getCycleStarts(periodDays).at(-1);
-  const stats = cycleStats(completedCycleLengths);
+  const cycleStarts = getCycleStarts(periodDays);
+  const lastCycleStart = cycleStarts.at(-1);
+  const stats = cycleStats(completedCycleLengths, cycleStarts[0] ?? null);
   const pastOvulationDates = input.fertility
     ? getPastOvulationDates(periodDays)
     : [];
@@ -357,10 +358,14 @@ function withTimeline(
 // Extra numbers behind the estimate, for the insights view: how many completed
 // cycles it's learned from, and how much recent cycles vary (standard
 // deviation, null until two cycles exist).
-function cycleStats(completed: number[]): CycleStats {
+function cycleStats(
+  completed: number[],
+  firstCycleStart: IsoDate | null,
+): CycleStats {
   const recent = completed.slice(-RECENT_CYCLE_WINDOW);
   return {
     cyclesTracked: completed.length,
+    firstCycleStart,
     recentCycleLengths: recent,
     variabilityDays:
       recent.length >= 2
@@ -435,8 +440,12 @@ export function explainForecast(f: Forecast): ForecastExplanation | null {
 
 /** One expected cycle ahead: its period start and the fertile window before it. */
 export interface ExpectedCycle {
-  /** Count of cycle starts since the first logged one, 1-based: stable across exports. */
-  number: number;
+  /**
+   * The first logged cycle start, then the count of cycle starts since it
+   * (1-based): stable across exports, and different between people with
+   * different histories, so calendar UIDs don't collide.
+   */
+  id: string;
   periodStart: IsoDate;
   ovulation: IsoDate;
   fertileFrom: IsoDate;
@@ -463,7 +472,7 @@ export function getExpectedCycles(
     const ovulation = addDays(periodStart, -DEFAULT_LUTEAL_LENGTH);
     cycles.push({
       // cyclesTracked completed cycles, plus the current one, come before.
-      number: f.stats.cyclesTracked + 2 + step,
+      id: `${f.stats.firstCycleStart}-${f.stats.cyclesTracked + 2 + step}`,
       periodStart,
       ovulation,
       fertileFrom: addDays(ovulation, f.fertileWindow.start),

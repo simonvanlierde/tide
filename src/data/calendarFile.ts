@@ -3,7 +3,7 @@ import type { IsoDate } from "../domain/types";
 import { addDays } from "../utils/date";
 import { downloadText } from "./transfer";
 
-// UIDs carry the cycle number, so importing a newer file moves an event to its
+// UIDs carry the cycle's id, so importing a newer file moves an event to its
 // new date instead of adding a second one.
 const UID_DOMAIN = "tide.duinlab.nl";
 
@@ -89,7 +89,7 @@ export function buildCalendar(
   for (const cycle of cycles) {
     lines.push(
       ...event(
-        `period-${cycle.number}`,
+        `period-${cycle.id}`,
         cycle.periodStart,
         cycle.periodStart,
         words.period,
@@ -101,7 +101,7 @@ export function buildCalendar(
     if (fertility && cycle.fertileTo >= today) {
       lines.push(
         ...event(
-          `fertile-${cycle.number}`,
+          `fertile-${cycle.id}`,
           cycle.fertileFrom,
           cycle.fertileTo,
           words.fertile,

@@ -4,14 +4,14 @@ import type { ExpectedCycle } from "../../src/domain/cycle";
 
 const CYCLES: ExpectedCycle[] = [
   {
-    number: 4,
+    id: "2026-03-04-4",
     periodStart: "2026-04-29",
     ovulation: "2026-04-15",
     fertileFrom: "2026-04-10",
     fertileTo: "2026-04-16",
   },
   {
-    number: 5,
+    id: "2026-03-04-5",
     periodStart: "2026-05-27",
     ovulation: "2026-05-13",
     fertileFrom: "2026-05-08",
@@ -47,7 +47,7 @@ describe("buildCalendar", () => {
     expect(ics).toContain(
       [
         "BEGIN:VEVENT",
-        "UID:period-4@tide.duinlab.nl",
+        "UID:period-2026-03-04-4@tide.duinlab.nl",
         "DTSTAMP:20260420T093015Z",
         `SEQUENCE:${Math.floor(NOW.getTime() / 60_000)}`,
         "DTSTART;VALUE=DATE:20260429",
@@ -67,7 +67,7 @@ describe("buildCalendar", () => {
 
     expect(ics).toContain(
       [
-        "UID:fertile-5@tide.duinlab.nl",
+        "UID:fertile-2026-03-04-5@tide.duinlab.nl",
         "DTSTAMP:20260420T093015Z",
         `SEQUENCE:${Math.floor(NOW.getTime() / 60_000)}`,
         "DTSTART;VALUE=DATE:20260508",
@@ -77,7 +77,7 @@ describe("buildCalendar", () => {
       ].join("\r\n"),
     );
     // The first window ended on 04-16, before today.
-    expect(ics).not.toContain("fertile-4");
+    expect(ics).not.toContain("fertile-2026-03-04-4");
   });
 
   it("escapes commas and backslashes in text", () => {
