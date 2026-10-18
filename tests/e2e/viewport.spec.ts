@@ -15,8 +15,26 @@ const SIZES = [
 
 const ROUTES = ["/", "/calendar", "/settings"] as const;
 
+const medium = (days: string[]) =>
+  Object.fromEntries(days.map((day) => [day, "medium"]));
+
+async function openInsights(page: Page) {
+  await page.locator(".fact-list__more").click();
+  await page.locator(".insights__how > summary").click();
+}
+
+// A period that ended ten days before today, so the dial is between periods.
+const PAST_PERIOD = medium([
+  "2026-04-01",
+  "2026-04-02",
+  "2026-04-03",
+  "2026-04-04",
+]);
+
 // Every screen, and every sheet, dialog and popover it can open, in the states
 // that change what is on it. Each must fit at every size in every language.
+// The seed has fertility estimates on; the screens whose words change when
+// they are off (or not answered yet) run again in that state.
 const SCREENS: {
   name: string;
   path: string;
@@ -28,28 +46,39 @@ const SCREENS: {
   {
     name: "today, period late",
     path: "/",
-    days: Object.fromEntries(
-      ["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04"].map((day) => [
-        day,
-        "medium",
-      ]),
-    ),
+    days: medium(["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04"]),
   },
   { name: "today, nothing logged", path: "/", days: {} },
   {
-    name: "today, fertility question",
+    // The dial reads "Between periods" here, two lines in German.
+    name: "today, fertility question, between periods",
     path: "/",
     settings: { showFertility: null },
+    days: PAST_PERIOD,
   },
   {
-    name: "cycle insights sheet",
+    name: "today scrubbed, fertility off",
     path: "/",
+    settings: { showFertility: false },
+    days: PAST_PERIOD,
     open: async (page) => {
-      await page.locator(".fact-list__more").click();
-      await page.locator(".insights__how > summary").click();
+      await page.locator(".cycle-dial__frame").focus();
+      await page.keyboard.press("ArrowLeft");
     },
   },
+  { name: "cycle insights sheet", path: "/", open: openInsights },
+  {
+    name: "cycle insights sheet, fertility off",
+    path: "/",
+    settings: { showFertility: false },
+    open: openInsights,
+  },
   { name: "calendar", path: "/calendar" },
+  {
+    name: "calendar, fertility off",
+    path: "/calendar",
+    settings: { showFertility: false },
+  },
   {
     name: "calendar flow picker",
     path: "/calendar",
@@ -187,6 +216,62 @@ for (const size of SIZES) {
             }),
           );
         expect(lines).toEqual([1, 1]);
+      });
+
+      // A fact label wraps between words or stacks over its value, but never
+      // hyphenates ("FER-TI-LITÉ"): a word split over two lines has two rects.
+      test("keeps each fact label word on one line", async ({ page }) => {
+        await page.goto("/");
+        const split = await page.locator(".fact__label").evaluateAll((labels) =>
+          labels.flatMap((label) =>
+            [...label.childNodes]
+              .filter((node) => node.nodeType === Node.TEXT_NODE)
+              .flatMap((node) =>
+                [...(node.textContent ?? "").matchAll(/\S+/g)].filter(
+                  (word) => {
+                    const range = document.createRange();
+                    range.setStart(node, word.index);
+                    range.setEnd(node, word.index + word[0].length);
+                    return range.getClientRects().length > 1;
+                  },
+                ),
+              )
+              .map((word) => word[0]),
+          ),
+        );
+        expect(split).toEqual([]);
+      });
+
+      // The switch stays level with the first line of its label; a long label
+      // wraps beside it instead of pushing it onto a line of its own.
+      test("keeps each switch on the first line of its label", async ({
+        page,
+      }) => {
+        await page.goto("/settings");
+        const rows = await page
+          .locator(".settings-row:has(.switch)")
+          .evaluateAll((list) =>
+            list.map((row) => {
+              const text = row.querySelector(
+                ".settings-label > span",
+              ) as Element;
+              const range = document.createRange();
+              range.selectNodeContents(text);
+              const first = range.getClientRects()[0];
+              const knob = (
+                row.querySelector(".switch") as Element
+              ).getBoundingClientRect();
+              return {
+                label: text.textContent,
+                level:
+                  first !== undefined &&
+                  knob.top < first.bottom &&
+                  knob.bottom > first.top,
+              };
+            }),
+          );
+        expect(rows.length).toBeGreaterThan(0);
+        expect(rows).toEqual(rows.map(({ label }) => ({ label, level: true })));
       });
 
       test("settings tab stays reachable", async ({ page }) => {

@@ -101,6 +101,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   until you do. Import and "Delete all data" are disabled meanwhile.
 - Tide keeps a copy of the stored data whenever loading it would drop
   anything, not only when the data is unreadable.
+- On phones, the Today facts put each label above its value, so "Fertilité"
+  and "Fruchtbarkeit" no longer break into syllables and the value gets the
+  full width.
+- The switches in Settings stay beside the first line of their label. A long
+  label such as "Fruchtbarkeitsschätzungen anzeigen" wraps next to the switch,
+  instead of pushing the switch and the info button onto lines of their own.
 
 ### Security
 

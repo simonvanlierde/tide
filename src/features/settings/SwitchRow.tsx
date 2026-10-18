@@ -20,7 +20,7 @@ export function SwitchRow({
   const labelId = useId();
 
   return (
-    <div className="settings-row">
+    <div className="settings-row settings-row--switch">
       <span className="settings-label">
         <span id={labelId}>{label}</span>
         <InfoPopover label={infoLabel} align="start">

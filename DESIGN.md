@@ -235,7 +235,8 @@ The shell is a size container, so layout changes follow the shell, not the viewp
 26em the theme control moves under its label, and below 24em its options stack too. The
 calendar tightens its gaps below 400 px and trims the card's side padding below 350 px.
 Its legend is a centred row that wraps. The dial is `min(17.5rem, 64vw)` and is a
-container itself.
+container itself. So are the fact rows: below 22em each label sits above its value. A
+switch row keeps its switch beside the label's first line and lets the label wrap.
 
 ## Elevation & Depth
 
@@ -304,8 +305,9 @@ chips** are the read-only kind: tide-tint for active, soft-surface for muted.
 
 Surface, hairline, one shadow. The slim variant uses tighter vertical spacing. A card opens
 with an eyebrow heading, optionally with an info button and a supporting line close
-beneath it. The **fact list** is a variant: tracked label on the left, value on the right
-over a muted meta line, rows split by hairlines, and a chevron for drilling in at the end.
+beneath it. The **fact list** is a variant: tracked label on the left (above, on phones),
+value on the right over a muted meta line, rows split by hairlines, and a chevron for
+drilling in at the end.
 
 ### Inputs / Fields
 
