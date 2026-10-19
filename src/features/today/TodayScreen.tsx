@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type {
   CycleEstimateMode,
@@ -7,7 +8,7 @@ import type {
   CycleSummary,
   IsoDate,
 } from "../../domain/types";
-import { plural } from "../../i18n";
+import { plural, type SupportedLanguage } from "../../i18n";
 import {
   type Translate,
   useAppState,
@@ -27,6 +28,8 @@ import { CycleDial } from "./CycleDial";
 import { CycleInsights } from "./CycleInsights";
 import { FertilityQuestion } from "./FertilityQuestion";
 
+type Explainer = typeof import("./ForecastExplainer").ForecastExplainer;
+
 interface TodayScreenProps {
   today?: IsoDate;
 }
@@ -40,6 +43,18 @@ export function TodayScreen(props: TodayScreenProps) {
   const locale = useLocale();
   const forecast = useForecast(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
+  // The sheet loads on first open, so its words stay out of the main bundle.
+  // Null until loaded; false when loading it failed.
+  const [Explainer, setExplainer] = useState<Explainer | null | false>(null);
+  const [explainOpen, setExplainOpen] = useState(false);
+  const openExplainer = () =>
+    import("./ForecastExplainer").then(
+      (m) => {
+        setExplainer(() => m.ForecastExplainer);
+        setExplainOpen(true);
+      },
+      () => setExplainer(false),
+    );
   const insightsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
@@ -69,6 +84,7 @@ export function TodayScreen(props: TodayScreenProps) {
     isTodayLogged,
     dismissedOn: state.settings.dismissedOn,
   });
+  const explanation = explainForecast(forecast);
   const learningNote = getLearningNote(t, forecast.estimateMode);
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
@@ -131,7 +147,11 @@ export function TodayScreen(props: TodayScreenProps) {
               </dt>
               <dd className="fact__value">
                 <span>
-                  {getNextPeriodPhrase(t, forecast.nextPeriod.daysUntil)}
+                  {getNextPeriodPhrase(
+                    t,
+                    locale,
+                    forecast.nextPeriod.daysUntil,
+                  )}
                 </span>
                 {forecast.nextPeriod.date ? (
                   <span className="fact__meta">
@@ -177,6 +197,7 @@ export function TodayScreen(props: TodayScreenProps) {
                       <span className="fact__meta">
                         {getOvulationPhrase(
                           t,
+                          locale,
                           differenceInDays(forecast.ovulationDate, today),
                         )}
                       </span>
@@ -200,6 +221,16 @@ export function TodayScreen(props: TodayScreenProps) {
           {t("today.cycleInsights")}
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
+        {explanation ? (
+          <button
+            type="button"
+            className="fact-list__more"
+            onClick={openExplainer}
+          >
+            {t("today.howWorkedOut")}
+            <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
+          </button>
+        ) : null}
       </div>
 
       {askFertility ? (
@@ -219,6 +250,19 @@ export function TodayScreen(props: TodayScreenProps) {
           stats={forecast.stats}
           showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
+        />
+      ) : null}
+
+      {Explainer === false ? (
+        <p className="today-screen__note" role="alert">
+          {t("today.explainError")}
+        </p>
+      ) : null}
+
+      {explainOpen && explanation && Explainer ? (
+        <Explainer
+          explanation={explanation}
+          onClose={() => setExplainOpen(false)}
         />
       ) : null}
 
@@ -269,6 +313,7 @@ function openImport(event: MouseEvent<HTMLAnchorElement>) {
 
 function getNextPeriodPhrase(
   t: Translate,
+  locale: SupportedLanguage,
   daysUntil: CycleSummary["nextPeriod"]["daysUntil"],
 ) {
   if (daysUntil === null) {
@@ -277,14 +322,14 @@ function getNextPeriodPhrase(
 
   if (daysUntil < 0) {
     const daysLate = Math.abs(daysUntil);
-    return t(plural("today.daysLate", daysLate), { n: daysLate });
+    return t(plural("today.daysLate", daysLate, locale), { n: daysLate });
   }
 
   if (daysUntil === 0) {
     return t("today.expectedToday");
   }
 
-  return t(plural("today.inDays", daysUntil), { n: daysUntil });
+  return t(plural("today.inDays", daysUntil, locale), { n: daysUntil });
 }
 
 function getPhaseWord(t: Translate, phaseLabel: CyclePhase) {
@@ -297,17 +342,23 @@ function getPhaseLine(t: Translate, phaseLabel: CyclePhase) {
   );
 }
 
-function getOvulationPhrase(t: Translate, daysUntil: number) {
+function getOvulationPhrase(
+  t: Translate,
+  locale: SupportedLanguage,
+  daysUntil: number,
+) {
   if (daysUntil < 0) {
     const daysAgo = Math.abs(daysUntil);
-    return t(plural("today.ovulationDaysAgo", daysAgo), { n: daysAgo });
+    return t(plural("today.ovulationDaysAgo", daysAgo, locale), { n: daysAgo });
   }
 
   if (daysUntil === 0) {
     return t("today.ovulationToday");
   }
 
-  return t(plural("today.ovulationInDays", daysUntil), { n: daysUntil });
+  return t(plural("today.ovulationInDays", daysUntil, locale), {
+    n: daysUntil,
+  });
 }
 
 function getFertilityEstimate(

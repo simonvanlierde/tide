@@ -29,7 +29,8 @@ Once installed, it works offline, and all data stays on your device.
 - A cycle dial shows today's cycle day and phase. Drag along it to preview other days.
 - Next-period estimates, and if you choose to see them, an approximate fertile window and
   ovulation estimate. Every prediction is a dashed outline, so it never looks like a logged day.
-  [How predictions work](docs/predictions.md).
+  [How predictions work](docs/predictions.md), and Today shows the sums behind your own date.
+- Save your next expected periods as a calendar file for any calendar app.
 - Insights, and a calendar with cycle day numbers.
 - Back up to a JSON file, restore it on any device, or delete everything in one go.
 - Import a Clue export (`measurements.json` from the export zip, or an older `.cluedata` backup)

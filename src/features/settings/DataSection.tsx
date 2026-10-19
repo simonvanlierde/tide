@@ -1,4 +1,5 @@
 import {
+  CalendarPlus,
   CircleAlert,
   Download,
   ShieldCheck,
@@ -12,12 +13,15 @@ import {
   mergeImportedDays,
   parseImportedState,
 } from "../../data/transfer";
+import { getExpectedCycles } from "../../domain/cycle";
 import type { AppState, IsoDate } from "../../domain/types";
 import { plural } from "../../i18n";
 import {
   useAppState,
   useAppStateActions,
+  useForecast,
   useIsReadOnly,
+  useLocale,
   useT,
 } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
@@ -27,7 +31,12 @@ import { InfoPopover } from "./InfoPopover";
 const MAX_IMPORT_BYTES = 5_000_000;
 
 /** What the last export or import did, so neither happens in silence. */
-type DataStatus = { kind: "imported"; days: number } | { kind: "exported" };
+type DataStatus =
+  | { kind: "imported"; days: number }
+  | { kind: "exported" }
+  | { kind: "calendar" };
+
+const CALENDAR_CYCLES = 3;
 
 interface DataSectionProps {
   /** Another app's days after this one are dropped on import. */
@@ -38,6 +47,7 @@ export function DataSection({ today }: DataSectionProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const t = useT();
+  const locale = useLocale();
   // A newer build saved the data and this tab never saves, so an import would
   // vanish on reload and a delete would wipe data this build can't read.
   const readOnly = useIsReadOnly();
@@ -51,6 +61,13 @@ export function DataSection({ today }: DataSectionProps) {
     ({ fileDays: number } & ({ next: AppState } | OtherAppImport)) | null
   >(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
+  const [calendarFertile, setCalendarFertile] = useState(false);
+  const showFertility = state.settings.showFertility === true;
+  const expectedCycles = getExpectedCycles(
+    useForecast(today),
+    today,
+    CALENDAR_CYCLES,
+  );
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
   // The status counts the days the import added: all of a backup, or only the
@@ -124,6 +141,29 @@ export function DataSection({ today }: DataSectionProps) {
     setStatus({ kind: "exported" });
   }
 
+  async function handleCalendarExport() {
+    try {
+      // Loaded on first use, like the other apps' import formats.
+      const { downloadCalendar } = await import("../../data/calendarFile");
+      downloadCalendar(expectedCycles, {
+        today,
+        fertility: showFertility && calendarFertile,
+        words: {
+          period: t("legend.expected"),
+          fertile: t("legend.fertileWindow"),
+          disclaimer: t("settings.fertilityDisclaimer"),
+        },
+        now: new Date(),
+      });
+    } catch {
+      setStatus(null);
+      setError(t("settings.calendarError"));
+      return;
+    }
+    setError(null);
+    setStatus({ kind: "calendar" });
+  }
+
   return (
     <article className="utility-card utility-card--slim">
       <header className="section-heading">
@@ -180,6 +220,35 @@ export function DataSection({ today }: DataSectionProps) {
         <p id="import-sources" className="supporting-note">
           {t("settings.importSources")}
         </p>
+        {/* Nothing to put in a calendar until there is a forecast. */}
+        {expectedCycles.length > 0 ? (
+          <>
+            <button
+              type="button"
+              className="secondary-action"
+              aria-describedby="calendar-help"
+              onClick={handleCalendarExport}
+            >
+              <span className="button-label">
+                <AppIcon icon={CalendarPlus} className="button-icon" />
+                <span>{t("settings.exportCalendar")}</span>
+              </span>
+            </button>
+            {showFertility ? (
+              <label className="checkbox-row">
+                <input
+                  type="checkbox"
+                  checked={calendarFertile}
+                  onChange={(event) => setCalendarFertile(event.target.checked)}
+                />
+                <span>{t("settings.calendarFertility")}</span>
+              </label>
+            ) : null}
+            <p id="calendar-help" className="supporting-note">
+              {t("settings.calendarHelp")}
+            </p>
+          </>
+        ) : null}
         <input
           ref={fileInput}
           type="file"
@@ -202,11 +271,15 @@ export function DataSection({ today }: DataSectionProps) {
         {status ? (
           <p className="status-row" role="status">
             <span className="status-chip">
-              {status.kind === "exported"
-                ? t("settings.exportSuccess")
-                : t(plural("settings.importSuccess", status.days), {
+              {status.kind === "imported"
+                ? t(plural("settings.importSuccess", status.days, locale), {
                     n: status.days,
-                  })}
+                  })
+                : t(
+                    status.kind === "exported"
+                      ? "settings.exportSuccess"
+                      : "settings.calendarSuccess",
+                  )}
             </span>
           </p>
         ) : null}
@@ -232,16 +305,26 @@ export function DataSection({ today }: DataSectionProps) {
           body={
             <>
               <p>
-                {t(plural("settings.importFileDays", pendingImport.fileDays), {
-                  n: pendingImport.fileDays,
-                })}
+                {t(
+                  plural(
+                    "settings.importFileDays",
+                    pendingImport.fileDays,
+                    locale,
+                  ),
+                  {
+                    n: pendingImport.fileDays,
+                  },
+                )}
               </p>
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")
-                  : t(plural("settings.importReplaces", loggedDayCount), {
-                      n: loggedDayCount,
-                    })}
+                  : t(
+                      plural("settings.importReplaces", loggedDayCount, locale),
+                      {
+                        n: loggedDayCount,
+                      },
+                    )}
               </p>
             </>
           }

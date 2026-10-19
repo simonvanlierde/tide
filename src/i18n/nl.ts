@@ -14,6 +14,9 @@ export const nl: Dictionary = {
   "today.fertility": "Vruchtbaarheid",
   "today.fertilityInfoLabel": "Hoe vruchtbaarheid wordt geschat",
   "today.cycleInsights": "Cyclusinzichten",
+  "today.howWorkedOut": "Hoe is dit berekend?",
+  "today.explainError":
+    "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
   "today.daysAgo.one": "{n} dag geleden",
   "today.daysAgo.other": "{n} dagen geleden",
   "today.expectedToday": "Vandaag verwacht",
@@ -198,6 +201,13 @@ export const nl: Dictionary = {
     "Je kunt een Tide-back-up importeren, of een export uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
+  "settings.exportCalendar": "Naar agenda",
+  "settings.calendarHelp":
+    "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen. Daar synchroniseren ze zoals je andere afspraken, dus ook het account van die agenda bewaart ze.",
+  "settings.calendarFertility": "Vruchtbare periodes meenemen",
+  "settings.calendarSuccess": "Agendabestand opgeslagen in je downloads.",
+  "settings.calendarError":
+    "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError":

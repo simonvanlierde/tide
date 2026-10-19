@@ -161,6 +161,8 @@ describe("app state core selectors", () => {
 
     expect(selectForecast(state, "2026-08-22").stats).toEqual({
       cyclesTracked: 1,
+      firstCycleStart: "2026-07-04",
+      recentCycleLengths: [28],
       variabilityDays: null,
     });
   });

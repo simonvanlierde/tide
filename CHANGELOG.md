@@ -8,6 +8,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- "How was this worked out?" on Today shows the sums behind your next-period
+  date: the recent cycle lengths it used, their median, how much your cycles
+  vary and the range that gives, or the 28-day default while there is too
+  little history. With fertility estimates on, it also shows how the ovulation
+  estimate and fertile window follow from it.
+- Settings → Data → Add to calendar saves your next 3 expected periods as a
+  calendar file (.ics) your calendar app can open. The file is made on your
+  device. With fertility estimates on, you can tick a box to add the fertile
+  windows too. The events are marked private. Importing a newer file moves
+  the events instead of adding copies, unless you have since imported older
+  history.
 - Import your history from Clue or Flo: pick the export in Settings → Data →
   Import, the same button as for a Tide backup. Tide shows how many days the
   file holds and asks before adding them. Days you already logged in Tide stay

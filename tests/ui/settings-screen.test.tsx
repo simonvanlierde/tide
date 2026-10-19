@@ -1,4 +1,10 @@
-import { act, fireEvent, screen, within } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../../src/app/App";
@@ -153,6 +159,76 @@ describe("SettingsScreen", () => {
       download: expect.stringMatching(/^tide-backup-\d{4}-\d{2}-\d{2}\.json$/),
     });
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:tide-backup");
+  });
+
+  it("saves the next three expected periods as a calendar file", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:tide-calendar");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    renderWithAppState(<SettingsScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-03-05", "2026-04-02"] }),
+    });
+
+    // Fertility estimates are off, so there is nothing to opt in to.
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /add to calendar/i }));
+    // The file builder loads on first use.
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalledOnce());
+
+    const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
+    const ics = await blob.text();
+    expect(blob.type).toBe("text/calendar");
+    expect(ics.match(/^DTSTART;VALUE=DATE:\d+/gm)).toEqual([
+      "DTSTART;VALUE=DATE:20260430",
+      "DTSTART;VALUE=DATE:20260528",
+      "DTSTART;VALUE=DATE:20260625",
+    ]);
+    expect(ics).not.toMatch(/fertile/i);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      /calendar file saved/i,
+    );
+  });
+
+  it("adds fertile windows to the calendar file only when ticked", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:tide-calendar");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    renderWithAppState(<SettingsScreen today="2026-04-18" />, {
+      state: createAppState({
+        periodDays: ["2026-03-05", "2026-04-02"],
+        settings: { showFertility: true },
+      }),
+    });
+
+    const checkbox = screen.getByRole("checkbox", {
+      name: /include fertile windows/i,
+    });
+    expect(checkbox).not.toBeChecked();
+    await user.click(checkbox);
+    await user.click(screen.getByRole("button", { name: /add to calendar/i }));
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalledOnce());
+
+    const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
+    const ics = await blob.text();
+    // The window before the 04-30 period ended on 04-17, before today.
+    expect(ics.match(/^UID:fertile-[\d-]+/gm)).toEqual([
+      "UID:fertile-2026-03-05-4",
+      "UID:fertile-2026-03-05-5",
+    ]);
+  });
+
+  it("offers no calendar file before there is a forecast", () => {
+    renderSettings();
+
+    expect(
+      screen.queryByRole("button", { name: /add to calendar/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("imports a valid Tide backup and clears any previous import error", async () => {

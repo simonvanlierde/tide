@@ -55,15 +55,17 @@ export function translate(
   return vars ? interpolate(template, vars) : template;
 }
 
-// Pick the plural form of a `${base}.one` / `${base}.other` key pair.
-// NOTE: only valid for n ≥ 1, which is all our call sites (the "0 / today"
-// cases have their own keys). en/nl/de/fr/es all use "one" only for exactly 1,
-// so a full Intl.PluralRules isn't needed here.
+// Pick the plural form of a `${base}.one` / `${base}.other` key pair, by the
+// language's own rules: French takes "one" for 1.5 days too. The dictionaries
+// hold only those two forms, so any other category ("many" for a million in
+// French and Spanish) uses "other".
 export function plural<K extends string>(
   base: K,
   n: number,
+  lang: SupportedLanguage,
 ): `${K}.one` | `${K}.other` {
-  return `${base}.${n === 1 ? "one" : "other"}`;
+  const one = new Intl.PluralRules(lang).select(n) === "one";
+  return `${base}.${one ? "one" : "other"}`;
 }
 
 export type { MessageKey } from "./en";

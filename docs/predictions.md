@@ -12,6 +12,9 @@ device. The code is in `src/domain/cycle.ts`.
   (the American College of Obstetricians and Gynecologists) gives as normal. It leaves out the
   current, unfinished period, and uses **4 days** when there's no history.
 - **Next period.** The most recent cycle start plus the estimated cycle length.
+- **Range.** The next period date, give or take the standard deviation of your recent cycles,
+  rounded up to whole days. With fewer than two cycles, or cycles of all the same length, there is
+  no range.
 - **Ovulation.** **14 days before** the next predicted period, because the luteal phase (the part
   after ovulation) varies least from cycle to cycle. Calendar math can't do better without
   temperature or LH-test input, and Tide doesn't collect those.
@@ -21,6 +24,14 @@ device. The code is in `src/domain/cycle.ts`.
 - **Phase.** Menstrual on a logged bleeding day. Otherwise follicular, ovulation (the estimate
   ±1 day) or luteal, read from the ovulation estimate. With fertility estimates off, Tide makes no
   ovulation estimate, so every other day is simply "between periods".
+
+On Today, **How was this worked out?** shows these steps with your own numbers. Settings → Data →
+**Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
+made on your device. The events are marked private, so most shared calendars hide their details, and
+they never mark you as busy. Each event is identified by your first logged period start and its
+cycle number, so importing a newer file moves it instead of adding a copy. Importing older history,
+or changing your earliest logged period, gives the events new identifiers: the next file then adds
+new events, and the old ones need deleting by hand.
 
 To see how close the next-period estimate lands on real cycle data, read
 [backtest.md](backtest.md).

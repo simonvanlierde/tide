@@ -34,8 +34,12 @@ function toBackupFile(state: AppState): BackupFile {
   };
 }
 
-function downloadJson(json: string, filename: string) {
-  const blob = new Blob([json], { type: "application/json" });
+export function downloadText(
+  text: string,
+  filename: string,
+  type = "application/json",
+) {
+  const blob = new Blob([text], { type });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -47,13 +51,13 @@ function downloadJson(json: string, filename: string) {
 
 // Download the current state as a JSON file the user can keep as a backup.
 export function downloadAppState(state: AppState) {
-  downloadJson(JSON.stringify(toBackupFile(state), null, 2), exportFilename());
+  downloadText(JSON.stringify(toBackupFile(state), null, 2), exportFilename());
 }
 
 // Download the stored blob untouched, for the crash screen: whatever broke the
 // app may be in the data, so nothing here parses or normalizes it.
 export function downloadRawState(raw: string) {
-  downloadJson(raw, `tide-raw-${getTodayIsoDate()}.json`);
+  downloadText(raw, `tide-raw-${getTodayIsoDate()}.json`);
 }
 
 // Parse an exported backup back into a valid AppState. Throws on unparseable

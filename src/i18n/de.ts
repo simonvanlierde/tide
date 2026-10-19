@@ -15,6 +15,9 @@ export const de: Dictionary = {
   "today.fertility": "Fruchtbarkeit",
   "today.fertilityInfoLabel": "Wie die Fruchtbarkeit geschätzt wird",
   "today.cycleInsights": "Zyklus-Einblicke",
+  "today.howWorkedOut": "Wie wurde das berechnet?",
+  "today.explainError":
+    "Das ließ sich nicht öffnen. Lade Tide neu und versuche es noch einmal.",
   "today.daysAgo.one": "vor {n} Tag",
   "today.daysAgo.other": "vor {n} Tagen",
   "today.expectedToday": "Heute erwartet",
@@ -200,6 +203,13 @@ export const de: Dictionary = {
     "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
+  "settings.exportCalendar": "Zum Kalender",
+  "settings.calendarHelp":
+    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Dort werden sie wie deine anderen Termine synchronisiert, liegen also auch im Konto des Kalenders.",
+  "settings.calendarFertility": "Fruchtbare Fenster einschließen",
+  "settings.calendarSuccess": "Kalenderdatei in deinen Downloads gespeichert.",
+  "settings.calendarError":
+    "Die Kalenderdatei ließ sich nicht erstellen. Lade Tide neu und versuche es noch einmal.",
   "settings.import": "Importieren",
   "settings.importFile": "Datendatei importieren",
   "settings.importError":

@@ -68,6 +68,10 @@ export interface Forecast extends CycleSummary {
 export interface CycleStats {
   /** Completed cycles observed so far — the history the estimate is built on. */
   cyclesTracked: number;
+  /** The earliest logged cycle start; null with nothing logged. */
+  firstCycleStart: IsoDate | null;
+  /** The recent completed cycle lengths the estimate uses, oldest first. */
+  recentCycleLengths: number[];
   /**
    * Standard deviation of recent cycle lengths, in days: how much the cycle
    * varies. Null until at least two cycles exist to compare.

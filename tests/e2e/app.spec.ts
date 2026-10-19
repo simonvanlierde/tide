@@ -182,3 +182,52 @@ test("Today's import link lands on the Import button", async ({ page }) => {
     page.getByRole("switch", { name: en["settings.showFertility"] }),
   ).not.toBeChecked();
 });
+
+test("Today explains how the next period was worked out", async ({ page }) => {
+  await seedAppState(page, "en");
+  await page.goto("/");
+
+  await page.getByRole("button", { name: en["today.howWorkedOut"] }).click();
+  const sheet = page.getByRole("dialog", { name: en["today.howWorkedOut"] });
+  // The seed has one period start, so the 28-day default stands in.
+  await expect(sheet).toContainText("typical 28-day cycle");
+  await expect(sheet).toContainText(en["today.notBirthControl"]);
+  await page.keyboard.press("Escape");
+  await expect(sheet).toBeHidden();
+});
+
+test("Settings saves expected periods as a calendar file", async ({ page }) => {
+  await seedAppState(page, "en");
+  await page.goto("/settings");
+
+  // Keep the file's Blob so its text can be read back after the download.
+  await page.evaluate(() => {
+    const create = URL.createObjectURL;
+    URL.createObjectURL = (blob) => {
+      (window as unknown as { saved: Blob }).saved = blob as Blob;
+      return create(blob);
+    };
+  });
+  await page
+    .getByRole("checkbox", { name: en["settings.calendarFertility"] })
+    .check();
+  const [download] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: en["settings.exportCalendar"] }).click(),
+  ]);
+
+  expect(download.suggestedFilename()).toBe(
+    "tide-expected-periods-2026-04-15.ics",
+  );
+  const ics = await page.evaluate(() =>
+    (window as unknown as { saved: Blob }).saved.text(),
+  );
+  expect(ics).toMatch(/^BEGIN:VCALENDAR\r\n/);
+  expect(ics.match(/^UID:period-[\d-]+@/gm)).toHaveLength(3);
+  expect(ics).toContain("UID:fertile-");
+  await expect(
+    page
+      .getByRole("status")
+      .filter({ hasText: en["settings.calendarSuccess"] }),
+  ).toBeVisible();
+});
