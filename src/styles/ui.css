@@ -283,7 +283,7 @@
     line-height: 1.45;
     letter-spacing: normal;
     text-transform: none;
-    text-align: left;
+    text-align: start;
   }
 
   /* Flipped above the trigger (set from JS) when opening down would overflow the
@@ -300,7 +300,8 @@
     inset-inline-end: auto;
   }
 
-  .info-popover__content p {
+  .info-popover__content p,
+  .confirm-dialog__body p {
     margin: 0;
   }
 
@@ -326,7 +327,7 @@
     border: 1px solid var(--accent-solid);
     border-radius: var(--radius-button);
     background: var(--accent-solid);
-    color: #fff;
+    color: var(--ink-on-solid);
     font-size: var(--text-base);
     font-weight: 600;
     transition:
@@ -371,10 +372,6 @@
     color: var(--ink-soft);
     font-size: var(--text-md);
     line-height: 1.45;
-  }
-
-  .confirm-dialog__body p {
-    margin: 0;
   }
 
   .confirm-dialog__actions {
@@ -487,7 +484,7 @@
     background: transparent;
     color: var(--tide-strong);
     font-weight: 500;
-    text-align: left;
+    text-align: start;
   }
 
   /* Placed after the hover washes so a disabled button never lights up. */
@@ -808,7 +805,6 @@
     min-width: 0;
   }
 
-  /* Native language dropdown: matches the calendar month/year picker inputs. */
   /* Native select: one height everywhere (settings language, month picker). */
   .select-field {
     /* A select is as wide as its longest option ("Langue de l'appareil");
@@ -827,7 +823,6 @@
     outline-offset: 2px;
   }
 
-  /* Card heading paired with an info affordance on the right. */
   /* An info affordance always sits beside the label it explains, never at the
      far end of the row: heading + "i", label + "i". */
   .section-heading {
@@ -1042,7 +1037,7 @@
 
   .switch[aria-checked="true"]::after {
     transform: translateX(18px);
-    background: #fff;
+    background: var(--ink-on-solid);
   }
 
   .switch:focus-visible {
@@ -1248,10 +1243,10 @@
      new coral chip is tappable to refine or remove. Runs once, then rests. */
   @keyframes calendar-day-logged {
     from {
-      box-shadow: 0 0 0 0 rgba(226, 109, 90, 0.5);
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--bleed) 50%, transparent);
     }
     to {
-      box-shadow: 0 0 0 6px rgba(226, 109, 90, 0);
+      box-shadow: 0 0 0 6px transparent;
     }
   }
 
@@ -1309,7 +1304,6 @@
 
   .insights::backdrop {
     background: var(--scrim);
-    backdrop-filter: blur(2px);
   }
 
   .insights__head {
@@ -1448,11 +1442,31 @@
     margin-top: 16px;
   }
 
+  /* The app's own chevron instead of the browser's triangle: it points at
+     the steps while closed and turns down once they show. */
   .insights__how-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    list-style: none;
     cursor: pointer;
     color: var(--tide-strong);
     font-size: var(--text-md);
     font-weight: 500;
+  }
+
+  .insights__how-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .insights__how-icon {
+    width: 16px;
+    height: 16px;
+    flex: none;
+  }
+
+  .insights__how[open] .insights__how-icon {
+    transform: rotate(90deg);
   }
 
   .insights__how-summary:focus-visible {
@@ -1471,6 +1485,10 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    .insights__how-icon {
+      transition: transform 160ms ease;
+    }
+
     .insights[open] {
       animation: insights-in 160ms ease-out;
     }

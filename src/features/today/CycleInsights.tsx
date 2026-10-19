@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import {
   DEFAULT_CYCLE_LENGTH,
@@ -47,8 +47,7 @@ export function CycleInsights({
   const requestClose = () => dialogRef.current?.close();
 
   return (
-    // biome-ignore lint/a11y/noNoninteractiveElementInteractions: backdrop tap-to-dismiss on a modal <dialog>; keyboard close is handled natively by Esc
-    // biome-ignore lint/a11y/useKeyWithClickEvents: same — Esc closes the dialog for keyboard users, this click only dismisses on the backdrop
+    // biome-ignore lint/a11y/useKeyWithClickEvents: backdrop tap-to-dismiss on a modal <dialog>; Esc closes the dialog for keyboard users, this click only dismisses on the backdrop
     <dialog
       ref={dialogRef}
       className="insights"
@@ -116,7 +115,14 @@ export function CycleInsights({
       </div>
 
       <details className="insights__how">
-        <summary className="insights__how-summary">{t("insights.how")}</summary>
+        <summary className="insights__how-summary">
+          <ChevronRight
+            aria-hidden="true"
+            className="insights__how-icon"
+            strokeWidth={1.8}
+          />
+          {t("insights.how")}
+        </summary>
         <ul className="insights__how-list">
           <li>{t("insights.how1")}</li>
           <li>

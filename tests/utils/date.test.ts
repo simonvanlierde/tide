@@ -29,6 +29,8 @@ describe("date arithmetic", () => {
 
   it("starts the week header on Monday", () => {
     expect(getWeekdayLabels("en-US")[0]).toBe("Mon");
+    expect(getWeekdayLabels("en-US", "narrow")[0]).toBe("M");
+    expect(getWeekdayLabels("en-US", "long")[0]).toBe("Monday");
   });
 });
 

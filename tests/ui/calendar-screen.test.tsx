@@ -45,7 +45,10 @@ describe("CalendarScreen", () => {
     renderWithAppState(<CalendarScreen today="2026-04-18" />);
 
     const table = screen.getByRole("table", { name: "Calendar" });
-    expect(within(table).getAllByRole("columnheader")).toHaveLength(7);
+    const headers = within(table).getAllByRole("columnheader");
+    expect(headers).toHaveLength(7);
+    // The visible label may be one letter; the header's name is the full day.
+    expect(headers[0]).toHaveAccessibleName("Monday");
     // April 2026 starts on a Wednesday: header row plus five weeks.
     const rows = within(table).getAllByRole("row");
     expect(rows).toHaveLength(6);

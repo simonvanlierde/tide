@@ -53,6 +53,8 @@ const FORMATTER_SHAPES = {
   long: { month: "long", day: "numeric", year: "numeric" },
   monthName: { month: "long" },
   weekday: { weekday: "short" },
+  weekdayNarrow: { weekday: "narrow" },
+  weekdayLong: { weekday: "long" },
 } as const satisfies Record<string, Intl.DateTimeFormatOptions>;
 
 function dateFormatter(
@@ -93,8 +95,17 @@ export function getMonthNames(locale = "en-US"): string[] {
   );
 }
 
-export function getWeekdayLabels(locale = "en-US"): string[] {
-  const format = dateFormatter(locale, "weekday").format;
+const WEEKDAY_SHAPE = {
+  short: "weekday",
+  narrow: "weekdayNarrow",
+  long: "weekdayLong",
+} as const;
+
+export function getWeekdayLabels(
+  locale = "en-US",
+  width: keyof typeof WEEKDAY_SHAPE = "short",
+): string[] {
+  const format = dateFormatter(locale, WEEKDAY_SHAPE[width]).format;
   // 2024-01-01 is a Monday.
   return Array.from({ length: 7 }, (_, day) =>
     format(new Date(Date.UTC(2024, 0, 1 + day))),

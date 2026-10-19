@@ -20,6 +20,7 @@ colors:
   ink-soft: "#486069"
   ink-muted: "#566d72"
   ink-on-fill: "#0c191e"
+  ink-on-solid: "#ffffff"
   surface: "#ffffff"
   surface-soft: "#f1f7f7"
   surface-border: "rgba(20, 48, 58, 0.09)"
@@ -83,6 +84,13 @@ components:
     padding: "16px 18px"
   button-primary-hover:
     backgroundColor: "{colors.coral-deep}"
+  button-commit:
+    backgroundColor: "{colors.tide-deep}"
+    textColor: "{colors.ink-on-solid}"
+    rounded: "{rounded.button}"
+    padding: "12px 20px"
+  button-commit-hover:
+    backgroundColor: "{colors.tide}"
   button-secondary:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink-soft}"
@@ -177,6 +185,8 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
 - **Soft Ink**: supporting text, legends, secondary button text.
 - **Muted Ink**: eyebrows, tab labels, dates. Made darker so it passes 4.5:1 at small
   sizes.
+- **Ink on Solid**: white, on the solid deep-tide fills (the commit button, a switch that
+  is on). Deep tide stays deep in dark mode, so this stays white too.
 - **Ink on Fill**: near-black text on coral, sand and amber. One value for both themes,
   because those fills stay light in both.
 - **Surface** / **Soft Surface** / **Surface Border**: card white, inset panel, hairline.
@@ -195,7 +205,8 @@ certain than the fertile window. Each outline passes 3:1 against the card and th
 ground.
 
 **The Paired Themes Rule.** Dark is not light inverted. Tune every fill and ink step again
-for the dark ground, so `ink-on-fill` still passes AA on it.
+for the dark ground, so `ink-on-fill` still passes AA on it. The values above are the
+light theme; `src/styles/tokens.css` holds the dark set under `[data-theme="dark"]`.
 
 ## Typography
 
@@ -220,7 +231,9 @@ the text scales with the disc when the text size setting goes up.
 ### Named Rules
 
 **The Tracked Eyebrow Rule.** Structure labels are uppercase, in muted ink, with 0.1 to
-0.16em letter spacing. Never bold body text. One eyebrow per block.
+0.16em letter spacing. Never bold body text. One eyebrow per block. The one exception is
+a label in a tight tile or column (the insights stat labels, the calendar weekdays): it
+keeps 0.06em.
 
 **The Tabular Rule.** Any numeral that can change uses `tabular-nums`.
 
@@ -233,8 +246,10 @@ nothing hides behind the fixed tab bar.
 
 The shell is a size container, so layout changes follow the shell, not the viewport. Below
 26em the theme control moves under its label, and below 24em its options stack too. The
-calendar tightens its gaps below 400 px and trims the card's side padding below 350 px.
-Its legend is a centred row that wraps. The dial is `min(17.5rem, 64vw)` and is a
+calendar tightens its gaps below 400 px, where the weekday headers also drop to one
+letter (screen readers get the full name), and trims the card's side padding below 350 px.
+Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
+reads as the list going on. The dial is `min(17.5rem, 64vw)` and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
@@ -249,11 +264,12 @@ a hairline top edge, no blur and no lift.
 
 Every shadow is a token, tuned again for dark.
 
-- **Soft** (`--shadow-soft`): the dial ring, and only the dial ring.
+- **Soft** (`--shadow-soft`): the dial ring, and the layers that float over a screen:
+  dialogs and the info popover.
 - **Card** (`--shadow-card`): every card, and the active segmented option.
 - **Coral glow** (`--shadow-glow`): the primary log button.
 - **Knob** (`--shadow-knob`): the switch thumb, the dial marker, the ghost dot.
-- **Scrim** (`--scrim`): the backdrop behind a dialog.
+- **Scrim** (`--scrim`): the backdrop behind a dialog. A flat tint, never a blur.
 
 ### Named Rules
 
