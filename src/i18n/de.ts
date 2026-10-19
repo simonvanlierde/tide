@@ -26,7 +26,7 @@ export const de: Dictionary = {
   "today.higherToday": "Im fruchtbaren Fenster (Schätzung)",
   "today.lowerToday": "Außerhalb des fruchtbaren Fensters (Schätzung)",
   "today.notBirthControl": "Keine Verhütungsmethode",
-  "fertilityAsk.title": "Fruchtbarkeitsschätzungen anzeigen?",
+  "fertilityAsk.title": "Fruchtbarkeits\u00adschätzungen anzeigen?",
   "fertilityAsk.body":
     "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
   "fertilityAsk.show": "Anzeigen",
@@ -74,8 +74,8 @@ export const de: Dictionary = {
   "status.periodExpected": "Periode erwartet",
 
   "insights.title": "Zyklus-Einblicke",
-  "insights.cycleLength": "Zykluslänge",
-  "insights.periodLength": "Periodendauer",
+  "insights.cycleLength": "Zyklus\u00adlänge",
+  "insights.periodLength": "Perioden\u00addauer",
   "insights.cyclesTracked": "Erfasste Zyklen",
   "insights.basedOn":
     "Basierend auf einem typischen {cycle}-Tage-Zyklus, bis du einen vollständigen Zyklus erfasst hast.",
@@ -108,7 +108,7 @@ export const de: Dictionary = {
   "legend.ovulation": "Eisprung",
 
   "flow.legend": "Blutung",
-  "flow.spotting": "Schmierblutung",
+  "flow.spotting": "Schmier\u00adblutung",
   "flow.light": "Leicht",
   "flow.medium": "Mittel",
   "flow.heavy": "Stark",
@@ -180,11 +180,11 @@ export const de: Dictionary = {
   "language.de": "Deutsch",
   "language.fr": "Français",
   "language.es": "Español",
-  "settings.showFertility": "Fruchtbarkeitsschätzungen anzeigen",
+  "settings.showFertility": "Fruchtbarkeits\u00adschätzungen anzeigen",
   "settings.fertilityInfo": "Über Fruchtbarkeitsschätzungen",
   "settings.fertilityHelp":
     "Zeigt das fruchtbare Fenster und den erwarteten Eisprung unter Heute und im Kalender.",
-  "settings.showCycleNumbers": "Zyklustagnummern anzeigen",
+  "settings.showCycleNumbers": "Zyklustag\u00adnummern anzeigen",
   "settings.cycleNumbersInfo": "Über Zyklustagnummern",
   "settings.cycleNumbersHelp":
     "Nummeriert die Tage deines aktuellen Zyklus (1, 2, 3, ...) im Kalender, bis zu deiner nächsten erwarteten Periode.",

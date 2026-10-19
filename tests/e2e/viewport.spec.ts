@@ -4,12 +4,14 @@ import { seedAppState } from "./seed";
 
 // Widths we commit to supporting, plus one short-height case for the fixed tab
 // bar. 320x568 is the hard floor (iPhone SE 1st gen); 280 is the foldable
-// cover-screen edge; 360/390 are the common Android/iPhone widths.
+// cover-screen edge; 360/390 are the common Android/iPhone widths; 430 is the
+// largest iPhone, just under the 460px shell.
 const SIZES = [
   { name: "fold cover 280x720", width: 280, height: 720 },
   { name: "small 320x568", width: 320, height: 568 },
   { name: "android 360x800", width: 360, height: 800 },
   { name: "iphone 390x844", width: 390, height: 844 },
+  { name: "pro max 430x932", width: 430, height: 932 },
   { name: "short 360x500", width: 360, height: 500 },
 ] as const;
 
@@ -150,6 +152,68 @@ const SCREENS: {
 // "Exportieren"), and none of them may clip or overlap.
 const LANGUAGES = ["en", "de", "fr", "nl", "es"] as const;
 
+// Headings, labels and button words. Their words break only at a soft
+// hyphen between the parts of a compound ("Fruchtbarkeits-schätzungen"),
+// never at a syllable the browser picks ("an-zeigen", "FER-TI-LITÉ"). Body
+// text keeps the browser's hyphenation.
+const LABELS = [
+  "h1",
+  "h2",
+  "h3",
+  "button",
+  "label",
+  "summary",
+  "legend",
+  "dt",
+  ".settings-label",
+  ".section-title",
+  ".segmented__label",
+  ".status-chip",
+  ".tab-item__label",
+  ".insights__stat-label",
+  ".insights__regularity-label",
+  ".flow-gauge__label",
+  ".cycle-dial__eyebrow",
+  ".cycle-dial__phase",
+  ".app-header__title",
+].join(", ");
+
+// Every word part (a word, or the piece of a compound between soft or hard
+// hyphens)
+// in the matching elements whose first and last letters sit on different
+// lines. Letters, not the whole part: Chromium hands a soft hyphen's rendered
+// "-" to the letter after it, so a clean break at the hyphen would look split.
+// Screen-reader-only text and the info button's hidden text are left out.
+function splitWordParts(page: Page, selector: string) {
+  return page.locator(selector).evaluateAll((labels) => {
+    const nodes = new Set<Node>();
+    for (const label of labels) {
+      const walker = document.createTreeWalker(label, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        if (!node.parentElement?.closest(".info-popover, .visually-hidden")) {
+          nodes.add(node);
+        }
+      }
+    }
+    const lineOf = (node: Node, offset: number) => {
+      const range = document.createRange();
+      range.setStart(node, offset);
+      range.setEnd(node, offset + 1);
+      return [...range.getClientRects()].at(-1)?.top;
+    };
+    const split: string[] = [];
+    for (const node of nodes) {
+      for (const part of (node.textContent ?? "").matchAll(/[^\s\u00ad-]+/g)) {
+        const last = part.index + part[0].length - 1;
+        if (lineOf(node, part.index) !== lineOf(node, last)) {
+          split.push(part[0]);
+        }
+      }
+    }
+    return split;
+  });
+}
+
 for (const size of SIZES) {
   for (const language of LANGUAGES) {
     test.describe(`${size.name} ${language} overflow`, () => {
@@ -158,7 +222,7 @@ for (const size of SIZES) {
       // The document can fit while a word spills out of its own box: a flow
       // label running into its neighbour, or a clipped button.
       for (const screen of SCREENS) {
-        test(`${screen.name} fits every element in its box and the viewport`, async ({
+        test(`${screen.name} fits every element in its box and the viewport, words whole`, async ({
           page,
         }) => {
           await seedAppState(page, language, screen.settings, screen.days);
@@ -166,6 +230,7 @@ for (const size of SIZES) {
           await expect(page.locator(".tab-bar")).toBeVisible();
           await screen.open?.(page);
           const overflowing = await findOverflow(page);
+          const splitWords = await splitWordParts(page, LABELS);
 
           // Opening one info popover closes the others, so check each in turn.
           if (!screen.open) {
@@ -180,6 +245,7 @@ for (const size of SIZES) {
           }
 
           expect(overflowing).toEqual([]);
+          expect(splitWords).toEqual([]);
         });
       }
     });
@@ -242,30 +308,6 @@ for (const size of SIZES) {
             }),
           );
         expect(lines).toEqual([1, 1]);
-      });
-
-      // A fact label wraps between words or stacks over its value, but never
-      // hyphenates ("FER-TI-LITÉ"): a word split over two lines has two rects.
-      test("keeps each fact label word on one line", async ({ page }) => {
-        await page.goto("/");
-        const split = await page.locator(".fact__label").evaluateAll((labels) =>
-          labels.flatMap((label) =>
-            [...label.childNodes]
-              .filter((node) => node.nodeType === Node.TEXT_NODE)
-              .flatMap((node) =>
-                [...(node.textContent ?? "").matchAll(/\S+/g)].filter(
-                  (word) => {
-                    const range = document.createRange();
-                    range.setStart(node, word.index);
-                    range.setEnd(node, word.index + word[0].length);
-                    return range.getClientRects().length > 1;
-                  },
-                ),
-              )
-              .map((word) => word[0]),
-          ),
-        );
-        expect(split).toEqual([]);
       });
 
       // The switch stays level with the first line of its label; a long label
@@ -351,9 +393,9 @@ test.describe("theme segmented control", () => {
   test("sits beside its label once the shell is wide enough", async ({
     page,
   }) => {
-    // Side by side only while the shell (the container) is wider than 410px,
-    // i.e. large phones and up.
-    await page.setViewportSize({ width: 440, height: 780 });
+    // Side by side only while the shell (the container) is wider than 448px:
+    // the full 460px shell, not a phone.
+    await page.setViewportSize({ width: 460, height: 780 });
     expect(await labelWidth(page)).toBeGreaterThan(10);
     expect(await isStacked(page)).toBe(false);
   });

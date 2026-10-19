@@ -1,3 +1,4 @@
+// biome-ignore-all lint/security/noSecrets: Dutch compounds with soft hyphens read as high-entropy strings
 import type { Dictionary } from "./en";
 
 export const nl: Dictionary = {
@@ -25,7 +26,7 @@ export const nl: Dictionary = {
   "today.higherToday": "In de vruchtbare periode (schatting)",
   "today.lowerToday": "Buiten de vruchtbare periode (schatting)",
   "today.notBirthControl": "Geen anticonceptie",
-  "fertilityAsk.title": "Vruchtbaarheidsschattingen tonen?",
+  "fertilityAsk.title": "Vrucht\u00adbaarheids\u00adschattingen tonen?",
   "fertilityAsk.body":
     "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie. Je kunt dit wijzigen in Instellingen.",
   "fertilityAsk.show": "Tonen",
@@ -73,8 +74,8 @@ export const nl: Dictionary = {
   "status.periodExpected": "Menstruatie verwacht",
 
   "insights.title": "Cyclusinzichten",
-  "insights.cycleLength": "Cycluslengte",
-  "insights.periodLength": "Menstruatieduur",
+  "insights.cycleLength": "Cyclus\u00adlengte",
+  "insights.periodLength": "Menstruatie\u00adduur",
   "insights.cyclesTracked": "Gevolgde cycli",
   "insights.basedOn":
     "Gebaseerd op een gemiddelde cyclus van {cycle} dagen totdat je een volledige cyclus hebt geregistreerd.",
@@ -178,11 +179,11 @@ export const nl: Dictionary = {
   "language.de": "Deutsch",
   "language.fr": "Français",
   "language.es": "Español",
-  "settings.showFertility": "Vruchtbaarheidsschattingen tonen",
+  "settings.showFertility": "Vrucht\u00adbaarheids\u00adschattingen tonen",
   "settings.fertilityInfo": "Over vruchtbaarheidsschattingen",
   "settings.fertilityHelp":
     "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender.",
-  "settings.showCycleNumbers": "Cyclusdagnummers tonen",
+  "settings.showCycleNumbers": "Cyclusdag\u00adnummers tonen",
   "settings.cycleNumbersInfo": "Over cyclusdagnummers",
   "settings.cycleNumbersHelp":
     "Nummert de dagen van je huidige cyclus (1, 2, 3, ...) op de kalender, tot je volgende verwachte menstruatie.",

@@ -160,13 +160,10 @@
   }
 
   /* A label wraps only between words, so a one-word label like "Fertility"
-     never breaks; the value next to it wraps instead. No hyphens either:
-     hyphenation points count as wrap points, so "FER-TI-LITÉ" would be the
-     label's narrowest width. */
+     never breaks; the value next to it wraps instead. */
   .fact > .fact__label {
     min-width: auto;
     overflow-wrap: normal;
-    hyphens: manual;
   }
 
   .fact + .fact {
@@ -591,11 +588,12 @@
     gap: 8px;
   }
 
-  /* Four columns need about 64px each for the longest single word ("Schmier-",
-     a bold "Medium"). Narrower than that (a 320px phone, the calendar's day
-     picker on a small one) the levels go two by two, still read in order,
-     rather than splitting words mid-syllable or spilling out of the column. */
-  @container flow-gauge (max-width: 17.5rem) {
+  /* Four columns need about 82px each for the longest whole word (a bold
+     nl "Gemiddeld", es "Abundante"). Narrower than that (any phone up to
+     about 430px, the calendar's day picker) the levels go two by two, still
+     read in order, rather than splitting words mid-syllable or spilling out
+     of the column. */
+  @container flow-gauge (max-width: 22rem) {
     .flow-gauge__levels {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
@@ -654,12 +652,11 @@
     font-size: var(--text-sm);
     color: var(--ink-muted);
     /* Full column width, or the centred flex item sizes to its word and
-       never wraps. A long word breaks only at a syllable, with a hyphen
+       never wraps. A long word breaks only at its soft hyphen
        ("Schmier-blutung"): letting it break anywhere split it as
        "Schmi/erblu/tung" even where the hyphenated form fits. */
     align-self: stretch;
     text-align: center;
-    hyphens: auto;
     overflow-wrap: normal;
   }
 
@@ -875,6 +872,9 @@
     outline-offset: 2px;
   }
 
+  /* Words break only at the soft hyphens the dictionaries put between the
+     parts of a long compound ("Fruchtbarkeits-schätzungen"), never at a
+     syllable the browser picks ("an-zeigen"). */
   .settings-label {
     display: inline-flex;
     align-items: center;
@@ -905,7 +905,7 @@
 
   /* Theme picker: label on the left, segmented control on the right while it
      fits (nowrap, so the control shrinks before the row would break); below
-     410px of shell width a container query stacks it under the label. */
+     450px of shell width a container query stacks it under the label. */
   .theme-field {
     flex-wrap: nowrap;
   }
@@ -988,12 +988,13 @@
     flex: none;
   }
 
-  /* Below ~410px of shell width the three worded options no longer fit
-     beside the "Theme" label, so the control stacks underneath and spans the
-     row. The words stay: a monitor icon alone doesn't say "follow system". */
+  /* Below ~450px of shell width the three worded options ("Système",
+     "Systeem") no longer fit beside the "Theme" label, so the control stacks
+     underneath and spans the row: on every phone, side by side only on the
+     full 460px shell. The words stay: a monitor icon alone doesn't say "follow system". */
   /* em, not px: at 200% text the em threshold doubles with it, so large-text
      users get the stacked layout on widths where the worded row can't fit. */
-  @container (max-width: 26em) {
+  @container (max-width: 28em) {
     .theme-field {
       flex-direction: column;
       align-items: stretch;
@@ -1316,7 +1317,7 @@
 
   /* Cycle insights dialog */
   .insights {
-    width: min(360px, calc(100vw - 32px));
+    width: min(400px, calc(100vw - 32px));
     margin: auto;
     padding: 22px;
     border: 1px solid var(--surface-border);
@@ -1362,10 +1363,11 @@
     text-align: center;
   }
 
-  /* A fold cover screen has no room for three tiles side by side ("TRACKED",
-     "ZYKLUSLÄNGE" alone outgrow a third), so each tile becomes a row: number
-     and unit, then the label at the far end. */
-  @container (max-width: 19rem) {
+  /* Three tiles side by side need about 110px each for the longest whole
+     label word (nl "MENSTRUATIE", es "REGISTRADOS"), so on a phone up to
+     about 416px each tile becomes a row: number and unit, then the label at
+     the far end. */
+  @container (max-width: 26rem) {
     .insights__stats {
       grid-template-columns: minmax(0, 1fr);
       gap: 6px;

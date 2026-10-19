@@ -237,6 +237,10 @@ keeps 0.06em.
 
 **The Tabular Rule.** Any numeral that can change uses `tabular-nums`.
 
+**The Whole Word Rule.** Headings, labels and buttons never hyphenate. A long compound
+carries soft hyphens between its parts in the dictionary, and breaks only there. Running
+text (paragraphs, list items, fact values) hyphenates as usual.
+
 ## Layout
 
 One centred column, 460 px at most, with 20 px gutters, over the full dynamic viewport
@@ -245,7 +249,7 @@ a 16 px grid, and the main area adds bottom padding of 94 px plus the safe-area 
 nothing hides behind the fixed tab bar.
 
 The shell is a size container, so layout changes follow the shell, not the viewport. Below
-26em the theme control moves under its label, and below 24em its options stack too. The
+28em the theme control moves under its label, and below 24em its options stack too. The
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px

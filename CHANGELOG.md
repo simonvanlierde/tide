@@ -127,6 +127,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   lines. Screen readers still hear the full day name.
 - "How predictions work" in Cycle insights opens with the same chevron as the
   rest of the app, turning down when open, instead of the browser's triangle.
+- Headings, labels and buttons no longer break words at random syllables
+  ("an-zeigen", "Abun-dante"). Long German and Dutch compounds break only
+  between their parts ("Fruchtbarkeits-schätzungen"), and only when they don't
+  fit. Running text still hyphenates.
+- On phones, the flow levels sit two by two and the Cycle insights numbers
+  stack as rows, so "Gemiddeld", "Abundante" and "Menstruatieduur" fit whole.
+- On large phones (430px), the theme picker in Settings sits under its label,
+  so "Système" and "Systeem" are no longer cut short.
 
 ### Security
 
