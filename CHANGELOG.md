@@ -16,9 +16,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Settings → Data → Add to calendar saves your next 3 expected periods as a
   calendar file (.ics) your calendar app can open. The file is made on your
   device. With fertility estimates on, you can tick a box to add the fertile
-  windows too. The events are marked private. Importing a newer file moves
-  the events instead of adding copies, unless you have since imported older
-  history.
+  windows too. The events are marked private, and carry a random id from
+  your device rather than any date from your history. Importing a newer file
+  moves the events instead of adding copies, also on a new device restored
+  from a backup. After importing older history or deleting all data, the next
+  file adds new events instead.
 - Import your history from Clue or Flo: pick the export in Settings → Data →
   Import, the same button as for a Tide backup. Tide shows how many days the
   file holds and asks before adding them. Days you already logged in Tide stay

@@ -88,19 +88,19 @@ describe("getExpectedCycles", () => {
 
     expect(getExpectedCycles(f, TODAY, 3)).toEqual([
       {
-        id: "2026-02-04-4",
+        number: 4,
         periodStart: "2026-04-29",
         fertileFrom: "2026-04-10",
         fertileTo: "2026-04-16",
       },
       {
-        id: "2026-02-04-5",
+        number: 5,
         periodStart: "2026-05-27",
         fertileFrom: "2026-05-08",
         fertileTo: "2026-05-14",
       },
       {
-        id: "2026-02-04-6",
+        number: 6,
         periodStart: "2026-06-24",
         fertileFrom: "2026-06-05",
         fertileTo: "2026-06-11",
@@ -115,9 +115,9 @@ describe("getExpectedCycles", () => {
 
     const cycles = getExpectedCycles(f, "2026-04-03", 2);
 
-    expect(cycles.map((c) => [c.id, c.periodStart])).toEqual([
-      ["2026-02-01-4", "2026-04-26"],
-      ["2026-02-01-5", "2026-05-24"],
+    expect(cycles.map((c) => [c.number, c.periodStart])).toEqual([
+      [4, "2026-04-26"],
+      [5, "2026-05-24"],
     ]);
   });
 
@@ -141,7 +141,9 @@ describe("getExpectedCycles", () => {
     );
 
     // The same cycles keep their numbers, so a newer file moves them.
-    expect(after.map((c) => c.id)).toEqual(before.slice(1).map((c) => c.id));
+    expect(after.map((c) => c.number)).toEqual(
+      before.slice(1).map((c) => c.number),
+    );
     expect(after.map((c) => c.periodStart)).toEqual([
       "2026-05-29",
       "2026-06-26",

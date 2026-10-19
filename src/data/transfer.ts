@@ -15,7 +15,11 @@ interface BackupFile {
   days: Record<IsoDate, LoggedFlow>;
   settings: Pick<
     AppState["settings"],
-    "showFertility" | "showCycleDayNumbers" | "theme" | "language"
+    | "showFertility"
+    | "showCycleDayNumbers"
+    | "theme"
+    | "language"
+    | "calendarId"
   >;
 }
 
@@ -30,6 +34,7 @@ function toBackupFile(state: AppState): BackupFile {
       showCycleDayNumbers: state.settings.showCycleDayNumbers,
       theme: state.settings.theme,
       language: state.settings.language,
+      calendarId: state.settings.calendarId,
     },
   };
 }

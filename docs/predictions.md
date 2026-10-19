@@ -28,10 +28,12 @@ device. The code is in `src/domain/cycle.ts`.
 On Today, **How was this worked out?** shows these steps with your own numbers. Settings → Data →
 **Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
 made on your device. The events are marked private, so most shared calendars hide their details, and
-they never mark you as busy. Each event is identified by your first logged period start and its
-cycle number, so importing a newer file moves it instead of adding a copy. Importing older history,
-or changing your earliest logged period, gives the events new identifiers: the next file then adds
-new events, and the old ones need deleting by hand.
+they never mark you as busy. Each event is identified by its cycle number and a random id this
+device makes on the first export, with no date in it, so importing a newer file moves the event
+instead of adding a copy, and two people's events in one calendar stay apart. The id travels with a
+backup, so a new device restored from one keeps updating the same events. Importing older history
+renumbers the cycles, and deleting all data makes a new id: either way the next file adds new
+events, and the old ones need deleting by hand.
 
 To see how close the next-period estimate lands on real cycle data, read
 [backtest.md](backtest.md).

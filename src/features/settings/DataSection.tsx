@@ -142,6 +142,10 @@ export function DataSection({ today }: DataSectionProps) {
   }
 
   async function handleCalendarExport() {
+    const calendarId = state.settings.calendarId ?? crypto.randomUUID();
+    if (state.settings.calendarId === null) {
+      actions.setSetting("calendarId", calendarId);
+    }
     try {
       // Loaded on first use, like the other apps' import formats.
       const { downloadCalendar } = await import("../../data/calendarFile");
@@ -154,6 +158,7 @@ export function DataSection({ today }: DataSectionProps) {
           disclaimer: t("settings.fertilityDisclaimer"),
         },
         now: new Date(),
+        calendarId,
       });
     } catch {
       setStatus(null);

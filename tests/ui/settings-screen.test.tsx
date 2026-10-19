@@ -150,6 +150,7 @@ describe("SettingsScreen", () => {
         showCycleDayNumbers: true,
         theme: "system",
         language: "system",
+        calendarId: null,
       },
     });
     expect(blob.type).toBe("application/json");
@@ -217,10 +218,49 @@ describe("SettingsScreen", () => {
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
     const ics = await blob.text();
     // The window before the 04-30 period ended on 04-17, before today.
-    expect(ics.match(/^UID:fertile-[\d-]+/gm)).toEqual([
-      "UID:fertile-2026-03-05-4",
-      "UID:fertile-2026-03-05-5",
+    expect(ics.match(/^UID:fertile-\d+-/gm)).toEqual([
+      "UID:fertile-4-",
+      "UID:fertile-5-",
     ]);
+  });
+
+  it("keeps one calendar id across exports, and makes a new one once cleared", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:tide-calendar");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    const state = createAppState({ periodDays: ["2026-03-05", "2026-04-02"] });
+    const exportUids = async () => {
+      const calls = createObjectURL.mock.calls.length;
+      await user.click(
+        screen.getByRole("button", { name: /add to calendar/i }),
+      );
+      await waitFor(() =>
+        expect(createObjectURL).toHaveBeenCalledTimes(calls + 1),
+      );
+      const blob = createObjectURL.mock.calls[calls]?.[0] as Blob;
+      return (await blob.text()).match(/^UID:.*$/gm);
+    };
+
+    const { unmount } = renderWithAppState(
+      <SettingsScreen today="2026-04-18" />,
+      { state },
+    );
+    const first = await exportUids();
+    // The cycle number, then the random id: no date from the history.
+    expect(first?.[0]).toMatch(
+      /^UID:period-3-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}@tide\.duinlab\.nl$/,
+    );
+    expect(await exportUids()).toEqual(first);
+    unmount();
+
+    // A fresh state, as after deleting everything, has no id yet.
+    renderWithAppState(<SettingsScreen today="2026-04-18" />, { state });
+    const second = await exportUids();
+    expect(second).toHaveLength(3);
+    expect(second?.[0]).not.toBe(first?.[0]);
   });
 
   it("offers no calendar file before there is a forecast", () => {

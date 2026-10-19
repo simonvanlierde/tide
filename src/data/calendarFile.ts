@@ -3,8 +3,8 @@ import type { IsoDate } from "../domain/types";
 import { addDays } from "../utils/date";
 import { downloadText } from "./transfer";
 
-// UIDs carry the cycle's id, so importing a newer file moves an event to its
-// new date instead of adding a second one.
+// UIDs carry the cycle number and the device's calendar id, so importing a
+// newer file moves an event to its new date instead of adding a second one.
 const UID_DOMAIN = "tide.duinlab.nl";
 
 interface CalendarWords {
@@ -19,6 +19,7 @@ interface CalendarOptions {
   fertility: boolean;
   words: CalendarWords;
   now: Date;
+  calendarId: string;
 }
 
 const icsDate = (day: IsoDate) => day.replaceAll("-", "");
@@ -74,7 +75,7 @@ function event(
 
 export function buildCalendar(
   cycles: ExpectedCycle[],
-  { today, fertility, words, now }: CalendarOptions,
+  { today, fertility, words, now, calendarId }: CalendarOptions,
 ): string {
   const stamp = `${now.toISOString().slice(0, 19).replace(/[-:]/g, "")}Z`;
   // Rises with every export, so a calendar takes the newer copy of an event.
@@ -89,7 +90,7 @@ export function buildCalendar(
   for (const cycle of cycles) {
     lines.push(
       ...event(
-        `period-${cycle.id}`,
+        `period-${cycle.number}-${calendarId}`,
         cycle.periodStart,
         cycle.periodStart,
         words.period,
@@ -101,7 +102,7 @@ export function buildCalendar(
     if (fertility && cycle.fertileTo >= today) {
       lines.push(
         ...event(
-          `fertile-${cycle.id}`,
+          `fertile-${cycle.number}-${calendarId}`,
           cycle.fertileFrom,
           cycle.fertileTo,
           words.fertile,

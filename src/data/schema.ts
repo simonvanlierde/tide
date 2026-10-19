@@ -32,10 +32,15 @@ export const defaultAppState: AppState = {
     showCycleDayNumbers: true,
     theme: "system",
     language: "system",
+    calendarId: null,
   },
 };
 
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+// crypto.randomUUID's shape. It goes into calendar-file lines as is, so a
+// backup can't put anything else there.
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 export function isIsoDate(value: unknown): value is IsoDate {
   if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
@@ -100,6 +105,11 @@ export function normalizeSettings(settings: unknown): AppSettings {
     )
       ? (candidate.language as LanguagePreference)
       : defaultAppState.settings.language,
+    calendarId:
+      typeof candidate.calendarId === "string" &&
+      UUID_RE.test(candidate.calendarId)
+        ? candidate.calendarId
+        : defaultAppState.settings.calendarId,
   };
 }
 
