@@ -19,7 +19,7 @@ interface CalendarScreenProps {
 export function CalendarScreen(props: CalendarScreenProps) {
   const liveToday = useToday();
   const today = props.today ?? liveToday;
-  const model = useCalendar(today);
+  const { days, helpKey, month, log } = useCalendar(today);
   const t = useT();
   const locale = useLocale();
   const articleRef = useRef<HTMLElement>(null);
@@ -28,10 +28,10 @@ export function CalendarScreen(props: CalendarScreenProps) {
 
   // Pop the today cell so people see exactly where they landed after "Today".
   // goToToday changes the month inside a transition, so wait for the current
-  // month to actually render (isCurrentMonth flips true) before reaching for the
-  // cell. Skip the pop under reduced motion, but still clear the request.
+  // month to actually render (month.isCurrent flips true) before reaching for
+  // the cell. Skip the pop under reduced motion, but still clear the request.
   useEffect(() => {
-    if (!wantPinpoint.current || !model.isCurrentMonth) {
+    if (!wantPinpoint.current || !month.isCurrent) {
       return;
     }
     wantPinpoint.current = false;
@@ -48,19 +48,22 @@ export function CalendarScreen(props: CalendarScreenProps) {
           { transform: "scale(1.18)" },
           { transform: "scale(1)" },
         ],
-        { duration: 460, easing: "ease-out" },
+        {
+          duration: 460,
+          easing: "ease-out",
+        },
       );
     }
-  }, [model.isCurrentMonth]);
+  }, [month.isCurrent]);
 
   function handleGoToToday() {
     wantPinpoint.current = true;
-    model.goToToday();
+    month.goToToday();
   }
 
   // Picking a range happens on the grid, so start there: focus its tab stop.
   function handleStartRange() {
-    model.startRangePick();
+    log.startRangePick();
     articleRef.current
       ?.querySelector<HTMLElement>('.calendar-grid__day[tabindex="0"]')
       ?.focus();
@@ -91,9 +94,9 @@ export function CalendarScreen(props: CalendarScreenProps) {
     }
 
     if (dx < 0) {
-      model.goToNextMonth();
+      month.goToNext();
     } else {
-      model.goToPreviousMonth();
+      month.goToPrevious();
     }
   }
 
@@ -107,14 +110,14 @@ export function CalendarScreen(props: CalendarScreenProps) {
     ) {
       return;
     }
-    if (event.key === "Escape" && model.rangePick) {
-      model.cancelRangePick();
+    if (event.key === "Escape" && log.rangePick) {
+      log.cancelRangePick();
     } else if (event.key === "PageUp") {
       event.preventDefault();
-      model.goToPreviousMonth();
+      month.goToPrevious();
     } else if (event.key === "PageDown") {
       event.preventDefault();
-      model.goToNextMonth();
+      month.goToNext();
     }
   }
 
@@ -132,18 +135,18 @@ export function CalendarScreen(props: CalendarScreenProps) {
             type="button"
             className="calendar__nav"
             aria-label={t("calendar.previousMonth")}
-            onClick={model.goToPreviousMonth}
+            onClick={month.goToPrevious}
           >
             <ChevronLeft aria-hidden="true" size={18} />
           </button>
           <button
             type="button"
             className="calendar-picker-button calendar__month-button"
-            aria-expanded={model.monthPicker.isPickerOpen}
+            aria-expanded={month.picker.isPickerOpen}
             aria-controls="calendar-month-picker"
-            onClick={model.openPicker}
+            onClick={month.togglePicker}
           >
-            {model.monthLabel}
+            {month.label}
             <ChevronDown
               aria-hidden="true"
               size={16}
@@ -154,87 +157,87 @@ export function CalendarScreen(props: CalendarScreenProps) {
             type="button"
             className="calendar__nav"
             aria-label={t("calendar.nextMonth")}
-            onClick={model.goToNextMonth}
+            onClick={month.goToNext}
           >
             <ChevronRight aria-hidden="true" size={18} />
           </button>
         </div>
-        <CalendarMonthPicker {...model.monthPicker} />
+        <CalendarMonthPicker {...month.picker} />
         <div
           className="calendar-swipe"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
           <CalendarGrid
-            days={model.days}
-            selectedDay={model.selectedDay ?? model.rangePick?.from ?? null}
-            justLoggedDay={model.justLoggedDay}
-            onSelectDay={model.selectDay}
+            days={days}
+            selectedDay={log.selectedDay ?? log.rangePick?.from ?? null}
+            justLoggedDay={log.justLoggedDay}
+            onSelectDay={log.selectDay}
           />
         </div>
-        <CalendarLegend days={model.days} />
-        {model.selectedDay ? (
+        <CalendarLegend days={days} />
+        {log.selectedDay ? (
           <DayFlowPicker
-            day={model.selectedDay}
-            intensity={model.selectedIntensity}
-            isLogged={model.isSelectedLogged}
+            day={log.selectedDay}
+            intensity={log.selectedIntensity}
+            isLogged={log.isSelectedLogged}
             onSelect={(intensity) =>
-              model.setDayIntensity(model.selectedDay as IsoDate, intensity)
+              log.setDayIntensity(log.selectedDay as IsoDate, intensity)
             }
-            onRemove={() => model.removeDay(model.selectedDay as IsoDate)}
-            onClose={model.closePicker}
+            onRemove={() => log.removeDay(log.selectedDay as IsoDate)}
+            onClose={log.closePicker}
           />
-        ) : model.rangePick ? (
+        ) : log.rangePick ? (
           <p className="supporting-note calendar__help" role="status">
-            {model.rangePick.from === null
+            {log.rangePick.from === null
               ? t("calendar.rangePickFirst")
               : t(
-                  model.rangePick.tooLong
+                  log.rangePick.tooLong
                     ? "calendar.rangeTooLong"
                     : "calendar.rangePickLast",
                   {
-                    date: formatShortDate(model.rangePick.from, locale),
+                    date: formatShortDate(log.rangePick.from, locale),
                     max: MAX_PERIOD_RANGE_DAYS,
                   },
                 )}
           </p>
-        ) : model.justLoggedDay || model.justLoggedRange ? (
+        ) : log.justLoggedDay || log.justLoggedRange ? (
           // A one-tap log or a range wrote data; say what, and make undo one
           // tap too.
           <p className="supporting-note calendar__help" role="status">
             {t(
-              model.forecastMoved
+              log.forecastMoved
                 ? "calendar.justLoggedForecast"
                 : "calendar.justLogged",
               {
-                date: model.justLoggedRange
-                  ? `${formatShortDate(model.justLoggedRange.from, locale)} – ${formatShortDate(model.justLoggedRange.to, locale)}`
-                  : formatShortDate(model.justLoggedDay as IsoDate, locale),
+                date: log.justLoggedRange
+                  ? `${formatShortDate(log.justLoggedRange.from, locale)} – ${formatShortDate(log.justLoggedRange.to, locale)}`
+                  : formatShortDate(log.justLoggedDay as IsoDate, locale),
               },
             )}{" "}
             <button
               type="button"
               className="text-action calendar__undo"
-              onClick={model.undoJustLogged}
+              onClick={log.undoJustLogged}
             >
               {t("calendar.undo")}
             </button>
           </p>
         ) : (
-          <p className="supporting-note calendar__help">{t(model.helpKey)}</p>
+          <p className="supporting-note calendar__help">{t(helpKey)}</p>
         )}
-        {model.selectedDay ? null : (
+        {log.selectedDay ? null : (
           // One button that turns into Cancel, so focus stays put when a
           // pick is cancelled.
           <button
             type="button"
             className="text-action calendar__range"
-            onClick={model.rangePick ? model.cancelRangePick : handleStartRange}
+            onClick={log.rangePick ? log.cancelRangePick : handleStartRange}
           >
-            {t(model.rangePick ? "common.cancel" : "calendar.logRange")}
+            {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
           </button>
         )}
-        {model.isCurrentMonth ? null : (
+        {month.isCurrent ? null : (
           <button
             type="button"
             className="calendar__today"
