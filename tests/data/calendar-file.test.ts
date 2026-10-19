@@ -4,13 +4,13 @@ import type { ExpectedCycle } from "../../src/domain/cycle";
 
 const CYCLES: ExpectedCycle[] = [
   {
-    id: "2026-03-04-4",
+    number: 4,
     periodStart: "2026-04-29",
     fertileFrom: "2026-04-10",
     fertileTo: "2026-04-16",
   },
   {
-    id: "2026-03-04-5",
+    number: 5,
     periodStart: "2026-05-27",
     fertileFrom: "2026-05-08",
     fertileTo: "2026-05-14",
@@ -24,9 +24,16 @@ const WORDS = {
 };
 
 const NOW = new Date("2026-04-20T09:30:15.123Z");
+const CALENDAR_ID = "3f2b8c1e-9a4d-4e7b-b6f0-2c5d8a1e7f93";
 
 function build(fertility: boolean, today = "2026-04-20" as const) {
-  return buildCalendar(CYCLES, { today, fertility, words: WORDS, now: NOW });
+  return buildCalendar(CYCLES, {
+    today,
+    fertility,
+    words: WORDS,
+    now: NOW,
+    calendarId: CALENDAR_ID,
+  });
 }
 
 describe("buildCalendar", () => {
@@ -45,7 +52,7 @@ describe("buildCalendar", () => {
     expect(ics).toContain(
       [
         "BEGIN:VEVENT",
-        "UID:period-2026-03-04-4@tide.duinlab.nl",
+        `UID:period-4-${CALENDAR_ID}@tide.duinlab.nl`,
         "DTSTAMP:20260420T093015Z",
         `SEQUENCE:${Math.floor(NOW.getTime() / 60_000)}`,
         "DTSTART;VALUE=DATE:20260429",
@@ -65,7 +72,7 @@ describe("buildCalendar", () => {
 
     expect(ics).toContain(
       [
-        "UID:fertile-2026-03-04-5@tide.duinlab.nl",
+        `UID:fertile-5-${CALENDAR_ID}@tide.duinlab.nl`,
         "DTSTAMP:20260420T093015Z",
         `SEQUENCE:${Math.floor(NOW.getTime() / 60_000)}`,
         "DTSTART;VALUE=DATE:20260508",
@@ -75,7 +82,7 @@ describe("buildCalendar", () => {
       ].join("\r\n"),
     );
     // The first window ended on 04-16, before today.
-    expect(ics).not.toContain("fertile-2026-03-04-4");
+    expect(ics).not.toContain("fertile-4-");
   });
 
   it("escapes commas and backslashes in text", () => {
@@ -84,6 +91,7 @@ describe("buildCalendar", () => {
       fertility: false,
       words: { ...WORDS, period: "Période, prévue \\ estimée" },
       now: NOW,
+      calendarId: CALENDAR_ID,
     });
 
     expect(ics).toContain("SUMMARY:Période\\, prévue \\\\ estimée");

@@ -68,8 +68,6 @@ export interface Forecast extends CycleSummary {
 export interface CycleStats {
   /** Completed cycles observed so far — the history the estimate is built on. */
   cyclesTracked: number;
-  /** The earliest logged cycle start; null with nothing logged. */
-  firstCycleStart: IsoDate | null;
   /** The recent completed cycle lengths the estimate uses, oldest first. */
   recentCycleLengths: number[];
   /**
@@ -92,6 +90,12 @@ export interface AppSettings {
   theme: ThemePreference;
   /** UI language; "system" follows the browser locale. */
   language: LanguagePreference;
+  /**
+   * Random id in this device's calendar-file UIDs, made on the first export.
+   * It keeps one person's events apart from another's in a shared calendar,
+   * and travels with a backup so a new device updates the same events.
+   */
+  calendarId: string | null;
 }
 
 export interface AppState {

@@ -223,7 +223,7 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
     (window as unknown as { saved: Blob }).saved.text(),
   );
   expect(ics).toMatch(/^BEGIN:VCALENDAR\r\n/);
-  expect(ics.match(/^UID:period-[\d-]+@/gm)).toHaveLength(3);
+  expect(ics.match(/^UID:period-\d+-[0-9a-f-]{36}@/gm)).toHaveLength(3);
   expect(ics).toContain("UID:fertile-");
   await expect(
     page

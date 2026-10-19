@@ -48,6 +48,8 @@ describe("parseImportedState", () => {
         dismissedOn: "2026-04-02",
         showFertility: false,
         language: "de",
+        // Travels with the backup, so a new device updates the same events.
+        calendarId: "3f2b8c1e-9a4d-4e7b-b6f0-2c5d8a1e7f93",
       },
     });
     const click = vi
@@ -152,6 +154,7 @@ describe("downloadAppState", () => {
             showCycleDayNumbers: true,
             theme: "system",
             language: "system",
+            calendarId: null,
           },
         },
         null,

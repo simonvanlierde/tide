@@ -26,9 +26,19 @@ describe("schema normalization at the storage trust boundary", () => {
         language: "xx",
         showFertility: "yes",
         showCycleDayNumbers: 1,
+        // Would end the UID line and start a new one in a calendar file.
+        calendarId: "x\r\nBEGIN:VEVENT",
       },
     });
     expect(state.settings).toEqual(defaultAppState.settings);
+  });
+
+  it("keeps a calendar id of the shape crypto.randomUUID makes", () => {
+    const calendarId = "3f2b8c1e-9a4d-4e7b-b6f0-2c5d8a1e7f93";
+    expect(normalizeAppState({ settings: { calendarId } }).settings).toEqual({
+      ...defaultAppState.settings,
+      calendarId,
+    });
   });
 
   it("asks again where showFertility was only ever the old default", () => {
