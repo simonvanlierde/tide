@@ -90,7 +90,7 @@ export const nl: Dictionary = {
   "insights.how1":
     "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
   "insights.howCycleStart":
-    "Een gat van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere gaten horen bij dezelfde menstruatie.",
+    "Een tussenpoos van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere tussenpozen horen bij dezelfde menstruatie.",
   "insights.how2":
     "De cycluslengte is de mediaan van je laatste {recent} cycli, zodat één afwijkende maand het beeld niet verstoort. Vóór twee cycli wordt een gemiddelde cyclus van {cycle} dagen gebruikt.",
   "insights.how3":
