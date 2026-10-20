@@ -114,7 +114,7 @@ function floIntensity(value: unknown): Record<string, unknown> {
 // Flo: operationalData.cycles[] with a start and end date per period. The
 // date part of Flo's timestamps is the user's own calendar day. A day with no
 // flow in period_intensity is a plain log.
-function readFloCycles(cycles: unknown[]) {
+function readFloCycles(cycles: unknown[], today: IsoDate) {
   const days: Record<string, LoggedFlow> = {};
   const date = (value: unknown) => {
     const day = typeof value === "string" ? value.slice(0, 10) : null;
@@ -125,7 +125,9 @@ function readFloCycles(cycles: unknown[]) {
       continue;
     }
     const start = date(cycle.period_start_date);
-    if (!start) {
+    // A future start adds no day Tide keeps, and one in 9999 would step past
+    // the last date an IsoDate can hold.
+    if (!start || start > today) {
       continue;
     }
     const cap = addDays(start, MAX_FLO_PERIOD_DAYS - 1);
@@ -166,7 +168,7 @@ export function parseOtherAppExport(
     Array.isArray(parsed.operationalData.cycles)
   ) {
     source = "Flo";
-    raw = readFloCycles(parsed.operationalData.cycles);
+    raw = readFloCycles(parsed.operationalData.cycles, today);
   } else {
     return null;
   }

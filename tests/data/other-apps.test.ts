@@ -210,6 +210,13 @@ describe("parseOtherAppExport: Flo", () => {
     ]);
   });
 
+  it("skips a cycle that starts after today, even in the year 9999", () => {
+    // Its day loop used to step past 9999-12-31, which has no IsoDate.
+    expect(
+      flo([{ period_start_date: "9999-12-31", period_end_date: "1970-01-01" }]),
+    ).toBeNull();
+  });
+
   it("merges overlapping cycles and skips invalid starts", () => {
     expect(
       flo([
