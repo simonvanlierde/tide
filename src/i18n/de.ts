@@ -21,8 +21,8 @@ export const de: Dictionary = {
   "today.daysAgo.one": "vor {n} Tag",
   "today.daysAgo.other": "vor {n} Tagen",
   "today.expectedToday": "Heute erwartet",
-  "today.inDays.one": "in {n} Tag",
-  "today.inDays.other": "in {n} Tagen",
+  "today.inDays.one": "In {n} Tag",
+  "today.inDays.other": "In {n} Tagen",
   "today.higherToday": "Im fruchtbaren Fenster (Schätzung)",
   "today.lowerToday": "Außerhalb des fruchtbaren Fensters (Schätzung)",
   "today.notBirthControl": "Keine Verhütungsmethode",
@@ -46,7 +46,7 @@ export const de: Dictionary = {
   "today.ovulationInDays.one": "Eisprung in {n} Tag",
   "today.ovulationInDays.other": "Eisprung in {n} Tagen",
   "today.learningFallback":
-    "Es wird von einem typischen 28-Tage-Zyklus ausgegangen, bis dein Muster erkannt ist.",
+    "Wir gehen von einem typischen 28-Tage-Zyklus aus, bis wir dein Muster kennen.",
   "today.learningInsufficient":
     "Erfasse deine Periode, um eine Vorhersage zu sehen.",
 

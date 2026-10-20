@@ -20,8 +20,8 @@ export const fr: Dictionary = {
   "today.daysAgo.one": "il y a {n} jour",
   "today.daysAgo.other": "il y a {n} jours",
   "today.expectedToday": "Prévues aujourd’hui",
-  "today.inDays.one": "dans {n} jour",
-  "today.inDays.other": "dans {n} jours",
+  "today.inDays.one": "Dans {n} jour",
+  "today.inDays.other": "Dans {n} jours",
   "today.higherToday": "Dans la fenêtre de fertilité (estimation)",
   "today.lowerToday": "Hors de la fenêtre de fertilité (estimation)",
   "today.notBirthControl": "Pas une contraception",
@@ -89,7 +89,7 @@ export const fr: Dictionary = {
   "insights.how1":
     "Tout est calculé sur votre appareil à partir des jours que vous enregistrez.",
   "insights.howCycleStart":
-    "Un écart de {gap} jours ou plus entre deux jours enregistrés commence un nouveau cycle ; en dessous, ce sont les mêmes règles.",
+    "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle ; les écarts plus courts font partie des mêmes règles.",
   "insights.how2":
     "La durée du cycle est la médiane de vos {recent} derniers cycles, pour qu’un mois inhabituel ne la fausse pas. Avant deux cycles, un cycle type de {cycle} jours est utilisé.",
   "insights.how3":
