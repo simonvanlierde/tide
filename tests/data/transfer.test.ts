@@ -1,7 +1,16 @@
+import fc from "fast-check";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { defaultAppState } from "../../src/data/schema";
 import { downloadAppState, parseImportedState } from "../../src/data/transfer";
-import { getTodayIsoDate } from "../../src/utils/date";
+import { FLOW_INTENSITIES } from "../../src/domain/flow";
+import type {
+  AppState,
+  LanguagePreference,
+  LoggedFlow,
+  ThemePreference,
+} from "../../src/domain/types";
+import { SUPPORTED_LANGUAGES } from "../../src/i18n";
+import { formatIsoDate, getTodayIsoDate } from "../../src/utils/date";
 import { createAppState } from "../support/app";
 
 afterEach(() => {
@@ -170,5 +179,52 @@ describe("downloadAppState", () => {
     // Revocation is deferred a tick so the download has started first.
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:tide-backup");
+  });
+});
+
+describe("backup round-trip property", () => {
+  const TODAY = "2026-04-10";
+  const day = fc
+    .date({
+      min: new Date("0001-01-01T00:00:00Z"),
+      max: new Date(`${TODAY}T00:00:00Z`),
+      noInvalidDate: true,
+    })
+    .map(formatIsoDate);
+  const appState: fc.Arbitrary<AppState> = fc.record({
+    intensityByDay: fc.dictionary(
+      day,
+      fc.constantFrom<LoggedFlow>(null, ...FLOW_INTENSITIES),
+    ),
+    settings: fc.record({
+      dismissedOn: fc.option(day),
+      showFertility: fc.option(fc.boolean()),
+      showCycleDayNumbers: fc.boolean(),
+      theme: fc.constantFrom<ThemePreference>("system", "light", "dark"),
+      language: fc.constantFrom<LanguagePreference>(
+        "system",
+        ...SUPPORTED_LANGUAGES,
+      ),
+      calendarId: fc.option(fc.uuid({ version: 4 })),
+    }),
+  });
+
+  it("imports an exported state back unchanged, except the transient dismiss day", async () => {
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi
+      .spyOn(URL, "createObjectURL")
+      .mockReturnValue("blob:tide-backup");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+
+    await fc.assert(
+      fc.asyncProperty(appState, async (state) => {
+        downloadAppState(state);
+        const blob = createObjectURL.mock.calls.at(-1)?.[0] as Blob;
+        expect(parseImportedState(await blob.text(), TODAY)).toEqual({
+          ...state,
+          settings: { ...state.settings, dismissedOn: null },
+        });
+      }),
+    );
   });
 });

@@ -1,5 +1,7 @@
+import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import { parseOtherAppExport } from "../../src/data/otherApps";
+import { isIsoDate } from "../../src/data/schema";
 import { mergeImportedDays } from "../../src/data/transfer";
 import { createAppState } from "../support/app";
 
@@ -273,5 +275,81 @@ describe("mergeImportedDays", () => {
         "2026-03-03": "medium",
       },
     });
+  });
+});
+
+describe("parseOtherAppExport properties", () => {
+  // Date-ish strings: real days and timestamps in any four-digit year,
+  // impossible days, and junk.
+  const anyDate = fc.date({
+    min: new Date("0000-01-01T00:00:00Z"),
+    max: new Date("9999-12-31T23:59:59Z"),
+    noInvalidDate: true,
+  });
+  const dateish = fc.oneof(
+    anyDate.map((date) => date.toISOString()),
+    anyDate.map((date) => date.toISOString().slice(0, 10)),
+    fc.stringMatching(/^\d{4}-\d{2}-\d{2}/),
+    fc.string(),
+  );
+  const loose = fc.oneof(dateish, fc.anything());
+  const clueMeasurements = fc.array(
+    fc.record(
+      {
+        date: loose,
+        type: fc.oneof(fc.constantFrom("period", "spotting", "pain"), loose),
+        value: fc.oneof(
+          fc.record({ option: fc.oneof(fc.string(), fc.anything()) }),
+          fc.anything(),
+        ),
+      },
+      { requiredKeys: [] },
+    ),
+  );
+  const clueLegacy = fc.record({
+    data: fc.array(
+      fc.record({ day: loose, period: fc.oneof(fc.string(), fc.anything()) }),
+    ),
+  });
+  const flo = fc.record({
+    operationalData: fc.record({
+      cycles: fc.array(
+        fc.oneof(
+          fc.record(
+            {
+              period_start_date: loose,
+              period_end_date: loose,
+              period_intensity: fc.oneof(
+                fc
+                  .dictionary(fc.nat(20).map(String), fc.integer())
+                  .map((levels) => JSON.stringify(levels)),
+                fc.string(),
+                fc.anything(),
+              ),
+            },
+            { requiredKeys: [] },
+          ),
+          fc.anything(),
+        ),
+      ),
+    }),
+  });
+  const text = fc.oneof(
+    fc.string(),
+    fc.jsonValue().map((value) => JSON.stringify(value)),
+    fc
+      .oneof(clueMeasurements, clueLegacy, flo)
+      .map((value) => JSON.stringify(value)),
+  );
+
+  it("never throws, and returns only real days up to today", () => {
+    fc.assert(
+      fc.property(text, (input) => {
+        const result = parseOtherAppExport(input, TODAY);
+        for (const day of Object.keys(result?.days ?? {})) {
+          expect(isIsoDate(day) && day <= TODAY).toBe(true);
+        }
+      }),
+    );
   });
 });
