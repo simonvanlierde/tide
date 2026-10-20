@@ -4,7 +4,12 @@ import type {
   IsoDate,
   LoggedFlow,
 } from "../../domain/types";
-import { addDays, formatIsoDate, parseIsoDate } from "../../utils/date";
+import {
+  addDays,
+  addMonths,
+  differenceInDays,
+  parseIsoDate,
+} from "../../utils/date";
 
 export interface CalendarDay {
   key: string;
@@ -18,19 +23,17 @@ export function buildMonthDays(
   visibleMonth: IsoDate,
   today: IsoDate,
 ): CalendarDay[] {
-  const current = parseIsoDate(visibleMonth);
-  const year = current.getUTCFullYear();
-  const monthIndex = current.getUTCMonth();
+  // addMonths always lands on the 1st, so a shift of 0 gives the month start.
+  const monthStart = addMonths(visibleMonth, 0);
+  const firstOfMonth = parseIsoDate(monthStart);
+  const monthIndex = firstOfMonth.getUTCMonth();
   // Weeks start on Monday (ISO 8601) for every locale, by design: one grid
   // shape everywhere, and getWeekdayLabels matches. Intentionally not
   // region-dependent.
-  const firstWeekday =
-    (new Date(Date.UTC(year, monthIndex, 1)).getUTCDay() + 6) % 7;
-  const daysInMonth = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
+  const firstWeekday = (firstOfMonth.getUTCDay() + 6) % 7;
+  const daysInMonth = differenceInDays(addMonths(monthStart, 1), monthStart);
   const totalCells = firstWeekday + daysInMonth <= 35 ? 35 : 42;
-  const gridStart = formatIsoDate(
-    new Date(Date.UTC(year, monthIndex, 1 - firstWeekday)),
-  );
+  const gridStart = addDays(monthStart, -firstWeekday);
 
   return Array.from({ length: totalCells }, (_, index) => {
     const value = addDays(gridStart, index);

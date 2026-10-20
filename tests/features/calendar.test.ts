@@ -41,6 +41,20 @@ describe("calendar helpers", () => {
     });
   });
 
+  it("builds the grid for a year below 100 without shifting it to 19xx", () => {
+    const days = buildMonthDays("0099-03-10", "2026-04-21");
+
+    expect(days[0]).toMatchObject({
+      value: "0099-02-23",
+      isOutsideMonth: true,
+    });
+    expect(days[6]).toMatchObject({
+      value: "0099-03-01",
+      isOutsideMonth: false,
+    });
+    expect(days).toHaveLength(42);
+  });
+
   // One completed 28-day cycle of 4-day periods (see forecast.test.ts): the
   // past window centres on 03-17, the current one on 04-14, and the next
   // period starts 04-28.
