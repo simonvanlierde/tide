@@ -27,6 +27,12 @@ describe("date arithmetic", () => {
     expect(differenceInDays("2024-03-01", "2024-02-01")).toBe(29);
   });
 
+  it("keeps years before 100 as written", () => {
+    // isIsoDate accepts any four-digit year, so a backup can carry one.
+    expect(addDays("0099-12-31", 1)).toBe("0100-01-01");
+    expect(differenceInDays("0099-12-31", "1999-12-31")).toBe(-693960);
+  });
+
   it("starts the week header on Monday", () => {
     expect(getWeekdayLabels("en-US")[0]).toBe("Mon");
     expect(getWeekdayLabels("en-US", "narrow")[0]).toBe("M");

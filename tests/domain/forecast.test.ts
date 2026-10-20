@@ -1,7 +1,8 @@
+import fc from "fast-check";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { forecast } from "../../src/domain/cycle";
 import type { IsoDate } from "../../src/domain/types";
-import { addDays } from "../../src/utils/date";
+import { addDays, differenceInDays, formatIsoDate } from "../../src/utils/date";
 import { startsEndingOn } from "../support/cycles";
 
 // A period of `length` days from each start.
@@ -344,5 +345,81 @@ describe("forecast without fertility estimates", () => {
   it("keeps the ovulation phases when fertility estimates are on", () => {
     expect(LEARNED.phaseLabel).toBe("follicular");
     expect(LEARNED.dayInfo("2026-04-14").estimate).toBe("ovulation");
+  });
+});
+
+describe("forecast properties", () => {
+  // Any day a backup can hold (isIsoDate accepts years 0000-9999), with room
+  // for the history below. The top stops short of 9999 because a forecast
+  // can run a few years past today, and an IsoDate has no year 10000.
+  const anyDay = fc
+    .date({
+      min: new Date("0004-01-01T00:00:00Z"),
+      max: new Date("9989-12-31T00:00:00Z"),
+      noInvalidDate: true,
+    })
+    .map(formatIsoDate);
+  // A history as day offsets from today: up to ~3 years back, and a few
+  // future days, which forecast must ignore.
+  const history = fc.uniqueArray(fc.integer({ min: -1100, max: 30 }), {
+    maxLength: 60,
+  });
+
+  it("never throws, whatever the history", () => {
+    fc.assert(
+      fc.property(
+        anyDay,
+        history,
+        fc.boolean(),
+        (today, offsets, fertility) => {
+          const f = forecast({
+            today,
+            periodDays: offsets.map((offset) => addDays(today, offset)),
+            fertility,
+          });
+          f.dayInfo(today);
+        },
+      ),
+    );
+  });
+
+  it("moves every predicted date by k when every logged day and today move by k", () => {
+    fc.assert(
+      fc.property(
+        anyDay,
+        anyDay,
+        history,
+        fc.boolean(),
+        fc.integer({ min: -400, max: 400 }),
+        (today, shiftedToday, offsets, fertility, probe) => {
+          const k = differenceInDays(shiftedToday, today);
+          const at = (base: IsoDate) =>
+            forecast({
+              today: base,
+              periodDays: offsets.map((offset) => addDays(base, offset)),
+              fertility,
+            });
+          const shift = (date: IsoDate | null) =>
+            date === null ? null : addDays(date, k);
+          const before = at(today);
+          const after = at(shiftedToday);
+
+          const { dayInfo: _a, ...beforeFields } = before;
+          const { dayInfo: _b, ...afterFields } = after;
+          expect(afterFields).toEqual({
+            ...beforeFields,
+            ovulationDate: shift(before.ovulationDate),
+            nextPeriod: {
+              ...before.nextPeriod,
+              date: shift(before.nextPeriod.date),
+            },
+            cycleStart: shift(before.cycleStart),
+            cycleEnd: shift(before.cycleEnd),
+          });
+          const day = addDays(today, probe);
+          expect(after.dayInfo(addDays(day, k))).toEqual(before.dayInfo(day));
+        },
+      ),
+    );
   });
 });
