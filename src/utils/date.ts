@@ -14,7 +14,10 @@ function toDateParts(value: IsoDate) {
 
 export function parseIsoDate(value: IsoDate): Date {
   const { year, month, day } = toDateParts(value);
-  return new Date(Date.UTC(year, month - 1, day));
+  // setUTCFullYear, not Date.UTC, which reads years 0-99 as 1900-1999.
+  const date = new Date(0);
+  date.setUTCFullYear(year, month - 1, day);
+  return date;
 }
 
 export function formatIsoDate(value: Date): IsoDate {
