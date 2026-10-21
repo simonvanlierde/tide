@@ -17,8 +17,6 @@ export const nl: Dictionary = {
   "today.cycleInsights": "Cyclusinzichten",
   "today.howWorkedOut": "Hoe is dit berekend?",
   "today.explainError": "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
-  "today.daysAgo.one": "{n} dag geleden",
-  "today.daysAgo.other": "{n} dagen geleden",
   "today.expectedToday": "Vandaag verwacht",
   "today.inDays.one": "Over {n} dag",
   "today.inDays.other": "Over {n} dagen",

@@ -17,8 +17,6 @@ export const de: Dictionary = {
   "today.cycleInsights": "Zyklus-Einblicke",
   "today.howWorkedOut": "Wie wurde das berechnet?",
   "today.explainError": "Das ließ sich nicht öffnen. Lade Tide neu und versuche es noch einmal.",
-  "today.daysAgo.one": "vor {n} Tag",
-  "today.daysAgo.other": "vor {n} Tagen",
   "today.expectedToday": "Heute erwartet",
   "today.inDays.one": "In {n} Tag",
   "today.inDays.other": "In {n} Tagen",

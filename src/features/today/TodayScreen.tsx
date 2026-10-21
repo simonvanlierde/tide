@@ -281,8 +281,8 @@ function getPhaseLine(t: Translate, phaseLabel: CyclePhase) {
 
 function getOvulationPhrase(t: Translate, locale: SupportedLanguage, daysUntil: number) {
   if (daysUntil < 0) {
-    const daysAgo = Math.abs(daysUntil);
-    return t(plural("today.ovulationDaysAgo", daysAgo, locale), { n: daysAgo });
+    const daysSince = Math.abs(daysUntil);
+    return t(plural("today.ovulationDaysAgo", daysSince, locale), { n: daysSince });
   }
 
   if (daysUntil === 0) {
