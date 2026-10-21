@@ -1,4 +1,5 @@
 # Formatting-only commits, skipped by git blame (git config blame.ignoreRevsFile .git-blame-ignore-revs).
 
-# style: reformat to 120 columns
-4a4f53bda68872aef7a17d80b9346878b675e164
+# chore: adopt the project-templates web-app template (#71). Squash-merged, so this one
+# commit holds the 120-column reformat and the template changes beside it.
+6f75ab944d0e9ef004cfc616b52657ec6ef20298
