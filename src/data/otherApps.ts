@@ -12,7 +12,7 @@ import { isIsoDate, normalizeIntensityByDay } from "./schema";
 // unknown fields and types are skipped, invalid dates are dropped, and odd
 // input yields nothing rather than throwing.
 
-export type OtherAppSource = "Clue" | "Flo";
+type OtherAppSource = "Clue" | "Flo";
 
 export interface OtherAppImport {
   source: OtherAppSource;

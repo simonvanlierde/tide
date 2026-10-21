@@ -27,13 +27,13 @@ export class ErrorBoundary extends Component<
   { children: ReactNode },
   ErrorBoundaryState
 > {
-  state: ErrorBoundaryState = { hasError: false };
+  override state: ErrorBoundaryState = { hasError: false };
 
   static getDerivedStateFromError(): ErrorBoundaryState {
     return { hasError: true };
   }
 
-  render() {
+  override render() {
     if (!this.state.hasError) {
       return this.props.children;
     }

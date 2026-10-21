@@ -199,7 +199,7 @@ export const en = {
     "Fertility estimates are for information only. They are not birth control.",
   "settings.fertilityMethod":
     "The fertile window is the days around your expected ovulation, estimated from your recent cycle lengths.",
-  "settings.sourceCode": "Source code (v{version}), opens in a new tab",
+  "settings.sourceCode": "Source code, v{version}, opens in a new tab",
   "settings.data": "Data",
   "settings.dataInfo": "About import and export",
   "settings.dataHelp":

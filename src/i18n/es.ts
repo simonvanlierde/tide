@@ -191,7 +191,7 @@ export const es: Dictionary = {
   "settings.fertilityMethod":
     "La ventana fértil son los días alrededor de tu ovulación prevista, estimada a partir de tus duraciones de ciclo recientes.",
   "settings.sourceCode":
-    "Código fuente (v{version}), se abre en una pestaña nueva",
+    "Código fuente, v{version}, se abre en una pestaña nueva",
   "settings.data": "Datos",
   "settings.dataInfo": "Acerca de importar y exportar",
   "settings.dataHelp":

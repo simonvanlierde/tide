@@ -41,7 +41,7 @@ export interface CycleSummary {
 /** An estimate drawn on one day. */
 export type DayEstimate = "fertile" | "ovulation" | "predicted-period";
 
-export interface DayInfo {
+interface DayInfo {
   /** Day number within the current cycle (1 on its first day); null outside it. */
   cycleDay: number | null;
   /**

@@ -192,7 +192,7 @@ export const fr: Dictionary = {
   "settings.fertilityMethod":
     "La fenêtre de fertilité, ce sont les jours autour de ton ovulation prévue, estimée à partir de tes durées de cycle récentes.",
   "settings.sourceCode":
-    "Code source (v{version}), s’ouvre dans un nouvel onglet",
+    "Code source, v{version}, s’ouvre dans un nouvel onglet",
   "settings.data": "Données",
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":

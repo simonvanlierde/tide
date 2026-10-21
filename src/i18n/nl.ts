@@ -193,7 +193,7 @@ export const nl: Dictionary = {
     "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
   "settings.fertilityMethod":
     "De vruchtbare periode zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes.",
-  "settings.sourceCode": "Broncode (v{version}), opent in een nieuw tabblad",
+  "settings.sourceCode": "Broncode, v{version}, opent in een nieuw tabblad",
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":

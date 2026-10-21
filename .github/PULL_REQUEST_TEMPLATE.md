@@ -6,5 +6,5 @@
 
 ## Checklist
 
-- [ ] `pnpm check` passes
+- [ ] `just check` passes
 - [ ] Commits follow [Conventional Commits](https://www.conventionalcommits.org)

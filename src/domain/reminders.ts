@@ -3,7 +3,7 @@ import { OVERDUE_GRACE_DAYS } from "./cycle";
 import type { IsoDate } from "./types";
 
 /** How many days before the expected period the log prompt appears. */
-export const REMINDER_WINDOW_DAYS = 2;
+const REMINDER_WINDOW_DAYS = 2;
 
 interface ReminderStateInput {
   today: IsoDate;

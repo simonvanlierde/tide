@@ -1,6 +1,6 @@
 # Tide
 
-[![CI](https://github.com/simonvanlierde/tide/actions/workflows/ci.yml/badge.svg)](https://github.com/simonvanlierde/tide/actions/workflows/ci.yml)
+[![ts](https://github.com/simonvanlierde/tide/actions/workflows/ts.yml/badge.svg)](https://github.com/simonvanlierde/tide/actions/workflows/ts.yml)
 [![codecov](https://codecov.io/gh/simonvanlierde/tide/branch/main/graph/badge.svg)](https://codecov.io/gh/simonvanlierde/tide)
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Ftide.duinlab.nl)](https://tide.duinlab.nl)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -41,10 +41,16 @@ The estimates are for information only. They are not a form of birth control.
 
 ## Develop
 
+You need [just](https://just.systems) and [pnpm](https://pnpm.io).
+
 ```bash
 pnpm install
+pnpm exec playwright install chromium   # once per machine, for the e2e tests
+pnpm exec prek install                  # git hooks
 pnpm dev
 ```
+
+`just check` runs what CI runs, and `just ts-e2e` the browser tests.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks, architecture and deploy setup, and
 [docs/](docs/) for the [prediction backtest](docs/backtest.md) and the

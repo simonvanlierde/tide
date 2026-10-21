@@ -3,7 +3,7 @@ import type { Page } from "@playwright/test";
 // Every e2e run sees the same "today", so logged/predicted day counts never
 // shift with the calendar date CI happens to run on.
 export const FIXED_NOW = new Date("2026-04-15T12:00:00Z");
-export const FIXED_TODAY = "2026-04-15";
+const FIXED_TODAY = "2026-04-15";
 
 // A fresh cycle ending today, so every screen renders real content — a dial
 // with a day, and a calendar with logged and predicted days.

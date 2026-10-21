@@ -70,6 +70,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Screen readers name the source-code link in Settings "Source code, v0.4.0,
+  opens in a new tab", so the version you see on it is part of its name and
+  voice control can find it.
 - French now addresses you with the informal "tu" throughout.
 - More translation fixes after a second review in Dutch, French, German and Spanish, mostly how the next period is explained in Cycle insights.
 - Translation fixes after a review in Dutch, French, German and
@@ -143,9 +146,17 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Security
 
-- The Content-Security-Policy no longer allows inline styles.
+- The Content-Security-Policy no longer allows inline styles, or any inline
+  script: the saved theme is applied before first paint from a separate file.
+- Other sites can no longer embed Tide's files (Cross-Origin-Resource-Policy).
 - Browsers are told to reach tide.duinlab.nl over HTTPS only, for a year at a
   time (Strict-Transport-Security).
+
+### Tested
+
+- Every screen is checked against WCAG 2.2 level AA and axe's best-practice
+  rules, fails on any finding however minor, and must not scroll sideways at
+  320 px wide. CI also checks the shipped dependencies for known advisories.
 
 ## [0.4.0] - 2026-08-24
 

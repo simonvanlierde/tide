@@ -194,7 +194,7 @@ export const de: Dictionary = {
     "Fruchtbarkeitsschätzungen dienen nur der Information. Sie sind keine Verhütungsmethode.",
   "settings.fertilityMethod":
     "Das fruchtbare Fenster sind die Tage rund um deinen erwarteten Eisprung, geschätzt anhand deiner letzten Zykluslängen.",
-  "settings.sourceCode": "Quellcode (v{version}), öffnet in einem neuen Tab",
+  "settings.sourceCode": "Quellcode, v{version}, öffnet in einem neuen Tab",
   "settings.data": "Daten",
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":

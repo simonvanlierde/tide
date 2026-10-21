@@ -97,7 +97,7 @@ export function AppStateProvider({
 const DARK_MEDIA_QUERY = "(prefers-color-scheme: dark)";
 
 // Reflect the theme preference onto <html data-theme>, following the OS while
-// set to "system". An inline script in index.html applies the same value before
+// set to "system". public/theme.js applies the same value before
 // first paint so there is no flash on load.
 function useThemePreference(theme: ThemePreference) {
   useEffect(() => {
