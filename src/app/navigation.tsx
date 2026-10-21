@@ -37,9 +37,7 @@ export function getAppScreen(pathname: string) {
   return appScreens.find((screen) => screen.path === pathname) ?? appScreens[0];
 }
 
-export function shouldHandleAppNavigation(
-  event: MouseEvent<HTMLAnchorElement>,
-) {
+export function shouldHandleAppNavigation(event: MouseEvent<HTMLAnchorElement>) {
   return !(
     event.defaultPrevented ||
     event.button !== 0 ||

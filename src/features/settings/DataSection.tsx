@@ -1,29 +1,11 @@
-import {
-  CalendarPlus,
-  CircleAlert,
-  Download,
-  ShieldCheck,
-  Trash2,
-  Upload,
-} from "lucide-react";
+import { CalendarPlus, CircleAlert, Download, ShieldCheck, Trash2, Upload } from "lucide-react";
 import { type ChangeEvent, useRef, useState } from "react";
 import type { OtherAppImport } from "../../data/otherApps";
-import {
-  downloadAppState,
-  mergeImportedDays,
-  parseImportedState,
-} from "../../data/transfer";
+import { downloadAppState, mergeImportedDays, parseImportedState } from "../../data/transfer";
 import { getExpectedCycles } from "../../domain/cycle";
 import type { AppState, IsoDate } from "../../domain/types";
 import { plural } from "../../i18n";
-import {
-  useAppState,
-  useAppStateActions,
-  useForecast,
-  useIsReadOnly,
-  useLocale,
-  useT,
-} from "../../state/provider";
+import { useAppState, useAppStateActions, useForecast, useIsReadOnly, useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { InfoPopover } from "./InfoPopover";
@@ -31,10 +13,7 @@ import { InfoPopover } from "./InfoPopover";
 const MAX_IMPORT_BYTES = 5_000_000;
 
 /** What the last export or import did, so neither happens in silence. */
-type DataStatus =
-  | { kind: "imported"; days: number }
-  | { kind: "exported" }
-  | { kind: "calendar" };
+type DataStatus = { kind: "imported"; days: number } | { kind: "exported" } | { kind: "calendar" };
 
 const CALENDAR_CYCLES = 3;
 
@@ -63,11 +42,7 @@ export function DataSection({ today }: DataSectionProps) {
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [calendarFertile, setCalendarFertile] = useState(false);
   const showFertility = state.settings.showFertility === true;
-  const expectedCycles = getExpectedCycles(
-    useForecast(today),
-    today,
-    CALENDAR_CYCLES,
-  );
+  const expectedCycles = getExpectedCycles(useForecast(today), today, CALENDAR_CYCLES);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
   // The status counts the days the import added: all of a backup, or only the
@@ -77,8 +52,7 @@ export function DataSection({ today }: DataSectionProps) {
     setError(null);
     setStatus({
       kind: "imported",
-      days:
-        Object.keys(next.intensityByDay).length - (merged ? loggedDayCount : 0),
+      days: Object.keys(next.intensityByDay).length - (merged ? loggedDayCount : 0),
     });
   }
 
@@ -182,20 +156,13 @@ export function DataSection({ today }: DataSectionProps) {
             Prose, not a pill: a sentence the width of the card shaped like a
             control reads as a button that doesn't answer. */}
         <p className="supporting-note supporting-note--icon">
-          <AppIcon
-            icon={ShieldCheck}
-            className="supporting-note__icon supporting-note__icon--assuring"
-          />
+          <AppIcon icon={ShieldCheck} className="supporting-note__icon supporting-note__icon--assuring" />
           <span>{t("settings.privacy")}</span>
         </p>
       </header>
       <div className="settings-group settings-group--compact">
         <div className="data-actions">
-          <button
-            type="button"
-            className="secondary-action"
-            onClick={handleExport}
-          >
+          <button type="button" className="secondary-action" onClick={handleExport}>
             <span className="button-label">
               <AppIcon icon={Download} className="button-icon" />
               <span>{t("settings.export")}</span>
@@ -265,10 +232,7 @@ export function DataSection({ today }: DataSectionProps) {
           onChange={handleImport}
         />
         {error ? (
-          <p
-            className="supporting-note supporting-note--icon supporting-note--error"
-            role="alert"
-          >
+          <p className="supporting-note supporting-note--icon supporting-note--error" role="alert">
             <AppIcon icon={CircleAlert} className="supporting-note__icon" />
             <span>{error}</span>
           </p>
@@ -280,11 +244,7 @@ export function DataSection({ today }: DataSectionProps) {
                 ? t(plural("settings.importSuccess", status.days, locale), {
                     n: status.days,
                   })
-                : t(
-                    status.kind === "exported"
-                      ? "settings.exportSuccess"
-                      : "settings.calendarSuccess",
-                  )}
+                : t(status.kind === "exported" ? "settings.exportSuccess" : "settings.calendarSuccess")}
             </span>
           </p>
         ) : null}
@@ -310,42 +270,23 @@ export function DataSection({ today }: DataSectionProps) {
           body={
             <>
               <p>
-                {t(
-                  plural(
-                    "settings.importFileDays",
-                    pendingImport.fileDays,
-                    locale,
-                  ),
-                  {
-                    n: pendingImport.fileDays,
-                  },
-                )}
+                {t(plural("settings.importFileDays", pendingImport.fileDays, locale), {
+                  n: pendingImport.fileDays,
+                })}
               </p>
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")
-                  : t(
-                      plural("settings.importReplaces", loggedDayCount, locale),
-                      {
-                        n: loggedDayCount,
-                      },
-                    )}
+                  : t(plural("settings.importReplaces", loggedDayCount, locale), {
+                      n: loggedDayCount,
+                    })}
               </p>
             </>
           }
-          confirmLabel={t(
-            "source" in pendingImport
-              ? "settings.importMergeAction"
-              : "settings.importConfirmAction",
-          )}
+          confirmLabel={t("source" in pendingImport ? "settings.importMergeAction" : "settings.importConfirmAction")}
           onConfirm={() => {
             const merged = "source" in pendingImport;
-            applyImport(
-              merged
-                ? mergeImportedDays(state, pendingImport.days)
-                : pendingImport.next,
-              merged,
-            );
+            applyImport(merged ? mergeImportedDays(state, pendingImport.days) : pendingImport.next, merged);
             setPendingImport(null);
           }}
           onCancel={() => setPendingImport(null)}

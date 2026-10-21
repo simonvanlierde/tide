@@ -12,11 +12,7 @@ describe("getPeriodRange", () => {
 
   it("refuses a run longer than the cap", () => {
     const start = "2026-04-01";
-    expect(
-      getPeriodRange(start, addDays(start, MAX_PERIOD_RANGE_DAYS - 1)),
-    ).toHaveLength(MAX_PERIOD_RANGE_DAYS);
-    expect(
-      getPeriodRange(start, addDays(start, MAX_PERIOD_RANGE_DAYS)),
-    ).toBeNull();
+    expect(getPeriodRange(start, addDays(start, MAX_PERIOD_RANGE_DAYS - 1))).toHaveLength(MAX_PERIOD_RANGE_DAYS);
+    expect(getPeriodRange(start, addDays(start, MAX_PERIOD_RANGE_DAYS))).toBeNull();
   });
 });

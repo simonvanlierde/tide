@@ -2,20 +2,10 @@ import { render } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { defaultAppState } from "../../src/data/schema";
 
-import type {
-  AppSettings,
-  AppState,
-  FlowIntensity,
-  IsoDate,
-} from "../../src/domain/types";
+import type { AppSettings, AppState, FlowIntensity, IsoDate } from "../../src/domain/types";
 import { AppStateProvider } from "../../src/state/provider";
 
-export const LEARNED_PERIOD_DAYS: IsoDate[] = [
-  "2026-03-05",
-  "2026-03-06",
-  "2026-04-02",
-  "2026-04-03",
-];
+export const LEARNED_PERIOD_DAYS: IsoDate[] = ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"];
 
 export const LEARNING_PERIOD_DAYS: IsoDate[] = ["2026-04-19", "2026-04-20"];
 
@@ -62,9 +52,6 @@ interface RenderWithAppStateOptions {
   state?: AppState;
 }
 
-export function renderWithAppState(
-  ui: ReactNode,
-  { state }: RenderWithAppStateOptions = {},
-) {
+export function renderWithAppState(ui: ReactNode, { state }: RenderWithAppStateOptions = {}) {
   return render(<AppStateProvider initialState={state}>{ui}</AppStateProvider>);
 }

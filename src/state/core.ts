@@ -1,11 +1,6 @@
 import { forecast } from "../domain/cycle";
 import { getPeriodRange, getPredictionDays } from "../domain/flow";
-import type {
-  AppSettings,
-  AppState,
-  FlowIntensity,
-  IsoDate,
-} from "../domain/types";
+import type { AppSettings, AppState, FlowIntensity, IsoDate } from "../domain/types";
 
 // One action per settings field, typed so each key only takes its own value.
 type SetSettingAction = {
@@ -29,10 +24,7 @@ export type AppStateAction =
   | SetSettingAction
   | { type: "importState"; state: AppState };
 
-export function appStateReducer(
-  state: AppState,
-  action: AppStateAction,
-): AppState {
+export function appStateReducer(state: AppState, action: AppStateAction): AppState {
   switch (action.type) {
     case "togglePeriodDay": {
       const hasLoggedDay = action.day in state.intensityByDay;

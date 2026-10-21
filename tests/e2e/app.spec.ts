@@ -22,9 +22,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/calendar$/);
-  await expect(
-    page.getByRole("table", { name: en["calendar.title"] }),
-  ).toBeVisible();
+  await expect(page.getByRole("table", { name: en["calendar.title"] })).toBeVisible();
 });
 
 test("logging today persists across reload", async ({ page }) => {
@@ -41,24 +39,16 @@ test("logging today persists across reload", async ({ page }) => {
     .catch(() => false);
   await actionButton.click();
 
-  const expectedActionLabel = startedLogged
-    ? /log bleeding today/i
-    : /remove bleeding log/i;
+  const expectedActionLabel = startedLogged ? /log bleeding today/i : /remove bleeding log/i;
 
-  await expect(
-    page.getByRole("button", { name: expectedActionLabel }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: expectedActionLabel })).toBeVisible();
 
   await page.reload();
 
-  await expect(
-    page.getByRole("button", { name: expectedActionLabel }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: expectedActionLabel })).toBeVisible();
 });
 
-test("deep links reload correctly for the static app paths", async ({
-  page,
-}) => {
+test("deep links reload correctly for the static app paths", async ({ page }) => {
   await page.goto("/calendar");
   await expect(page.getByLabel(/calendar/i)).toBeVisible();
   await page.reload();
@@ -74,10 +64,7 @@ test("manifest and install assets are served", async ({ page }) => {
   const manifestResponse = await page.request.get("/manifest.webmanifest");
   expect(manifestResponse.ok()).toBe(true);
 
-  const manifest = JSON.parse(await manifestResponse.text()) as Record<
-    string,
-    unknown
-  >;
+  const manifest = JSON.parse(await manifestResponse.text()) as Record<string, unknown>;
   expect(manifest).toMatchObject({
     name: "Tide",
     short_name: "Tide",
@@ -86,11 +73,12 @@ test("manifest and install assets are served", async ({ page }) => {
     scope: "/",
     display: "standalone",
   });
-  expect(
-    (manifest.icons as { purpose: string }[])
-      .map((icon) => icon.purpose)
-      .sort(),
-  ).toEqual(["any", "any", "maskable", "maskable"]);
+  expect((manifest.icons as { purpose: string }[]).map((icon) => icon.purpose).sort()).toEqual([
+    "any",
+    "any",
+    "maskable",
+    "maskable",
+  ]);
 
   const faviconResponse = await page.request.get("/favicon.ico");
   expect(faviconResponse.ok()).toBe(true);
@@ -98,26 +86,19 @@ test("manifest and install assets are served", async ({ page }) => {
   const iconResponse = await page.request.get("/icons/icon-192.png");
   expect(iconResponse.ok()).toBe(true);
 
-  const serviceWorkerRegisterResponse =
-    await page.request.get("/registerSW.js");
+  const serviceWorkerRegisterResponse = await page.request.get("/registerSW.js");
   expect(serviceWorkerRegisterResponse.ok()).toBe(true);
 
   await page.goto("/");
-  await expect(
-    page.locator('meta[name="apple-mobile-web-app-capable"]'),
-  ).toHaveAttribute("content", "yes");
-  await expect(
-    page.locator('meta[name="apple-mobile-web-app-status-bar-style"]'),
-  ).toHaveAttribute("content", "default");
-  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
-    "href",
-    "/icons/icon-192.png",
+  await expect(page.locator('meta[name="apple-mobile-web-app-capable"]')).toHaveAttribute("content", "yes");
+  await expect(page.locator('meta[name="apple-mobile-web-app-status-bar-style"]')).toHaveAttribute(
+    "content",
+    "default",
   );
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/icons/icon-192.png");
 });
 
-test("the fertility question is accessible and its answer is saved", async ({
-  page,
-}) => {
+test("the fertility question is accessible and its answer is saved", async ({ page }) => {
   await seedAppState(page, "en", { showFertility: null });
   await page.goto("/");
 
@@ -125,27 +106,19 @@ test("the fertility question is accessible and its answer is saved", async ({
     name: en["fertilityAsk.title"],
   });
   await expect(question).toBeVisible();
-  await expect(
-    page.getByText(en["today.fertility"], { exact: true }),
-  ).toHaveCount(0);
+  await expect(page.getByText(en["today.fertility"], { exact: true })).toHaveCount(0);
   const { violations } = await new AxeBuilder({ page })
     .include(".today-screen")
     .withTags(["wcag2a", "wcag2aa"])
     .analyze();
   expect(violations.map((v) => v.id)).toEqual([]);
 
-  await question
-    .getByRole("button", { name: en["fertilityAsk.show"], exact: true })
-    .click();
+  await question.getByRole("button", { name: en["fertilityAsk.show"], exact: true }).click();
   await expect(question).toHaveCount(0);
-  await expect(
-    page.getByText(en["today.notBirthControl"], { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByText(en["today.notBirthControl"], { exact: true })).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
-  const saved = await page.evaluate(() =>
-    localStorage.getItem("tide.period-tracker.state"),
-  );
+  const saved = await page.evaluate(() => localStorage.getItem("tide.period-tracker.state"));
   expect(JSON.parse(saved ?? "{}").settings.showFertility).toBe(true);
 });
 
@@ -174,13 +147,9 @@ test("Today's import link lands on the Import button", async ({ page }) => {
   });
   await expect(importButton).toBeFocused();
   // Someone coming from Clue or Flo can see this is their way in.
-  await expect(importButton).toHaveAccessibleDescription(
-    en["settings.importSources"],
-  );
+  await expect(importButton).toHaveAccessibleDescription(en["settings.importSources"]);
   // Fertility estimates stay off until asked for.
-  await expect(
-    page.getByRole("switch", { name: en["settings.showFertility"] }),
-  ).not.toBeChecked();
+  await expect(page.getByRole("switch", { name: en["settings.showFertility"] })).not.toBeChecked();
 });
 
 test("Today explains how the next period was worked out", async ({ page }) => {
@@ -208,26 +177,16 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
       return create(blob);
     };
   });
-  await page
-    .getByRole("checkbox", { name: en["settings.calendarFertility"] })
-    .check();
+  await page.getByRole("checkbox", { name: en["settings.calendarFertility"] }).check();
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.getByRole("button", { name: en["settings.exportCalendar"] }).click(),
   ]);
 
-  expect(download.suggestedFilename()).toBe(
-    "tide-expected-periods-2026-04-15.ics",
-  );
-  const ics = await page.evaluate(() =>
-    (window as unknown as { saved: Blob }).saved.text(),
-  );
+  expect(download.suggestedFilename()).toBe("tide-expected-periods-2026-04-15.ics");
+  const ics = await page.evaluate(() => (window as unknown as { saved: Blob }).saved.text());
   expect(ics).toMatch(/^BEGIN:VCALENDAR\r\n/);
   expect(ics.match(/^UID:period-\d+-[0-9a-f-]{36}@/gm)).toHaveLength(3);
   expect(ics).toContain("UID:fertile-");
-  await expect(
-    page
-      .getByRole("status")
-      .filter({ hasText: en["settings.calendarSuccess"] }),
-  ).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: en["settings.calendarSuccess"] })).toBeVisible();
 });

@@ -12,9 +12,7 @@ export function AboutSection() {
       <div className="settings-group settings-group--compact">
         <p className="supporting-note">{t("settings.fertilityDisclaimer")}</p>
         <p className="colophon">
-          <span className="colophon__copyright">
-            © {new Date().getFullYear()} Simon van Lierde
-          </span>
+          <span className="colophon__copyright">© {new Date().getFullYear()} Simon van Lierde</span>
           <a
             className="colophon__link"
             href={REPOSITORY_URL}

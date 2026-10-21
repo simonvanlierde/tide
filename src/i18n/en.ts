@@ -10,8 +10,7 @@ export const en = {
   "nav.settings": "Settings",
   "app.skipToContent": "Skip to content",
   "app.primaryNav": "Primary navigation",
-  "app.newerData":
-    "A newer version of Tide saved your data. Reload to update; changes made here are not saved.",
+  "app.newerData": "A newer version of Tide saved your data. Reload to update; changes made here are not saved.",
 
   // Today screen
   "today.srCycleDay": "Cycle day {day}, {phase}",
@@ -47,8 +46,7 @@ export const en = {
   "today.ovulationToday": "Ovulation today",
   "today.ovulationInDays.one": "Ovulation in {n} day",
   "today.ovulationInDays.other": "Ovulation in {n} days",
-  "today.learningFallback":
-    "Using a typical 28-day cycle until we learn your pattern.",
+  "today.learningFallback": "Using a typical 28-day cycle until we learn your pattern.",
   "today.learningInsufficient": "Log your period to see a forecast.",
 
   // Cycle phases: word form (heading) and line form ("X phase")
@@ -81,8 +79,7 @@ export const en = {
   "insights.cycleLength": "Cycle length",
   "insights.periodLength": "Period length",
   "insights.cyclesTracked": "Cycles tracked",
-  "insights.basedOn":
-    "Based on a typical {cycle}-day cycle until you’ve logged a full cycle.",
+  "insights.basedOn": "Based on a typical {cycle}-day cycle until you’ve logged a full cycle.",
   "insights.regularity": "Cycle regularity",
   "insights.regularityAria": "Cycle regularity: {label}",
   "regularity.none": "Not enough data yet",
@@ -91,18 +88,15 @@ export const en = {
   "regularity.somewhatVariable": "Somewhat variable",
   "regularity.variable": "Variable",
   "insights.how": "How predictions work",
-  "insights.how1":
-    "Everything is worked out on your device from the days you log.",
+  "insights.how1": "Everything is worked out on your device from the days you log.",
   "insights.howCycleStart":
     "A gap of {gap} days or more between logged days starts a new cycle; shorter gaps are the same period.",
   "insights.how2":
     "Cycle length is the median of your last {recent} cycles, so one odd month doesn’t throw it off. Before two cycles, a typical {cycle}-day cycle is used.",
-  "insights.how3":
-    "Period length is your recent average, kept to a normal {min}–{max} days.",
+  "insights.how3": "Period length is your recent average, kept to a normal {min}–{max} days.",
   "insights.how4":
     "Your next period is your last start plus that cycle length; ovulation is estimated {luteal} days before it.",
-  "insights.howNextPeriod":
-    "Your next period is your last start plus that cycle length.",
+  "insights.howNextPeriod": "Your next period is your last start plus that cycle length.",
   "insights.how5":
     "The fertile window runs {before} days before to {after} day after ovulation, and widens when your cycles vary more.",
 
@@ -144,8 +138,7 @@ export const en = {
   "calendar.undo": "Undo",
   "calendar.logRange": "Log a past period",
   "calendar.rangePickFirst": "Pick the first day of the period.",
-  "calendar.rangePickLast":
-    "From {date}: now pick the last day, up to {max} days.",
+  "calendar.rangePickLast": "From {date}: now pick the last day, up to {max} days.",
   "calendar.rangeTooLong": "More than {max} days. Pick a closer last day.",
   "calendar.emptyHelp": "Tap a past day to log your first bleeding day.",
   "calendar.futureHelp": "Future days can't be logged yet.",
@@ -187,25 +180,22 @@ export const en = {
   "language.es": "Español",
   "settings.showFertility": "Show fertility estimates",
   "settings.fertilityInfo": "About fertility estimates",
-  "settings.fertilityHelp":
-    "Shows the fertile window and expected ovulation on Today and in the calendar.",
+  "settings.fertilityHelp": "Shows the fertile window and expected ovulation on Today and in the calendar.",
   "settings.showCycleNumbers": "Show cycle day numbers",
   "settings.cycleNumbersInfo": "About cycle day numbers",
   "settings.cycleNumbersHelp":
     "Numbers the days of your current cycle (1, 2, 3, ...) on the calendar, up to your next expected period.",
   "settings.about": "About",
   "settings.privacy": "Your data never leaves this device.",
-  "settings.fertilityDisclaimer":
-    "Fertility estimates are for information only. They are not birth control.",
+  "settings.fertilityDisclaimer": "Fertility estimates are for information only. They are not birth control.",
   "settings.fertilityMethod":
     "The fertile window is the days around your expected ovulation, estimated from your recent cycle lengths.",
-  "settings.sourceCode": "Source code (v{version}), opens in a new tab",
+  "settings.sourceCode": "Source code, v{version}, opens in a new tab",
   "settings.data": "Data",
   "settings.dataInfo": "About import and export",
   "settings.dataHelp":
     "Export saves your days to a file. Import replaces them from a Tide backup, or adds days from Clue or Flo.",
-  "settings.importSources":
-    "You can import a Tide backup, or an export from Clue or Flo.",
+  "settings.importSources": "You can import a Tide backup, or an export from Clue or Flo.",
   "settings.export": "Export",
   "settings.exportSuccess": "Backup saved to your downloads.",
   "settings.exportCalendar": "Add to calendar",
@@ -213,30 +203,25 @@ export const en = {
     "Saves your next 3 expected periods as a file your calendar app can open. Once added, they sync like your other events, so the calendar's account holds them too.",
   "settings.calendarFertility": "Include fertile windows",
   "settings.calendarSuccess": "Calendar file saved to your downloads.",
-  "settings.calendarError":
-    "The calendar file couldn't be made. Reload Tide and try again.",
+  "settings.calendarError": "The calendar file couldn't be made. Reload Tide and try again.",
   "settings.import": "Import",
   "settings.importFile": "Import data file",
-  "settings.importError":
-    "That file isn't a Tide backup or a Clue or Flo export.",
+  "settings.importError": "That file isn't a Tide backup or a Clue or Flo export.",
   "settings.importSuccess.one": "Imported {n} logged day.",
   "settings.importSuccess.other": "Imported {n} logged days.",
   "settings.importConfirmTitle": "Replace your data?",
   "settings.importConfirmAction": "Replace",
   "settings.importFileDays.one": "This file holds {n} logged day.",
   "settings.importFileDays.other": "This file holds {n} logged days.",
-  "settings.importReplaces.one":
-    "It replaces the {n} day logged on this device, and cannot be undone.",
-  "settings.importReplaces.other":
-    "It replaces the {n} days logged on this device, and cannot be undone.",
+  "settings.importReplaces.one": "It replaces the {n} day logged on this device, and cannot be undone.",
+  "settings.importReplaces.other": "It replaces the {n} days logged on this device, and cannot be undone.",
   "settings.importMergeTitle": "Add days from {source}?",
   "settings.importMergeAction": "Add",
   "settings.importMerges": "Days already logged here stay as they are.",
   "settings.reset": "Delete all data",
   "settings.resetTitle": "Delete all data?",
   "settings.resetAction": "Delete",
-  "settings.resetConfirm":
-    "Every logged day and setting on this device is erased. This cannot be undone.",
+  "settings.resetConfirm": "Every logged day and setting on this device is erased. This cannot be undone.",
 } as const;
 
 export type MessageKey = keyof typeof en;

@@ -1,11 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import {
-  addDays,
-  addMonths,
-  differenceInDays,
-  getTodayIsoDate,
-  getWeekdayLabels,
-} from "../../src/utils/date";
+import { addDays, addMonths, differenceInDays, getTodayIsoDate, getWeekdayLabels } from "../../src/utils/date";
 
 describe("date arithmetic", () => {
   it("adds days across month, year and leap-day boundaries", () => {

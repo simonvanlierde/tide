@@ -47,24 +47,12 @@ export function LogAction({
       <div className="log-action log-action--logged">
         <p className="log-action__status" role="status">
           <AppIcon icon={Droplets} className="log-action__status-icon" />
-          <span>
-            {intensity
-              ? t("log.loggedWith", { flow: t(`flow.${intensity}`) })
-              : t("log.logged")}
-          </span>
+          <span>{intensity ? t("log.loggedWith", { flow: t(`flow.${intensity}`) }) : t("log.logged")}</span>
         </p>
         {onSelectIntensity ? (
-          <FlowGauge
-            selected={intensity}
-            onSelect={onSelectIntensity}
-            autoFocus={autoFocus}
-          />
+          <FlowGauge selected={intensity} onSelect={onSelectIntensity} autoFocus={autoFocus} />
         ) : null}
-        <button
-          type="button"
-          className="text-action log-action__remove"
-          onClick={onToggle}
-        >
+        <button type="button" className="text-action log-action__remove" onClick={onToggle}>
           <AppIcon icon={DropletOff} className="text-action__icon" />
           {t("log.remove")}
         </button>

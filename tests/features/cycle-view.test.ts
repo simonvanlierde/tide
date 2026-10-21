@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { forecast } from "../../src/domain/cycle";
 import type { IsoDate, LoggedFlow } from "../../src/domain/types";
-import {
-  buildCycleSegments,
-  getSegmentStatus,
-} from "../../src/features/today/CycleView";
+import { buildCycleSegments, getSegmentStatus } from "../../src/features/today/CycleView";
 import { startsEndingOn } from "../support/cycles";
 
 // Days logged with a one-tap (no level chosen).
@@ -15,10 +12,7 @@ function logged(days: IsoDate[]): Record<IsoDate, LoggedFlow> {
 describe("buildCycleSegments", () => {
   it("maps a learned cycle with logged days onto day segments", () => {
     const today: IsoDate = "2026-04-18";
-    const periodDays: IsoDate[] = [
-      ...startsEndingOn("2026-04-02", [28, 29, 27]),
-      "2026-04-03",
-    ];
+    const periodDays: IsoDate[] = [...startsEndingOn("2026-04-02", [28, 29, 27]), "2026-04-03"];
     const summary = forecast({ fertility: true, today, periodDays });
 
     const segments = buildCycleSegments(summary, logged(periodDays), today);
@@ -50,9 +44,7 @@ describe("buildCycleSegments", () => {
     // spread (stddev ≈ 0.8), which floors to no widening — a regular cycler keeps
     // the tight −5/+1 biological window, so the fertile window spans days 10-16.
     expect(segments[14]?.isOvulation).toBe(true);
-    expect(segments.filter((s) => s.isFertile).map((s) => s.dayNumber)).toEqual(
-      [10, 11, 12, 13, 14, 15, 16],
-    );
+    expect(segments.filter((s) => s.isFertile).map((s) => s.dayNumber)).toEqual([10, 11, 12, 13, 14, 15, 16]);
   });
 
   it("sizes the ring to a short learned cycle without padding to 28", () => {
@@ -71,11 +63,7 @@ describe("buildCycleSegments", () => {
     expect(segments).toHaveLength(24);
     expect(segments.at(-1)?.date).toBe("2026-06-24");
     expect(summary.nextPeriod.date).toBe("2026-06-25");
-    expect(
-      segments.some(
-        (s) => getSegmentStatus(s, summary) === "status.periodExpected",
-      ),
-    ).toBe(false);
+    expect(segments.some((s) => getSegmentStatus(s, summary) === "status.periodExpected")).toBe(false);
   });
 
   it("maps a fallback 28-day cycle from a single logged start", () => {
@@ -113,11 +101,7 @@ describe("buildCycleSegments", () => {
     const segments = buildCycleSegments(summary, logged([]), today);
 
     expect(segments).toHaveLength(28);
-    expect(
-      segments.every(
-        (s) => !s.isCurrent && !s.isPeriod && !s.isFertile && !s.isOvulation,
-      ),
-    ).toBe(true);
+    expect(segments.every((s) => !s.isCurrent && !s.isPeriod && !s.isFertile && !s.isOvulation)).toBe(true);
     expect(segments.every((s) => s.date === null)).toBe(true);
   });
 });
@@ -151,30 +135,17 @@ describe("getSegmentStatus", () => {
       today: overdueToday,
       periodDays,
     });
-    const overdueSegments = buildCycleSegments(
-      overdueSummary,
-      logged(periodDays),
-      overdueToday,
-    );
+    const overdueSegments = buildCycleSegments(overdueSummary, logged(periodDays), overdueToday);
 
     const lastSegment = overdueSegments.at(-1);
     expect(lastSegment?.date).toBe(overdueToday);
-    expect(lastSegment && getSegmentStatus(lastSegment, overdueSummary)).toBe(
-      "status.periodExpected",
-    );
+    expect(lastSegment && getSegmentStatus(lastSegment, overdueSummary)).toBe("status.periodExpected");
   });
 
   it("returns no status without cycle data", () => {
     const unknownSummary = forecast({ fertility: true, today, periodDays: [] });
-    const unknownSegments = buildCycleSegments(
-      unknownSummary,
-      logged([]),
-      today,
-    );
+    const unknownSegments = buildCycleSegments(unknownSummary, logged([]), today);
 
-    expect(
-      unknownSegments[0] &&
-        getSegmentStatus(unknownSegments[0], unknownSummary),
-    ).toBe("");
+    expect(unknownSegments[0] && getSegmentStatus(unknownSegments[0], unknownSummary)).toBe("");
   });
 });

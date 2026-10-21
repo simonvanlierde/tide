@@ -7,9 +7,7 @@ import { startsEndingOn } from "../support/cycles";
 
 // A period of `length` days from each start.
 function periods(starts: IsoDate[], length: number): IsoDate[] {
-  return starts.flatMap((start) =>
-    Array.from({ length }, (_, offset) => addDays(start, offset)),
-  );
+  return starts.flatMap((start) => Array.from({ length }, (_, offset) => addDays(start, offset)));
 }
 
 function datesFrom(from: IsoDate, to: IsoDate): IsoDate[] {
@@ -115,9 +113,7 @@ describe("forecast timeline", () => {
 
   it("shows no expected period before the next one is due", () => {
     expect(
-      datesFrom("2026-02-01", "2026-04-27").some(
-        (date) => LEARNED.dayInfo(date).estimate === "predicted-period",
-      ),
+      datesFrom("2026-02-01", "2026-04-27").some((date) => LEARNED.dayInfo(date).estimate === "predicted-period"),
     ).toBe(false);
   });
 
@@ -199,10 +195,7 @@ describe("forecast timeline", () => {
     const windowed = forecast({
       fertility: true,
       today: "2026-06-03",
-      periodDays: startsEndingOn(
-        "2026-06-01",
-        [40, 40, 27, 28, 29, 30, 31, 45],
-      ),
+      periodDays: startsEndingOn("2026-06-01", [40, 40, 27, 28, 29, 30, 31, 45]),
     });
 
     expect(windowed.cycleLength).toBe(30);
@@ -229,13 +222,7 @@ describe("forecast timeline", () => {
     const irregular = forecast({
       fertility: true,
       today: "2026-03-24",
-      periodDays: [
-        "2026-01-01",
-        "2026-01-11",
-        "2026-02-10",
-        "2026-02-20",
-        "2026-03-22",
-      ],
+      periodDays: ["2026-01-01", "2026-01-11", "2026-02-10", "2026-02-20", "2026-03-22"],
     });
 
     expect(irregular.fertileWindow).toEqual({ start: -10, end: 6 });
@@ -332,11 +319,7 @@ describe("forecast without fertility estimates", () => {
   });
 
   it("draws only the expected period on the timeline", () => {
-    const estimates = new Set(
-      datesFrom("2026-03-01", "2026-06-30").map(
-        (date) => OFF.dayInfo(date).estimate,
-      ),
-    );
+    const estimates = new Set(datesFrom("2026-03-01", "2026-06-30").map((date) => OFF.dayInfo(date).estimate));
     expect(estimates).toEqual(new Set([null, "predicted-period"]));
     expect(OFF.dayInfo("2026-04-28").estimate).toBe("predicted-period");
     expect(OFF.dayInfo("2026-04-14").cycleDay).toBe(15);
@@ -367,19 +350,14 @@ describe("forecast properties", () => {
 
   it("never throws, whatever the history", () => {
     fc.assert(
-      fc.property(
-        anyDay,
-        history,
-        fc.boolean(),
-        (today, offsets, fertility) => {
-          const f = forecast({
-            today,
-            periodDays: offsets.map((offset) => addDays(today, offset)),
-            fertility,
-          });
-          f.dayInfo(today);
-        },
-      ),
+      fc.property(anyDay, history, fc.boolean(), (today, offsets, fertility) => {
+        const f = forecast({
+          today,
+          periodDays: offsets.map((offset) => addDays(today, offset)),
+          fertility,
+        });
+        f.dayInfo(today);
+      }),
     );
   });
 
@@ -399,8 +377,7 @@ describe("forecast properties", () => {
               periodDays: offsets.map((offset) => addDays(base, offset)),
               fertility,
             });
-          const shift = (date: IsoDate | null) =>
-            date === null ? null : addDays(date, k);
+          const shift = (date: IsoDate | null) => (date === null ? null : addDays(date, k));
           const before = at(today);
           const after = at(shiftedToday);
 

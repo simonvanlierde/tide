@@ -17,12 +17,7 @@ export function LanguageSection() {
         id="language-select"
         className="select-field"
         value={current}
-        onChange={(event) =>
-          actions.setSetting(
-            "language",
-            event.target.value as LanguagePreference,
-          )
-        }
+        onChange={(event) => actions.setSetting("language", event.target.value as LanguagePreference)}
       >
         {LANGUAGE_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>

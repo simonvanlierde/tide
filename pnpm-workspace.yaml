@@ -1,7 +1,13 @@
+# pnpm reads its project settings here, not from .npmrc. One package, so no
+# `packages:` list.
+
+# Resolve only releases at least three days old (in minutes): a compromised release
+# is usually caught and yanked within that window. TODO: raise to a week (10080), as
+# the template and Dependabot's cooldown have it, once every locked version is a week
+# old (2026-10-23).
+minimumReleaseAge: 4320
 allowBuilds:
   esbuild: true
-  lefthook: true
-minimumReleaseAge: 4320 # minutes (3 days); blocks installing very fresh (often compromised) releases
 overrides:
   serialize-javascript: ^7.0.5
   "@babel/core": ^7.29.6

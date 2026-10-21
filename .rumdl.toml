@@ -1,0 +1,13 @@
+[global]
+  # READMEs have long badge and link lines that don't wrap, so MD013 would flag nearly every line.
+  disable = ["MD013"]
+  flavor  = "gfm"
+
+# Tide's own files. DESIGN.md is a design-token file: its YAML front matter reads as a
+# first h1, and the north-star line is a tagline, not a heading. The README's
+# <picture> tags switch the screenshots with the color scheme. A PR template opens
+# with a comment, not a heading.
+[per-file-ignores]
+"DESIGN.md"                        = ["MD025", "MD036"]
+"README.md"                        = ["MD033"]
+".github/PULL_REQUEST_TEMPLATE.md" = ["MD041"]

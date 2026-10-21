@@ -15,20 +15,14 @@ interface ForecastExplainerProps {
 // The actual inputs behind the next-period date, step by step. Every number
 // comes from explainForecast; this only words them. Same native-dialog
 // handling as CycleInsights.
-export function ForecastExplainer({
-  explanation: e,
-  onClose,
-}: ForecastExplainerProps) {
+export function ForecastExplainer({ explanation: e, onClose }: ForecastExplainerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const t = useT();
   const locale = useLocale();
   const date = (day: IsoDate) => formatShortDate(day, locale);
   const num = (n: number) => n.toLocaleString(locale);
   const messages = EXPLAIN_MESSAGES[locale];
-  const x = (
-    key: keyof typeof messages,
-    vars: Record<string, string | number> = {},
-  ) =>
+  const x = (key: keyof typeof messages, vars: Record<string, string | number> = {}) =>
     // A date abbreviated with a dot ("Apr." in German) can end a sentence.
     interpolate(messages[key], vars).replaceAll("..", ".");
 
@@ -56,12 +50,7 @@ export function ForecastExplainer({
         <h2 id="explain-title" className="insights__title">
           {t("today.howWorkedOut")}
         </h2>
-        <button
-          type="button"
-          className="icon-close"
-          aria-label={t("common.close")}
-          onClick={requestClose}
-        >
+        <button type="button" className="icon-close" aria-label={t("common.close")} onClick={requestClose}>
           <X aria-hidden="true" size={18} />
         </button>
       </div>
@@ -95,11 +84,7 @@ export function ForecastExplainer({
                 from: date(e.range.from),
                 to: date(e.range.to),
               })
-            : x(
-                e.spreadDays === null
-                  ? "explain.noRange"
-                  : "explain.sameLength",
-              )}
+            : x(e.spreadDays === null ? "explain.noRange" : "explain.sameLength")}
         </li>
         {f ? (
           <>
@@ -116,9 +101,7 @@ export function ForecastExplainer({
                 from: date(f.from),
                 to: date(f.to),
               })}
-              {f.widening > 0
-                ? ` ${x(plural("explain.widened", f.widening, locale), { n: f.widening })}`
-                : null}{" "}
+              {f.widening > 0 ? ` ${x(plural("explain.widened", f.widening, locale), { n: f.widening })}` : null}{" "}
               {t("today.notBirthControl")}.
             </li>
           </>

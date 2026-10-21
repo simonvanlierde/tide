@@ -14,13 +14,7 @@ interface ConfirmDialogProps {
 // focus trap, Esc-to-close and backdrop for free; the browser's own confirm()
 // gives none of the app's language, type or theme, and its buttons stay in the
 // browser's locale rather than the one the user picked here.
-export function ConfirmDialog({
-  title,
-  body,
-  confirmLabel,
-  onConfirm,
-  onCancel,
-}: ConfirmDialogProps) {
+export function ConfirmDialog({ title, body, confirmLabel, onConfirm, onCancel }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const confirmed = useRef(false);
   const t = useT();
@@ -47,11 +41,7 @@ export function ConfirmDialog({
       </h2>
       <div className="confirm-dialog__body">{body}</div>
       <div className="confirm-dialog__actions">
-        <button
-          type="button"
-          className="secondary-action"
-          onClick={requestClose}
-        >
+        <button type="button" className="secondary-action" onClick={requestClose}>
           {t("common.cancel")}
         </button>
         <button

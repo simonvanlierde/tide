@@ -17,8 +17,7 @@ const SIZES = [
 
 const ROUTES = ["/", "/calendar", "/settings"] as const;
 
-const medium = (days: string[]) =>
-  Object.fromEntries(days.map((day) => [day, "medium"]));
+const medium = (days: string[]) => Object.fromEntries(days.map((day) => [day, "medium"]));
 
 async function openInsights(page: Page) {
   await page.locator(".fact-list__more").first().click();
@@ -27,12 +26,7 @@ async function openInsights(page: Page) {
 
 // Four one-day period starts, cycles of 33, 27 and 31 days: the explainer
 // then shows its longest lines, a range and a widened fertile window.
-const VARIED_CYCLES = medium([
-  "2026-01-10",
-  "2026-02-12",
-  "2026-03-11",
-  "2026-04-11",
-]);
+const VARIED_CYCLES = medium(["2026-01-10", "2026-02-12", "2026-03-11", "2026-04-11"]);
 
 async function openExplainer(page: Page) {
   await page.locator(".fact-list__more").nth(1).click();
@@ -40,12 +34,7 @@ async function openExplainer(page: Page) {
 }
 
 // A period that ended ten days before today, so the dial is between periods.
-const PAST_PERIOD = medium([
-  "2026-04-01",
-  "2026-04-02",
-  "2026-04-03",
-  "2026-04-04",
-]);
+const PAST_PERIOD = medium(["2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04"]);
 
 // Every screen, and every sheet, dialog and popover it can open, in the states
 // that change what is on it. Each must fit at every size in every language.
@@ -110,8 +99,7 @@ const SCREENS: {
   {
     name: "calendar flow picker",
     path: "/calendar",
-    open: (page) =>
-      page.locator(".calendar-grid__day.is-logged").first().click(),
+    open: (page) => page.locator(".calendar-grid__day.is-logged").first().click(),
   },
   {
     name: "calendar month picker",
@@ -222,9 +210,7 @@ for (const size of SIZES) {
       // The document can fit while a word spills out of its own box: a flow
       // label running into its neighbour, or a clipped button.
       for (const screen of SCREENS) {
-        test(`${screen.name} fits every element in its box and the viewport, words whole`, async ({
-          page,
-        }) => {
+        test(`${screen.name} fits every element in its box and the viewport, words whole`, async ({ page }) => {
           await seedAppState(page, language, screen.settings, screen.days);
           await page.goto(screen.path);
           await expect(page.locator(".tab-bar")).toBeVisible();
@@ -262,9 +248,7 @@ for (const size of SIZES) {
       });
 
       for (const path of ROUTES) {
-        test(`${path} keeps interactive content clear of the tab bar`, async ({
-          page,
-        }) => {
+        test(`${path} keeps interactive content clear of the tab bar`, async ({ page }) => {
           await page.goto(path);
           await expect(page.locator(".tab-bar")).toBeVisible();
 
@@ -282,9 +266,7 @@ for (const size of SIZES) {
               if (rect.width === 0 || rect.height === 0) continue;
               lowest = Math.max(lowest, rect.bottom);
             }
-            const tab = document
-              .querySelector(".tab-bar")
-              ?.getBoundingClientRect();
+            const tab = document.querySelector(".tab-bar")?.getBoundingClientRect();
             return { maxBottom: lowest, tabTop: tab?.top ?? 0 };
           });
 
@@ -294,59 +276,42 @@ for (const size of SIZES) {
 
       // Export and Import stack rather than hyphenate: a word split over two
       // lines ("Expor-tieren") has one text rect per line.
-      test("keeps the Export and Import labels on one line", async ({
-        page,
-      }) => {
+      test("keeps the Export and Import labels on one line", async ({ page }) => {
         await page.goto("/settings");
-        const lines = await page
-          .locator(".data-actions .button-label > span")
-          .evaluateAll((spans) =>
-            spans.map((span) => {
-              const range = document.createRange();
-              range.selectNodeContents(span);
-              return range.getClientRects().length;
-            }),
-          );
+        const lines = await page.locator(".data-actions .button-label > span").evaluateAll((spans) =>
+          spans.map((span) => {
+            const range = document.createRange();
+            range.selectNodeContents(span);
+            return range.getClientRects().length;
+          }),
+        );
         expect(lines).toEqual([1, 1]);
       });
 
       // The switch stays level with the first line of its label; a long label
       // wraps beside it instead of pushing it onto a line of its own.
-      test("keeps each switch on the first line of its label", async ({
-        page,
-      }) => {
+      test("keeps each switch on the first line of its label", async ({ page }) => {
         await page.goto("/settings");
-        const rows = await page
-          .locator(".settings-row:has(.switch)")
-          .evaluateAll((list) =>
-            list.map((row) => {
-              const text = row.querySelector(
-                ".settings-label > span",
-              ) as Element;
-              const range = document.createRange();
-              range.selectNodeContents(text);
-              const first = range.getClientRects()[0];
-              const knob = (
-                row.querySelector(".switch") as Element
-              ).getBoundingClientRect();
-              return {
-                label: text.textContent,
-                level:
-                  first !== undefined &&
-                  knob.top < first.bottom &&
-                  knob.bottom > first.top,
-              };
-            }),
-          );
+        const rows = await page.locator(".settings-row:has(.switch)").evaluateAll((list) =>
+          list.map((row) => {
+            const text = row.querySelector(".settings-label > span") as Element;
+            const range = document.createRange();
+            range.selectNodeContents(text);
+            const first = range.getClientRects()[0];
+            const knob = (row.querySelector(".switch") as Element).getBoundingClientRect();
+            return {
+              label: text.textContent,
+              level: first !== undefined && knob.top < first.bottom && knob.bottom > first.top,
+            };
+          }),
+        );
         expect(rows.length).toBeGreaterThan(0);
         expect(rows).toEqual(rows.map(({ label }) => ({ label, level: true })));
       });
 
       test("settings tab stays reachable", async ({ page }) => {
         await page.goto("/settings");
-        await expect(
-          page.locator('.tab-bar a[href="/settings"]'),
-        ).toBeInViewport();
+        await expect(page.locator('.tab-bar a[href="/settings"]')).toBeInViewport();
       });
     });
   }
@@ -367,17 +332,13 @@ test.describe("theme segmented control", () => {
     return (control?.y ?? 0) >= (label?.y ?? 0) + (label?.height ?? 0);
   }
 
-  test("stacks under its label on very narrow viewports, words intact", async ({
-    page,
-  }) => {
+  test("stacks under its label on very narrow viewports, words intact", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 568 });
     expect(await labelWidth(page)).toBeGreaterThan(10);
     expect(await isStacked(page)).toBe(true);
   });
 
-  test("keeps its label visible beside the control on wide shells", async ({
-    page,
-  }) => {
+  test("keeps its label visible beside the control on wide shells", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto("/settings");
     const label = await page.locator("#theme-label").boundingBox();
@@ -385,14 +346,10 @@ test.describe("theme segmented control", () => {
     // A zero-width label means it collapsed and its text is under the control.
     expect(label?.width ?? 0).toBeGreaterThan(20);
     expect(label?.x ?? 0).toBeLessThan(control?.x ?? 0);
-    expect((label?.x ?? 0) + (label?.width ?? 0)).toBeLessThanOrEqual(
-      (control?.x ?? 0) + 1,
-    );
+    expect((label?.x ?? 0) + (label?.width ?? 0)).toBeLessThanOrEqual((control?.x ?? 0) + 1);
   });
 
-  test("sits beside its label once the shell is wide enough", async ({
-    page,
-  }) => {
+  test("sits beside its label once the shell is wide enough", async ({ page }) => {
     // Side by side only while the shell (the container) is wider than 448px:
     // the full 460px shell, not a phone.
     await page.setViewportSize({ width: 460, height: 780 });

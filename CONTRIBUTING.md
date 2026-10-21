@@ -5,31 +5,38 @@ fork and open a pull request.
 
 ## Development
 
-Requires Node 26 and pnpm 11.
+Requires Node 26, pnpm 12 and [just](https://just.systems).
 
 ```bash
 pnpm install
+pnpm exec playwright install chromium   # once per machine, for the e2e tests
+pnpm exec prek install                  # git hooks: lint on commit, unit tests on push
 pnpm dev
 ```
 
 | Command | Description |
 | --- | --- |
-| `pnpm check` | Typecheck, lint, tests, build, and bundle-size budget; the CI gate |
-| `pnpm test` | Unit and UI tests |
-| `pnpm test:e2e` | Playwright smoke tests |
+| `just check` | Lint and unused code (Biome, knip), types, tests, build, bundle budget, dependency audit; the CI gate |
+| `just fmt` | Apply Biome's fixes and formatting |
+| `just hooks` | Every git hook over the whole repo, as CI runs them |
+| `just ts-cov` | Tests with coverage and its thresholds |
+| `just ts-e2e` | Playwright tests against the production build: flows, accessibility, CSP, layout |
 | `pnpm build` | Production build to `dist/` |
+
+The repo follows the [project-templates](https://github.com/simonvanlierde/project-templates)
+Copier template (`.copier-answers.yml`). `copier update` brings in its CI and tooling changes.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …).
 
 Things that trip people up:
 
-- Run DOM tests through the package scripts (`pnpm test`, `pnpm test:coverage`). They set `NODE_OPTIONS=--no-experimental-webstorage`, so Node's own web storage does not get in the way of the test DOM.
+- `vitest.config.ts` starts the test workers with `--no-experimental-webstorage`, so Node's own web storage does not get in the way of the test DOM.
 - The largest JS file in `dist/assets` must stay under 100 KiB gzip (`scripts/checkBundleBudget.mjs`), so think twice before adding a heavy dependency.
-- `public/_headers` must keep the `__INLINE_SCRIPT_HASHES__` placeholder. `scripts/writeCspHeaders.mjs` fills it in at build time and the build throws without it.
+- The Content-Security-Policy in `public/_headers` allows no inline script. Code that must run before first paint goes in a file under `public/`, like `public/theme.js`.
 - Dependency overrides live in `pnpm-workspace.yaml`, not `package.json`. Read the comment next to an override before removing it.
-- `pnpm-workspace.yaml` blocks releases younger than three days (`minimumReleaseAge`). If a fresh version will not install, pick an older one.
+- `pnpm-workspace.yaml` blocks releases younger than three days (`minimumReleaseAge`), and Dependabot waits a week. If a fresh version will not install, pick an older one.
 - Seed storage explicitly in new e2e tests (`tests/e2e/seed.ts`). The preview server never reuses a running one, and a cold build can take up to 180 s.
-- CI runs e2e in the Playwright image `v1.64.0-noble`. Keep `@playwright/test` in `package.json` on the same version as that tag.
+- CI runs e2e in the Playwright image whose tag matches the `@playwright/test` version in the lockfile, so a Playwright bump needs no workflow edit.
 
 ## Architecture
 
@@ -53,8 +60,8 @@ The tests follow the same layers. On top sits a thin layer of Playwright end-to-
 
 Two automated checks run in CI:
 
-- **Static lint:** Biome's `a11y` rules (`biome.json`) run as part of `pnpm lint` / `pnpm check`.
-- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/calendar`, and `/settings`, in both themes and with overlays open. It checks the rules tagged `wcag2a`/`wcag2aa`, and fails on any violation rated *moderate* or worse. Run it with `pnpm test:e2e`.
+- **Static lint:** Biome's `a11y` rules (`biome.json`) run as part of `just check`.
+- **Runtime axe checks:** `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) against `/`, `/calendar`, and `/settings`, in both themes and with overlays open. It checks WCAG 2.0, 2.1 and 2.2 at levels A and AA plus axe's best-practice rules, and fails on any violation, whatever its impact. `tests/e2e/reflow.spec.ts` checks that no route scrolls sideways at 320 px. Run them with `just ts-e2e`.
 
 ## Running your own copy
 

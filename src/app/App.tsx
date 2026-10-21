@@ -1,18 +1,8 @@
 import { CircleAlert } from "lucide-react";
-import {
-  type MouseEvent,
-  startTransition,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type MouseEvent, startTransition, useEffect, useRef, useState } from "react";
 import { useIsReadOnly, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
-import {
-  appScreens,
-  getAppScreen,
-  shouldHandleAppNavigation,
-} from "./navigation";
+import { appScreens, getAppScreen, shouldHandleAppNavigation } from "./navigation";
 
 function usePathname() {
   const [pathname, setPathname] = useState(() => window.location.pathname);
@@ -64,9 +54,7 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
           key={screen.path}
           href={screen.path}
           aria-current={screen.path === activePath ? "page" : undefined}
-          className={
-            screen.path === activePath ? "tab-item is-active" : "tab-item"
-          }
+          className={screen.path === activePath ? "tab-item is-active" : "tab-item"}
           onClick={(event) => handleClick(event, screen.path)}
         >
           <span aria-hidden="true">
@@ -96,9 +84,7 @@ export function App() {
       isFirstRender.current = false;
       return;
     }
-    const target = window.location.hash
-      ? document.getElementById(window.location.hash.slice(1))
-      : null;
+    const target = window.location.hash ? document.getElementById(window.location.hash.slice(1)) : null;
     if (target) {
       target.focus();
     } else {
@@ -121,18 +107,11 @@ export function App() {
         <div role="status">
           {readOnly ? (
             <div className="utility-card utility-card--slim newer-data-notice">
-              <p
-                id="newer-data-notice"
-                className="supporting-note supporting-note--icon"
-              >
+              <p id="newer-data-notice" className="supporting-note supporting-note--icon">
                 <AppIcon icon={CircleAlert} className="supporting-note__icon" />
                 <span>{t("app.newerData")}</span>
               </p>
-              <button
-                type="button"
-                className="text-action"
-                onClick={() => window.location.reload()}
-              >
+              <button type="button" className="text-action" onClick={() => window.location.reload()}>
                 {t("common.reload")}
               </button>
             </div>

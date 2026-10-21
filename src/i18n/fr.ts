@@ -30,8 +30,7 @@ export const fr: Dictionary = {
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
   "today.privacy": "Stocké uniquement sur cet appareil.",
-  "today.importPrompt":
-    "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?",
+  "today.importPrompt": "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?",
   "today.importLink": "L’importer",
   "today.fertilityUnclear": "Incertaine en cas de retard",
   "today.periodLate": "Règles",
@@ -43,10 +42,8 @@ export const fr: Dictionary = {
   "today.ovulationToday": "Ovulation aujourd’hui",
   "today.ovulationInDays.one": "Ovulation dans {n} jour",
   "today.ovulationInDays.other": "Ovulation dans {n} jours",
-  "today.learningFallback":
-    "Un cycle type de 28 jours est utilisé jusqu’à ce que nous apprenions ton rythme.",
-  "today.learningInsufficient":
-    "Enregistre tes règles pour voir une prévision.",
+  "today.learningFallback": "Un cycle type de 28 jours est utilisé jusqu’à ce que nous apprenions ton rythme.",
+  "today.learningInsufficient": "Enregistre tes règles pour voir une prévision.",
 
   "phase.menstrual": "Menstruelle",
   "phase.follicular": "Folliculaire",
@@ -75,8 +72,7 @@ export const fr: Dictionary = {
   "insights.cycleLength": "Durée du cycle",
   "insights.periodLength": "Durée des règles",
   "insights.cyclesTracked": "Cycles suivis",
-  "insights.basedOn":
-    "Basé sur un cycle type de {cycle} jours jusqu’à ce que tu aies enregistré un cycle complet.",
+  "insights.basedOn": "Basé sur un cycle type de {cycle} jours jusqu’à ce que tu aies enregistré un cycle complet.",
   "insights.regularity": "Régularité du cycle",
   "insights.regularityAria": "Régularité du cycle : {label}",
   "regularity.none": "Pas encore assez de données",
@@ -85,14 +81,12 @@ export const fr: Dictionary = {
   "regularity.somewhatVariable": "Un peu variable",
   "regularity.variable": "Variable",
   "insights.how": "Comment les prévisions fonctionnent",
-  "insights.how1":
-    "Tout est calculé sur ton appareil à partir des jours que tu enregistres.",
+  "insights.how1": "Tout est calculé sur ton appareil à partir des jours que tu enregistres.",
   "insights.howCycleStart":
     "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle ; les écarts plus courts font partie des mêmes règles.",
   "insights.how2":
     "La durée du cycle est la médiane de tes {recent} derniers cycles, pour qu’un mois inhabituel ne la fausse pas. Avant deux cycles, un cycle type de {cycle} jours est utilisé.",
-  "insights.how3":
-    "La durée des règles est ta moyenne récente, limitée à une normale de {min} à {max} jours.",
+  "insights.how3": "La durée des règles est ta moyenne récente, limitée à une normale de {min} à {max} jours.",
   "insights.how4":
     "Tes prochaines règles correspondent au début de tes dernières règles plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",
   "insights.howNextPeriod":
@@ -115,8 +109,7 @@ export const fr: Dictionary = {
   "log.logged": "Enregistré aujourd’hui",
   "log.loggedWith": "Enregistré aujourd’hui · {flow}",
   "log.add": "Enregistrer le saignement du jour",
-  "reminder.messageOverdue":
-    "Tes règles étaient prévues le {date}. Commencées ?",
+  "reminder.messageOverdue": "Tes règles étaient prévues le {date}. Commencées ?",
   "reminder.messageUpcoming": "Tes règles sont prévues le {date}. Commencées ?",
   "reminder.dismiss": "Pas encore — me le rappeler plus tard",
   "reminder.reassure": "Quelques jours de variation, c’est courant.",
@@ -127,8 +120,7 @@ export const fr: Dictionary = {
   "calendar.jumpToMonth": "Aller au mois",
   "calendar.month": "Mois",
   "calendar.year": "Année",
-  "calendar.tapHelp":
-    "Touche un jour pour enregistrer ou modifier un saignement.",
+  "calendar.tapHelp": "Touche un jour pour enregistrer ou modifier un saignement.",
   "calendar.today": "Aujourd’hui",
   "calendar.goToCurrentMonth": "Aller au mois actuel",
   "calendar.justLogged": "{date} enregistré.",
@@ -136,14 +128,10 @@ export const fr: Dictionary = {
   "calendar.undo": "Annuler",
   "calendar.logRange": "Enregistrer des règles passées",
   "calendar.rangePickFirst": "Choisis le premier jour des règles.",
-  "calendar.rangePickLast":
-    "À partir du {date} : choisis le dernier jour, {max} jours au plus.",
-  "calendar.rangeTooLong":
-    "Plus de {max} jours. Choisis un dernier jour plus proche.",
-  "calendar.emptyHelp":
-    "Touche un jour passé pour enregistrer ton premier jour de saignement.",
-  "calendar.futureHelp":
-    "Les jours à venir ne peuvent pas encore être enregistrés.",
+  "calendar.rangePickLast": "À partir du {date} : choisis le dernier jour, {max} jours au plus.",
+  "calendar.rangeTooLong": "Plus de {max} jours. Choisis un dernier jour plus proche.",
+  "calendar.emptyHelp": "Touche un jour passé pour enregistrer ton premier jour de saignement.",
+  "calendar.futureHelp": "Les jours à venir ne peuvent pas encore être enregistrés.",
   "calendar.log": "Enregistrer",
   "calendar.edit": "Modifier",
   "calendar.dayUnavailable": "{label} indisponible",
@@ -191,38 +179,31 @@ export const fr: Dictionary = {
     "Les estimations de fertilité sont données à titre indicatif. Elles ne sont pas une contraception.",
   "settings.fertilityMethod":
     "La fenêtre de fertilité, ce sont les jours autour de ton ovulation prévue, estimée à partir de tes durées de cycle récentes.",
-  "settings.sourceCode":
-    "Code source (v{version}), s’ouvre dans un nouvel onglet",
+  "settings.sourceCode": "Code source, v{version}, s’ouvre dans un nouvel onglet",
   "settings.data": "Données",
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":
     "L’export enregistre tes jours dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours depuis Clue ou Flo.",
-  "settings.importSources":
-    "Tu peux importer une sauvegarde Tide, ou un export de Clue ou Flo.",
+  "settings.importSources": "Tu peux importer une sauvegarde Tide, ou un export de Clue ou Flo.",
   "settings.export": "Exporter",
   "settings.exportSuccess": "Sauvegarde enregistrée dans tes téléchargements.",
   "settings.exportCalendar": "Ajouter au calendrier",
   "settings.calendarHelp":
     "Enregistre tes 3 prochaines règles prévues dans un fichier que ton agenda peut ouvrir. Une fois ajoutées, elles se synchronisent comme tes autres événements, donc le compte de l’agenda les garde aussi.",
   "settings.calendarFertility": "Inclure les fenêtres de fertilité",
-  "settings.calendarSuccess":
-    "Fichier de calendrier enregistré dans tes téléchargements.",
-  "settings.calendarError":
-    "Impossible de créer le fichier de calendrier. Recharge Tide et réessaie.",
+  "settings.calendarSuccess": "Fichier de calendrier enregistré dans tes téléchargements.",
+  "settings.calendarError": "Impossible de créer le fichier de calendrier. Recharge Tide et réessaie.",
   "settings.import": "Importer",
   "settings.importFile": "Importer un fichier de données",
-  "settings.importError":
-    "Ce fichier n’est ni une sauvegarde Tide, ni un export Clue ou Flo.",
+  "settings.importError": "Ce fichier n’est ni une sauvegarde Tide, ni un export Clue ou Flo.",
   "settings.importSuccess.one": "{n} jour enregistré importé.",
   "settings.importSuccess.other": "{n} jours enregistrés importés.",
   "settings.importConfirmTitle": "Remplacer tes données ?",
   "settings.importConfirmAction": "Remplacer",
   "settings.importFileDays.one": "Ce fichier contient {n} jour enregistré.",
   "settings.importFileDays.other": "Ce fichier contient {n} jours enregistrés.",
-  "settings.importReplaces.one":
-    "Il remplace le {n} jour enregistré sur cet appareil, sans retour possible.",
-  "settings.importReplaces.other":
-    "Il remplace les {n} jours enregistrés sur cet appareil, sans retour possible.",
+  "settings.importReplaces.one": "Il remplace le {n} jour enregistré sur cet appareil, sans retour possible.",
+  "settings.importReplaces.other": "Il remplace les {n} jours enregistrés sur cet appareil, sans retour possible.",
   "settings.importMergeTitle": "Ajouter les jours de {source} ?",
   "settings.importMergeAction": "Ajouter",
   "settings.importMerges": "Les jours déjà enregistrés ici restent tels quels.",

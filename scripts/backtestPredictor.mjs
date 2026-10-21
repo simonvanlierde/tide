@@ -6,17 +6,13 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { runnerImport } from "vite";
 
-const DATA_URL =
-  "https://hive.utah.edu/records/3zhb1-48n69/files/CrMcyclelength_share.csv?download=1";
+const DATA_URL = "https://hive.utah.edu/records/3zhb1-48n69/files/CrMcyclelength_share.csv?download=1";
 const DATA_SHA256 =
   // biome-ignore lint/security/noSecrets: a file checksum, not a secret
   "ad67a3eed731a038d6502a1eb42a9dcddf8f6c69a607a61b85f3798198043dac";
 const BOM = /^\uFEFF/;
 const LINE_BREAK = /\r?\n/;
-const CACHE = new URL(
-  "../.cache/backtest/CrMcyclelength_share.csv",
-  import.meta.url,
-);
+const CACHE = new URL("../.cache/backtest/CrMcyclelength_share.csv", import.meta.url);
 
 function check(condition, message) {
   if (!condition) {
@@ -38,10 +34,7 @@ async function loadCsv() {
     await writeFile(CACHE, bytes);
   }
   const hash = createHash("sha256").update(bytes).digest("hex");
-  check(
-    hash === DATA_SHA256,
-    `dataset hash mismatch, delete ${CACHE.pathname}`,
-  );
+  check(hash === DATA_SHA256, `dataset hash mismatch, delete ${CACHE.pathname}`);
   return bytes.toString("utf8").replace(BOM, "");
 }
 
@@ -86,10 +79,7 @@ const { addDays, differenceInDays } = date;
 
 const stretches = parseStretches(await loadCsv());
 const women = new Set(stretches.map((s) => s[0].id)).size;
-check(
-  women === 581 && stretches.flat().length === 3324,
-  "unexpected row count",
-);
+check(women === 581 && stretches.flat().length === 3324, "unexpected row count");
 
 // Each record: errors in days (predicted minus actual start) and how many
 // completed cycles the app had learned from when it predicted.
@@ -139,8 +129,6 @@ for (const [label, minHistory] of [
   const subset = records.filter((r) => r.history >= minHistory);
   console.log(`\n${label} (n=${subset.length})`);
   for (const method of ["tide", "fixed28", "lastCycle"]) {
-    console.log(
-      `  ${method.padEnd(10)} ${score(subset.map((r) => r[method]))}`,
-    );
+    console.log(`  ${method.padEnd(10)} ${score(subset.map((r) => r[method]))}`);
   }
 }

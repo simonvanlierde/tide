@@ -17,23 +17,12 @@ interface DayFlowPickerProps {
 
 // Picks (or backfills) the flow for one calendar day. Choosing a level logs the
 // day if it wasn't already; "Not bleeding" clears it.
-export function DayFlowPicker({
-  day,
-  intensity,
-  isLogged,
-  onSelect,
-  onRemove,
-  onClose,
-}: DayFlowPickerProps) {
+export function DayFlowPicker({ day, intensity, isLogged, onSelect, onRemove, onClose }: DayFlowPickerProps) {
   const pickerRef = useRef<HTMLDivElement>(null);
   // The day button that opened the picker still has focus during the first
   // render (the gauge's autoFocus only lands on commit), so capture it here to
   // hand focus back on an explicit close.
-  const openerRef = useRef(
-    typeof document === "undefined"
-      ? null
-      : (document.activeElement as HTMLElement | null),
-  );
+  const openerRef = useRef(typeof document === "undefined" ? null : (document.activeElement as HTMLElement | null));
   const t = useT();
   const locale = useLocale();
 
@@ -62,10 +51,7 @@ export function DayFlowPicker({
   useEffect(() => {
     function handleOutside(event: PointerEvent) {
       const target = event.target as HTMLElement;
-      if (
-        pickerRef.current?.contains(target) ||
-        target.closest(".calendar-grid")
-      ) {
+      if (pickerRef.current?.contains(target) || target.closest(".calendar-grid")) {
         return;
       }
       onClose();
@@ -88,24 +74,12 @@ export function DayFlowPicker({
       }}
     >
       <div className="day-flow-picker__head">
-        <span className="day-flow-picker__date">
-          {formatShortDate(day, locale)}
-        </span>
-        <button
-          type="button"
-          className="icon-close"
-          aria-label={t("common.close")}
-          onClick={closeAndRestoreFocus}
-        >
+        <span className="day-flow-picker__date">{formatShortDate(day, locale)}</span>
+        <button type="button" className="icon-close" aria-label={t("common.close")} onClick={closeAndRestoreFocus}>
           <X aria-hidden="true" size={18} />
         </button>
       </div>
-      <FlowGauge
-        selected={intensity}
-        onSelect={onSelect}
-        name={`flow-${day}`}
-        autoFocus
-      />
+      <FlowGauge selected={intensity} onSelect={onSelect} name={`flow-${day}`} autoFocus />
       {isLogged ? (
         <button type="button" className="text-action" onClick={onRemove}>
           <AppIcon icon={DropletOff} className="text-action__icon" />

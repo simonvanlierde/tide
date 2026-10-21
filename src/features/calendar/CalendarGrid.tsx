@@ -2,11 +2,7 @@ import { type KeyboardEvent, useMemo, useState } from "react";
 import type { DayEstimate, IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
-import {
-  formatLongDate,
-  getWeekdayLabels,
-  parseIsoDate,
-} from "../../utils/date";
+import { formatLongDate, getWeekdayLabels, parseIsoDate } from "../../utils/date";
 import type { CalendarCell } from "./calendar";
 
 const MARKER_CLASS: Record<DayEstimate, string> = {
@@ -28,12 +24,7 @@ interface CalendarGridProps {
   onSelectDay: (day: IsoDate) => void;
 }
 
-export function CalendarGrid({
-  days,
-  selectedDay,
-  justLoggedDay,
-  onSelectDay,
-}: CalendarGridProps) {
+export function CalendarGrid({ days, selectedDay, justLoggedDay, onSelectDay }: CalendarGridProps) {
   const t = useT();
   const locale = useLocale();
   const weekdays = useMemo(() => {
@@ -52,9 +43,7 @@ export function CalendarGrid({
   const [focusedDay, setFocusedDay] = useState<IsoDate | null>(null);
   const loggableDays = days.filter((day) => !day.isFuture || day.isLogged);
   const tabStop =
-    [focusedDay, selectedDay].find(
-      (day) => day && loggableDays.some((entry) => entry.value === day),
-    ) ??
+    [focusedDay, selectedDay].find((day) => day && loggableDays.some((entry) => entry.value === day)) ??
     loggableDays.find((day) => day.isToday)?.value ??
     loggableDays[0]?.value ??
     null;
@@ -62,9 +51,7 @@ export function CalendarGrid({
   // Arrows move by a day, Home/End to the ends of the week. A disabled (future)
   // cell can't take focus, so a move that lands on one is simply refused.
   function moveFocus(event: KeyboardEvent<HTMLButtonElement>, index: number) {
-    const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 7, ArrowUp: -7 }[
-      event.key
-    ];
+    const step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: 7, ArrowUp: -7 }[event.key];
     const target =
       step !== undefined
         ? index + step
@@ -87,9 +74,7 @@ export function CalendarGrid({
       ?.querySelectorAll<HTMLButtonElement>(".calendar-grid__day")
       [target]?.focus();
   }
-  const weekStarts = days
-    .map((_, index) => index)
-    .filter((index) => index % 7 === 0);
+  const weekStarts = days.map((_, index) => index).filter((index) => index % 7 === 0);
 
   return (
     // A table, so screen readers announce each day's weekday column.
@@ -104,10 +89,7 @@ export function CalendarGrid({
               <span className="calendar-grid__weekday-short" aria-hidden="true">
                 {day.short}
               </span>
-              <span
-                className="calendar-grid__weekday-narrow"
-                aria-hidden="true"
-              >
+              <span className="calendar-grid__weekday-narrow" aria-hidden="true">
                 {day.narrow}
               </span>
             </th>
@@ -140,15 +122,9 @@ export function CalendarGrid({
               // A logged future day (clock moved back, or imported) stays
               // removable; only logging a new future day is blocked.
               const isUnavailable = day.isFuture && !isLogged;
-              const dateLabel = isUnavailable
-                ? t("calendar.dayUnavailable", { label: dayLabel })
-                : dayLabel;
+              const dateLabel = isUnavailable ? t("calendar.dayUnavailable", { label: dayLabel }) : dayLabel;
               // Flow is otherwise colour-only, so name it for screen readers.
-              const detail = flow
-                ? t(`flow.${flow}`)
-                : marker
-                  ? t(MARKER_LABEL_KEY[marker])
-                  : undefined;
+              const detail = flow ? t(`flow.${flow}`) : marker ? t(MARKER_LABEL_KEY[marker]) : undefined;
 
               return (
                 <td key={day.key} className="calendar-grid__cell">
@@ -172,10 +148,7 @@ export function CalendarGrid({
                   >
                     {parseIsoDate(value).getUTCDate()}
                     {day.cycleDay ? (
-                      <span
-                        className="calendar-grid__period-day"
-                        aria-hidden="true"
-                      >
+                      <span className="calendar-grid__period-day" aria-hidden="true">
                         {day.cycleDay}
                       </span>
                     ) : null}

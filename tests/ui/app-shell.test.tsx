@@ -17,33 +17,19 @@ describe("App shell", () => {
   it("derives the active screen title and primary navigation from the current path", () => {
     renderWithAppState(<App />);
 
-    expect(
-      screen.getByText(/^settings$/i, { selector: ".app-header__title" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("navigation", { name: /primary navigation/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^settings$/i, { selector: ".app-header__title" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: /primary navigation/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^today$/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: /^calendar$/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
+    expect(screen.getByRole("link", { name: /^calendar$/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute("aria-current", "page");
   });
 
   it("asks for a reload when a newer build saved the data", () => {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1 }),
-    );
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1 }));
 
     renderWithAppState(<App />);
 
-    expect(screen.getByRole("status")).toHaveTextContent(
-      /a newer version of tide saved your data/i,
-    );
+    expect(screen.getByRole("status")).toHaveTextContent(/a newer version of tide saved your data/i);
     expect(screen.getByRole("button", { name: /^reload$/i })).toBeVisible();
   });
 
@@ -52,26 +38,19 @@ describe("App shell", () => {
     const status = screen.getByRole("status");
     expect(status).toBeEmptyDOMElement();
 
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1 }),
-    );
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1 }));
     act(() => {
       window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
     });
 
     expect(screen.getByRole("status")).toBe(status);
-    expect(status).toHaveTextContent(
-      /a newer version of tide saved your data/i,
-    );
+    expect(status).toHaveTextContent(/a newer version of tide saved your data/i);
   });
 
   it("shows no reload notice for data this build wrote", () => {
     renderWithAppState(<App />);
 
-    expect(
-      screen.queryByText(/a newer version of tide/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/a newer version of tide/i)).not.toBeInTheDocument();
   });
 
   it("navigates between screens through the app shell links", async () => {
@@ -80,14 +59,9 @@ describe("App shell", () => {
 
     await user.click(screen.getByRole("link", { name: /^calendar$/i }));
 
-    expect(
-      screen.getByText(/^calendar$/i, { selector: ".app-header__title" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^calendar$/i, { selector: ".app-header__title" })).toBeInTheDocument();
     expect(window.location.pathname).toBe("/calendar");
-    expect(screen.getByRole("link", { name: /^calendar$/i })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
+    expect(screen.getByRole("link", { name: /^calendar$/i })).toHaveAttribute("aria-current", "page");
   });
 
   it("follows browser back/forward by syncing to the popstate location", () => {
@@ -96,9 +70,7 @@ describe("App shell", () => {
     window.history.replaceState(null, "", "/calendar");
     fireEvent.popState(window);
 
-    expect(
-      screen.getByText(/^calendar$/i, { selector: ".app-header__title" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^calendar$/i, { selector: ".app-header__title" })).toBeInTheDocument();
   });
 
   it("ignores a click on the already-active screen link", async () => {
@@ -108,10 +80,7 @@ describe("App shell", () => {
     await user.click(screen.getByRole("link", { name: /^settings$/i }));
 
     expect(window.location.pathname).toBe("/settings");
-    expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
+    expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute("aria-current", "page");
   });
 
   it("lets a modified click fall through to the browser instead of navigating", () => {
@@ -122,9 +91,7 @@ describe("App shell", () => {
 
     // No in-app navigation: the settings screen and path are untouched.
     expect(window.location.pathname).toBe("/settings");
-    expect(
-      screen.getByText(/^settings$/i, { selector: ".app-header__title" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^settings$/i, { selector: ".app-header__title" })).toBeInTheDocument();
   });
 
   it("takes Today's import link to the Import button in Settings", async () => {

@@ -1,11 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  interpolate,
-  plural,
-  resolveLanguage,
-  SUPPORTED_LANGUAGES,
-  translate,
-} from "../../src/i18n";
+import { interpolate, plural, resolveLanguage, SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
 
 describe("i18n", () => {
   it("resolves a concrete preference verbatim", () => {

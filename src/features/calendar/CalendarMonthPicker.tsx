@@ -10,13 +10,7 @@ export interface CalendarMonthPickerProps {
   onSelect: (year: number, monthIndex: number) => void;
 }
 
-export function CalendarMonthPicker({
-  isPickerOpen,
-  year,
-  monthIndex,
-  years,
-  onSelect,
-}: CalendarMonthPickerProps) {
+export function CalendarMonthPicker({ isPickerOpen, year, monthIndex, years, onSelect }: CalendarMonthPickerProps) {
   const t = useT();
   const locale = useLocale();
   // Before the early return so the hook order stays stable across renders.
@@ -27,13 +21,8 @@ export function CalendarMonthPicker({
   }
 
   return (
-    <div
-      id="calendar-month-picker"
-      className="calendar-picker-panel calendar__picker inset-panel"
-    >
-      <span className="settings-label calendar__picker-label">
-        {t("calendar.jumpToMonth")}
-      </span>
+    <div id="calendar-month-picker" className="calendar-picker-panel calendar__picker inset-panel">
+      <span className="settings-label calendar__picker-label">{t("calendar.jumpToMonth")}</span>
       <div className="calendar__picker-selects">
         <select
           aria-label={t("calendar.month")}

@@ -1,0 +1,4 @@
+# Formatting-only commits, skipped by git blame (git config blame.ignoreRevsFile .git-blame-ignore-revs).
+
+# style: reformat to 120 columns
+4a4f53bda68872aef7a17d80b9346878b675e164

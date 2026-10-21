@@ -1,10 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { forecast } from "../../src/domain/cycle";
 import type { IsoDate, LoggedFlow } from "../../src/domain/types";
-import {
-  buildCalendarCells,
-  buildMonthDays,
-} from "../../src/features/calendar/calendar";
+import { buildCalendarCells, buildMonthDays } from "../../src/features/calendar/calendar";
 
 describe("calendar helpers", () => {
   it("builds a full month grid with adjacent-month days and future metadata", () => {

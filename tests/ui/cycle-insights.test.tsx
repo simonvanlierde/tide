@@ -21,12 +21,7 @@ function renderInsights(
   summary: CycleSummary = SUMMARY,
 ) {
   render(
-    <CycleInsights
-      summary={summary}
-      stats={{ ...stats, recentCycleLengths: [] }}
-      showFertility
-      onClose={onClose}
-    />,
+    <CycleInsights summary={summary} stats={{ ...stats, recentCycleLengths: [] }} showFertility onClose={onClose} />,
   );
   return onClose;
 }
@@ -45,9 +40,7 @@ describe("CycleInsights", () => {
   it("notes the fallback until a full cycle is logged", () => {
     renderInsights({ cyclesTracked: 0, variabilityDays: null });
 
-    expect(
-      screen.getByText(/until you’ve logged a full cycle/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/until you’ve logged a full cycle/i)).toBeInTheDocument();
   });
 
   it.each([
@@ -58,9 +51,7 @@ describe("CycleInsights", () => {
     [5, "Variable"],
   ] as const)("labels regularity %s as %s", (variabilityDays, label) => {
     renderInsights({ cyclesTracked: 4, variabilityDays });
-    expect(
-      screen.getByRole("img", { name: `Cycle regularity: ${label}` }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: `Cycle regularity: ${label}` })).toBeInTheDocument();
   });
 
   it("dismisses when the backdrop (the dialog itself) is clicked", () => {

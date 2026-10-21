@@ -4,11 +4,7 @@ const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 function toDateParts(value: IsoDate) {
   // IsoDate is validated as YYYY-MM-DD, so split always yields three numbers.
-  const [year, month, day] = value.split("-").map(Number) as [
-    number,
-    number,
-    number,
-  ];
+  const [year, month, day] = value.split("-").map(Number) as [number, number, number];
   return { year, month, day };
 }
 
@@ -37,9 +33,7 @@ export function addMonths(value: IsoDate, amount: number): IsoDate {
 }
 
 export function differenceInDays(left: IsoDate, right: IsoDate): number {
-  return Math.round(
-    (parseIsoDate(left).getTime() - parseIsoDate(right).getTime()) / DAY_IN_MS,
-  );
+  return Math.round((parseIsoDate(left).getTime() - parseIsoDate(right).getTime()) / DAY_IN_MS);
 }
 
 // Intl.DateTimeFormat construction isn't free, so cache one per locale+shape.
@@ -60,10 +54,7 @@ const FORMATTER_SHAPES = {
   weekdayLong: { weekday: "long" },
 } as const satisfies Record<string, Intl.DateTimeFormatOptions>;
 
-function dateFormatter(
-  locale: string,
-  shape: keyof typeof FORMATTER_SHAPES,
-): Intl.DateTimeFormat {
+function dateFormatter(locale: string, shape: keyof typeof FORMATTER_SHAPES): Intl.DateTimeFormat {
   const key = `${locale}|${shape}`;
   let formatter = formatterCache.get(key);
   if (!formatter) {
@@ -93,9 +84,7 @@ export function formatLongDate(value: IsoDate, locale = "en-US"): string {
 // generated from Intl so they translate for free. Weekdays start on Monday.
 export function getMonthNames(locale = "en-US"): string[] {
   const format = dateFormatter(locale, "monthName").format;
-  return Array.from({ length: 12 }, (_, month) =>
-    format(new Date(Date.UTC(2021, month, 1))),
-  );
+  return Array.from({ length: 12 }, (_, month) => format(new Date(Date.UTC(2021, month, 1))));
 }
 
 const WEEKDAY_SHAPE = {
@@ -104,15 +93,10 @@ const WEEKDAY_SHAPE = {
   long: "weekdayLong",
 } as const;
 
-export function getWeekdayLabels(
-  locale = "en-US",
-  width: keyof typeof WEEKDAY_SHAPE = "short",
-): string[] {
+export function getWeekdayLabels(locale = "en-US", width: keyof typeof WEEKDAY_SHAPE = "short"): string[] {
   const format = dateFormatter(locale, WEEKDAY_SHAPE[width]).format;
   // 2024-01-01 is a Monday.
-  return Array.from({ length: 7 }, (_, day) =>
-    format(new Date(Date.UTC(2024, 0, 1 + day))),
-  );
+  return Array.from({ length: 7 }, (_, day) => format(new Date(Date.UTC(2024, 0, 1 + day))));
 }
 
 export function getTodayIsoDate(): IsoDate {

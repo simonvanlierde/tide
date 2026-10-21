@@ -25,8 +25,7 @@ interface CalendarOptions {
 const icsDate = (day: IsoDate) => day.replaceAll("-", "");
 
 // RFC 5545 3.3.11: backslash, semicolon, comma and newline are escaped in TEXT.
-const escapeText = (text: string) =>
-  text.replace(/[\\;,]/g, "\\$&").replace(/\n/g, "\\n");
+const escapeText = (text: string) => text.replace(/[\\;,]/g, "\\$&").replace(/\n/g, "\\n");
 
 // RFC 5545 3.1: a line longer than 75 octets continues after CRLF and one
 // space. Counted in UTF-8 bytes, and never splits a character.
@@ -117,13 +116,6 @@ export function buildCalendar(
   return `${lines.map(foldLine).join("\r\n")}\r\n`;
 }
 
-export function downloadCalendar(
-  cycles: ExpectedCycle[],
-  options: CalendarOptions,
-) {
-  downloadText(
-    buildCalendar(cycles, options),
-    `tide-expected-periods-${options.today}.ics`,
-    "text/calendar",
-  );
+export function downloadCalendar(cycles: ExpectedCycle[], options: CalendarOptions) {
+  downloadText(buildCalendar(cycles, options), `tide-expected-periods-${options.today}.ics`, "text/calendar");
 }

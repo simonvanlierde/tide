@@ -25,12 +25,7 @@ interface CycleInsightsProps {
 // worked out. A native <dialog> gives us the focus trap, Esc-to-close, and
 // backdrop for free. Mounted only while open, so it's shown on mount and a
 // native close (Esc, backdrop) unmounts it via onClose.
-export function CycleInsights({
-  summary,
-  stats,
-  showFertility,
-  onClose,
-}: CycleInsightsProps) {
+export function CycleInsights({ summary, stats, showFertility, onClose }: CycleInsightsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const t = useT();
 
@@ -64,51 +59,30 @@ export function CycleInsights({
         <h2 id="insights-title" className="insights__title">
           {t("insights.title")}
         </h2>
-        <button
-          type="button"
-          className="icon-close"
-          aria-label={t("common.close")}
-          onClick={requestClose}
-        >
+        <button type="button" className="icon-close" aria-label={t("common.close")} onClick={requestClose}>
           <X aria-hidden="true" size={18} />
         </button>
       </div>
 
       <div className="insights__stats">
-        <Stat
-          value={summary.cycleLength}
-          unit={t("common.days")}
-          label={t("insights.cycleLength")}
-        />
-        <Stat
-          value={summary.periodLength}
-          unit={t("common.days")}
-          label={t("insights.periodLength")}
-        />
+        <Stat value={summary.cycleLength} unit={t("common.days")} label={t("insights.cycleLength")} />
+        <Stat value={summary.periodLength} unit={t("common.days")} label={t("insights.periodLength")} />
         <Stat value={stats.cyclesTracked} label={t("insights.cyclesTracked")} />
       </div>
 
       {stats.cyclesTracked === 0 ? (
-        <p className="insights__note">
-          {t("insights.basedOn", { cycle: DEFAULT_CYCLE_LENGTH })}
-        </p>
+        <p className="insights__note">{t("insights.basedOn", { cycle: DEFAULT_CYCLE_LENGTH })}</p>
       ) : null}
 
       <div className="insights__regularity">
-        <span className="insights__regularity-label">
-          {t("insights.regularity")}
-        </span>
+        <span className="insights__regularity-label">{t("insights.regularity")}</span>
         <span
           className="insights__meter"
           role="img"
           aria-label={t("insights.regularityAria", { label: regularityLabel })}
         >
           {[1, 2, 3, 4].map((step) => (
-            <span
-              key={step}
-              className="insights__meter-seg"
-              data-filled={step <= regularity.level}
-            />
+            <span key={step} className="insights__meter-seg" data-filled={step <= regularity.level} />
           ))}
         </span>
         <span className="insights__regularity-word">{regularityLabel}</span>
@@ -116,18 +90,12 @@ export function CycleInsights({
 
       <details className="insights__how">
         <summary className="insights__how-summary">
-          <ChevronRight
-            aria-hidden="true"
-            className="insights__how-icon"
-            strokeWidth={1.8}
-          />
+          <ChevronRight aria-hidden="true" className="insights__how-icon" strokeWidth={1.8} />
           {t("insights.how")}
         </summary>
         <ul className="insights__how-list">
           <li>{t("insights.how1")}</li>
-          <li>
-            {t("insights.howCycleStart", { gap: NEW_CYCLE_MIN_GAP_DAYS })}
-          </li>
+          <li>{t("insights.howCycleStart", { gap: NEW_CYCLE_MIN_GAP_DAYS })}</li>
           <li>
             {t("insights.how2", {
               recent: RECENT_CYCLE_WINDOW,

@@ -12,11 +12,7 @@ export function useToday(): IsoDate {
   useEffect(() => {
     const refresh = () => setToday(getTodayIsoDate());
     const now = new Date();
-    const nextMidnight = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1,
-    );
+    const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
     // Timers pause while the page is hidden, so also re-read on return.
     const timer = setTimeout(refresh, nextMidnight.getTime() - now.getTime());
     document.addEventListener("visibilitychange", refresh);

@@ -16,12 +16,7 @@ interface FlowGaugeProps {
 
 // The tide gauge: four coral levels deepening spotting → heavy. Real radios
 // under styled swatches, so keyboard and screen-reader selection come for free.
-export function FlowGauge({
-  selected,
-  onSelect,
-  name = "flow-intensity",
-  autoFocus = false,
-}: FlowGaugeProps) {
+export function FlowGauge({ selected, onSelect, name = "flow-intensity", autoFocus = false }: FlowGaugeProps) {
   const levelsRef = useRef<HTMLDivElement>(null);
   const t = useT();
 
@@ -31,8 +26,7 @@ export function FlowGauge({
     }
     const group = levelsRef.current;
     const target =
-      group?.querySelector<HTMLInputElement>("input:checked") ??
-      group?.querySelector<HTMLInputElement>("input");
+      group?.querySelector<HTMLInputElement>("input:checked") ?? group?.querySelector<HTMLInputElement>("input");
     target?.focus();
   }, [autoFocus]);
 

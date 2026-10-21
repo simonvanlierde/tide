@@ -6,8 +6,7 @@ import { mergeImportedDays } from "../../src/data/transfer";
 import { createAppState } from "../support/app";
 
 const TODAY = "2026-04-10";
-const parse = (data: unknown) =>
-  parseOtherAppExport(JSON.stringify(data), TODAY);
+const parse = (data: unknown) => parseOtherAppExport(JSON.stringify(data), TODAY);
 
 describe("parseOtherAppExport: Clue measurements.json", () => {
   it("maps Clue flow onto Tide's levels and ignores other measurement types", () => {
@@ -112,9 +111,7 @@ describe("parseOtherAppExport: Clue measurements.json", () => {
         { date: "2026-04-11", type: "period", value: { option: "light" } },
       ]),
     ).toEqual({ source: "Clue", days: { "2026-04-10": "light" } });
-    expect(
-      parse({ data: [{ day: "2026-05-01", period: "heavy" }] }),
-    ).toBeNull();
+    expect(parse({ data: [{ day: "2026-05-01", period: "heavy" }] })).toBeNull();
   });
 });
 
@@ -202,10 +199,7 @@ describe("parseOtherAppExport: Flo", () => {
       { period_start_date: "2026-05-01", period_end_date: "2026-05-03" },
     ])?.days;
     expect(Object.keys(days ?? {}).sort()).toEqual([
-      ...Array.from(
-        { length: 15 },
-        (_, i) => `2026-01-${String(i + 1).padStart(2, "0")}`,
-      ),
+      ...Array.from({ length: 15 }, (_, i) => `2026-01-${String(i + 1).padStart(2, "0")}`),
       "2026-04-08",
       "2026-04-09",
       "2026-04-10",
@@ -214,9 +208,7 @@ describe("parseOtherAppExport: Flo", () => {
 
   it("skips a cycle that starts after today, even in the year 9999", () => {
     // Its day loop used to step past 9999-12-31, which has no IsoDate.
-    expect(
-      flo([{ period_start_date: "9999-12-31", period_end_date: "1970-01-01" }]),
-    ).toBeNull();
+    expect(flo([{ period_start_date: "9999-12-31", period_end_date: "1970-01-01" }])).toBeNull();
   });
 
   it("merges overlapping cycles and skips invalid starts", () => {
@@ -239,18 +231,9 @@ describe("parseOtherAppExport: unrecognised input", () => {
     ["null", "null"],
     ["some other object", JSON.stringify({ hello: "world" })],
     ["an empty Clue export", "[]"],
-    [
-      "a Clue export with no bleeding",
-      JSON.stringify([{ date: "2026-03-01", type: "pain" }]),
-    ],
-    [
-      "a Flo export with no cycles",
-      JSON.stringify({ operationalData: { cycles: [] } }),
-    ],
-    [
-      "Flo with cycles not an array",
-      JSON.stringify({ operationalData: { cycles: {} } }),
-    ],
+    ["a Clue export with no bleeding", JSON.stringify([{ date: "2026-03-01", type: "pain" }])],
+    ["a Flo export with no cycles", JSON.stringify({ operationalData: { cycles: [] } })],
+    ["Flo with cycles not an array", JSON.stringify({ operationalData: { cycles: {} } })],
   ])("returns null for %s", (_, text) => {
     expect(parseOtherAppExport(text, TODAY)).toBeNull();
   });
@@ -298,18 +281,13 @@ describe("parseOtherAppExport properties", () => {
       {
         date: loose,
         type: fc.oneof(fc.constantFrom("period", "spotting", "pain"), loose),
-        value: fc.oneof(
-          fc.record({ option: fc.oneof(fc.string(), fc.anything()) }),
-          fc.anything(),
-        ),
+        value: fc.oneof(fc.record({ option: fc.oneof(fc.string(), fc.anything()) }), fc.anything()),
       },
       { requiredKeys: [] },
     ),
   );
   const clueLegacy = fc.record({
-    data: fc.array(
-      fc.record({ day: loose, period: fc.oneof(fc.string(), fc.anything()) }),
-    ),
+    data: fc.array(fc.record({ day: loose, period: fc.oneof(fc.string(), fc.anything()) })),
   });
   const flo = fc.record({
     operationalData: fc.record({
@@ -320,9 +298,7 @@ describe("parseOtherAppExport properties", () => {
               period_start_date: loose,
               period_end_date: loose,
               period_intensity: fc.oneof(
-                fc
-                  .dictionary(fc.nat(20).map(String), fc.integer())
-                  .map((levels) => JSON.stringify(levels)),
+                fc.dictionary(fc.nat(20).map(String), fc.integer()).map((levels) => JSON.stringify(levels)),
                 fc.string(),
                 fc.anything(),
               ),
@@ -337,9 +313,7 @@ describe("parseOtherAppExport properties", () => {
   const text = fc.oneof(
     fc.string(),
     fc.jsonValue().map((value) => JSON.stringify(value)),
-    fc
-      .oneof(clueMeasurements, clueLegacy, flo)
-      .map((value) => JSON.stringify(value)),
+    fc.oneof(clueMeasurements, clueLegacy, flo).map((value) => JSON.stringify(value)),
   );
 
   it("never throws, and returns only real days up to today", () => {

@@ -10,20 +10,12 @@ interface ReminderPromptProps {
   autoFocus?: boolean;
 }
 
-export function ReminderPrompt({
-  isOverdue,
-  expectedLabel,
-  onLog,
-  onDismiss,
-  autoFocus,
-}: ReminderPromptProps) {
+export function ReminderPrompt({ isOverdue, expectedLabel, onLog, onDismiss, autoFocus }: ReminderPromptProps) {
   const t = useT();
   // Split the template on the {date} placeholder so the date stays bold while
   // each language keeps its own word order. Robust to a translation with no or
   // extra {date} tokens: `after` is never undefined and no text is dropped.
-  const [before, ...rest] = t(
-    isOverdue ? "reminder.messageOverdue" : "reminder.messageUpcoming",
-  ).split("{date}");
+  const [before, ...rest] = t(isOverdue ? "reminder.messageOverdue" : "reminder.messageUpcoming").split("{date}");
   const after = rest.join("{date}");
 
   return (
@@ -33,15 +25,9 @@ export function ReminderPrompt({
         <strong>{expectedLabel}</strong>
         {after}
       </p>
-      {isOverdue ? (
-        <p className="reminder-prompt__reassure">{t("reminder.reassure")}</p>
-      ) : null}
+      {isOverdue ? <p className="reminder-prompt__reassure">{t("reminder.reassure")}</p> : null}
       <LogAction isLogged={false} onToggle={onLog} autoFocus={autoFocus} />
-      <button
-        type="button"
-        className="reminder-prompt__dismiss"
-        onClick={onDismiss}
-      >
+      <button type="button" className="reminder-prompt__dismiss" onClick={onDismiss}>
         {t("reminder.dismiss")}
       </button>
     </div>

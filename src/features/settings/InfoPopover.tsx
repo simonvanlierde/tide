@@ -16,11 +16,7 @@ const VIEWPORT_MARGIN = 8;
 // Native <details> gives the toggle and keyboard support; the rest is added
 // here: tap-outside-to-dismiss, and nudging the panel back into view (shift
 // horizontally, flip above the trigger) when it would spill off-screen.
-export function InfoPopover({
-  label,
-  align = "end",
-  children,
-}: InfoPopoverProps) {
+export function InfoPopover({ label, align = "end", children }: InfoPopoverProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -75,9 +71,7 @@ export function InfoPopover({
     // biome-ignore lint/a11y/noNoninteractiveElementInteractions: Escape dismisses; the summary stays the operable toggle.
     <details
       ref={detailsRef}
-      className={
-        align === "start" ? "info-popover info-popover--start" : "info-popover"
-      }
+      className={align === "start" ? "info-popover info-popover--start" : "info-popover"}
       onToggle={reposition}
       onKeyDown={(event) => {
         const details = detailsRef.current;

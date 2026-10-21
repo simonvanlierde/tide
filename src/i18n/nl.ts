@@ -16,8 +16,7 @@ export const nl: Dictionary = {
   "today.fertilityInfoLabel": "Hoe vruchtbaarheid wordt geschat",
   "today.cycleInsights": "Cyclusinzichten",
   "today.howWorkedOut": "Hoe is dit berekend?",
-  "today.explainError":
-    "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
+  "today.explainError": "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
   "today.daysAgo.one": "{n} dag geleden",
   "today.daysAgo.other": "{n} dagen geleden",
   "today.expectedToday": "Vandaag verwacht",
@@ -32,8 +31,7 @@ export const nl: Dictionary = {
   "fertilityAsk.show": "Tonen",
   "fertilityAsk.hide": "Niet tonen",
   "today.privacy": "Alleen op dit apparaat opgeslagen.",
-  "today.importPrompt":
-    "Heb je een Tide-back-up of je geschiedenis uit Clue of Flo?",
+  "today.importPrompt": "Heb je een Tide-back-up of je geschiedenis uit Clue of Flo?",
   "today.importLink": "Importeren",
   "today.fertilityUnclear": "Onduidelijk bij vertraging",
   "today.periodLate": "Menstruatie",
@@ -45,10 +43,8 @@ export const nl: Dictionary = {
   "today.ovulationToday": "Eisprong vandaag",
   "today.ovulationInDays.one": "Eisprong over {n} dag",
   "today.ovulationInDays.other": "Eisprong over {n} dagen",
-  "today.learningFallback":
-    "We gaan uit van een gemiddelde cyclus van 28 dagen totdat we je patroon kennen.",
-  "today.learningInsufficient":
-    "Log je menstruatie om een voorspelling te zien.",
+  "today.learningFallback": "We gaan uit van een gemiddelde cyclus van 28 dagen totdat we je patroon kennen.",
+  "today.learningInsufficient": "Log je menstruatie om een voorspelling te zien.",
 
   "phase.menstrual": "Menstruatie",
   "phase.follicular": "Folliculair",
@@ -87,18 +83,15 @@ export const nl: Dictionary = {
   "regularity.somewhatVariable": "Enigszins wisselend",
   "regularity.variable": "Wisselend",
   "insights.how": "Hoe voorspellingen werken",
-  "insights.how1":
-    "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
+  "insights.how1": "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
   "insights.howCycleStart":
     "Een tussenpoos van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere tussenpozen horen bij dezelfde menstruatie.",
   "insights.how2":
     "De cycluslengte is de mediaan van je laatste {recent} cycli, zodat één afwijkende maand het beeld niet verstoort. Vóór twee cycli wordt een gemiddelde cyclus van {cycle} dagen gebruikt.",
-  "insights.how3":
-    "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
+  "insights.how3": "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
   "insights.how4":
     "Je volgende menstruatie is je laatste begindatum plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
-  "insights.howNextPeriod":
-    "Je volgende menstruatie is je laatste begindatum plus die cycluslengte.",
+  "insights.howNextPeriod": "Je volgende menstruatie is je laatste begindatum plus die cycluslengte.",
   "insights.how5":
     "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
 
@@ -117,10 +110,8 @@ export const nl: Dictionary = {
   "log.logged": "Vandaag gelogd",
   "log.loggedWith": "Vandaag gelogd · {flow}",
   "log.add": "Bloedverlies registreren",
-  "reminder.messageOverdue":
-    "Je menstruatie werd verwacht op {date}. Begonnen?",
-  "reminder.messageUpcoming":
-    "Je menstruatie wordt verwacht op {date}. Begonnen?",
+  "reminder.messageOverdue": "Je menstruatie werd verwacht op {date}. Begonnen?",
+  "reminder.messageUpcoming": "Je menstruatie wordt verwacht op {date}. Begonnen?",
   "reminder.dismiss": "Nog niet — herinner me later",
   "reminder.reassure": "Een paar dagen variatie is normaal.",
 
@@ -130,8 +121,7 @@ export const nl: Dictionary = {
   "calendar.jumpToMonth": "Ga naar maand",
   "calendar.month": "Maand",
   "calendar.year": "Jaar",
-  "calendar.tapHelp":
-    "Tik op een dag om bloedverlies te registreren of te wijzigen.",
+  "calendar.tapHelp": "Tik op een dag om bloedverlies te registreren of te wijzigen.",
   "calendar.today": "Vandaag",
   "calendar.goToCurrentMonth": "Ga naar huidige maand",
   "calendar.justLogged": "{date} gelogd.",
@@ -139,12 +129,9 @@ export const nl: Dictionary = {
   "calendar.undo": "Ongedaan maken",
   "calendar.logRange": "Eerdere menstruatie loggen",
   "calendar.rangePickFirst": "Kies de eerste dag van de menstruatie.",
-  "calendar.rangePickLast":
-    "Vanaf {date}: kies nu de laatste dag, hooguit {max} dagen.",
-  "calendar.rangeTooLong":
-    "Meer dan {max} dagen. Kies een laatste dag dichterbij.",
-  "calendar.emptyHelp":
-    "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
+  "calendar.rangePickLast": "Vanaf {date}: kies nu de laatste dag, hooguit {max} dagen.",
+  "calendar.rangeTooLong": "Meer dan {max} dagen. Kies een laatste dag dichterbij.",
+  "calendar.emptyHelp": "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen.",
   "calendar.futureHelp": "Toekomstige dagen kun je nog niet loggen.",
   "calendar.log": "Registreren",
   "calendar.edit": "Wijzigen",
@@ -181,25 +168,22 @@ export const nl: Dictionary = {
   "language.es": "Español",
   "settings.showFertility": "Vrucht\u00adbaarheids\u00adschattingen tonen",
   "settings.fertilityInfo": "Over vruchtbaarheidsschattingen",
-  "settings.fertilityHelp":
-    "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender.",
+  "settings.fertilityHelp": "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender.",
   "settings.showCycleNumbers": "Cyclusdag\u00adnummers tonen",
   "settings.cycleNumbersInfo": "Over cyclusdagnummers",
   "settings.cycleNumbersHelp":
     "Nummert de dagen van je huidige cyclus (1, 2, 3, ...) op de kalender, tot je volgende verwachte menstruatie.",
   "settings.about": "Over",
   "settings.privacy": "Je gegevens verlaten dit apparaat nooit.",
-  "settings.fertilityDisclaimer":
-    "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
+  "settings.fertilityDisclaimer": "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
   "settings.fertilityMethod":
     "De vruchtbare periode zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes.",
-  "settings.sourceCode": "Broncode (v{version}), opent in een nieuw tabblad",
+  "settings.sourceCode": "Broncode, v{version}, opent in een nieuw tabblad",
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
     "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een Tide-back-up, of voegt dagen toe uit Clue of Flo.",
-  "settings.importSources":
-    "Je kunt een Tide-back-up importeren, of een export uit Clue of Flo.",
+  "settings.importSources": "Je kunt een Tide-back-up importeren, of een export uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.exportCalendar": "Naar agenda",
@@ -207,12 +191,10 @@ export const nl: Dictionary = {
     "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen. Daar synchroniseren ze zoals je andere afspraken, dus ook het account van die agenda bewaart ze.",
   "settings.calendarFertility": "Vruchtbare periodes meenemen",
   "settings.calendarSuccess": "Agendabestand opgeslagen in je downloads.",
-  "settings.calendarError":
-    "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens.",
+  "settings.calendarError": "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
-  "settings.importError":
-    "Dat bestand is geen Tide-back-up en geen export van Clue of Flo.",
+  "settings.importError": "Dat bestand is geen Tide-back-up en geen export van Clue of Flo.",
   "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
   "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",
   "settings.importConfirmTitle": "Je gegevens vervangen?",
@@ -225,8 +207,7 @@ export const nl: Dictionary = {
     "Het vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.",
   "settings.importMergeTitle": "Dagen uit {source} toevoegen?",
   "settings.importMergeAction": "Toevoegen",
-  "settings.importMerges":
-    "Dagen die hier al gelogd zijn, blijven zoals ze zijn.",
+  "settings.importMerges": "Dagen die hier al gelogd zijn, blijven zoals ze zijn.",
   "settings.reset": "Alle gegevens wissen",
   "settings.resetTitle": "Alle gegevens verwijderen?",
   "settings.resetAction": "Verwijderen",
