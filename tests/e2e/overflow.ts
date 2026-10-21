@@ -10,15 +10,11 @@ export function findOverflow(page: Page): Promise<string[]> {
   return page.evaluate(async () => {
     // Let a just-opened popover finish placing itself (it moves on "toggle",
     // which fires after the click).
-    await new Promise((done) =>
-      requestAnimationFrame(() => requestAnimationFrame(done)),
-    );
+    await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
     const viewport = document.documentElement.clientWidth;
     const found: string[] = [];
     const report = (el: Element, why: string) => {
-      const name =
-        el.tagName.toLowerCase() +
-        (el.classList.length ? `.${[...el.classList].join(".")}` : "");
+      const name = el.tagName.toLowerCase() + (el.classList.length ? `.${[...el.classList].join(".")}` : "");
       const text = (el.textContent ?? "").trim().replace(/\s+/g, " ");
       found.push(`${name} "${text.slice(0, 60)}": ${why}`);
     };
@@ -36,10 +32,7 @@ export function findOverflow(page: Page): Promise<string[]> {
     for (const el of rendered) {
       const rect = el.getBoundingClientRect();
       if (rect.left < -1 || rect.right > viewport + 1) {
-        report(
-          el,
-          `spans ${Math.round(rect.left)}..${Math.round(rect.right)} in a ${viewport}px viewport`,
-        );
+        report(el, `spans ${Math.round(rect.left)}..${Math.round(rect.right)} in a ${viewport}px viewport`);
       }
     }
 
@@ -60,11 +53,7 @@ export function findOverflow(page: Page): Promise<string[]> {
       if (!(el instanceof HTMLElement)) continue;
       const style = getComputedStyle(el);
       // +1 tolerates sub-pixel rounding, not a real overflowing element.
-      if (
-        el.clientWidth > 0 &&
-        !/auto|scroll/.test(style.overflowX) &&
-        el.scrollWidth > el.clientWidth + 1
-      ) {
+      if (el.clientWidth > 0 && !/auto|scroll/.test(style.overflowX) && el.scrollWidth > el.clientWidth + 1) {
         report(el, `content ${el.scrollWidth}px wide in ${el.clientWidth}px`);
       }
       if (

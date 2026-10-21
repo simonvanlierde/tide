@@ -1,12 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
-import {
-  BACKUP_KEY,
-  clearAppState,
-  loadStoredState,
-  STORAGE_KEY,
-  saveAppState,
-} from "../../src/data/storage";
+import { BACKUP_KEY, clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { createAppState } from "../support/app";
 
 describe("local storage", () => {
@@ -37,9 +31,7 @@ describe("local storage", () => {
     expect(loaded).toEqual({ state, readOnly: false });
     saveAppState(loaded.state);
 
-    expect(
-      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").schemaVersion,
-    ).toBe(SCHEMA_VERSION);
+    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").schemaVersion).toBe(SCHEMA_VERSION);
   });
 
   it("reads data from a newer build but marks it read-only", () => {
@@ -157,26 +149,20 @@ describe("local storage", () => {
       }),
     );
 
-    expect(loadStoredState().state).toEqual(
-      createAppState({ periodDays: ["2026-04-02"] }),
-    );
+    expect(loadStoredState().state).toEqual(createAppState({ periodDays: ["2026-04-02"] }));
   });
 
   it("backs up an unreadable blob before falling back to defaults", () => {
     window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
 
     expect(loadStoredState().state).toEqual(createAppState());
-    expect(window.localStorage.getItem(BACKUP_KEY)).toBe(
-      "{ definitely not json",
-    );
+    expect(window.localStorage.getItem(BACKUP_KEY)).toBe("{ definitely not json");
   });
 
   it("keeps running when storage writes fail", () => {
-    const setItem = vi
-      .spyOn(Storage.prototype, "setItem")
-      .mockImplementation(() => {
-        throw new DOMException("quota", "QuotaExceededError");
-      });
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
 
     try {
       expect(() => saveAppState(createAppState())).not.toThrow();
@@ -189,12 +175,8 @@ describe("local storage", () => {
     const blocked = () => {
       throw new DOMException("blocked", "SecurityError");
     };
-    const getItem = vi
-      .spyOn(Storage.prototype, "getItem")
-      .mockImplementation(blocked);
-    const removeItem = vi
-      .spyOn(Storage.prototype, "removeItem")
-      .mockImplementation(blocked);
+    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(blocked);
+    const removeItem = vi.spyOn(Storage.prototype, "removeItem").mockImplementation(blocked);
 
     try {
       expect(loadStoredState().state).toEqual(createAppState());

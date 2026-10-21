@@ -10,9 +10,7 @@ const FIXED_TODAY = "2026-04-15";
 const SEED_STATE = {
   schemaVersion: 2,
   intensityByDay: Object.fromEntries(
-    ["2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", FIXED_TODAY].map(
-      (day) => [day, "medium"],
-    ),
+    ["2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", FIXED_TODAY].map((day) => [day, "medium"]),
   ),
   // A user who said yes to fertility estimates, so every estimate shows.
   settings: { dismissedOn: null, theme: "system", showFertility: true },

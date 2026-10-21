@@ -1,10 +1,5 @@
 import { DEFAULT_CYCLE_LENGTH } from "../../domain/cycle";
-import type {
-  CycleSummary,
-  Forecast,
-  IsoDate,
-  LoggedFlow,
-} from "../../domain/types";
+import type { CycleSummary, Forecast, IsoDate, LoggedFlow } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
 import { addDays, differenceInDays } from "../../utils/date";
 
@@ -39,36 +34,30 @@ export function buildCycleSegments(
     }));
   }
 
-  return Array.from(
-    { length: differenceInDays(cycleEnd, cycleStart) + 1 },
-    (_, index) => {
-      const date = addDays(cycleStart, index);
-      const { estimate } = forecast.dayInfo(date);
-      // A logged future day (imported, or a clock that moved back) isn't a
-      // fact yet, so the ring leaves it out.
-      const isPeriod = date <= today && date in intensityByDay;
-      return {
-        dayNumber: index + 1,
-        date,
-        isCurrent: index + 1 === forecast.cycleDay,
-        isPeriod,
-        // null on a period day means "logged, level not chosen": the ring
-        // shows it in base coral (see phaseColor, which keys off isPeriod).
-        flow: isPeriod ? (intensityByDay[date] ?? null) : null,
-        // The ovulation day is part of the fertile window too.
-        isFertile: estimate === "fertile" || estimate === "ovulation",
-        isOvulation: estimate === "ovulation",
-      };
-    },
-  );
+  return Array.from({ length: differenceInDays(cycleEnd, cycleStart) + 1 }, (_, index) => {
+    const date = addDays(cycleStart, index);
+    const { estimate } = forecast.dayInfo(date);
+    // A logged future day (imported, or a clock that moved back) isn't a
+    // fact yet, so the ring leaves it out.
+    const isPeriod = date <= today && date in intensityByDay;
+    return {
+      dayNumber: index + 1,
+      date,
+      isCurrent: index + 1 === forecast.cycleDay,
+      isPeriod,
+      // null on a period day means "logged, level not chosen": the ring
+      // shows it in base coral (see phaseColor, which keys off isPeriod).
+      flow: isPeriod ? (intensityByDay[date] ?? null) : null,
+      // The ovulation day is part of the fertile window too.
+      isFertile: estimate === "fertile" || estimate === "ovulation",
+      isOvulation: estimate === "ovulation",
+    };
+  });
 }
 
 // Returns the message key for the segment's status (localized by the caller),
 // or "" when there's nothing to show.
-export function getSegmentStatus(
-  segment: CycleSegment,
-  summary: CycleSummary,
-): MessageKey | "" {
+export function getSegmentStatus(segment: CycleSegment, summary: CycleSummary): MessageKey | "" {
   if (segment.isPeriod) {
     return "status.period";
   }
@@ -81,11 +70,7 @@ export function getSegmentStatus(
     return "status.fertileWindow";
   }
 
-  if (
-    segment.date !== null &&
-    summary.nextPeriod.date !== null &&
-    segment.date >= summary.nextPeriod.date
-  ) {
+  if (segment.date !== null && summary.nextPeriod.date !== null && segment.date >= summary.nextPeriod.date) {
     return "status.periodExpected";
   }
 
@@ -95,9 +80,7 @@ export function getSegmentStatus(
     if (summary.ovulationDate === null) {
       return "phase.between";
     }
-    return differenceInDays(segment.date, summary.ovulationDate) > 0
-      ? "phase.luteal"
-      : "phase.follicular";
+    return differenceInDays(segment.date, summary.ovulationDate) > 0 ? "phase.luteal" : "phase.follicular";
   }
 
   return "";

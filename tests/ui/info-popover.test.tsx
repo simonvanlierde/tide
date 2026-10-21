@@ -32,27 +32,23 @@ describe("InfoPopover", () => {
       configurable: true,
       value: 200,
     });
-    const rectSpy = vi
-      .spyOn(Element.prototype, "getBoundingClientRect")
-      .mockReturnValue({
-        bottom: 500,
-        top: 480,
-        left: 10,
-        right: 20,
-        width: 10,
-        height: 20,
-        x: 10,
-        y: 480,
-        toJSON: () => ({}),
-      } as DOMRect);
+    const rectSpy = vi.spyOn(Element.prototype, "getBoundingClientRect").mockReturnValue({
+      bottom: 500,
+      top: 480,
+      left: 10,
+      right: 20,
+      width: 10,
+      height: 20,
+      x: 10,
+      y: 480,
+      toJSON: () => ({}),
+    } as DOMRect);
 
     renderPopover();
     const content = screen.getByRole("note");
 
     await user.click(screen.getByLabelText("More info"));
-    expect(content.classList.contains("info-popover__content--above")).toBe(
-      true,
-    );
+    expect(content.classList.contains("info-popover__content--above")).toBe(true);
 
     rectSpy.mockRestore();
   });

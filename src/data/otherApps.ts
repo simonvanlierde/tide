@@ -24,8 +24,7 @@ export interface OtherAppImport {
 const MAX_FLO_PERIOD_DAYS = 15;
 
 type Json = Record<string, unknown>;
-const isObject = (value: unknown): value is Json =>
-  !!value && typeof value === "object" && !Array.isArray(value);
+const isObject = (value: unknown): value is Json => !!value && typeof value === "object" && !Array.isArray(value);
 
 // Clue's flow words onto Tide's levels. "very_heavy" has no Tide level above
 // heavy. An unknown word still marks a bleeding day, with no level claimed,
@@ -37,21 +36,14 @@ function clueFlow(option: unknown): LoggedFlow | undefined {
   if (option === "very_heavy") {
     return "heavy";
   }
-  return FLOW_INTENSITIES.includes(option as never)
-    ? (option as LoggedFlow)
-    : null;
+  return FLOW_INTENSITIES.includes(option as never) ? (option as LoggedFlow) : null;
 }
 
 // Several entries can name one day (a period and a spotting record, or a
 // duplicate): keep the heaviest, with spotting below a plain log.
-const rank = (flow: LoggedFlow) =>
-  flow === null ? 0.5 : FLOW_INTENSITIES.indexOf(flow);
+const rank = (flow: LoggedFlow) => (flow === null ? 0.5 : FLOW_INTENSITIES.indexOf(flow));
 
-function addDay(
-  days: Record<string, LoggedFlow>,
-  day: unknown,
-  flow: LoggedFlow | undefined,
-) {
+function addDay(days: Record<string, LoggedFlow>, day: unknown, flow: LoggedFlow | undefined) {
   if (typeof day !== "string" || flow === undefined) {
     return;
   }
@@ -70,11 +62,7 @@ function readClueMeasurements(entries: unknown[]) {
     }
     if (entry.type === "period") {
       const value = entry.value;
-      addDay(
-        days,
-        entry.date,
-        clueFlow(isObject(value) ? value.option : value),
-      );
+      addDay(days, entry.date, clueFlow(isObject(value) ? value.option : value));
     } else if (entry.type === "spotting") {
       addDay(days, entry.date, "spotting");
     }
@@ -143,10 +131,7 @@ function readFloCycles(cycles: unknown[], today: IsoDate) {
 
 // Recognise the file by its shape and read its bleeding days. Returns null for
 // anything that is not a Clue or Flo export, or one with no days in it.
-export function parseOtherAppExport(
-  text: string,
-  today: IsoDate,
-): OtherAppImport | null {
+export function parseOtherAppExport(text: string, today: IsoDate): OtherAppImport | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);
@@ -162,11 +147,7 @@ export function parseOtherAppExport(
   } else if (isObject(parsed) && Array.isArray(parsed.data)) {
     source = "Clue";
     raw = readClueLegacy(parsed.data);
-  } else if (
-    isObject(parsed) &&
-    isObject(parsed.operationalData) &&
-    Array.isArray(parsed.operationalData.cycles)
-  ) {
+  } else if (isObject(parsed) && isObject(parsed.operationalData) && Array.isArray(parsed.operationalData.cycles)) {
     source = "Flo";
     raw = readFloCycles(parsed.operationalData.cycles, today);
   } else {
@@ -175,10 +156,6 @@ export function parseOtherAppExport(
 
   // The schema drops impossible dates ("2023-02-30") and any stray key. A
   // future day is dropped too: Tide never logs one.
-  const days = Object.fromEntries(
-    Object.entries(normalizeIntensityByDay(raw)).filter(
-      ([day]) => day <= today,
-    ),
-  );
+  const days = Object.fromEntries(Object.entries(normalizeIntensityByDay(raw)).filter(([day]) => day <= today));
   return Object.keys(days).length > 0 ? { source, days } : null;
 }

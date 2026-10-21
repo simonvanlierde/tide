@@ -19,10 +19,7 @@ export const STORAGE_KEY = "tide.period-tracker.state";
 export const SCHEMA_VERSION = 2;
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
-const LANGUAGE_PREFERENCES: LanguagePreference[] = [
-  "system",
-  ...SUPPORTED_LANGUAGES,
-];
+const LANGUAGE_PREFERENCES: LanguagePreference[] = ["system", ...SUPPORTED_LANGUAGES];
 
 export const defaultAppState: AppState = {
   intensityByDay: {},
@@ -39,8 +36,7 @@ export const defaultAppState: AppState = {
 const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 // crypto.randomUUID's shape. It goes into calendar-file lines as is, so a
 // backup can't put anything else there.
-const UUID_RE =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 export function isIsoDate(value: unknown): value is IsoDate {
   if (typeof value !== "string" || !ISO_DATE_RE.test(value)) {
@@ -52,22 +48,16 @@ export function isIsoDate(value: unknown): value is IsoDate {
   return !Number.isNaN(time) && new Date(time).toISOString().startsWith(value);
 }
 
-const isFlow = (value: unknown): value is FlowIntensity =>
-  FLOW_INTENSITIES.includes(value as FlowIntensity);
+const isFlow = (value: unknown): value is FlowIntensity => FLOW_INTENSITIES.includes(value as FlowIntensity);
 
 // null is a logged day with no chosen level; any other non-flow value is junk.
-const isLoggedFlow = (value: unknown): value is LoggedFlow =>
-  value === null || isFlow(value);
+const isLoggedFlow = (value: unknown): value is LoggedFlow => value === null || isFlow(value);
 
 // Normalize the logged days into the single date -> flow map. Its keys are the
 // logged days and its values their flow levels; any invalid entry is dropped.
-export function normalizeIntensityByDay(
-  intensityByDay: unknown,
-): Record<IsoDate, LoggedFlow> {
+export function normalizeIntensityByDay(intensityByDay: unknown): Record<IsoDate, LoggedFlow> {
   const levels =
-    intensityByDay && typeof intensityByDay === "object"
-      ? (intensityByDay as Record<string, unknown>)
-      : {};
+    intensityByDay && typeof intensityByDay === "object" ? (intensityByDay as Record<string, unknown>) : {};
   const result: Record<IsoDate, LoggedFlow> = {};
 
   for (const [day, level] of Object.entries(levels)) {
@@ -80,19 +70,12 @@ export function normalizeIntensityByDay(
 }
 
 export function normalizeSettings(settings: unknown): AppSettings {
-  const candidate =
-    settings && typeof settings === "object"
-      ? (settings as Partial<AppSettings>)
-      : {};
+  const candidate = settings && typeof settings === "object" ? (settings as Partial<AppSettings>) : {};
 
   return {
-    dismissedOn: isIsoDate(candidate.dismissedOn)
-      ? candidate.dismissedOn
-      : defaultAppState.settings.dismissedOn,
+    dismissedOn: isIsoDate(candidate.dismissedOn) ? candidate.dismissedOn : defaultAppState.settings.dismissedOn,
     showFertility:
-      typeof candidate.showFertility === "boolean"
-        ? candidate.showFertility
-        : defaultAppState.settings.showFertility,
+      typeof candidate.showFertility === "boolean" ? candidate.showFertility : defaultAppState.settings.showFertility,
     showCycleDayNumbers:
       typeof candidate.showCycleDayNumbers === "boolean"
         ? candidate.showCycleDayNumbers
@@ -100,14 +83,11 @@ export function normalizeSettings(settings: unknown): AppSettings {
     theme: THEME_PREFERENCES.includes(candidate.theme as ThemePreference)
       ? (candidate.theme as ThemePreference)
       : defaultAppState.settings.theme,
-    language: LANGUAGE_PREFERENCES.includes(
-      candidate.language as LanguagePreference,
-    )
+    language: LANGUAGE_PREFERENCES.includes(candidate.language as LanguagePreference)
       ? (candidate.language as LanguagePreference)
       : defaultAppState.settings.language,
     calendarId:
-      typeof candidate.calendarId === "string" &&
-      UUID_RE.test(candidate.calendarId)
+      typeof candidate.calendarId === "string" && UUID_RE.test(candidate.calendarId)
         ? candidate.calendarId
         : defaultAppState.settings.calendarId,
   };
@@ -117,17 +97,12 @@ export function normalizeAppState(state: unknown): AppState {
   if (!state || typeof state !== "object") {
     return defaultAppState;
   }
-  const version =
-    "schemaVersion" in state && typeof state.schemaVersion === "number"
-      ? state.schemaVersion
-      : 0;
+  const version = "schemaVersion" in state && typeof state.schemaVersion === "number" ? state.schemaVersion : 0;
 
   // Pre-release builds persisted a { version, state } envelope; unwrap it so
   // upgrading users keep their logged history.
   const candidate = (
-    "state" in state && state.state && typeof state.state === "object"
-      ? state.state
-      : state
+    "state" in state && state.state && typeof state.state === "object" ? state.state : state
   ) as Partial<AppState> & { days?: unknown };
 
   const settings = normalizeSettings(candidate.settings);
@@ -140,9 +115,7 @@ export function normalizeAppState(state: unknown): AppState {
 
   // Backups use `days`; current state uses `intensityByDay`.
   return {
-    intensityByDay: normalizeIntensityByDay(
-      candidate.days ?? candidate.intensityByDay,
-    ),
+    intensityByDay: normalizeIntensityByDay(candidate.days ?? candidate.intensityByDay),
     settings,
   };
 }

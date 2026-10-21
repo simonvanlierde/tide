@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  explainForecast,
-  forecast,
-  getExpectedCycles,
-} from "../../src/domain/cycle";
+import { explainForecast, forecast, getExpectedCycles } from "../../src/domain/cycle";
 import { startsEndingOn } from "../support/cycles";
 
 const TODAY = "2026-04-09";
@@ -11,10 +7,7 @@ const TODAY = "2026-04-09";
 describe("explainForecast", () => {
   it("shows the last six cycle lengths, their median, spread and range", () => {
     // Seven cycles: the oldest (40) falls outside the six-cycle window.
-    const periodDays = startsEndingOn(
-      "2026-04-01",
-      [40, 27, 30, 28, 29, 31, 26],
-    );
+    const periodDays = startsEndingOn("2026-04-01", [40, 27, 30, 28, 29, 31, 26]);
     const f = forecast({ today: TODAY, periodDays, fertility: false });
 
     const explained = explainForecast(f);
@@ -73,11 +66,7 @@ describe("explainForecast", () => {
   });
 
   it("has nothing to explain without a forecast", () => {
-    expect(
-      explainForecast(
-        forecast({ today: TODAY, periodDays: [], fertility: true }),
-      ),
-    ).toBeNull();
+    expect(explainForecast(forecast({ today: TODAY, periodDays: [], fertility: true }))).toBeNull();
   });
 });
 
@@ -123,11 +112,7 @@ describe("getExpectedCycles", () => {
 
   it("keeps the numbers of the cycles still ahead once a period is logged", () => {
     const periodDays = startsEndingOn("2026-04-01", [28, 28]);
-    const before = getExpectedCycles(
-      forecast({ today: TODAY, periodDays, fertility: false }),
-      TODAY,
-      3,
-    );
+    const before = getExpectedCycles(forecast({ today: TODAY, periodDays, fertility: false }), TODAY, 3);
     // The period expected on 04-29 comes two days late.
     const later = "2026-05-02";
     const after = getExpectedCycles(
@@ -141,17 +126,9 @@ describe("getExpectedCycles", () => {
     );
 
     // The same cycles keep their numbers, so a newer file moves them.
-    expect(after.map((c) => c.number)).toEqual(
-      before.slice(1).map((c) => c.number),
-    );
-    expect(after.map((c) => c.periodStart)).toEqual([
-      "2026-05-29",
-      "2026-06-26",
-    ]);
-    expect(before.slice(1).map((c) => c.periodStart)).toEqual([
-      "2026-05-27",
-      "2026-06-24",
-    ]);
+    expect(after.map((c) => c.number)).toEqual(before.slice(1).map((c) => c.number));
+    expect(after.map((c) => c.periodStart)).toEqual(["2026-05-29", "2026-06-26"]);
+    expect(before.slice(1).map((c) => c.periodStart)).toEqual(["2026-05-27", "2026-06-24"]);
   });
 
   it("is empty without a forecast", () => {

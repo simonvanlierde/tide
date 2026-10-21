@@ -2,12 +2,7 @@ import { ChevronRight } from "lucide-react";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
-import type {
-  CycleEstimateMode,
-  CyclePhase,
-  CycleSummary,
-  IsoDate,
-} from "../../domain/types";
+import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
 import { plural, type SupportedLanguage } from "../../i18n";
 import {
   type Translate,
@@ -59,10 +54,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
   const showFertility = state.settings.showFertility === true;
-  const askFertility =
-    state.settings.showFertility === null &&
-    forecast.nextPeriod.date !== null &&
-    !readOnly;
+  const askFertility = state.settings.showFertility === null && forecast.nextPeriod.date !== null && !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
   // from another tab or a new day leaves focus where it is.
@@ -89,16 +81,13 @@ export function TodayScreen(props: TodayScreenProps) {
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
   // today is logged it drops to calm: "Remove" is a secondary, undo-style action.
-  const isOverdue =
-    forecast.nextPeriod.daysUntil !== null && forecast.nextPeriod.daysUntil < 0;
+  const isOverdue = forecast.nextPeriod.daysUntil !== null && forecast.nextPeriod.daysUntil < 0;
   // Prominent when a fresh bleed is plausible, and on first run: with nothing
   // logged, the log button is the only thing to do, so it must read as the
   // one action. Once today is logged the whole block turns calm.
   const logVariant =
     !isTodayLogged &&
-    (forecast.phaseLabel === "menstrual" ||
-      reminderState.isExpectedSoon ||
-      forecast.estimateMode === "insufficient")
+    (forecast.phaseLabel === "menstrual" || reminderState.isExpectedSoon || forecast.estimateMode === "insufficient")
       ? "primary"
       : "quiet";
 
@@ -112,16 +101,12 @@ export function TodayScreen(props: TodayScreenProps) {
       </h1>
       <CycleDial
         forecast={forecast}
-        phaseLabel={
-          isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)
-        }
+        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
         intensityByDay={state.intensityByDay}
         today={today}
       />
 
-      {learningNote ? (
-        <p className="today-screen__note">{learningNote}</p>
-      ) : null}
+      {learningNote ? <p className="today-screen__note">{learningNote}</p> : null}
       {/* Import is disabled while read-only, so the link would lead nowhere. */}
       {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
         <p className="today-screen__note">
@@ -142,25 +127,14 @@ export function TodayScreen(props: TodayScreenProps) {
               the past contradicts itself; the row becomes "Period · N days
               late · Expected <date>". */}
             <div className="fact">
-              <dt className="fact__label">
-                {t(isOverdue ? "today.periodLate" : "today.nextPeriod")}
-              </dt>
+              <dt className="fact__label">{t(isOverdue ? "today.periodLate" : "today.nextPeriod")}</dt>
               <dd className="fact__value">
-                <span>
-                  {getNextPeriodPhrase(
-                    t,
-                    locale,
-                    forecast.nextPeriod.daysUntil,
-                  )}
-                </span>
+                <span>{getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil)}</span>
                 {forecast.nextPeriod.date ? (
                   <span className="fact__meta">
                     {isOverdue
                       ? t("today.expectedOn", {
-                          date: formatShortDate(
-                            forecast.nextPeriod.date,
-                            locale,
-                          ),
+                          date: formatShortDate(forecast.nextPeriod.date, locale),
                         })
                       : formatShortDate(forecast.nextPeriod.date, locale)}
                   </span>
@@ -172,10 +146,7 @@ export function TodayScreen(props: TodayScreenProps) {
               <div className="fact">
                 <dt className="fact__label fact__label--with-info">
                   {t("today.fertility")}
-                  <InfoPopover
-                    label={t("today.fertilityInfoLabel")}
-                    align="start"
-                  >
+                  <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
                     <p>{t("settings.fertilityMethod")}</p>
                     <p>{t("settings.fertilityDisclaimer")}</p>
                   </InfoPopover>
@@ -187,23 +158,11 @@ export function TodayScreen(props: TodayScreenProps) {
                     <span>{t("today.fertilityUnclear")}</span>
                   ) : forecast.ovulationDate ? (
                     <>
-                      <span>
-                        {getFertilityEstimate(
-                          t,
-                          forecast.phaseLabel,
-                          forecast.fertile,
-                        )}
-                      </span>
+                      <span>{getFertilityEstimate(t, forecast.phaseLabel, forecast.fertile)}</span>
                       <span className="fact__meta">
-                        {getOvulationPhrase(
-                          t,
-                          locale,
-                          differenceInDays(forecast.ovulationDate, today),
-                        )}
+                        {getOvulationPhrase(t, locale, differenceInDays(forecast.ovulationDate, today))}
                       </span>
-                      <span className="fact__meta">
-                        {t("today.notBirthControl")}
-                      </span>
+                      <span className="fact__meta">{t("today.notBirthControl")}</span>
                     </>
                   ) : null}
                 </dd>
@@ -212,21 +171,12 @@ export function TodayScreen(props: TodayScreenProps) {
           </dl>
         )}
 
-        <button
-          ref={insightsButton}
-          type="button"
-          className="fact-list__more"
-          onClick={() => setInsightsOpen(true)}
-        >
+        <button ref={insightsButton} type="button" className="fact-list__more" onClick={() => setInsightsOpen(true)}>
           {t("today.cycleInsights")}
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
         {explanation ? (
-          <button
-            type="button"
-            className="fact-list__more"
-            onClick={openExplainer}
-          >
+          <button type="button" className="fact-list__more" onClick={openExplainer}>
             {t("today.howWorkedOut")}
             <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
           </button>
@@ -260,10 +210,7 @@ export function TodayScreen(props: TodayScreenProps) {
       ) : null}
 
       {explainOpen && explanation && Explainer ? (
-        <Explainer
-          explanation={explanation}
-          onClose={() => setExplainOpen(false)}
-        />
+        <Explainer explanation={explanation} onClose={() => setExplainOpen(false)} />
       ) : null}
 
       {reminderState.shouldPrompt && reminderState.expectedDate ? (
@@ -283,9 +230,7 @@ export function TodayScreen(props: TodayScreenProps) {
           intensity={state.intensityByDay[today]}
           variant={logVariant}
           onToggle={toggleToday}
-          onSelectIntensity={(intensity) =>
-            actions.setDayIntensity(today, intensity, today)
-          }
+          onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
           autoFocus={focusPending}
         />
       )}
@@ -297,13 +242,7 @@ export function TodayScreen(props: TodayScreenProps) {
 // Client-side, like the tab bar: the app shell follows popstate, then focuses
 // the #import target. A modified click opens the page the browser's way.
 function openImport(event: MouseEvent<HTMLAnchorElement>) {
-  if (
-    event.button !== 0 ||
-    event.metaKey ||
-    event.ctrlKey ||
-    event.shiftKey ||
-    event.altKey
-  ) {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
     return;
   }
   event.preventDefault();
@@ -337,16 +276,10 @@ function getPhaseWord(t: Translate, phaseLabel: CyclePhase) {
 }
 
 function getPhaseLine(t: Translate, phaseLabel: CyclePhase) {
-  return t(
-    phaseLabel === "unknown" ? "phaseLine.learning" : `phaseLine.${phaseLabel}`,
-  );
+  return t(phaseLabel === "unknown" ? "phaseLine.learning" : `phaseLine.${phaseLabel}`);
 }
 
-function getOvulationPhrase(
-  t: Translate,
-  locale: SupportedLanguage,
-  daysUntil: number,
-) {
+function getOvulationPhrase(t: Translate, locale: SupportedLanguage, daysUntil: number) {
   if (daysUntil < 0) {
     const daysAgo = Math.abs(daysUntil);
     return t(plural("today.ovulationDaysAgo", daysAgo, locale), { n: daysAgo });
@@ -361,11 +294,7 @@ function getOvulationPhrase(
   });
 }
 
-function getFertilityEstimate(
-  t: Translate,
-  phaseLabel: CyclePhase,
-  fertile: boolean,
-) {
+function getFertilityEstimate(t: Translate, phaseLabel: CyclePhase, fertile: boolean) {
   if (phaseLabel === "ovulation" || fertile) {
     return t("today.higherToday");
   }

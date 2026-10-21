@@ -23,10 +23,7 @@ function crashLanguage(raw: string | null): SupportedLanguage {
 // way to reach the data export. It sits above the state provider (which can
 // itself throw), so it reads storage on its own. Reloading re-reads storage,
 // which the reducer effect never clears, so no logged day is lost.
-export class ErrorBoundary extends Component<
-  { children: ReactNode },
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
   override state: ErrorBoundaryState = { hasError: false };
 
   static getDerivedStateFromError(): ErrorBoundaryState {
@@ -44,19 +41,11 @@ export class ErrorBoundary extends Component<
         <article className="utility-card">
           <h1 className="section-title">{translate(lang, "error.title")}</h1>
           <p className="supporting-note">{translate(lang, "error.body")}</p>
-          <button
-            type="button"
-            className="chip-button"
-            onClick={() => window.location.reload()}
-          >
+          <button type="button" className="chip-button" onClick={() => window.location.reload()}>
             {translate(lang, "common.reload")}
           </button>
           {raw ? (
-            <button
-              type="button"
-              className="chip-button"
-              onClick={() => downloadRawState(raw)}
-            >
+            <button type="button" className="chip-button" onClick={() => downloadRawState(raw)}>
               {translate(lang, "error.downloadRaw")}
             </button>
           ) : null}

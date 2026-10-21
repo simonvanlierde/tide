@@ -120,8 +120,7 @@
         circle closest-side,
         transparent calc(100% - var(--band)),
         #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
-        transparent calc(100% - var(--band) + var(--rail))
-          calc(100% - var(--rail)),
+        transparent calc(100% - var(--band) + var(--rail)) calc(100% - var(--rail)),
         #000 calc(100% - var(--rail))
       ),
       repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 5deg);
@@ -131,8 +130,7 @@
         circle closest-side,
         transparent calc(100% - var(--band)),
         #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
-        transparent calc(100% - var(--band) + var(--rail))
-          calc(100% - var(--rail)),
+        transparent calc(100% - var(--band) + var(--rail)) calc(100% - var(--rail)),
         #000 calc(100% - var(--rail))
       ),
       repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 5deg);
@@ -145,20 +143,8 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
-    -webkit-mask: radial-gradient(
-      circle closest-side at center,
-      transparent 91%,
-      #000 95%,
-      #000 99%,
-      transparent 100%
-    );
-    mask: radial-gradient(
-      circle closest-side at center,
-      transparent 91%,
-      #000 95%,
-      #000 99%,
-      transparent 100%
-    );
+    -webkit-mask: radial-gradient(circle closest-side at center, transparent 91%, #000 95%, #000 99%, transparent 100%);
+    mask: radial-gradient(circle closest-side at center, transparent 91%, #000 95%, #000 99%, transparent 100%);
   }
 
   .cycle-dial__inner {

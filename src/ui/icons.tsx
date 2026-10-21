@@ -6,12 +6,6 @@ interface AppIconProps {
   strokeWidth?: number;
 }
 
-export function AppIcon({
-  icon: Icon,
-  className = "icon-glyph",
-  strokeWidth = 1.8,
-}: AppIconProps) {
-  return (
-    <Icon aria-hidden="true" className={className} strokeWidth={strokeWidth} />
-  );
+export function AppIcon({ icon: Icon, className = "icon-glyph", strokeWidth = 1.8 }: AppIconProps) {
+  return <Icon aria-hidden="true" className={className} strokeWidth={strokeWidth} />;
 }

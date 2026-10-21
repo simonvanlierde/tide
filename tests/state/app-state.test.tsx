@@ -4,17 +4,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
-import {
-  AppStateProvider,
-  useAppState,
-  useAppStateActions,
-  useForecast,
-} from "../../src/state/provider";
-import {
-  createAppState,
-  createLearnedCycleState,
-  renderWithAppState,
-} from "../support/app";
+import { AppStateProvider, useAppState, useAppStateActions, useForecast } from "../../src/state/provider";
+import { createAppState, createLearnedCycleState, renderWithAppState } from "../support/app";
 
 function Probe({ label = "probe" }: { label?: string }) {
   const state = useAppState();
@@ -22,30 +13,15 @@ function Probe({ label = "probe" }: { label?: string }) {
 
   return (
     <>
-      <output aria-label={`period-days-${label}`}>
-        {getPeriodDays(state.intensityByDay).join(",")}
-      </output>
-      <output aria-label={`dismissed-for-${label}`}>
-        {state.settings.dismissedOn ?? ""}
-      </output>
-      <button
-        type="button"
-        onClick={() => actions.togglePeriodDay("2026-04-05", "2026-04-18")}
-      >
+      <output aria-label={`period-days-${label}`}>{getPeriodDays(state.intensityByDay).join(",")}</output>
+      <output aria-label={`dismissed-for-${label}`}>{state.settings.dismissedOn ?? ""}</output>
+      <button type="button" onClick={() => actions.togglePeriodDay("2026-04-05", "2026-04-18")}>
         toggle {label}
       </button>
-      <button
-        type="button"
-        onClick={() => actions.dismissReminder("2026-04-18")}
-      >
+      <button type="button" onClick={() => actions.dismissReminder("2026-04-18")}>
         dismiss {label}
       </button>
-      <button
-        type="button"
-        onClick={() =>
-          actions.importState(createAppState({ periodDays: ["2026-05-01"] }))
-        }
-      >
+      <button type="button" onClick={() => actions.importState(createAppState({ periodDays: ["2026-05-01"] }))}>
         import {label}
       </button>
     </>
@@ -59,9 +35,7 @@ describe("app state", () => {
 
     renderWithAppState(<Probe />);
 
-    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
-      "2026-03-05,2026-03-06,2026-04-02,2026-04-03",
-    );
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent("2026-03-05,2026-03-06,2026-04-02,2026-04-03");
   });
 
   it("shares one live provider state across multiple mounted screens", async () => {
@@ -76,9 +50,7 @@ describe("app state", () => {
 
     await user.click(screen.getByRole("button", { name: /toggle a/i }));
 
-    expect(screen.getByLabelText("period-days-b")).toHaveTextContent(
-      "2026-04-05",
-    );
+    expect(screen.getByLabelText("period-days-b")).toHaveTextContent("2026-04-05");
   });
 
   it("persists provider updates to local storage", async () => {
@@ -89,12 +61,8 @@ describe("app state", () => {
 
     await user.click(screen.getByRole("button", { name: /dismiss probe/i }));
 
-    expect(screen.getByLabelText("dismissed-for-probe")).toHaveTextContent(
-      "2026-04-18",
-    );
-    expect(window.localStorage.getItem(STORAGE_KEY)).toContain(
-      '"dismissedOn":"2026-04-18"',
-    );
+    expect(screen.getByLabelText("dismissed-for-probe")).toHaveTextContent("2026-04-18");
+    expect(window.localStorage.getItem(STORAGE_KEY)).toContain('"dismissedOn":"2026-04-18"');
   });
 
   it("adopts another tab's save without writing a different value back", () => {
@@ -109,9 +77,7 @@ describe("app state", () => {
     });
     setItem.mockRestore();
 
-    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
-      /^2026-04-09$/,
-    );
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(/^2026-04-09$/);
     // Writing a different value would fire this event in the other tab and
     // start a ping-pong; an identical rewrite is harmless.
     for (const [key, value] of setItem.mock.calls) {
@@ -132,9 +98,7 @@ describe("app state", () => {
       window.dispatchEvent(new StorageEvent("storage", { key: "other" }));
     });
 
-    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
-      /^2026-04-02$/,
-    );
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(/^2026-04-02$/);
   });
 
   it("never saves over data written by a newer build", async () => {
@@ -147,9 +111,7 @@ describe("app state", () => {
     const user = userEvent.setup();
 
     renderWithAppState(<Probe />);
-    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
-      "2026-04-02",
-    );
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent("2026-04-02");
     await user.click(screen.getByRole("button", { name: /toggle probe/i }));
 
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
@@ -166,13 +128,9 @@ describe("app state", () => {
     act(() => {
       window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
     });
-    await userEvent
-      .setup()
-      .click(screen.getByRole("button", { name: /dismiss probe/i }));
+    await userEvent.setup().click(screen.getByRole("button", { name: /dismiss probe/i }));
 
-    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
-      "2026-04-09",
-    );
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent("2026-04-09");
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
   });
 
@@ -184,9 +142,7 @@ describe("app state", () => {
 
     await user.click(screen.getByRole("button", { name: /import probe/i }));
 
-    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(
-      "2026-05-01",
-    );
+    expect(screen.getByLabelText("period-days-probe")).toHaveTextContent("2026-05-01");
   });
 
   it("asks for persistent storage once a day is logged, not before", async () => {
@@ -209,20 +165,14 @@ describe("app state", () => {
   });
 
   it("refuses to expose state or actions outside a provider", () => {
-    expect(() => renderHook(() => useAppState())).toThrow(
-      /must be used inside AppStateProvider/,
-    );
-    expect(() => renderHook(() => useAppStateActions())).toThrow(
-      /must be used inside AppStateProvider/,
-    );
+    expect(() => renderHook(() => useAppState())).toThrow(/must be used inside AppStateProvider/);
+    expect(() => renderHook(() => useAppStateActions())).toThrow(/must be used inside AppStateProvider/);
   });
 
   it("forecasts for the day the caller passes", () => {
     const { result } = renderHook(() => useForecast("2026-04-18"), {
       wrapper: ({ children }) => (
-        <AppStateProvider initialState={createLearnedCycleState()}>
-          {children}
-        </AppStateProvider>
+        <AppStateProvider initialState={createLearnedCycleState()}>{children}</AppStateProvider>
       ),
     });
 
@@ -245,8 +195,7 @@ describe("system theme preference", () => {
           return matches;
         },
         addEventListener: (_: string, fn: () => void) => listeners.add(fn),
-        removeEventListener: (_: string, fn: () => void) =>
-          listeners.delete(fn),
+        removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
       })),
     );
     return {

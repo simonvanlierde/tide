@@ -3,11 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
-import {
-  createAppState,
-  createLearnedCycleState,
-  renderWithAppState,
-} from "../support/app";
+import { createAppState, createLearnedCycleState, renderWithAppState } from "../support/app";
 
 // Both lazy chunks fail to load, as they would offline before the app is cached.
 vi.mock("../../src/features/today/ForecastExplainer", () => {
@@ -24,13 +20,9 @@ describe("a lazy chunk that fails to load", () => {
       state: createLearnedCycleState(),
     });
 
-    await user.click(
-      screen.getByRole("button", { name: /how was this worked out/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /how was this worked out/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      /couldn't be opened/i,
-    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(/couldn't be opened/i);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
@@ -42,8 +34,6 @@ describe("a lazy chunk that fails to load", () => {
 
     await user.click(screen.getByRole("button", { name: /add to calendar/i }));
 
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      /calendar file couldn't be made/i,
-    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(/calendar file couldn't be made/i);
   });
 });

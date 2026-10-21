@@ -17,11 +17,7 @@ export function ThemeSection() {
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: a labelled div group is intentional here; <fieldset> brings unwanted default styling.
-    <div
-      className="settings-row theme-field"
-      role="group"
-      aria-labelledby="theme-label"
-    >
+    <div className="settings-row theme-field" role="group" aria-labelledby="theme-label">
       <span className="settings-label" id="theme-label">
         {t("settings.theme")}
       </span>
@@ -30,18 +26,11 @@ export function ThemeSection() {
           <button
             key={option.value}
             type="button"
-            className={
-              current === option.value
-                ? "segmented__option is-active"
-                : "segmented__option"
-            }
+            className={current === option.value ? "segmented__option is-active" : "segmented__option"}
             aria-pressed={current === option.value}
             onClick={() => actions.setSetting("theme", option.value)}
           >
-            <AppIcon
-              icon={THEME_ICONS[option.value]}
-              className="segmented__icon"
-            />
+            <AppIcon icon={THEME_ICONS[option.value]} className="segmented__icon" />
             <span className="segmented__label">{t(option.labelKey)}</span>
           </button>
         ))}

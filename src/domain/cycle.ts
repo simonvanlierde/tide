@@ -1,11 +1,5 @@
 import { addDays, differenceInDays } from "../utils/date";
-import type {
-  CycleStats,
-  CycleSummary,
-  DayEstimate,
-  Forecast,
-  IsoDate,
-} from "./types";
+import type { CycleStats, CycleSummary, DayEstimate, Forecast, IsoDate } from "./types";
 
 export const DEFAULT_CYCLE_LENGTH = 28;
 export const DEFAULT_LUTEAL_LENGTH = 14;
@@ -60,10 +54,7 @@ function getCycleStarts(periodDays: IsoDate[]) {
 
   return sortedDays.filter((day, index) => {
     const previous = sortedDays[index - 1];
-    return (
-      previous === undefined ||
-      differenceInDays(day, previous) >= NEW_CYCLE_MIN_GAP_DAYS
-    );
+    return previous === undefined || differenceInDays(day, previous) >= NEW_CYCLE_MIN_GAP_DAYS;
   });
 }
 
@@ -71,10 +62,7 @@ function getCycleStarts(periodDays: IsoDate[]) {
 // recent run is dropped only while it might still be bleeding — fewer than
 // MIN_DAYS_SINCE_BLEED days since its last logged day — so a genuinely finished
 // last period still counts. `periodDays` is expected spotting-filtered.
-export function getAveragePeriodLength(
-  periodDays: IsoDate[],
-  today: IsoDate,
-): number {
+export function getAveragePeriodLength(periodDays: IsoDate[], today: IsoDate): number {
   const sortedDays = [...periodDays].sort();
   const starts = getCycleStarts(sortedDays);
   if (starts.length === 0) {
@@ -83,25 +71,19 @@ export function getAveragePeriodLength(
 
   const lengths = starts.map((start, index) => {
     const nextStart = starts[index + 1];
-    const runDays = sortedDays.filter(
-      (day) => day >= start && (nextStart === undefined || day < nextStart),
-    );
+    const runDays = sortedDays.filter((day) => day >= start && (nextStart === undefined || day < nextStart));
     const lastDay = runDays.at(-1) ?? start;
     return differenceInDays(lastDay, start) + 1;
   });
 
   const lastLoggedDay = sortedDays.at(-1);
-  const lastRunOngoing =
-    lastLoggedDay !== undefined &&
-    differenceInDays(today, lastLoggedDay) < MIN_DAYS_SINCE_BLEED;
+  const lastRunOngoing = lastLoggedDay !== undefined && differenceInDays(today, lastLoggedDay) < MIN_DAYS_SINCE_BLEED;
   const completed = lastRunOngoing ? lengths.slice(0, -1) : lengths;
   // The only period so far may still be bleeding: nothing learned yet.
   if (completed.length === 0) {
     return DEFAULT_PERIOD_LENGTH;
   }
-  const average = Math.round(
-    completed.reduce((sum, value) => sum + value, 0) / completed.length,
-  );
+  const average = Math.round(completed.reduce((sum, value) => sum + value, 0) / completed.length);
   return Math.min(MAX_PERIOD_LENGTH, Math.max(MIN_PERIOD_LENGTH, average));
 }
 
@@ -151,8 +133,7 @@ function median(values: number[]): number {
 
 function standardDeviation(values: number[]): number {
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
-  const variance =
-    values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
+  const variance = values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / values.length;
   return Math.sqrt(variance);
 }
 
@@ -170,21 +151,14 @@ function estimateCycleLength(completedCycleLengths: number[]): number {
 // spread earns a day of widening. Rounding would smear regular cycles wider.
 function getFertileWindow(completedCycleLengths: number[]) {
   const recent = completedCycleLengths.slice(-RECENT_CYCLE_WINDOW);
-  const spread =
-    recent.length >= 2
-      ? Math.min(MAX_FERTILE_WIDENING, Math.floor(standardDeviation(recent)))
-      : 0;
+  const spread = recent.length >= 2 ? Math.min(MAX_FERTILE_WIDENING, Math.floor(standardDeviation(recent))) : 0;
   return {
     start: FERTILE_WINDOW_START - spread,
     end: FERTILE_WINDOW_END + spread,
   };
 }
 
-function getPhaseLabel(
-  today: IsoDate,
-  periodDays: IsoDate[],
-  ovulationDate: IsoDate | null,
-) {
+function getPhaseLabel(today: IsoDate, periodDays: IsoDate[], ovulationDate: IsoDate | null) {
   if (periodDays.includes(today)) {
     return "menstrual" as const;
   }
@@ -206,11 +180,7 @@ function getPhaseLabel(
   return "follicular" as const;
 }
 
-function isWithinFertileWindow(
-  today: IsoDate,
-  ovulationDate: IsoDate | null,
-  window: { start: number; end: number },
-) {
+function isWithinFertileWindow(today: IsoDate, ovulationDate: IsoDate | null, window: { start: number; end: number }) {
   if (ovulationDate === null) {
     return false;
   }
@@ -240,9 +210,7 @@ export function forecast(input: ForecastInput): Forecast {
   const completedCycleLengths = getCompletedCycleLengths(periodDays);
   const lastCycleStart = getCycleStarts(periodDays).at(-1);
   const stats = cycleStats(completedCycleLengths);
-  const pastOvulationDates = input.fertility
-    ? getPastOvulationDates(periodDays)
-    : [];
+  const pastOvulationDates = input.fertility ? getPastOvulationDates(periodDays) : [];
 
   if (!lastCycleStart) {
     return withTimeline(INSUFFICIENT_SUMMARY, stats, null, null, []);
@@ -250,14 +218,9 @@ export function forecast(input: ForecastInput): Forecast {
 
   const cycleLength = estimateCycleLength(completedCycleLengths);
   const fertileWindow = getFertileWindow(completedCycleLengths);
-  const cycleDay = Math.max(
-    1,
-    differenceInDays(input.today, lastCycleStart) + 1,
-  );
+  const cycleDay = Math.max(1, differenceInDays(input.today, lastCycleStart) + 1);
   const nextPeriodDate = addDays(lastCycleStart, cycleLength);
-  const ovulationDate = input.fertility
-    ? addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH)
-    : null;
+  const ovulationDate = input.fertility ? addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH) : null;
   const periodLength = getAveragePeriodLength(periodDays, input.today);
 
   // Long past the due date with nothing logged, the forecast is stale. The
@@ -293,9 +256,7 @@ export function forecast(input: ForecastInput): Forecast {
     // The current cycle runs up to the day before the next expected period;
     // once that is overdue, it is simply running long, through today.
     input.today >= nextPeriodDate ? input.today : addDays(nextPeriodDate, -1),
-    ovulationDate === null
-      ? pastOvulationDates
-      : [...pastOvulationDates, ovulationDate],
+    ovulationDate === null ? pastOvulationDates : [...pastOvulationDates, ovulationDate],
   );
 }
 
@@ -343,11 +304,7 @@ function withTimeline(
           }
         }
       }
-      const inCycle =
-        cycleStart !== null &&
-        cycleEnd !== null &&
-        date >= cycleStart &&
-        date <= cycleEnd;
+      const inCycle = cycleStart !== null && cycleEnd !== null && date >= cycleStart && date <= cycleEnd;
       return {
         cycleDay: inCycle ? differenceInDays(date, cycleStart) + 1 : null,
         estimate,
@@ -364,10 +321,7 @@ function cycleStats(completed: number[]): CycleStats {
   return {
     cyclesTracked: completed.length,
     recentCycleLengths: recent,
-    variabilityDays:
-      recent.length >= 2
-        ? Math.round(standardDeviation(recent) * 10) / 10
-        : null,
+    variabilityDays: recent.length >= 2 ? Math.round(standardDeviation(recent) * 10) / 10 : null,
   };
 }
 
@@ -446,11 +400,7 @@ export interface ExpectedCycle {
 
 // The next `count` expected period starts from today on. An overdue start is
 // skipped: it is already late, so a calendar entry for it says nothing new.
-export function getExpectedCycles(
-  f: Forecast,
-  today: IsoDate,
-  count: number,
-): ExpectedCycle[] {
+export function getExpectedCycles(f: Forecast, today: IsoDate, count: number): ExpectedCycle[] {
   const next = f.nextPeriod.date;
   if (next === null) {
     return [];

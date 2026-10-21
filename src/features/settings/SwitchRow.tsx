@@ -9,13 +9,7 @@ interface SwitchRowProps {
   onChange: (checked: boolean) => void;
 }
 
-export function SwitchRow({
-  label,
-  infoLabel,
-  help,
-  checked,
-  onChange,
-}: SwitchRowProps) {
+export function SwitchRow({ label, infoLabel, help, checked, onChange }: SwitchRowProps) {
   // Label the switch by its text alone, not the info button beside it.
   const labelId = useId();
 

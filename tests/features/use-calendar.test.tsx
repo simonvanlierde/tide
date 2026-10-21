@@ -6,11 +6,7 @@ import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, createLearnedCycleState } from "../support/app";
 
 function wrapper({ children }: { children: ReactNode }) {
-  return (
-    <AppStateProvider initialState={createLearnedCycleState()}>
-      {children}
-    </AppStateProvider>
-  );
+  return <AppStateProvider initialState={createLearnedCycleState()}>{children}</AppStateProvider>;
 }
 
 describe("useCalendar", () => {
@@ -60,9 +56,7 @@ describe("useCalendar", () => {
     });
 
     // Logs span 2022–2024, today is 2026: cover 2022–2026, pad to 2021–2027.
-    expect(result.current.month.picker.years).toEqual([
-      2021, 2022, 2023, 2024, 2025, 2026, 2027,
-    ]);
+    expect(result.current.month.picker.years).toEqual([2021, 2022, 2023, 2024, 2025, 2026, 2027]);
   });
 
   it("widens the year window to include a month browsed outside it", () => {

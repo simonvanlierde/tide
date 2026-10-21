@@ -3,12 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { defaultAppState } from "../../src/data/schema";
 import { downloadAppState, parseImportedState } from "../../src/data/transfer";
 import { FLOW_INTENSITIES } from "../../src/domain/flow";
-import type {
-  AppState,
-  LanguagePreference,
-  LoggedFlow,
-  ThemePreference,
-} from "../../src/domain/types";
+import type { AppState, LanguagePreference, LoggedFlow, ThemePreference } from "../../src/domain/types";
 import { SUPPORTED_LANGUAGES } from "../../src/i18n";
 import { formatIsoDate, getTodayIsoDate } from "../../src/utils/date";
 import { createAppState } from "../support/app";
@@ -44,9 +39,7 @@ describe("parseImportedState", () => {
       });
 
     expect(parseImportedState(backup({})).settings.showFertility).toBeNull();
-    expect(
-      parseImportedState(backup({ schemaVersion: 2 })).settings.showFertility,
-    ).toBe(true);
+    expect(parseImportedState(backup({ schemaVersion: 2 })).settings.showFertility).toBe(true);
   });
 
   it("round-trips a state through export and back, dropping only transient dismiss state", () => {
@@ -61,12 +54,8 @@ describe("parseImportedState", () => {
         calendarId: "3f2b8c1e-9a4d-4e7b-b6f0-2c5d8a1e7f93",
       },
     });
-    const click = vi
-      .spyOn(HTMLAnchorElement.prototype, "click")
-      .mockImplementation(() => {});
-    const createObjectURL = vi
-      .spyOn(URL, "createObjectURL")
-      .mockReturnValue("blob:tide-backup");
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
 
     downloadAppState(state);
@@ -102,17 +91,10 @@ describe("parseImportedState", () => {
       "2026-05-01",
     );
     expect(parsed.intensityByDay).toEqual({ "2026-04-02": "heavy" });
-    expect(
-      parseImportedState(JSON.stringify({ days: { "2099-01-01": null } }))
-        .intensityByDay,
-    ).toEqual({});
+    expect(parseImportedState(JSON.stringify({ days: { "2099-01-01": null } })).intensityByDay).toEqual({});
   });
   it("refuses a backup from a newer schema", () => {
-    expect(() =>
-      parseImportedState(
-        JSON.stringify({ schemaVersion: 99, days: { "2026-04-02": "heavy" } }),
-      ),
-    ).toThrow();
+    expect(() => parseImportedState(JSON.stringify({ schemaVersion: 99, days: { "2026-04-02": "heavy" } }))).toThrow();
   });
   it("still reads the legacy versioned envelope", () => {
     const parsed = parseImportedState(
@@ -140,15 +122,9 @@ describe("parseImportedState", () => {
 describe("downloadAppState", () => {
   it("downloads a formatted JSON backup and revokes its blob URL", async () => {
     const state = createAppState({ periodDays: ["2026-04-02"] });
-    const click = vi
-      .spyOn(HTMLAnchorElement.prototype, "click")
-      .mockImplementation(() => {});
-    const createObjectURL = vi
-      .spyOn(URL, "createObjectURL")
-      .mockReturnValue("blob:tide-backup");
-    const revokeObjectURL = vi
-      .spyOn(URL, "revokeObjectURL")
-      .mockImplementation(() => {});
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
+    const revokeObjectURL = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
 
     downloadAppState(state);
 
@@ -192,28 +168,20 @@ describe("backup round-trip property", () => {
     })
     .map(formatIsoDate);
   const appState: fc.Arbitrary<AppState> = fc.record({
-    intensityByDay: fc.dictionary(
-      day,
-      fc.constantFrom<LoggedFlow>(null, ...FLOW_INTENSITIES),
-    ),
+    intensityByDay: fc.dictionary(day, fc.constantFrom<LoggedFlow>(null, ...FLOW_INTENSITIES)),
     settings: fc.record({
       dismissedOn: fc.option(day),
       showFertility: fc.option(fc.boolean()),
       showCycleDayNumbers: fc.boolean(),
       theme: fc.constantFrom<ThemePreference>("system", "light", "dark"),
-      language: fc.constantFrom<LanguagePreference>(
-        "system",
-        ...SUPPORTED_LANGUAGES,
-      ),
+      language: fc.constantFrom<LanguagePreference>("system", ...SUPPORTED_LANGUAGES),
       calendarId: fc.option(fc.uuid({ version: 4 })),
     }),
   });
 
   it("imports an exported state back unchanged, except the transient dismiss day", async () => {
     vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
-    const createObjectURL = vi
-      .spyOn(URL, "createObjectURL")
-      .mockReturnValue("blob:tide-backup");
+    const createObjectURL = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
     vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
 
     await fc.assert(

@@ -9,12 +9,7 @@ import {
   useState,
 } from "react";
 import { defaultAppState } from "../data/schema";
-import {
-  clearAppState,
-  loadStoredState,
-  STORAGE_KEY,
-  saveAppState,
-} from "../data/storage";
+import { clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../data/storage";
 import type {
   AppSettings,
   AppState,
@@ -27,9 +22,7 @@ import { type MessageKey, resolveLanguage, translate } from "../i18n";
 import { type AppStateAction, appStateReducer, selectForecast } from "./core";
 
 const AppStateContext = createContext<AppState | null>(null);
-const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(
-  null,
-);
+const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(null);
 const ReadOnlyContext = createContext(false);
 
 interface AppStateProviderProps {
@@ -37,13 +30,8 @@ interface AppStateProviderProps {
   initialState?: AppState;
 }
 
-export function AppStateProvider({
-  children,
-  initialState,
-}: AppStateProviderProps) {
-  const [loaded] = useState(() =>
-    initialState ? { state: initialState, readOnly: false } : loadStoredState(),
-  );
+export function AppStateProvider({ children, initialState }: AppStateProviderProps) {
+  const [loaded] = useState(() => (initialState ? { state: initialState, readOnly: false } : loadStoredState()));
   const [state, dispatch] = useReducer(appStateReducer, loaded.state);
   // A newer build wrote the stored data: saving our normalized copy would
   // strip whatever fields it added, so this tab shows it and never saves.
@@ -86,9 +74,7 @@ export function AppStateProvider({
   return (
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
-        <ReadOnlyContext.Provider value={readOnly}>
-          {children}
-        </ReadOnlyContext.Provider>
+        <ReadOnlyContext.Provider value={readOnly}>{children}</ReadOnlyContext.Provider>
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
   );
@@ -104,18 +90,14 @@ function useThemePreference(theme: ThemePreference) {
     const root = document.documentElement;
 
     function apply() {
-      const prefersDark =
-        typeof window.matchMedia === "function" &&
-        window.matchMedia(DARK_MEDIA_QUERY).matches;
+      const prefersDark = typeof window.matchMedia === "function" && window.matchMedia(DARK_MEDIA_QUERY).matches;
       const dark = theme === "dark" || (theme === "system" && prefersDark);
       root.dataset.theme = dark ? "dark" : "light";
       // Keep the browser chrome (address bar / PWA status bar) in step. Read
       // the ground colour from the tokens so the CSS stays the one source.
       const ground = getComputedStyle(root).getPropertyValue("--bg-top").trim();
       if (ground) {
-        document
-          .querySelector('meta[name="theme-color"]')
-          ?.setAttribute("content", ground);
+        document.querySelector('meta[name="theme-color"]')?.setAttribute("content", ground);
       }
     }
 
@@ -141,10 +123,7 @@ function useLanguagePreference(language: LanguagePreference) {
 
 // The bound translator returned by useT — pass it to module-level helpers that
 // need to build localized strings.
-export type Translate = (
-  key: MessageKey,
-  vars?: Record<string, string | number>,
-) => string;
+export type Translate = (key: MessageKey, vars?: Record<string, string | number>) => string;
 
 // The stored language preference, or "system" when rendered outside a provider
 // (isolated component tests, Storybook) so leaf components stay self-sufficient.
@@ -158,8 +137,7 @@ export function useT(): Translate {
   const language = useLanguage();
   return useMemo(() => {
     const lang = resolveLanguage(language);
-    return (key: MessageKey, vars?: Record<string, string | number>) =>
-      translate(lang, key, vars);
+    return (key: MessageKey, vars?: Record<string, string | number>) => translate(lang, key, vars);
   }, [language]);
 }
 

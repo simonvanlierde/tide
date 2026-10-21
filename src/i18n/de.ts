@@ -16,8 +16,7 @@ export const de: Dictionary = {
   "today.fertilityInfoLabel": "Wie die Fruchtbarkeit geschätzt wird",
   "today.cycleInsights": "Zyklus-Einblicke",
   "today.howWorkedOut": "Wie wurde das berechnet?",
-  "today.explainError":
-    "Das ließ sich nicht öffnen. Lade Tide neu und versuche es noch einmal.",
+  "today.explainError": "Das ließ sich nicht öffnen. Lade Tide neu und versuche es noch einmal.",
   "today.daysAgo.one": "vor {n} Tag",
   "today.daysAgo.other": "vor {n} Tagen",
   "today.expectedToday": "Heute erwartet",
@@ -32,8 +31,7 @@ export const de: Dictionary = {
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.privacy": "Nur auf diesem Gerät gespeichert.",
-  "today.importPrompt":
-    "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?",
+  "today.importPrompt": "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?",
   "today.importLink": "Importieren",
   "today.fertilityUnclear": "Unklar bei Verspätung",
   "today.periodLate": "Periode",
@@ -45,10 +43,8 @@ export const de: Dictionary = {
   "today.ovulationToday": "Eisprung heute",
   "today.ovulationInDays.one": "Eisprung in {n} Tag",
   "today.ovulationInDays.other": "Eisprung in {n} Tagen",
-  "today.learningFallback":
-    "Wir gehen von einem typischen 28-Tage-Zyklus aus, bis wir dein Muster kennen.",
-  "today.learningInsufficient":
-    "Erfasse deine Periode, um eine Vorhersage zu sehen.",
+  "today.learningFallback": "Wir gehen von einem typischen 28-Tage-Zyklus aus, bis wir dein Muster kennen.",
+  "today.learningInsufficient": "Erfasse deine Periode, um eine Vorhersage zu sehen.",
 
   "phase.menstrual": "Menstruation",
   "phase.follicular": "Follikulär",
@@ -87,18 +83,15 @@ export const de: Dictionary = {
   "regularity.somewhatVariable": "Etwas schwankend",
   "regularity.variable": "Schwankend",
   "insights.how": "So funktionieren die Vorhersagen",
-  "insights.how1":
-    "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet.",
+  "insights.how1": "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet.",
   "insights.howCycleStart":
     "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Tagen beginnt einen neuen Zyklus; kürzere Lücken gehören zur selben Periode.",
   "insights.how2":
     "Die Zykluslänge ist der Median deiner letzten {recent} Zyklen, damit ein einzelner ungewöhnlicher Monat sie nicht verfälscht. Vor zwei Zyklen wird ein typischer {cycle}-Tage-Zyklus verwendet.",
-  "insights.how3":
-    "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
+  "insights.how3": "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
   "insights.how4":
     "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",
-  "insights.howNextPeriod":
-    "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge.",
+  "insights.howNextPeriod": "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge.",
   "insights.how5":
     "Das fruchtbare Fenster reicht von {before} Tagen vor bis {after} Tag nach dem Eisprung und wird breiter, wenn deine Zyklen stärker schwanken.",
 
@@ -117,10 +110,8 @@ export const de: Dictionary = {
   "log.logged": "Heute protokolliert",
   "log.loggedWith": "Heute protokolliert · {flow}",
   "log.add": "Blutung heute erfassen",
-  "reminder.messageOverdue":
-    "Deine Periode wurde am {date} erwartet. Angefangen?",
-  "reminder.messageUpcoming":
-    "Deine Periode wird am {date} erwartet. Angefangen?",
+  "reminder.messageOverdue": "Deine Periode wurde am {date} erwartet. Angefangen?",
+  "reminder.messageUpcoming": "Deine Periode wird am {date} erwartet. Angefangen?",
   "reminder.dismiss": "Noch nicht — später erinnern",
   "reminder.reassure": "Ein paar Tage Abweichung sind normal.",
 
@@ -130,8 +121,7 @@ export const de: Dictionary = {
   "calendar.jumpToMonth": "Zum Monat springen",
   "calendar.month": "Monat",
   "calendar.year": "Jahr",
-  "calendar.tapHelp":
-    "Tippe auf einen Tag, um eine Blutung zu erfassen oder zu bearbeiten.",
+  "calendar.tapHelp": "Tippe auf einen Tag, um eine Blutung zu erfassen oder zu bearbeiten.",
   "calendar.today": "Heute",
   "calendar.goToCurrentMonth": "Zum aktuellen Monat",
   "calendar.justLogged": "{date} erfasst.",
@@ -139,12 +129,9 @@ export const de: Dictionary = {
   "calendar.undo": "Rückgängig",
   "calendar.logRange": "Vergangene Periode erfassen",
   "calendar.rangePickFirst": "Wähle den ersten Tag der Periode.",
-  "calendar.rangePickLast":
-    "Ab {date}: Wähle jetzt den letzten Tag, höchstens {max} Tage.",
-  "calendar.rangeTooLong":
-    "Mehr als {max} Tage. Wähle einen näheren letzten Tag.",
-  "calendar.emptyHelp":
-    "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
+  "calendar.rangePickLast": "Ab {date}: Wähle jetzt den letzten Tag, höchstens {max} Tage.",
+  "calendar.rangeTooLong": "Mehr als {max} Tage. Wähle einen näheren letzten Tag.",
+  "calendar.emptyHelp": "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
   "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",
   "calendar.log": "Erfassen",
   "calendar.edit": "Bearbeiten",
@@ -163,8 +150,7 @@ export const de: Dictionary = {
 
   // Crash screen
   "error.title": "Etwas ist schiefgelaufen",
-  "error.body":
-    "Deine erfassten Tage sind weiterhin auf diesem Gerät gespeichert.",
+  "error.body": "Deine erfassten Tage sind weiterhin auf diesem Gerät gespeichert.",
   "error.downloadRaw": "Rohdaten herunterladen",
 
   "settings.title": "Einstellungen",
@@ -182,8 +168,7 @@ export const de: Dictionary = {
   "language.es": "Español",
   "settings.showFertility": "Fruchtbarkeits\u00adschätzungen anzeigen",
   "settings.fertilityInfo": "Über Fruchtbarkeitsschätzungen",
-  "settings.fertilityHelp":
-    "Zeigt das fruchtbare Fenster und den erwarteten Eisprung unter Heute und im Kalender.",
+  "settings.fertilityHelp": "Zeigt das fruchtbare Fenster und den erwarteten Eisprung unter Heute und im Kalender.",
   "settings.showCycleNumbers": "Zyklustag\u00adnummern anzeigen",
   "settings.cycleNumbersInfo": "Über Zyklustagnummern",
   "settings.cycleNumbersHelp":
@@ -199,8 +184,7 @@ export const de: Dictionary = {
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":
     "Der Export speichert deine Tage in einer Datei. Der Import ersetzt sie aus einer Tide-Sicherung oder fügt Tage aus Clue oder Flo hinzu.",
-  "settings.importSources":
-    "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
+  "settings.importSources": "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.exportCalendar": "Zum Kalender",
@@ -208,12 +192,10 @@ export const de: Dictionary = {
     "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Dort werden sie wie deine anderen Termine synchronisiert, liegen also auch im Konto des Kalenders.",
   "settings.calendarFertility": "Fruchtbare Fenster einschließen",
   "settings.calendarSuccess": "Kalenderdatei in deinen Downloads gespeichert.",
-  "settings.calendarError":
-    "Die Kalenderdatei ließ sich nicht erstellen. Lade Tide neu und versuche es noch einmal.",
+  "settings.calendarError": "Die Kalenderdatei ließ sich nicht erstellen. Lade Tide neu und versuche es noch einmal.",
   "settings.import": "Importieren",
   "settings.importFile": "Datendatei importieren",
-  "settings.importError":
-    "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export.",
+  "settings.importError": "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export.",
   "settings.importSuccess.one": "{n} protokollierter Tag importiert.",
   "settings.importSuccess.other": "{n} protokollierte Tage importiert.",
   "settings.importConfirmTitle": "Deine Daten ersetzen?",

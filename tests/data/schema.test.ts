@@ -1,10 +1,6 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import {
-  defaultAppState,
-  normalizeAppState,
-  SCHEMA_VERSION,
-} from "../../src/data/schema";
+import { defaultAppState, normalizeAppState, SCHEMA_VERSION } from "../../src/data/schema";
 
 describe("schema normalization at the storage trust boundary", () => {
   it("returns default state when the persisted blob is not an object", () => {
@@ -62,13 +58,11 @@ describe("schema normalization at the storage trust boundary", () => {
       }).settings.showFertility,
     ).toBe(false);
     // From version 2 on, true is an answer too.
+    expect(normalizeAppState({ schemaVersion: 2, settings: { showFertility: true } }).settings.showFertility).toBe(
+      true,
+    );
     expect(
-      normalizeAppState({ schemaVersion: 2, settings: { showFertility: true } })
-        .settings.showFertility,
-    ).toBe(true);
-    expect(
-      normalizeAppState({ schemaVersion: 2, settings: { showFertility: null } })
-        .settings.showFertility,
+      normalizeAppState({ schemaVersion: 2, settings: { showFertility: null } }).settings.showFertility,
     ).toBeNull();
   });
 });
@@ -77,16 +71,11 @@ describe("normalizeAppState properties", () => {
   // Junk of every kind, plus blobs shaped like a stored state or a backup so
   // the day and settings readers see near-misses, not only random values.
   const dayKey = fc.oneof(
-    fc
-      .date({ noInvalidDate: true })
-      .map((date) => date.toISOString().slice(0, 10)),
+    fc.date({ noInvalidDate: true }).map((date) => date.toISOString().slice(0, 10)),
     fc.stringMatching(/^\d{4}-\d{2}-\d{2}$/),
     fc.string(),
   );
-  const flow = fc.oneof(
-    fc.constantFrom(null, "spotting", "light", "medium", "heavy"),
-    fc.anything(),
-  );
+  const flow = fc.oneof(fc.constantFrom(null, "spotting", "light", "medium", "heavy"), fc.anything());
   const days = fc.dictionary(dayKey, flow);
   const settings = fc.record(
     {
@@ -101,11 +90,7 @@ describe("normalizeAppState properties", () => {
   );
   const stateLike = fc.record(
     {
-      schemaVersion: fc.oneof(
-        fc.constant(SCHEMA_VERSION),
-        fc.integer({ min: 0, max: 3 }),
-        fc.anything(),
-      ),
+      schemaVersion: fc.oneof(fc.constant(SCHEMA_VERSION), fc.integer({ min: 0, max: 3 }), fc.anything()),
       intensityByDay: days,
       days,
       settings: fc.oneof(settings, fc.anything()),
@@ -134,9 +119,7 @@ describe("normalizeAppState properties", () => {
     fc.assert(
       fc.property(blob, (value) => {
         const once = normalizeAppState(value);
-        expect(
-          normalizeAppState({ schemaVersion: SCHEMA_VERSION, ...once }),
-        ).toEqual(once);
+        expect(normalizeAppState({ schemaVersion: SCHEMA_VERSION, ...once })).toEqual(once);
       }),
     );
   });

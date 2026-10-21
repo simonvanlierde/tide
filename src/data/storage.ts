@@ -1,10 +1,5 @@
 import type { AppState } from "../domain/types";
-import {
-  defaultAppState,
-  normalizeAppState,
-  SCHEMA_VERSION,
-  STORAGE_KEY,
-} from "./schema";
+import { defaultAppState, normalizeAppState, SCHEMA_VERSION, STORAGE_KEY } from "./schema";
 
 // biome-ignore lint/performance/noBarrelFile: intentional re-export of the public storage key
 export { STORAGE_KEY } from "./schema";

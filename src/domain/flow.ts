@@ -2,19 +2,12 @@ import { addDays, differenceInDays } from "../utils/date";
 import type { FlowIntensity, IsoDate, LoggedFlow } from "./types";
 
 // Ordered lightest → heaviest; drives the tide gauge and fill ramps.
-export const FLOW_INTENSITIES: FlowIntensity[] = [
-  "spotting",
-  "light",
-  "medium",
-  "heavy",
-];
+export const FLOW_INTENSITIES: FlowIntensity[] = ["spotting", "light", "medium", "heavy"];
 
 // The logged period days, sorted. A key in intensityByDay IS a logged day —
 // its value is the chosen flow, or null for a plain one-tap log — so its keys
 // are the single source of truth.
-export function getPeriodDays(
-  intensityByDay: Record<IsoDate, LoggedFlow>,
-): IsoDate[] {
+export function getPeriodDays(intensityByDay: Record<IsoDate, LoggedFlow>): IsoDate[] {
   return (Object.keys(intensityByDay) as IsoDate[]).sort();
 }
 
@@ -24,12 +17,8 @@ export function getPeriodDays(
 // refine down to spotting explicitly, so a careless tap never under-reports.
 // Both the cycle summary and the calendar derive from this single filter so
 // they can never number the same period differently.
-export function getPredictionDays(
-  intensityByDay: Record<IsoDate, LoggedFlow>,
-): IsoDate[] {
-  return getPeriodDays(intensityByDay).filter(
-    (day) => intensityByDay[day] !== "spotting",
-  );
+export function getPredictionDays(intensityByDay: Record<IsoDate, LoggedFlow>): IsoDate[] {
+  return getPeriodDays(intensityByDay).filter((day) => intensityByDay[day] !== "spotting");
 }
 
 // The longest run logged in one go. Periods past 7 days are already unusual;

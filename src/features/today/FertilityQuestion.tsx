@@ -17,18 +17,10 @@ export function FertilityQuestion({ onAnswer }: FertilityQuestionProps) {
       </h2>
       <p className="supporting-note">{t("fertilityAsk.body")}</p>
       <div className="data-actions">
-        <button
-          type="button"
-          className="secondary-action"
-          onClick={() => onAnswer(true)}
-        >
+        <button type="button" className="secondary-action" onClick={() => onAnswer(true)}>
           {t("fertilityAsk.show")}
         </button>
-        <button
-          type="button"
-          className="secondary-action"
-          onClick={() => onAnswer(false)}
-        >
+        <button type="button" className="secondary-action" onClick={() => onAnswer(false)}>
           {t("fertilityAsk.hide")}
         </button>
       </div>

@@ -13,9 +13,7 @@ import {
 async function openExplainer(state = createLearnedCycleState()) {
   const user = userEvent.setup();
   renderWithAppState(<TodayScreen today="2026-04-21" />, { state });
-  await user.click(
-    screen.getByRole("button", { name: /how was this worked out/i }),
-  );
+  await user.click(screen.getByRole("button", { name: /how was this worked out/i }));
   return within(await screen.findByRole("dialog"));
 }
 
@@ -26,25 +24,17 @@ describe("ForecastExplainer", () => {
     // One completed cycle, 03-05 to 04-02.
     expect(dialog.getByText(/oldest first: 28 days/i)).toBeInTheDocument();
     expect(dialog.getByText(/median.*is 28 days/i)).toBeInTheDocument();
-    expect(
-      dialog.getByText(
-        /started Thu, Apr 2\. Adding 28 days gives Thu, Apr 30/i,
-      ),
-    ).toBeInTheDocument();
+    expect(dialog.getByText(/started Thu, Apr 2\. Adding 28 days gives Thu, Apr 30/i)).toBeInTheDocument();
     expect(dialog.getByText(/at least two full cycles/i)).toBeInTheDocument();
   });
 
   it("explains ovulation and the fertile window, next to the birth-control note", async () => {
     const dialog = await openExplainer();
 
-    expect(
-      dialog.getByText(/14 days before that: Thu, Apr 16/i),
-    ).toBeInTheDocument();
-    expect(
-      dialog.getByText(
-        /5 days before to 1 after it: Sat, Apr 11 to Fri, Apr 17/i,
-      ),
-    ).toHaveTextContent(/not birth control/i);
+    expect(dialog.getByText(/14 days before that: Thu, Apr 16/i)).toBeInTheDocument();
+    expect(dialog.getByText(/5 days before to 1 after it: Sat, Apr 11 to Fri, Apr 17/i)).toHaveTextContent(
+      /not birth control/i,
+    );
   });
 
   it("says nothing about fertility while estimates are off", async () => {
@@ -76,8 +66,6 @@ describe("ForecastExplainer", () => {
       state: createAppState(),
     });
 
-    expect(
-      screen.queryByRole("button", { name: /how was this worked out/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /how was this worked out/i })).not.toBeInTheDocument();
   });
 });

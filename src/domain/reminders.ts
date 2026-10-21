@@ -34,8 +34,7 @@ export function getReminderState(input: ReminderStateInput): ReminderState {
   // Expected from a couple of days out until a bounded grace past the due date;
   // beyond that the estimate is stale, and prompting would nag every day with
   // no escape but logging a period that isn't happening.
-  const isExpectedSoon =
-    daysUntil <= REMINDER_WINDOW_DAYS && daysUntil >= -OVERDUE_GRACE_DAYS;
+  const isExpectedSoon = daysUntil <= REMINDER_WINDOW_DAYS && daysUntil >= -OVERDUE_GRACE_DAYS;
   const isDismissed = input.dismissedOn === input.today;
 
   return {

@@ -1,15 +1,5 @@
-import type {
-  DayEstimate,
-  Forecast,
-  IsoDate,
-  LoggedFlow,
-} from "../../domain/types";
-import {
-  addDays,
-  addMonths,
-  differenceInDays,
-  parseIsoDate,
-} from "../../utils/date";
+import type { DayEstimate, Forecast, IsoDate, LoggedFlow } from "../../domain/types";
+import { addDays, addMonths, differenceInDays, parseIsoDate } from "../../utils/date";
 
 export interface CalendarDay {
   key: string;
@@ -19,10 +9,7 @@ export interface CalendarDay {
   isToday: boolean;
 }
 
-export function buildMonthDays(
-  visibleMonth: IsoDate,
-  today: IsoDate,
-): CalendarDay[] {
+export function buildMonthDays(visibleMonth: IsoDate, today: IsoDate): CalendarDay[] {
   // addMonths always lands on the 1st, so a shift of 0 gives the month start.
   const monthStart = addMonths(visibleMonth, 0);
   const firstOfMonth = parseIsoDate(monthStart);
@@ -75,8 +62,7 @@ export function buildCalendarCells(
       isLogged,
       flow: isLogged ? (intensityByDay[day.value] ?? null) : null,
       estimate: isLogged ? null : estimate,
-      cycleDay:
-        showCycleDayNumbers && !isLogged && !day.isFuture ? cycleDay : null,
+      cycleDay: showCycleDayNumbers && !isLogged && !day.isFuture ? cycleDay : null,
     };
   });
 }

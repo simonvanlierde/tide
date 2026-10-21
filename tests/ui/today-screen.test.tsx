@@ -22,18 +22,12 @@ describe("TodayScreen", () => {
   it("renders the cycle dial with the core cycle facts", () => {
     renderToday("2026-04-18");
 
-    expect(
-      screen.getByRole("heading", { name: /day 17/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /day 17/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/outside the fertile window \(estimate\)/i),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByLabelText(/how fertility is estimated/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/outside the fertile window \(estimate\)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/how fertility is estimated/i)).toBeInTheDocument();
   });
 
   it("shows the ovulation estimate in the fertility fact", () => {
@@ -53,9 +47,7 @@ describe("TodayScreen", () => {
 
     const dialog = screen.getByRole("dialog");
     expect(dialog).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /cycle insights/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /cycle insights/i })).toBeInTheDocument();
     // One completed 28-day cycle in the learned fixture.
     expect(screen.getByText("Cycle length")).toBeInTheDocument();
     expect(screen.getByText("How predictions work")).toBeInTheDocument();
@@ -73,9 +65,7 @@ describe("TodayScreen", () => {
     const outlines = document.querySelector(".cycle-dial__estimates");
     expect(ring?.getAttribute("style")).not.toContain("--estimate-");
     expect(outlines?.getAttribute("style")).toContain("var(--estimate-period)");
-    expect(outlines?.getAttribute("style")).toContain(
-      "var(--estimate-fertile)",
-    );
+    expect(outlines?.getAttribute("style")).toContain("var(--estimate-fertile)");
     expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument(); // today
   });
 
@@ -189,9 +179,7 @@ describe("TodayScreen", () => {
     renderToday("2026-04-15");
 
     expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(/^in the fertile window \(estimate\)$/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^in the fertile window \(estimate\)$/i)).toBeInTheDocument();
   });
 
   it("shows the fertility disclaimer in an info popover", async () => {
@@ -200,9 +188,7 @@ describe("TodayScreen", () => {
 
     await user.click(screen.getByLabelText(/how fertility is estimated/i));
 
-    expect(
-      screen.getByText(/for information only\. they are not birth control/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/for information only\. they are not birth control/i)).toBeInTheDocument();
   });
 
   it("hides the fertility fact when fertility estimates are turned off", () => {
@@ -215,20 +201,13 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/fertile window \(estimate\)/i),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByLabelText(/how fertility is estimated/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/fertile window \(estimate\)/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/how fertility is estimated/i)).not.toBeInTheDocument();
   });
 
   it("asks once about fertility estimates and hides them until answered", async () => {
     const user = userEvent.setup();
-    renderToday(
-      "2026-04-18",
-      createAppState({ periodDays: LEARNED_PERIOD_DAYS }),
-    );
+    renderToday("2026-04-18", createAppState({ periodDays: LEARNED_PERIOD_DAYS }));
 
     const question = screen.getByRole("region", {
       name: "Show fertility estimates?",
@@ -237,67 +216,44 @@ describe("TodayScreen", () => {
     // The answer is not final, and the card says where to change it.
     expect(question).toHaveTextContent(/change this in settings/i);
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(
-      document.querySelector(".cycle-dial__estimates")?.getAttribute("style"),
-    ).not.toContain("--estimate-fertile");
+    expect(document.querySelector(".cycle-dial__estimates")?.getAttribute("style")).not.toContain("--estimate-fertile");
 
     await user.click(screen.getByRole("button", { name: "Show" }));
 
     expect(question).not.toBeInTheDocument();
     expect(screen.getByText("Fertility")).toBeInTheDocument();
     expect(screen.getByText(/^not birth control$/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /cycle insights/i }),
-    ).toHaveFocus();
-    expect(
-      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings
-        .showFertility,
-    ).toBe(true);
+    expect(screen.getByRole("button", { name: /cycle insights/i })).toHaveFocus();
+    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings.showFertility).toBe(true);
   });
 
   it("keeps fertility estimates hidden when the answer is no", async () => {
     const user = userEvent.setup();
-    renderToday(
-      "2026-04-18",
-      createAppState({ periodDays: LEARNED_PERIOD_DAYS }),
-    );
+    renderToday("2026-04-18", createAppState({ periodDays: LEARNED_PERIOD_DAYS }));
 
     await user.click(screen.getByRole("button", { name: "Don't show" }));
 
-    expect(
-      screen.queryByRole("region", { name: "Show fertility estimates?" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Show fertility estimates?" })).not.toBeInTheDocument();
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(
-      JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings
-        .showFertility,
-    ).toBe(false);
+    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings.showFertility).toBe(false);
   });
 
   it("does not ask about fertility before there is an estimate to show", () => {
     renderToday("2026-04-18", createAppState({ periodDays: [] }));
 
-    expect(
-      screen.queryByRole("region", { name: "Show fertility estimates?" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Show fertility estimates?" })).not.toBeInTheDocument();
   });
 
   it("logs a bleeding day from the primary action", async () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");
 
-    await user.click(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    );
-    expect(
-      screen.getByRole("button", { name: /remove bleeding log/i }),
-    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
 
     // A fresh one-tap log picks no level; the gauge appears to ask for one.
     for (const level of ["spotting", "light", "medium", "heavy"]) {
-      expect(
-        screen.getByRole("radio", { name: new RegExp(level, "i") }),
-      ).not.toBeChecked();
+      expect(screen.getByRole("radio", { name: new RegExp(level, "i") })).not.toBeChecked();
     }
     await user.click(screen.getByRole("radio", { name: /spotting/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toBeChecked();
@@ -308,56 +264,36 @@ describe("TodayScreen", () => {
     const empty = renderWithAppState(<TodayScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: [] }),
     });
-    expect(
-      screen.getByText(/have a tide backup, or history in clue or flo\?/i),
-    ).toBeVisible();
-    expect(screen.getByRole("link", { name: /^import it$/i })).toHaveAttribute(
-      "href",
-      "/settings#import",
-    );
+    expect(screen.getByText(/have a tide backup, or history in clue or flo\?/i)).toBeVisible();
+    expect(screen.getByRole("link", { name: /^import it$/i })).toHaveAttribute("href", "/settings#import");
     empty.unmount();
 
     renderToday("2026-04-18");
-    expect(
-      screen.queryByRole("link", { name: /^import it$/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /^import it$/i })).not.toBeInTheDocument();
   });
 
   it("hides the import link while a newer build owns the stored data", () => {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: {} }),
-    );
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: {} }));
     renderWithAppState(<TodayScreen today="2026-04-18" />);
-    expect(
-      screen.queryByRole("link", { name: /^import it$/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /^import it$/i })).not.toBeInTheDocument();
   });
 
   it("prompts for a first log when there is no cycle history at all", () => {
     renderToday("2026-04-18", createAppState({ periodDays: [] }));
 
-    expect(
-      screen.getByRole("heading", { name: /cycle day unknown, learning/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /cycle day unknown, learning/i })).toBeInTheDocument();
     expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
     // One line says there is no forecast yet: no "--" numeral, and no
     // next-period or fertility rows that each repeat it.
-    expect(
-      screen.getByText(/^log your period to see a forecast\.$/i),
-    ).toBeVisible();
+    expect(screen.getByText(/^log your period to see a forecast\.$/i)).toBeVisible();
     expect(screen.queryByText("--")).not.toBeInTheDocument();
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/outside the fertile window \(estimate\)/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/outside the fertile window \(estimate\)/i)).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
     // With nothing logged, logging is the one thing to do: keep it prominent.
-    expect(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    ).toHaveClass("primary-action");
+    expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveClass("primary-action");
   });
 
   it("says the period is expected today when it lands on today", () => {
@@ -383,88 +319,56 @@ describe("TodayScreen", () => {
   it("shows a learning-state note when fallback predictions are in use", () => {
     renderToday("2026-04-21", createLearningCycleState());
 
-    expect(
-      screen.getByText(/using a typical 28-day cycle until we learn/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/using a typical 28-day cycle until we learn/i)).toBeInTheDocument();
   });
 
   it("prompts to log inside the reminder window", () => {
-    renderToday(
-      "2026-04-28",
-      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
-    );
+    renderToday("2026-04-28", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
     expect(screen.getByText(/your period is expected/i)).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /not yet/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /log bleeding today/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /not yet/i })).toBeInTheDocument();
   });
 
   it("switches to overdue wording once the period is late", () => {
-    renderToday(
-      "2026-05-01",
-      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
-    );
+    renderToday("2026-05-01", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
     expect(screen.getByText(/your period was expected/i)).toBeInTheDocument();
     // The reassurance line only appears once the period is late.
     expect(screen.getByText(/variation is common/i)).toBeInTheDocument();
     // The fact row stops claiming a "next" period in the past.
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
-    expect(
-      screen.getAllByText(/^period$/i).some((el) => el.tagName === "DT"),
-    ).toBe(true);
+    expect(screen.getAllByText(/^period$/i).some((el) => el.tagName === "DT")).toBe(true);
     expect(screen.getByText(/1 day late/i)).toBeInTheDocument();
     expect(
       screen.getByText(
-        (_, el) =>
-          el?.classList.contains("fact__meta") === true &&
-          /^Expected /.test(el.textContent ?? ""),
+        (_, el) => el?.classList.contains("fact__meta") === true && /^Expected /.test(el.textContent ?? ""),
       ),
     ).toBeInTheDocument();
   });
 
   it("dismisses the prompt for the day with 'Not yet'", async () => {
     const user = userEvent.setup();
-    renderToday(
-      "2026-04-28",
-      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
-    );
+    renderToday("2026-04-28", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
     await user.click(screen.getByRole("button", { name: /not yet/i }));
 
-    expect(
-      screen.queryByText(/your period is expected/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/your period is expected/i)).not.toBeInTheDocument();
     // Dismissing hides the prompt but keeps the log action prominent — a period
     // is still expected, so logging should stay one easy orange tap away.
-    expect(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    ).toHaveClass("primary-action");
+    expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveClass("primary-action");
   });
 
   it("clears the prompt after logging today from it", async () => {
     const user = userEvent.setup();
-    renderToday(
-      "2026-04-28",
-      createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
-    );
+    renderToday("2026-04-28", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
-    await user.click(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
 
-    expect(
-      screen.queryByText(/your period is expected/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/your period is expected/i)).not.toBeInTheDocument();
     // Undoing a log is a quiet text action, not a loud orange CTA, and the
     // day ends on a confirmation rather than on "Remove".
-    expect(
-      screen.getByRole("button", { name: /remove bleeding log/i }),
-    ).toHaveClass("text-action");
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toHaveClass("text-action");
     // No level was chosen, so the confirmation claims none.
     expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
   });
@@ -473,17 +377,11 @@ describe("TodayScreen", () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");
 
-    await user.click(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
 
-    await user.click(
-      screen.getByRole("button", { name: /remove bleeding log/i }),
-    );
-    expect(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    ).toHaveFocus();
+    await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
+    expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveFocus();
   });
 
   it("moves focus on when the reminder logs or is dismissed", async () => {
@@ -493,17 +391,13 @@ describe("TodayScreen", () => {
       state,
     });
 
-    await user.click(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
     unmount();
 
     renderToday("2026-04-28", state);
     await user.click(screen.getByRole("button", { name: /not yet/i }));
-    expect(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    ).toHaveFocus();
+    expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveFocus();
   });
 
   it("leaves focus alone when another tab logs or removes today", async () => {
@@ -511,16 +405,11 @@ describe("TodayScreen", () => {
     renderToday("2026-04-18");
 
     // One local log, so a stale "focus next time" flag would be set.
-    await user.click(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
     const dial = screen.getByRole("slider", { name: /cycle days/i });
     dial.focus();
 
-    for (const periodDays of [
-      LEARNED_PERIOD_DAYS,
-      [...LEARNED_PERIOD_DAYS, "2026-04-18" as IsoDate],
-    ]) {
+    for (const periodDays of [LEARNED_PERIOD_DAYS, [...LEARNED_PERIOD_DAYS, "2026-04-18" as IsoDate]]) {
       saveAppState(createAppState({ periodDays }));
       act(() => {
         window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY }));
@@ -538,15 +427,9 @@ describe("TodayScreen", () => {
   it("keeps a calm log action and no prompt outside the window", () => {
     renderToday("2026-04-18");
 
-    expect(
-      screen.queryByText(/your period is expected/i),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText(/your period was expected/i),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /log bleeding today/i }),
-    ).toBeInTheDocument();
+    expect(screen.queryByText(/your period is expected/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/your period was expected/i)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /log bleeding today/i })).toBeInTheDocument();
   });
 });
 
@@ -585,12 +468,10 @@ describe("TodayScreen before the fertility opt-in", () => {
     const dial = screen.getByLabelText(/cycle overview/i);
     expect(dial.textContent).not.toMatch(OVULATION_WORDS);
     expect(dial).toHaveTextContent(/between periods/i);
-    expect(screen.getByRole("heading", { level: 1 }).textContent).not.toMatch(
-      OVULATION_WORDS,
+    expect(screen.getByRole("heading", { level: 1 }).textContent).not.toMatch(OVULATION_WORDS);
+    expect(document.querySelector(".cycle-dial__estimates")?.getAttribute("style")).not.toMatch(
+      /--estimate-(fertile|ovulation)/,
     );
-    expect(
-      document.querySelector(".cycle-dial__estimates")?.getAttribute("style"),
-    ).not.toMatch(/--estimate-(fertile|ovulation)/);
     for (const readout of scrubAllDays()) {
       expect(readout).not.toMatch(OVULATION_WORDS);
     }
@@ -609,17 +490,13 @@ describe("TodayScreen before the fertility opt-in", () => {
     await user.click(screen.getByRole("button", { name: /cycle insights/i }));
 
     expect(screen.getByRole("dialog").textContent).not.toMatch(OVULATION_WORDS);
-    expect(
-      screen.getByText(/last start plus that cycle length/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/last start plus that cycle length/i)).toBeInTheDocument();
   });
 
   it("keeps the ovulation phases on the dial once fertility is on", () => {
     renderToday("2026-04-18");
 
-    expect(screen.getByLabelText(/cycle overview/i)).toHaveTextContent(
-      /luteal phase/i,
-    );
+    expect(screen.getByLabelText(/cycle overview/i)).toHaveTextContent(/luteal phase/i);
     expect(scrubAllDays().join(" ")).toMatch(/Ovulation expected/);
   });
 });

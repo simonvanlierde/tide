@@ -3,18 +3,8 @@ import type { Forecast, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
 import { CycleLegend } from "./CycleLegend";
-import {
-  buildCycleSegments,
-  type CycleSegment,
-  getSegmentStatus,
-} from "./CycleView";
-import {
-  ARC_START_DEG,
-  ARC_SWEEP_DEG,
-  dayAngleDeg,
-  dayIndexFromPoint,
-  pointerAngleDeg,
-} from "./dialGeometry";
+import { buildCycleSegments, type CycleSegment, getSegmentStatus } from "./CycleView";
+import { ARC_START_DEG, ARC_SWEEP_DEG, dayAngleDeg, dayIndexFromPoint, pointerAngleDeg } from "./dialGeometry";
 
 interface CycleDialProps {
   forecast: Forecast;
@@ -50,9 +40,7 @@ function phaseColor(segment: CycleSegment) {
   if (segment.isPeriod) {
     return segment.flow ? `var(--flow-${segment.flow})` : "var(--bleed)";
   }
-  return segment.isOvulation || segment.isFertile
-    ? "transparent"
-    : "var(--cycle-idle)";
+  return segment.isOvulation || segment.isFertile ? "transparent" : "var(--cycle-idle)";
 }
 
 function estimateColor(segment: CycleSegment) {
@@ -100,9 +88,7 @@ function ringStyle(
     // The predicted days, tapering out toward the top.
     const { fadeStart, tailEnd } = predictedFade(total);
     const cellStart = step * segments.length + BLEND_DEG;
-    stops.push(
-      `${predictedColor} ${cellStart}deg ${Math.max(fadeStart, cellStart)}deg`,
-    );
+    stops.push(`${predictedColor} ${cellStart}deg ${Math.max(fadeStart, cellStart)}deg`);
     stops.push(`transparent ${tailEnd}deg 360deg`);
   } else {
     stops.push(`transparent ${ARC_SWEEP_DEG}deg 360deg`);
@@ -124,19 +110,12 @@ function getTicksStyle(total: number, predictedCount: number) {
   for (let i = 1; step * i < lastBoundary; i += 1) {
     const boundary = step * i;
     const alpha =
-      fade && boundary > fade.fadeStart
-        ? Math.max(
-            0,
-            (fade.tailEnd - boundary) / (fade.tailEnd - fade.fadeStart),
-          )
-        : 1;
+      fade && boundary > fade.fadeStart ? Math.max(0, (fade.tailEnd - boundary) / (fade.tailEnd - fade.fadeStart)) : 1;
     if (alpha <= 0) {
       continue;
     }
     const color =
-      alpha >= 1
-        ? TICK_COLOR
-        : `color-mix(in srgb, ${TICK_COLOR} ${Math.round(alpha * 100)}%, transparent)`;
+      alpha >= 1 ? TICK_COLOR : `color-mix(in srgb, ${TICK_COLOR} ${Math.round(alpha * 100)}%, transparent)`;
     stops.push(
       `transparent ${boundary - TICK_DEG / 2}deg`,
       `${color} ${boundary - TICK_DEG / 2}deg`,
@@ -150,12 +129,7 @@ function getTicksStyle(total: number, predictedCount: number) {
   };
 }
 
-export function CycleDial({
-  forecast,
-  phaseLabel,
-  intensityByDay,
-  today,
-}: CycleDialProps) {
+export function CycleDial({ forecast, phaseLabel, intensityByDay, today }: CycleDialProps) {
   const t = useT();
   const locale = useLocale();
   // Resolve a segment's status key to text, falling back to the phase line.
@@ -194,8 +168,7 @@ export function CycleDial({
   // expected" tail, so a nub past the arc would double it and mislabel a past
   // date as a future cycle day.
   const nextDate = forecast.nextPeriod.date;
-  const hasPrediction =
-    nextDate !== null && nextDate > today && Boolean(segments[0]?.date);
+  const hasPrediction = nextDate !== null && nextDate > today && Boolean(segments[0]?.date);
   const cycleDayCount = segments.length;
   const predictedCount = hasPrediction ? PREDICTED_SPAN_DAYS : 0;
   const totalCells = cycleDayCount + predictedCount;
@@ -206,64 +179,35 @@ export function CycleDial({
     [segments, predictedCount],
   );
   const estimatesStyle = useMemo(
-    () =>
-      ringStyle(
-        segments,
-        predictedCount,
-        estimateColor,
-        "var(--estimate-period)",
-      ),
+    () => ringStyle(segments, predictedCount, estimateColor, "var(--estimate-period)"),
     [segments, predictedCount],
   );
-  const ticksStyle = useMemo(
-    () => getTicksStyle(totalCells, predictedCount),
-    [totalCells, predictedCount],
-  );
+  const ticksStyle = useMemo(() => getTicksStyle(totalCells, predictedCount), [totalCells, predictedCount]);
   // Last scrubbable cell: the first expected-period day, or the final logged day
   // with no forecast. The 1.5-day nub is a visual hint, so scrubbing must stop
   // at this whole cell rather than the fractional end of the ring.
   const maxIndex = hasPrediction ? cycleDayCount : cycleDayCount - 1;
 
-  const rotation =
-    currentIndex >= 0 ? dayAngleDeg(currentIndex, totalCells) : 0;
+  const rotation = currentIndex >= 0 ? dayAngleDeg(currentIndex, totalCells) : 0;
 
   // Ghost marker under the pointer: free-follows the finger while scrubbing,
   // otherwise sits on the previewed day (keyboard).
-  const ghostAngle =
-    previewIndex === null
-      ? null
-      : (previewAngle ?? dayAngleDeg(previewIndex, totalCells));
+  const ghostAngle = previewIndex === null ? null : (previewAngle ?? dayAngleDeg(previewIndex, totalCells));
 
-  const isPredictedPreview =
-    previewIndex !== null && previewIndex >= cycleDayCount;
-  const preview =
-    previewIndex === null || isPredictedPreview ? null : segments[previewIndex];
+  const isPredictedPreview = previewIndex !== null && previewIndex >= cycleDayCount;
+  const preview = previewIndex === null || isPredictedPreview ? null : segments[previewIndex];
   // Which day of the predicted run is under the pointer: nextPeriod + offset.
   const predictedPreviewDate =
-    isPredictedPreview && nextDate
-      ? addDays(nextDate, (previewIndex ?? cycleDayCount) - cycleDayCount)
-      : null;
-  const centerDay = isPredictedPreview
-    ? (previewIndex ?? 0) + 1
-    : (preview?.dayNumber ?? forecast.cycleDay);
-  const centerStatus = isPredictedPreview
-    ? t("status.periodExpected")
-    : preview
-      ? statusText(preview)
-      : phaseLabel;
-  const centerDate = isPredictedPreview
-    ? predictedPreviewDate
-    : preview
-      ? preview.date
-      : today;
+    isPredictedPreview && nextDate ? addDays(nextDate, (previewIndex ?? cycleDayCount) - cycleDayCount) : null;
+  const centerDay = isPredictedPreview ? (previewIndex ?? 0) + 1 : (preview?.dayNumber ?? forecast.cycleDay);
+  const centerStatus = isPredictedPreview ? t("status.periodExpected") : preview ? statusText(preview) : phaseLabel;
+  const centerDate = isPredictedPreview ? predictedPreviewDate : preview ? preview.date : today;
   // Screen-reader value: "Day N, <date>, <status>" — the date is dropped when
   // there isn't one, and the pieces are joined with commas in every language.
   const valueText = isPredictedPreview
     ? [
         t("dial.day", { n: (previewIndex ?? 0) + 1 }),
-        predictedPreviewDate
-          ? formatShortDate(predictedPreviewDate, locale)
-          : "",
+        predictedPreviewDate ? formatShortDate(predictedPreviewDate, locale) : "",
         t("status.periodExpected"),
       ]
         .filter(Boolean)
@@ -288,10 +232,7 @@ export function CycleDial({
     }
     const rect = dragRect.current;
     if (rect) {
-      const index = Math.min(
-        dayIndexFromPoint(event.clientX, event.clientY, rect, totalCells),
-        maxIndex,
-      );
+      const index = Math.min(dayIndexFromPoint(event.clientX, event.clientY, rect, totalCells), maxIndex);
       // The ghost free-follows the finger everywhere. On day 1 (against the top
       // seam) it's floored to the cell centre so it can't perch on the seam —
       // but only on the left side: past the centre it free-follows again, so the
@@ -312,12 +253,7 @@ export function CycleDial({
 
   function stepPreview(step: number) {
     setPreviewState(({ index }) => {
-      const from =
-        typeof index === "number"
-          ? index
-          : currentIndex >= 0
-            ? currentIndex
-            : 0;
+      const from = typeof index === "number" ? index : currentIndex >= 0 ? currentIndex : 0;
       return {
         index: Math.min(Math.max(from + step, 0), maxIndex),
         angle: null,
@@ -349,11 +285,7 @@ export function CycleDial({
         aria-readonly="true"
         aria-valuemin={1}
         aria-valuemax={maxIndex + 1}
-        aria-valuenow={
-          isPredictedPreview
-            ? (previewIndex ?? 0) + 1
-            : (preview?.dayNumber ?? forecast.cycleDay ?? 1)
-        }
+        aria-valuenow={isPredictedPreview ? (previewIndex ?? 0) + 1 : (preview?.dayNumber ?? forecast.cycleDay ?? 1)}
         aria-valuetext={valueText}
         tabIndex={0}
         onPointerDown={(event) => {
@@ -380,42 +312,21 @@ export function CycleDial({
                 The learning note under the dial says what to do. */}
             {centerDay === null ? null : (
               <>
-                <span className="cycle-dial__eyebrow">
-                  {t("dial.cycleDay")}
-                </span>
+                <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
                 <strong className="cycle-dial__day">{centerDay}</strong>
               </>
             )}
             <span className="cycle-dial__phase">{centerStatus}</span>
-            {centerDate ? (
-              <span className="cycle-dial__date">
-                {formatShortDate(centerDate, locale)}
-              </span>
-            ) : null}
+            {centerDate ? <span className="cycle-dial__date">{formatShortDate(centerDate, locale)}</span> : null}
           </div>
         </div>
-        <div
-          className="cycle-dial__estimates"
-          style={estimatesStyle}
-          aria-hidden="true"
-        />
-        <div
-          className="cycle-dial__ticks"
-          style={ticksStyle}
-          aria-hidden="true"
-        />
-        <div
-          className="cycle-dial__marker"
-          style={{ transform: `rotate(${rotation}deg)` }}
-        >
+        <div className="cycle-dial__estimates" style={estimatesStyle} aria-hidden="true" />
+        <div className="cycle-dial__ticks" style={ticksStyle} aria-hidden="true" />
+        <div className="cycle-dial__marker" style={{ transform: `rotate(${rotation}deg)` }}>
           <span aria-hidden="true" className="cycle-dial__marker-dot" />
         </div>
         {ghostAngle !== null ? (
-          <div
-            className="cycle-dial__ghost"
-            style={{ transform: `rotate(${ghostAngle}deg)` }}
-            aria-hidden="true"
-          >
+          <div className="cycle-dial__ghost" style={{ transform: `rotate(${ghostAngle}deg)` }} aria-hidden="true">
             <span className="cycle-dial__ghost-dot" />
           </div>
         ) : null}

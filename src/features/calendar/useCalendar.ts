@@ -2,12 +2,7 @@ import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { getPeriodRange } from "../../domain/flow";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
-import {
-  useAppState,
-  useAppStateActions,
-  useForecast,
-  useLocale,
-} from "../../state/provider";
+import { useAppState, useAppStateActions, useForecast, useLocale } from "../../state/provider";
 import { addMonths, formatMonthLabel } from "../../utils/date";
 import { buildCalendarCells, buildMonthDays } from "./calendar";
 
@@ -22,13 +17,7 @@ export function useCalendar(today: IsoDate) {
 
   const { showCycleDayNumbers } = state.settings;
   const days = useMemo(
-    () =>
-      buildCalendarCells(
-        buildMonthDays(visibleMonth, today),
-        forecast,
-        state.intensityByDay,
-        showCycleDayNumbers,
-      ),
+    () => buildCalendarCells(buildMonthDays(visibleMonth, today), forecast, state.intensityByDay, showCycleDayNumbers),
     [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers],
   );
   const helpKey: MessageKey =
@@ -47,20 +36,14 @@ function useMonth(today: IsoDate, onChange: () => void) {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
 
   const locale = useLocale();
-  const label = useMemo(
-    () => formatMonthLabel(visibleMonth, locale),
-    [visibleMonth, locale],
-  );
+  const label = useMemo(() => formatMonthLabel(visibleMonth, locale), [visibleMonth, locale]);
 
   // keepPickerOpen lets the month/year dropdowns change one field at a time
   // without the panel closing between picks; chevrons and "Today" close it.
   // Takes an updater so held PageUp/PageDown and fast swipes step from the
   // latest month, not the last committed one — inside a transition several
   // pages can arrive before a commit.
-  function setMonth(
-    nextMonth: IsoDate | ((current: IsoDate) => IsoDate),
-    keepPickerOpen = false,
-  ) {
+  function setMonth(nextMonth: IsoDate | ((current: IsoDate) => IsoDate), keepPickerOpen = false) {
     startTransition(() => {
       setVisibleMonth(nextMonth);
       if (!keepPickerOpen) {
@@ -92,11 +75,7 @@ function useMonth(today: IsoDate, onChange: () => void) {
       isPickerOpen,
       year: Number(visibleMonth.slice(0, 4)),
       monthIndex: Number(visibleMonth.slice(5, 7)) - 1,
-      years: buildYearOptions(
-        Object.keys(state.intensityByDay) as IsoDate[],
-        today,
-        visibleMonth,
-      ),
+      years: buildYearOptions(Object.keys(state.intensityByDay) as IsoDate[], today, visibleMonth),
       onSelect(year: number, monthIndex: number) {
         const month = String(monthIndex + 1).padStart(2, "0");
         setMonth(`${year}-${month}-01` as IsoDate, true);
@@ -175,10 +154,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
     forecastMoved,
     // A day logged without a level leaves the gauge unselected: it is a
     // question to answer, not a choice already made on the user's behalf.
-    selectedIntensity:
-      selectedDay && isLogged(selectedDay)
-        ? state.intensityByDay[selectedDay]
-        : undefined,
+    selectedIntensity: selectedDay && isLogged(selectedDay) ? state.intensityByDay[selectedDay] : undefined,
     isSelectedLogged: selectedDay ? isLogged(selectedDay) : false,
     rangePick,
     justLoggedRange,
@@ -248,11 +224,7 @@ const YEAR_BUFFER = 1;
 // year, the current year, the month currently on screen, and the years between
 // them; YEAR_BUFFER pads each end. So an old backup spanning 2022–2024 in 2026
 // yields 2021–2027.
-function buildYearOptions(
-  periodDays: IsoDate[],
-  today: IsoDate,
-  visibleMonth: IsoDate,
-): number[] {
+function buildYearOptions(periodDays: IsoDate[], today: IsoDate, visibleMonth: IsoDate): number[] {
   const years = [
     Number(today.slice(0, 4)),
     Number(visibleMonth.slice(0, 4)),

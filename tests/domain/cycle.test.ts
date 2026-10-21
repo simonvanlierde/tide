@@ -11,14 +11,7 @@ import { startsEndingOn } from "../support/cycles";
 describe("getCompletedCycleLengths", () => {
   it("ignores gaps from missed logging days when computing completed cycle lengths", () => {
     expect(
-      getCompletedCycleLengths([
-        "2026-06-01",
-        "2026-06-02",
-        "2026-06-04",
-        "2026-06-05",
-        "2026-06-29",
-        "2026-06-30",
-      ]),
+      getCompletedCycleLengths(["2026-06-01", "2026-06-02", "2026-06-04", "2026-06-05", "2026-06-29", "2026-06-30"]),
     ).toEqual([28]);
   });
 });
@@ -27,15 +20,10 @@ describe("getPastOvulationDates", () => {
   it("estimates ovulation 14 days before each following period start, one per completed cycle", () => {
     // Two completed cycles: starts on 06-01, 06-29, 07-27. The last start is the
     // in-progress cycle and has no following start, so it yields no ovulation.
-    expect(
-      getPastOvulationDates([
-        "2026-06-01",
-        "2026-06-02",
-        "2026-06-29",
-        "2026-06-30",
-        "2026-07-27",
-      ]),
-    ).toEqual(["2026-06-15", "2026-07-13"]);
+    expect(getPastOvulationDates(["2026-06-01", "2026-06-02", "2026-06-29", "2026-06-30", "2026-07-27"])).toEqual([
+      "2026-06-15",
+      "2026-07-13",
+    ]);
   });
 
   it("returns nothing until at least one cycle has completed", () => {
@@ -110,9 +98,7 @@ describe("getAveragePeriodLength", () => {
     ).toBe(7);
 
     // Two 1-day periods average 1; clamp up to 2.
-    expect(
-      getAveragePeriodLength(["2026-01-01", "2026-02-01"], "2026-03-01"),
-    ).toBe(2);
+    expect(getAveragePeriodLength(["2026-01-01", "2026-02-01"], "2026-03-01")).toBe(2);
   });
 });
 
@@ -143,12 +129,7 @@ describe("forecast", () => {
   });
 
   it("does not treat a missed logging day inside a period as a new cycle start", () => {
-    const periodDays = [
-      "2026-06-01",
-      "2026-06-02",
-      "2026-06-04",
-      "2026-06-05",
-    ] as const;
+    const periodDays = ["2026-06-01", "2026-06-02", "2026-06-04", "2026-06-05"] as const;
     const summary = forecast({
       fertility: true,
       today: "2026-06-10",
@@ -213,10 +194,7 @@ describe("forecast", () => {
     const summary = forecast({
       fertility: true,
       today: "2026-04-04",
-      periodDays: [
-        ...startsEndingOn("2026-04-02", [27, 28, 45, 28, 29]),
-        "2026-04-03",
-      ],
+      periodDays: [...startsEndingOn("2026-04-02", [27, 28, 45, 28, 29]), "2026-04-03"],
     });
 
     expect(summary.cycleLength).toBe(28);
@@ -230,10 +208,7 @@ describe("forecast", () => {
     const summary = forecast({
       fertility: true,
       today: "2026-04-04",
-      periodDays: [
-        ...startsEndingOn("2026-04-02", [28, 28, 28, 28]),
-        "2026-04-03",
-      ],
+      periodDays: [...startsEndingOn("2026-04-02", [28, 28, 28, 28]), "2026-04-03"],
     });
 
     expect(summary.fertileWindow).toEqual({ start: -5, end: 1 });
@@ -284,10 +259,7 @@ describe("forecast", () => {
     const summary = forecast({
       fertility: true,
       today: "2026-04-04",
-      periodDays: [
-        ...startsEndingOn("2026-04-02", [21, 21, 21, 30, 30, 30, 30, 30, 30]),
-        "2026-04-03",
-      ],
+      periodDays: [...startsEndingOn("2026-04-02", [21, 21, 21, 30, 30, 30, 30, 30, 30]), "2026-04-03"],
     });
 
     expect(summary.cycleLength).toBe(30);
@@ -300,9 +272,7 @@ describe("forecast", () => {
       periodDays: ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"],
     });
 
-    expect(["menstrual", "follicular", "ovulation", "luteal"]).toContain(
-      summary.phaseLabel,
-    );
+    expect(["menstrual", "follicular", "ovulation", "luteal"]).toContain(summary.phaseLabel);
   });
 });
 
@@ -329,13 +299,7 @@ describe("forecast stats", () => {
   });
 
   it("reports no tracked cycles with no completed cycles", () => {
-    expect(
-      forecast({ fertility: true, today: "2026-12-31", periodDays: [] }).stats
-        .cyclesTracked,
-    ).toBe(0);
-    expect(
-      forecast({ fertility: true, today: "2026-12-31", periodDays: [] }).stats
-        .variabilityDays,
-    ).toBeNull();
+    expect(forecast({ fertility: true, today: "2026-12-31", periodDays: [] }).stats.cyclesTracked).toBe(0);
+    expect(forecast({ fertility: true, today: "2026-12-31", periodDays: [] }).stats.variabilityDays).toBeNull();
   });
 });

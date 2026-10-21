@@ -38,21 +38,12 @@ export function CalendarScreen(props: CalendarScreenProps) {
     if (prefersReducedMotion()) {
       return;
     }
-    const cell = articleRef.current?.querySelector<HTMLElement>(
-      ".calendar-grid__day.is-today",
-    );
+    const cell = articleRef.current?.querySelector<HTMLElement>(".calendar-grid__day.is-today");
     if (typeof cell?.animate === "function") {
-      cell.animate(
-        [
-          { transform: "scale(1)" },
-          { transform: "scale(1.18)" },
-          { transform: "scale(1)" },
-        ],
-        {
-          duration: 460,
-          easing: "ease-out",
-        },
-      );
+      cell.animate([{ transform: "scale(1)" }, { transform: "scale(1.18)" }, { transform: "scale(1)" }], {
+        duration: 460,
+        easing: "ease-out",
+      });
     }
   }, [month.isCurrent]);
 
@@ -64,9 +55,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
   // Picking a range happens on the grid, so start there: focus its tab stop.
   function handleStartRange() {
     log.startRangePick();
-    articleRef.current
-      ?.querySelector<HTMLElement>('.calendar-grid__day[tabindex="0"]')
-      ?.focus();
+    articleRef.current?.querySelector<HTMLElement>('.calendar-grid__day[tabindex="0"]')?.focus();
   }
 
   function handleTouchStart(event: TouchEvent) {
@@ -104,10 +93,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
   // left alone — the flow gauge is a radiogroup that owns them. Skip the picker's
   // month/year dropdowns, which handle their own keys.
   function handleKeyDown(event: KeyboardEvent) {
-    if (
-      event.target instanceof HTMLInputElement ||
-      event.target instanceof HTMLSelectElement
-    ) {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) {
       return;
     }
     if (event.key === "Escape" && log.rangePick) {
@@ -125,11 +111,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
     <section className="utility-screen">
       <h1 className="visually-hidden">{t("calendar.title")}</h1>
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: PageUp/PageDown month paging is a keyboard convenience layered over the buttons below; the calendar stays fully operable via those focusable controls. */}
-      <article
-        ref={articleRef}
-        className="utility-card calendar"
-        onKeyDown={handleKeyDown}
-      >
+      <article ref={articleRef} className="utility-card calendar" onKeyDown={handleKeyDown}>
         <div className="calendar__header" data-testid="calendar-header">
           <button
             type="button"
@@ -147,27 +129,14 @@ export function CalendarScreen(props: CalendarScreenProps) {
             onClick={month.togglePicker}
           >
             {month.label}
-            <ChevronDown
-              aria-hidden="true"
-              size={16}
-              className="calendar__month-caret"
-            />
+            <ChevronDown aria-hidden="true" size={16} className="calendar__month-caret" />
           </button>
-          <button
-            type="button"
-            className="calendar__nav"
-            aria-label={t("calendar.nextMonth")}
-            onClick={month.goToNext}
-          >
+          <button type="button" className="calendar__nav" aria-label={t("calendar.nextMonth")} onClick={month.goToNext}>
             <ChevronRight aria-hidden="true" size={18} />
           </button>
         </div>
         <CalendarMonthPicker {...month.picker} />
-        <div
-          className="calendar-swipe"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
+        <div className="calendar-swipe" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <CalendarGrid
             days={days}
             selectedDay={log.selectedDay ?? log.rangePick?.from ?? null}
@@ -181,9 +150,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
             day={log.selectedDay}
             intensity={log.selectedIntensity}
             isLogged={log.isSelectedLogged}
-            onSelect={(intensity) =>
-              log.setDayIntensity(log.selectedDay as IsoDate, intensity)
-            }
+            onSelect={(intensity) => log.setDayIntensity(log.selectedDay as IsoDate, intensity)}
             onRemove={() => log.removeDay(log.selectedDay as IsoDate)}
             onClose={log.closePicker}
           />
@@ -191,35 +158,21 @@ export function CalendarScreen(props: CalendarScreenProps) {
           <p className="supporting-note calendar__help" role="status">
             {log.rangePick.from === null
               ? t("calendar.rangePickFirst")
-              : t(
-                  log.rangePick.tooLong
-                    ? "calendar.rangeTooLong"
-                    : "calendar.rangePickLast",
-                  {
-                    date: formatShortDate(log.rangePick.from, locale),
-                    max: MAX_PERIOD_RANGE_DAYS,
-                  },
-                )}
+              : t(log.rangePick.tooLong ? "calendar.rangeTooLong" : "calendar.rangePickLast", {
+                  date: formatShortDate(log.rangePick.from, locale),
+                  max: MAX_PERIOD_RANGE_DAYS,
+                })}
           </p>
         ) : log.justLoggedDay || log.justLoggedRange ? (
           // A one-tap log or a range wrote data; say what, and make undo one
           // tap too.
           <p className="supporting-note calendar__help" role="status">
-            {t(
-              log.forecastMoved
-                ? "calendar.justLoggedForecast"
-                : "calendar.justLogged",
-              {
-                date: log.justLoggedRange
-                  ? `${formatShortDate(log.justLoggedRange.from, locale)} – ${formatShortDate(log.justLoggedRange.to, locale)}`
-                  : formatShortDate(log.justLoggedDay as IsoDate, locale),
-              },
-            )}{" "}
-            <button
-              type="button"
-              className="text-action calendar__undo"
-              onClick={log.undoJustLogged}
-            >
+            {t(log.forecastMoved ? "calendar.justLoggedForecast" : "calendar.justLogged", {
+              date: log.justLoggedRange
+                ? `${formatShortDate(log.justLoggedRange.from, locale)} – ${formatShortDate(log.justLoggedRange.to, locale)}`
+                : formatShortDate(log.justLoggedDay as IsoDate, locale),
+            })}{" "}
+            <button type="button" className="text-action calendar__undo" onClick={log.undoJustLogged}>
               {t("calendar.undo")}
             </button>
           </p>
@@ -253,9 +206,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
 }
 
 function prefersReducedMotion() {
-  return (
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false
-  );
+  return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
 }
 
 const LEGEND_ITEMS = [
@@ -277,11 +228,7 @@ const LEGEND_KEY = {
 // own marker to screen readers, so the visual legend is decorative here.
 function CalendarLegend({ days }: { days: CalendarCell[] }) {
   const t = useT();
-  const present = new Set(
-    days.map((day) =>
-      day.isLogged ? "logged" : day.estimate && LEGEND_KEY[day.estimate],
-    ),
-  );
+  const present = new Set(days.map((day) => (day.isLogged ? "logged" : day.estimate && LEGEND_KEY[day.estimate])));
   const items = LEGEND_ITEMS.filter((item) => present.has(item.key));
   if (items.length === 0) {
     return null;
@@ -291,9 +238,7 @@ function CalendarLegend({ days }: { days: CalendarCell[] }) {
     <div className="calendar-legend" aria-hidden="true">
       {items.map((item) => (
         <span key={item.key} className="calendar-legend__item">
-          <span
-            className={`calendar-legend__swatch calendar-legend__swatch--${item.key}`}
-          />
+          <span className={`calendar-legend__swatch calendar-legend__swatch--${item.key}`} />
           {t(item.labelKey)}
         </span>
       ))}

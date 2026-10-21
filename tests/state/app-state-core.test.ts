@@ -15,27 +15,25 @@ describe("app state core selectors", () => {
       today: "2026-04-30",
     });
 
-    expect(getPeriodDays(nextState.intensityByDay)).toEqual([
-      "2026-04-02",
-      "2026-04-05",
-      "2026-04-12",
-    ]);
+    expect(getPeriodDays(nextState.intensityByDay)).toEqual(["2026-04-02", "2026-04-05", "2026-04-12"]);
   });
 
   it("refuses to log a future-dated bleeding day", () => {
-    const nextState = appStateReducer(
-      createAppState({ periodDays: ["2026-04-02"] }),
-      { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
-    );
+    const nextState = appStateReducer(createAppState({ periodDays: ["2026-04-02"] }), {
+      type: "togglePeriodDay",
+      day: "2026-04-10",
+      today: "2026-04-05",
+    });
 
     expect(getPeriodDays(nextState.intensityByDay)).toEqual(["2026-04-02"]);
   });
 
   it("still lets a stale future-dated day be removed", () => {
-    const nextState = appStateReducer(
-      createAppState({ periodDays: ["2026-04-02", "2026-04-10"] }),
-      { type: "togglePeriodDay", day: "2026-04-10", today: "2026-04-05" },
-    );
+    const nextState = appStateReducer(createAppState({ periodDays: ["2026-04-02", "2026-04-10"] }), {
+      type: "togglePeriodDay",
+      day: "2026-04-10",
+      today: "2026-04-05",
+    });
 
     expect(getPeriodDays(nextState.intensityByDay)).toEqual(["2026-04-02"]);
   });
@@ -118,15 +116,11 @@ describe("app state core selectors", () => {
       periodDays: ["2026-04-02"],
       intensityByDay: { "2026-04-02": "spotting" },
     });
-    expect(selectForecast(spotting, "2026-04-10").estimateMode).toBe(
-      "insufficient",
-    );
+    expect(selectForecast(spotting, "2026-04-10").estimateMode).toBe("insufficient");
 
     // The same day logged as real bleeding does anchor a prediction.
     const bleeding = createAppState({ periodDays: ["2026-04-02"] });
-    expect(selectForecast(bleeding, "2026-04-10").estimateMode).toBe(
-      "fallback",
-    );
+    expect(selectForecast(bleeding, "2026-04-10").estimateMode).toBe("fallback");
   });
 
   it("derives the cycle summary from plain app state", () => {
@@ -208,11 +202,7 @@ describe("app state core selectors", () => {
       to: "2026-05-02",
       today: "2026-04-30",
     });
-    expect(getPeriodDays(upToToday.intensityByDay)).toEqual([
-      "2026-04-28",
-      "2026-04-29",
-      "2026-04-30",
-    ]);
+    expect(getPeriodDays(upToToday.intensityByDay)).toEqual(["2026-04-28", "2026-04-29", "2026-04-30"]);
 
     const tooLong = appStateReducer(state, {
       type: "logPeriodRange",
