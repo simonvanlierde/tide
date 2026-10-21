@@ -45,7 +45,7 @@ export const fr: Dictionary = {
   "today.ovulationInDays.one": "Ovulation dans {n} jour",
   "today.ovulationInDays.other": "Ovulation dans {n} jours",
   "today.learningFallback":
-    "Cycle type de 28 jours utilisé jusqu’à ce que votre rythme soit appris.",
+    "Un cycle type de 28 jours est utilisé jusqu’à ce que nous apprenions votre rythme.",
   "today.learningInsufficient":
     "Enregistrez vos règles pour voir une prévision.",
 
@@ -95,9 +95,9 @@ export const fr: Dictionary = {
   "insights.how3":
     "La durée des règles est votre moyenne récente, limitée à une normale de {min} à {max} jours.",
   "insights.how4":
-    "Vos prochaines règles correspondent à votre dernier début plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",
+    "Vos prochaines règles correspondent au début de vos dernières règles plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",
   "insights.howNextPeriod":
-    "Vos prochaines règles correspondent à votre dernier début plus cette durée de cycle.",
+    "Vos prochaines règles correspondent au début de vos dernières règles plus cette durée de cycle.",
   "insights.how5":
     "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand vos cycles varient davantage.",
 

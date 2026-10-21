@@ -96,9 +96,9 @@ export const de: Dictionary = {
   "insights.how3":
     "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
   "insights.how4":
-    "Deine nächste Periode ist dein letzter Beginn plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",
+    "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",
   "insights.howNextPeriod":
-    "Deine nächste Periode ist dein letzter Beginn plus diese Zykluslänge.",
+    "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge.",
   "insights.how5":
     "Das fruchtbare Fenster reicht von {before} Tagen vor bis {after} Tag nach dem Eisprung und wird breiter, wenn deine Zyklen stärker schwanken.",
 

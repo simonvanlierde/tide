@@ -94,9 +94,9 @@ export const es: Dictionary = {
   "insights.how3":
     "La duración del período es tu promedio reciente, limitado a unos {min}–{max} días normales.",
   "insights.how4":
-    "Tu próximo período es tu último inicio más esa duración del ciclo; la ovulación se estima {luteal} días antes.",
+    "Tu próximo período es el inicio de tu último período más esa duración del ciclo; la ovulación se estima {luteal} días antes.",
   "insights.howNextPeriod":
-    "Tu próximo período es tu último inicio más esa duración del ciclo.",
+    "Tu próximo período es el inicio de tu último período más esa duración del ciclo.",
   "insights.how5":
     "La ventana fértil va de {before} días antes a {after} día después de la ovulación, y se amplía cuando tus ciclos varían más.",
 

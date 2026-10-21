@@ -96,9 +96,9 @@ export const nl: Dictionary = {
   "insights.how3":
     "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
   "insights.how4":
-    "Je volgende menstruatie is je laatste start plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
+    "Je volgende menstruatie is je laatste begindatum plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
   "insights.howNextPeriod":
-    "Je volgende menstruatie is je laatste start plus die cycluslengte.",
+    "Je volgende menstruatie is je laatste begindatum plus die cycluslengte.",
   "insights.how5":
     "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
 
