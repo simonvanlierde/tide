@@ -11,6 +11,14 @@ export function findOverflow(page: Page): Promise<string[]> {
     // Let a just-opened popover finish placing itself (it moves on "toggle",
     // which fires after the click).
     await new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done)));
+    // Measure the settled layout: a turning chevron's box reaches 16 × √2 px
+    // mid-turn and pokes out of its summary. Endless animations never settle.
+    await Promise.all(
+      document
+        .getAnimations()
+        .filter((animation) => animation.effect?.getComputedTiming().endTime !== Infinity)
+        .map((animation) => animation.finished.catch(() => undefined)),
+    );
     const viewport = document.documentElement.clientWidth;
     const found: string[] = [];
     const report = (el: Element, why: string) => {
