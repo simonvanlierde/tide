@@ -20,8 +20,6 @@ export const en = {
   "today.cycleInsights": "Cycle insights",
   "today.howWorkedOut": "How was this worked out?",
   "today.explainError": "This couldn't be opened. Reload Tide and try again.",
-  "today.daysAgo.one": "{n} day ago",
-  "today.daysAgo.other": "{n} days ago",
   "today.expectedToday": "Expected today",
   "today.inDays.one": "In {n} day",
   "today.inDays.other": "In {n} days",
