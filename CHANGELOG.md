@@ -70,6 +70,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- More translation fixes after a second review in Dutch, French, German and Spanish, mostly how the next period is explained in Cycle insights.
 - Translation fixes after a review in Dutch, French, German and
   Spanish. "In 3 days" on Today now starts with a capital in French, German
   and Spanish, as it does in English and Dutch.
