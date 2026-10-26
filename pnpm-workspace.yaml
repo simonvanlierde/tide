@@ -1,11 +1,10 @@
 # pnpm reads its project settings here, not from .npmrc. One package, so no
 # `packages:` list.
 
-# Resolve only releases at least three days old (in minutes): a compromised release
-# is usually caught and yanked within that window. TODO: raise to a week (10080), as
-# the template and Dependabot's cooldown have it, once every locked version is a week
-# old (2026-10-23).
-minimumReleaseAge: 4320
+# Resolve only releases at least a week old (in minutes), as the template and
+# Dependabot's cooldown have it: a compromised release is usually caught and yanked
+# within that window.
+minimumReleaseAge: 10080
 allowBuilds:
   esbuild: true
 overrides:
