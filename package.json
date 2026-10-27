@@ -3,7 +3,7 @@
   "version": "0.4.0",
   "description": "Privacy-first, local-first period tracker PWA — React + TypeScript + Vite, data stays in the browser",
   "license": "MIT",
-  "author": "Simon van Lierde <90462640+simonvanlierde@users.noreply.github.com>",
+  "author": "Simon van Lierde <code@duinlab.nl>",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/simonvanlierde/tide.git"
