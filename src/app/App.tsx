@@ -1,8 +1,8 @@
 import { CircleAlert } from "lucide-react";
-import { type MouseEvent, startTransition, useEffect, useRef, useState } from "react";
+import { lazy, type MouseEvent, Suspense, startTransition, useEffect, useRef, useState } from "react";
 import { useIsReadOnly, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
-import { currentLegalPage, LegalFooter, LegalPage } from "./LegalPages";
+import { currentLegalPage, LegalFooter } from "./LegalPages";
 import { appScreens, getAppScreen, shouldHandleAppNavigation } from "./navigation";
 
 function usePathname() {
@@ -68,9 +68,17 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
   );
 }
 
+const LegalPage = lazy(() => import("./LegalPage"));
+
 export function App() {
   // The legal pages are static text: they need none of the app's screens.
-  return currentLegalPage() ? <LegalPage /> : <TideApp />;
+  return currentLegalPage() ? (
+    <Suspense fallback={null}>
+      <LegalPage />
+    </Suspense>
+  ) : (
+    <TideApp />
+  );
 }
 
 function TideApp() {

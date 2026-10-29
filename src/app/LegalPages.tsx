@@ -1,14 +1,10 @@
-import { useEffect } from "react";
-import accessibility from "../../docs/accessibility.md";
-import privacy from "../../docs/privacy.md";
-
 const SITE_TITLE = "tide";
 
 // The pages rendered from docs/, by path. The host answers an unknown path with
 // index.html, so each loads the app.
-const PAGES: Record<string, { title: string; html: string }> = {
-  "/accessibility": { title: "Accessibility statement", html: accessibility },
-  "/privacy": { title: "Privacy statement", html: privacy },
+const PAGES: Record<string, { title: string }> = {
+  "/accessibility": { title: "Accessibility statement" },
+  "/privacy": { title: "Privacy statement" },
 };
 
 const TRAILING_SLASH = /\/$/;
@@ -34,28 +30,4 @@ function LegalFooter({ showHome }: { showHome: boolean }) {
   );
 }
 
-function LegalPage() {
-  const page = currentPage();
-
-  useEffect(() => {
-    if (page) {
-      document.title = `${page.title} · ${SITE_TITLE}`;
-    }
-  }, [page]);
-
-  if (!page) {
-    return null;
-  }
-
-  return (
-    <div className="app-shell legal-page">
-      <main className="app-main">
-        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: our own Markdown, rendered at build time */}
-        <article dangerouslySetInnerHTML={{ __html: page.html }} />
-      </main>
-      <LegalFooter showHome />
-    </div>
-  );
-}
-
-export { currentPage as currentLegalPage, LegalFooter, LegalPage };
+export { currentPage as currentLegalPage, LegalFooter, SITE_TITLE };
