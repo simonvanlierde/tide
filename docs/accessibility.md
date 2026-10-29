@@ -8,72 +8,63 @@ criterion, and link it from the status sentence.
 
 # Accessibility statement
 
-This statement covers tide at [tide.duinlab.nl](https://tide.duinlab.nl).
-Simon van Lierde builds and maintains it, and is responsible for this statement.
+This page covers tide at [tide.duinlab.nl](https://tide.duinlab.nl). Simon van Lierde builds tide
+and is responsible for this page.
 
 ## Using tide
 
-You should be able to:
+You can:
 
-- use it on a screen 320 px wide, or zoomed in to 400%, without scrolling sideways;
-- use a dark theme, which follows your system setting;
-- read it in English, German, Spanish, French or Dutch;
-- have animation turned off, which follows your system's reduced-motion setting.
+- use tide on a screen 320 px wide without scrolling sideways, which is the same as zooming in to
+  400% on a laptop;
+- choose a dark theme in Settings, or let tide follow your device;
+- use tide in English, German, Spanish, French or Dutch;
+- turn off animations with your device's reduced-motion setting.
 
 ## How accessible tide is
 
-tide aims to meet [WCAG 2.2](https://www.w3.org/TR/WCAG22/) at level AA.
+tide aims to meet [WCAG 2.2](https://www.w3.org/TR/WCAG22/) at level AA, the usual standard for
+accessible websites.
 
-Its conformance is **not assessed**. Nobody has checked it against every WCAG 2.2 criterion yet,
-and no outside auditor has tested it: the developer checks it. How we check, below, says what is
-checked and how. The criterion-by-criterion check goes in
-[docs/accessibility-assessment.md](https://github.com/simonvanlierde/tide/blob/main/docs/accessibility-assessment.md), and the status links it once every criterion
-has a result.
+Its conformance is **not assessed**: nobody has checked tide against every WCAG 2.2 rule yet.
+Simon runs the checks below himself. No outside expert has tested it.
 
 ## Known problems
 
-We don't know of any problems yet.
+None that we know of yet.
 
 ## Tell us about a problem
 
-If something in tide is hard or impossible for you to use, email
-[code@duinlab.nl](mailto:code@duinlab.nl). You can also
-[open an issue on GitHub](https://github.com/simonvanlierde/tide/issues/new), but you don't
-need a GitHub account to tell us.
+If any part of tide is hard or impossible for you to use, email
+[code@duinlab.nl](mailto:code@duinlab.nl). Tell us what you tried to do, what happened, and which
+browser and assistive technology you use, if any. If you have a GitHub account, you can also
+[open an issue](https://github.com/simonvanlierde/tide/issues/new).
 
-Say what you were trying to do, what happened, and which browser and assistive technology you use,
-if any. We'll reply within 10 working days. If you need anything from tide in another
-format, ask and we'll send it.
+We'll reply within 10 working days. If you need something from tide in another format, ask and
+we'll send it.
 
 ## How we check
 
-- **Automated scan.** The end-to-end tests run [axe-core](https://github.com/dequelabs/axe-core)
-  with the WCAG 2.0, 2.1 and 2.2 level A and AA rules and axe's best practices, on every page,
-  in the light and the dark theme. See
-  [tests/e2e/a11y.spec.ts](https://github.com/simonvanlierde/tide/blob/main/tests/e2e/a11y.spec.ts).
-- **Reflow.** The tests load every page 320 px wide and fail if it scrolls sideways. See
-  [tests/e2e/reflow.spec.ts](https://github.com/simonvanlierde/tide/blob/main/tests/e2e/reflow.spec.ts).
-- **Lint.** [Biome's accessibility rules](https://biomejs.dev/linter/javascript/rules/#a11y) check
-  every change for missing alt text, invalid ARIA, click handlers without a keyboard equivalent and
-  other mistakes in the code.
-- **This statement.**
-  [tests/e2e/accessibility-statement.spec.ts](https://github.com/simonvanlierde/tide/blob/main/tests/e2e/accessibility-statement.spec.ts)
-  fails when this page loses a section, claims a status it has not earned, loses its email contact,
-  or goes more than 400 days without a review.
+These automatic checks run on every proposed change to tide:
 
-All of this runs on every pull request. Automated tools catch only part of the problems people run
-into, so a passing run doesn't mean there are none.
+- [axe-core](https://github.com/dequelabs/axe-core) scans every page, in the light and the dark
+  theme, for WCAG 2.0, 2.1 and 2.2 level A and AA problems and axe's best practices.
+- Every page loads 320 px wide, and the test fails if it scrolls sideways.
+- [Biome's accessibility rules](https://biomejs.dev/linter/javascript/rules/#a11y) check the code
+  for mistakes such as missing alt text, invalid ARIA, or click handlers that don't work with a
+  keyboard.
+- A test fails if this page loses a section or its email contact, claims a status it hasn't
+  earned, or goes more than 400 days without a review.
 
-Not checked yet: nobody has tried tide by hand with only a keyboard, or with a screen
-reader.
+Automatic tools find only some problems, so passing them doesn't mean there are none. The tests
+are in [tests/e2e](https://github.com/simonvanlierde/tide/tree/main/tests/e2e).
 
 ## Tested with
 
-- Chromium, in Playwright's desktop Chrome profile, with axe-core, on every pull request.
+- Chromium, with axe-core, on every proposed change.
 
-No browser and assistive-technology pair has been tried by hand and recorded yet.
-
-tide relies on HTML, CSS and JavaScript.
+Nobody has tested tide by hand yet, with only a keyboard or with a screen reader. tide needs HTML,
+CSS and JavaScript to work.
 
 ## About this statement
 
@@ -83,5 +74,4 @@ Last reviewed: 29 October 2026
 
 Next review: within 12 months of the last review, or at the next major release if that comes first.
 
-Method: the developer's own checks, listed under How we check. No outside auditor has tested
-it.
+Method: self-assessment, using the checks under How we check.

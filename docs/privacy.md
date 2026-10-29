@@ -7,65 +7,67 @@ says how to fill it in, and how the template builds and tests it.
 
 # Privacy statement
 
-This statement covers tide at [tide.duinlab.nl](https://tide.duinlab.nl). Simon van Lierde runs it
-and decides what happens to any data about you, which makes Simon van Lierde the data controller.
-"We" on this page means Simon van Lierde.
+Everything you log in tide stays on your device. It isn't sent to us or to anyone else. tide has
+no accounts, no cookies and no analytics.
 
-## What tide keeps
+This page covers tide at [tide.duinlab.nl](https://tide.duinlab.nl). Simon van Lierde runs tide
+and is responsible for it. "We" on this page means him.
 
-tide keeps your data in your browser's local storage, on your device, so it's still there when
-you come back. It never leaves your device: we don't get it, and nor does anyone else. To remove
-it, use the delete option in Settings, or clear this site's data in your browser's settings.
+## What tide stores on your device
 
-It keeps:
+tide saves your data in your browser's local storage. It stores:
 
-- the days you log and the flow you note for each;
-- your settings: theme, language, whether to show fertility, whether to show cycle day numbers,
-  and a random id for the calendar file the app can make;
-- the day you last dismissed the period reminder;
-- a copy of the previous data, when the app has to change its format or can't read what was
-  saved.
+- the days you log, and the flow level if you pick one;
+- your settings: theme, language, and whether to show fertility estimates and cycle day numbers;
+- the day you last closed the period reminder;
+- a random ID for your calendar file, so a newer file updates its events instead of adding them
+  twice;
+- a backup copy of your data, if tide had to convert it to a newer format or couldn't read it.
 
-The first page you load already saves an empty copy of this, before you log anything.
+tide saves an empty copy with the default settings as soon as you first open it.
 
-The app can save a backup file or a calendar file to your device, and read a backup or another
-app's export that you pick. Those files go between you and your device only.
+## How to delete it
 
-## Server logs
+- In tide, go to Settings and choose **Delete all data**. This erases every logged day and
+  setting on this device, including the backup copy.
+- Or clear this site's data in your browser's settings.
 
-[Cloudflare Pages](https://www.cloudflare.com/privacypolicy/) hosts tide. To send you
-a page, the host sees your IP address and browser details, which can count as personal data.
+## Files you save or open
 
-We run no logs of our own and add no analytics. Cloudflare may log requests to keep the site
-running and safe, on the basis of a legitimate interest. How long it keeps them is set by
-Cloudflare, in the policy linked above. We don't see them.
+tide can save a backup file or a calendar file to your device. It can also open a tide backup, or
+a Clue or Flo export, that you pick. All of this happens on your device and nothing is uploaded.
+Delete saved files yourself when you no longer want them.
 
-## Cookies and storage
+## What our host sees
 
-tide sets no cookies. It uses local storage only to keep your data, which is what you
-asked it to do. Storage that only does what you asked for needs no consent, so there's no cookie
-banner.
+[Cloudflare Pages](https://www.cloudflare.com/privacypolicy/) hosts tide. As with any website,
+Cloudflare sees your IP address and browser details when you load the app. It may log these to
+keep the site running and safe, and its privacy policy says for how long. We don't get these logs
+and keep none of our own.
 
-The app also installs a service worker that keeps a copy of its own files in the browser's cache,
-so it works offline. That cache holds the app's files only, with no personal data.
+tide loads all its files from tide.duinlab.nl and contacts no other site.
 
-## Other services
+## Cookies and offline use
 
-None besides the host above. tide loads every file from tide.duinlab.nl and sends nothing
-to anyone else.
+tide sets no cookies, so there's no cookie banner. Local storage holds only what you asked tide to
+keep, and that needs no consent.
+
+To work offline, tide keeps a copy of its own files in your browser's cache. That copy holds no
+personal data.
 
 ## Your rights
 
-You can ask us to show you the data about you, to correct or delete it, to limit how we use it,
-or to object to how we use it. To ask, or to ask anything else about this statement, email
-[code@duinlab.nl](mailto:code@duinlab.nl). If you're not happy with our answer, you can
-complain to your data protection authority. In the Netherlands, that's the
+You can ask us to show you the data we have about you, and to correct it, delete it, limit how we
+use it, or stop using it. We never get what you log in tide, so we can't see or change it.
+
+To ask, or with any other question about this page, email
+[code@duinlab.nl](mailto:code@duinlab.nl). If you're not happy with our answer, you can complain
+to your data protection authority. In the Netherlands, that's the
 [Autoriteit Persoonsgegevens](https://www.autoriteitpersoonsgegevens.nl/).
 
-## About this statement
+## About this page
 
 Last updated: 29 October 2026
 
-tide is free software under the
-[MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE), and
-comes with no warranty.
+tide is free software under the [MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE)
+and comes with no warranty.
