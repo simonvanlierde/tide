@@ -13,27 +13,41 @@ and decides what happens to any data about you, which makes Simon van Lierde the
 
 ## What tide keeps
 
-tide keeps your work in your browser's local storage, on your device, so it's still
-there when you come back. It never leaves your device: we don't get it, and nor does anyone else.
-Nothing is stored until you start working. To remove it, clear this site's data in your browser's
-settings.
+tide keeps your data in your browser's local storage, on your device, so it's still there when
+you come back. It never leaves your device: we don't get it, and nor does anyone else. To remove
+it, use the delete option in Settings, or clear this site's data in your browser's settings.
 
-TODO: list what the app stores in the browser, in plain words, such as "the list you are
-editing".
+It keeps:
+
+- the days you log and the flow you note for each;
+- your settings: theme, language, whether to show fertility, whether to show cycle day numbers,
+  and a random id for the calendar file the app can make;
+- the day you last dismissed the period reminder;
+- a copy of the previous data, when the app has to change its format or can't read what was
+  saved.
+
+The first page you load already saves an empty copy of this, before you log anything.
+
+The app can save a backup file or a calendar file to your device, and read a backup or another
+app's export that you pick. Those files go between you and your device only.
 
 ## Server logs
 
 [Cloudflare Pages](https://www.cloudflare.com/privacypolicy/) hosts tide. To send you
 a page, the host sees your IP address and browser details, which can count as personal data.
 
-TODO: say what the host logs, what for (such as keeping the site running and safe), the legal
-basis (such as a legitimate interest), how long the logs are kept, and whether you can see them.
+We run no logs of our own and add no analytics. Cloudflare may log requests to keep the site
+running and safe, on the basis of a legitimate interest. How long it keeps them is set by
+Cloudflare, in the policy linked above. We don't see them.
 
 ## Cookies and storage
 
-tide sets no cookies. It uses local storage only to keep your work, which is what you
+tide sets no cookies. It uses local storage only to keep your data, which is what you
 asked it to do. Storage that only does what you asked for needs no consent, so there's no cookie
 banner.
+
+The app also installs a service worker that keeps a copy of its own files in the browser's cache,
+so it works offline. That cache holds the app's files only, with no personal data.
 
 ## Other services
 
