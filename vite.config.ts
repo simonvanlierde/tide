@@ -33,7 +33,7 @@ const manifest: Partial<ManifestOptions> = {
  * ship as HTML and no Markdown code reaches the browser. GitHub shows the same files.
  * HTML comments are notes for the author, so they are dropped before visitors see them.
  */
-const markdown = (): Plugin => ({
+export const markdown = (): Plugin => ({
   name: "markdown-html",
   transform(code, id) {
     if (id.endsWith(".md")) {

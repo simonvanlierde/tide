@@ -1,6 +1,9 @@
 import { defineConfig } from "vitest/config";
+import { markdown } from "./vite.config";
 
 export default defineConfig({
+  // The app imports docs/*.md as HTML.
+  plugins: [markdown()],
   test: {
     environment: "jsdom",
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
