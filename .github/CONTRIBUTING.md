@@ -6,14 +6,26 @@ report vulnerabilities as [SECURITY.md](SECURITY.md) describes, not in a public 
 
 ## Report a bug or ask for a feature
 
-Open an [issue](https://github.com/simonvanlierde/tide/issues). For a bug, say
-what you did, what you expected and what happened, with the version you used.
+Open an [issue](https://github.com/simonvanlierde/tide/issues) with the bug or
+feature form. For a bug, say what you did, what you expected and what happened, with the
+version you used. A question the README and docs don't answer is a gap in the docs: open
+a feature request for it.
+
+## Scope and response
+
+One person maintains tide, in their own time. Expect a reply to an issue or
+pull request within about two weeks.
+
+Before a large pull request, such as a new feature or a change to how something works,
+open an issue and agree on the change there first. A small fix needs no issue. A pull
+request outside what the project sets out to do is closed with a link to this section.
 
 ## Set up and check
 
-[Development](../README.md#development) in the README installs the tools, the dependencies
+[Development](../CONTRIBUTING.md#development) in the root CONTRIBUTING.md installs the tools, the dependencies
 and the git hooks. `just check` runs the checks CI runs, and `just fmt` fixes and
-formats.
+formats. It also has the architecture and the
+things that trip people up.
 
 ## Write commits and pull requests
 

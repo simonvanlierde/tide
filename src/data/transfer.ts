@@ -54,7 +54,7 @@ export function downloadRawState(raw: string) {
   downloadText(raw, `tide-raw-${getTodayIsoDate()}.json`);
 }
 
-// Parse an exported backup back into a valid AppState. Throws on unparseable
+// Parse an exported backup back into a valid AppState. Throws on unparsable
 // JSON and on JSON with no logged-days map at all (some other app's file),
 // which would otherwise import as an empty history and replace the real one.
 // A backup from a newer build is refused too: importing it would drop the
