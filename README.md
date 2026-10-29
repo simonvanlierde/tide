@@ -39,18 +39,17 @@ Once installed, it works offline, and all data stays on your device.
 
 The estimates are for information only. They are not a form of birth control.
 
-## Develop
+## Development
 
 You need [just](https://just.systems) and [pnpm](https://pnpm.io).
 
-```bash
+```sh
 pnpm install
 pnpm exec playwright install chromium   # once per machine, for the e2e tests
 pnpm exec prek install                  # git hooks
-pnpm dev
 ```
 
-`just check` runs what CI runs, and `just ts-e2e` the browser tests.
+`pnpm dev` starts the app. `just check` runs what CI runs, and `just ts-e2e` the browser tests.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks, architecture and deploy setup, and
 [docs/](docs/) for the [prediction backtest](docs/backtest.md) and the
