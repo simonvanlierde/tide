@@ -1,3 +1,3 @@
 // Every route the app serves. The accessibility, CSP, privacy and legal-page specs
 // visit each one, so add new routes here.
-export const ROUTES = ["/", "/calendar", "/settings"];
+export const ROUTES = ["/", "/calendar", "/settings", "/accessibility", "/privacy"];

@@ -2,6 +2,7 @@ import { CircleAlert } from "lucide-react";
 import { type MouseEvent, startTransition, useEffect, useRef, useState } from "react";
 import { useIsReadOnly, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
+import { currentLegalPage, LegalFooter, LegalPage } from "./LegalPages";
 import { appScreens, getAppScreen, shouldHandleAppNavigation } from "./navigation";
 
 function usePathname() {
@@ -68,6 +69,11 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
 }
 
 export function App() {
+  // The legal pages are static text: they need none of the app's screens.
+  return currentLegalPage() ? <LegalPage /> : <TideApp />;
+}
+
+function TideApp() {
   const { pathname, navigate } = usePathname();
   const activeScreen = getAppScreen(pathname);
   const t = useT();
@@ -119,6 +125,7 @@ export function App() {
         </div>
         {activeScreen.render()}
       </main>
+      <LegalFooter showHome={false} />
       <TabBar activePath={activeScreen.path} onNavigate={navigate} />
     </div>
   );
