@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { marked } from "marked";
+import { defineConfig, type Plugin } from "vite";
 import type { ManifestOptions } from "vite-plugin-pwa";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -27,6 +28,21 @@ const manifest: Partial<ManifestOptions> = {
   ),
 };
 
+/**
+ * Turns an imported .md file into its HTML at build time, so the pages in docs/
+ * ship as HTML and no Markdown code reaches the browser. GitHub shows the same files.
+ * HTML comments are notes for the author, so they are dropped before visitors see them.
+ */
+const markdown = (): Plugin => ({
+  name: "markdown-html",
+  transform(code, id) {
+    if (id.endsWith(".md")) {
+      const html = marked.parse(code.replace(/<!--[\s\S]*?-->/g, ""), { async: false });
+      return { code: `export default ${JSON.stringify(html)};`, map: null };
+    }
+  },
+});
+
 export default defineConfig({
   // The lazy chunks (other-app import, forecast sheet, calendar file) need
   // nothing beyond the main chunk, so the modulepreload polyfill is dead
@@ -34,6 +50,7 @@ export default defineConfig({
   build: { modulePreload: false },
   plugins: [
     react(),
+    markdown(),
     VitePWA({
       // The manifest icons are precached on their own (includeManifestIcons).
       includeAssets: ["favicon.ico", "icons/icon.svg"],
