@@ -27,7 +27,7 @@ export const fr: Dictionary = {
     "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. C’est une estimation, pas une contraception. Tu pourras changer d’avis dans les Réglages.",
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
-  "today.privacy": "Stocké uniquement sure cet apparel.",
+  "today.privacy": "Stocké uniquement sur cet appareil.",
   "today.importPrompt": "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?",
   "today.importLink": "L’importer",
   "today.fertilityUnclear": "Incertaine en cas de retard",
@@ -70,7 +70,7 @@ export const fr: Dictionary = {
   "insights.cycleLength": "Durée du cycle",
   "insights.periodLength": "Durée des règles",
   "insights.cyclesTracked": "Cycles suivis",
-  "insights.basedOn": "Basé sure un cycle type de {cycle} jours jusqu’à ce que tu aies enregistré un cycle complete.",
+  "insights.basedOn": "Basé sur un cycle type de {cycle} jours jusqu’à ce que tu aies enregistré un cycle complet.",
   "insights.regularity": "Régularité du cycle",
   "insights.regularityAria": "Régularité du cycle : {label}",
   "regularity.none": "Pas encore assez de données",
@@ -79,18 +79,18 @@ export const fr: Dictionary = {
   "regularity.somewhatVariable": "Un peu variable",
   "regularity.variable": "Variable",
   "insights.how": "Comment les prévisions fonctionnent",
-  "insights.how1": "Tout est calculé sure ton apparel à partir des jours que tu enregistres.",
+  "insights.how1": "Tout est calculé sur ton appareil à partir des jours que tu enregistres.",
   "insights.howCycleStart":
     "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle ; les écarts plus courts font partie des mêmes règles.",
   "insights.how2":
     "La durée du cycle est la médiane de tes {recent} derniers cycles, pour qu’un mois inhabituel ne la fausse pas. Avant deux cycles, un cycle type de {cycle} jours est utilisé.",
-  "insights.how3": "La durée des règles est ta moyenne récente, limitée à une normal de {min} à {max} jours.",
+  "insights.how3": "La durée des règles est ta moyenne récente, limitée à une normale de {min} à {max} jours.",
   "insights.how4":
     "Tes prochaines règles correspondent au début de tes dernières règles plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",
   "insights.howNextPeriod":
     "Tes prochaines règles correspondent au début de tes dernières règles plus cette durée de cycle.",
   "insights.how5":
-    "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand tes cycles variant advantage.",
+    "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand tes cycles varient davantage.",
 
   "legend.period": "Règles",
   "legend.expected": "Règles prévues",
@@ -147,7 +147,7 @@ export const fr: Dictionary = {
 
   // Crash screen
   "error.title": "Un problème est survenu",
-  "error.body": "Tes jours enregistrés sont toujours sure cet apparel.",
+  "error.body": "Tes jours enregistrés sont toujours sur cet appareil.",
   "error.downloadRaw": "Télécharger les données brutes",
 
   "settings.title": "Réglages",
@@ -157,7 +157,7 @@ export const fr: Dictionary = {
   "theme.light": "Clair",
   "theme.dark": "Sombre",
   "settings.language": "Langue",
-  "language.system": "Langue de l’apparel",
+  "language.system": "Langue de l’appareil",
   "language.en": "English",
   "language.nl": "Nederlands",
   "language.de": "Deutsch",
@@ -170,9 +170,9 @@ export const fr: Dictionary = {
   "settings.showCycleNumbers": "Afficher les numéros de jour du cycle",
   "settings.cycleNumbersInfo": "À propos des numéros de jour du cycle",
   "settings.cycleNumbersHelp":
-    "Numérote les jours de ton cycle actuel (1, 2, 3, ...) sure le calendrier, jusqu’à tes prochaines règles prévues.",
+    "Numérote les jours de ton cycle actuel (1, 2, 3, ...) sur le calendrier, jusqu’à tes prochaines règles prévues.",
   "settings.about": "À propos",
-  "settings.privacy": "Tes données ne quittent jamais cet apparel.",
+  "settings.privacy": "Tes données ne quittent jamais cet appareil.",
   "settings.fertilityDisclaimer":
     "Les estimations de fertilité sont données à titre indicatif. Elles ne sont pas une contraception.",
   "settings.fertilityMethod":
@@ -181,7 +181,7 @@ export const fr: Dictionary = {
   "settings.data": "Données",
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":
-    "L’export enregistre tes jours dans un fichier. L’import les replace à partir d’une sauvegarde Tide, ou ajoute des jours depuis Clue ou Flo.",
+    "L’export enregistre tes jours dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours depuis Clue ou Flo.",
   "settings.importSources": "Tu peux importer une sauvegarde Tide, ou un export de Clue ou Flo.",
   "settings.export": "Exporter",
   "settings.exportSuccess": "Sauvegarde enregistrée dans tes téléchargements.",
@@ -200,8 +200,8 @@ export const fr: Dictionary = {
   "settings.importConfirmAction": "Remplacer",
   "settings.importFileDays.one": "Ce fichier contient {n} jour enregistré.",
   "settings.importFileDays.other": "Ce fichier contient {n} jours enregistrés.",
-  "settings.importReplaces.one": "Il replace le {n} jour enregistré sure cet apparel, sans retour possible.",
-  "settings.importReplaces.other": "Il replace les {n} jours enregistrés sure cet apparel, sans retour possible.",
+  "settings.importReplaces.one": "Il remplace le {n} jour enregistré sur cet appareil, sans retour possible.",
+  "settings.importReplaces.other": "Il remplace les {n} jours enregistrés sur cet appareil, sans retour possible.",
   "settings.importMergeTitle": "Ajouter les jours de {source} ?",
   "settings.importMergeAction": "Ajouter",
   "settings.importMerges": "Les jours déjà enregistrés ici restent tels quels.",
@@ -209,5 +209,5 @@ export const fr: Dictionary = {
   "settings.resetTitle": "Supprimer toutes les données ?",
   "settings.resetAction": "Supprimer",
   "settings.resetConfirm":
-    "Tous les jours enregistrés et les réglages de cet apparel sont effacés, sans retour possible.",
+    "Tous les jours enregistrés et les réglages de cet appareil sont effacés, sans retour possible.",
 };

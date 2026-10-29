@@ -10,6 +10,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - With JavaScript turned off, Tide now says it needs JavaScript and gives an
   email address to report a problem, instead of showing a blank page.
+
 - "How was this worked out?" on Today shows the sums behind your next-period
   date: the recent cycle lengths it used, their median, how much your cycles
   vary and the range that gives, or the 28-day default while there is too

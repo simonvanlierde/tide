@@ -20,8 +20,8 @@ export const nl: Dictionary = {
   "today.expectedToday": "Vandaag verwacht",
   "today.inDays.one": "Over {n} dag",
   "today.inDays.other": "Over {n} dagen",
-  "today.higherToday": "In de vruchtbare period (schatting)",
-  "today.lowerToday": "Buiten de vruchtbare period (schatting)",
+  "today.higherToday": "In de vruchtbare periode (schatting)",
+  "today.lowerToday": "Buiten de vruchtbare periode (schatting)",
   "today.notBirthControl": "Geen anticonceptie",
   "fertilityAsk.title": "Vrucht\u00adbaarheids\u00adschattingen tonen?",
   "fertilityAsk.body":
@@ -64,7 +64,7 @@ export const nl: Dictionary = {
   "dial.day": "Dag {n}",
   "status.period": "Menstruatie",
   "status.ovulationExpected": "Eisprong verwacht",
-  "status.fertileWindow": "Vruchtbare period",
+  "status.fertileWindow": "Vruchtbare periode",
   "status.periodExpected": "Menstruatie verwacht",
 
   "insights.title": "Cyclusinzichten",
@@ -86,16 +86,16 @@ export const nl: Dictionary = {
     "Een tussenpoos van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere tussenpozen horen bij dezelfde menstruatie.",
   "insights.how2":
     "De cycluslengte is de mediaan van je laatste {recent} cycli, zodat één afwijkende maand het beeld niet verstoort. Vóór twee cycli wordt een gemiddelde cyclus van {cycle} dagen gebruikt.",
-  "insights.how3": "De menstruatieduur is je recente gemiddelde, beperkt tot een normal {min}–{max} dagen.",
+  "insights.how3": "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
   "insights.how4":
     "Je volgende menstruatie is je laatste begindatum plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
   "insights.howNextPeriod": "Je volgende menstruatie is je laatste begindatum plus die cycluslengte.",
   "insights.how5":
-    "De vruchtbare period loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder also je cycli meer variëren.",
+    "De vruchtbare periode loopt van {before} dagen vóór tot {after} dag na de eisprong, en wordt breder als je cycli meer variëren.",
 
   "legend.period": "Menstruatie",
   "legend.expected": "Verwachte menstruatie",
-  "legend.fertileWindow": "Vruchtbare period",
+  "legend.fertileWindow": "Vruchtbare periode",
   "legend.ovulation": "Eisprong",
 
   "flow.legend": "Bloedverlies",
@@ -135,7 +135,7 @@ export const nl: Dictionary = {
   "calendar.edit": "Wijzigen",
   "calendar.dayUnavailable": "{label} niet beschikbaar",
   "calendar.dayWithMarker": "{label}, {marker}",
-  "marker.fertile": "vruchtbare period",
+  "marker.fertile": "vruchtbare periode",
   "marker.ovulation": "verwachte eisprong",
   "marker.predictedPeriod": "verwachte menstruatie",
   "calendar.notBleeding": "Geen bloedverlies die dag",
@@ -166,16 +166,16 @@ export const nl: Dictionary = {
   "language.es": "Español",
   "settings.showFertility": "Vrucht\u00adbaarheids\u00adschattingen tonen",
   "settings.fertilityInfo": "Over vruchtbaarheidsschattingen",
-  "settings.fertilityHelp": "Toont de vruchtbare period en de verwachte eisprong op Vandaag en in de kalender.",
+  "settings.fertilityHelp": "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender.",
   "settings.showCycleNumbers": "Cyclusdag\u00adnummers tonen",
   "settings.cycleNumbersInfo": "Over cyclusdagnummers",
   "settings.cycleNumbersHelp":
     "Nummert de dagen van je huidige cyclus (1, 2, 3, ...) op de kalender, tot je volgende verwachte menstruatie.",
   "settings.about": "Over",
   "settings.privacy": "Je gegevens verlaten dit apparaat nooit.",
-  "settings.fertilityDisclaimer": "Vruchtbaarheidsschattingen zijn alleen ter informative. Ze zijn geen anticonceptie.",
+  "settings.fertilityDisclaimer": "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
   "settings.fertilityMethod":
-    "De vruchtbare period zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes.",
+    "De vruchtbare periode zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes.",
   "settings.sourceCode": "Broncode, v{version}, opent in een nieuw tabblad",
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
@@ -186,8 +186,8 @@ export const nl: Dictionary = {
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.exportCalendar": "Naar agenda",
   "settings.calendarHelp":
-    "Bewaart je volgende 3 verwachte menstruaties also bestand dat je agenda-app kan openen. Daar synchroniseren ze zoals je andere afspraken, dus ook het account van die agenda bewaart ze.",
-  "settings.calendarFertility": "Vruchtbare periods meenemen",
+    "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen. Daar synchroniseren ze zoals je andere afspraken, dus ook het account van die agenda bewaart ze.",
+  "settings.calendarFertility": "Vruchtbare periodes meenemen",
   "settings.calendarSuccess": "Agendabestand opgeslagen in je downloads.",
   "settings.calendarError": "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens.",
   "settings.import": "Importeren",
@@ -210,5 +210,5 @@ export const nl: Dictionary = {
   "settings.resetTitle": "Alle gegevens verwijderen?",
   "settings.resetAction": "Verwijderen",
   "settings.resetConfirm":
-    "Elke gelogde dag en installing op dit apparaat wordt gewist. Dit kan niet ongedaan worden gemaakt.",
+    "Elke gelogde dag en instelling op dit apparaat wordt gewist. Dit kan niet ongedaan worden gemaakt.",
 };
