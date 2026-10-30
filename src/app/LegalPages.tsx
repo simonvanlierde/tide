@@ -18,7 +18,7 @@ function LegalFooter({ showHome }: { showHome: boolean }) {
 
   return (
     <footer className="legal-footer">
-      <nav aria-label="About this site">
+      <nav lang="en" aria-label="About this site">
         {showHome ? <a href="/">{SITE_TITLE}</a> : null}
         {Object.entries(PAGES).map(([path, { title }]) => (
           <a key={path} href={path} aria-current={PAGES[path] === page ? "page" : undefined}>

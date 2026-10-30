@@ -24,7 +24,7 @@ export default function LegalPage() {
     <div className="app-shell legal-page">
       <main className="app-main">
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml: our own Markdown, rendered at build time */}
-        <article dangerouslySetInnerHTML={{ __html: HTML[page.title] ?? "" }} />
+        <article lang="en" dangerouslySetInnerHTML={{ __html: HTML[page.title] ?? "" }} />
       </main>
       <LegalFooter showHome />
     </div>
