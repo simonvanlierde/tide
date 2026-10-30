@@ -16,19 +16,11 @@ body:
     id: reproduce
     attributes:
       label: Steps to reproduce
-      description: The smallest set of commands or code that shows the bug.
-      render: shell
-    validations:
-      required: true
+      placeholder: |
+        1. …
+        2. …
   - type: input
-    id: version
-    attributes:
-      label: Version
-      description: The release or commit you used.
-    validations:
-      required: true
-  - type: textarea
     id: environment
     attributes:
-      label: Environment
-      description: Operating system and the versions of the tools involved.
+      label: Device & browser
+      placeholder: e.g. iPhone 15, Safari 18 / Desktop Chrome 130
