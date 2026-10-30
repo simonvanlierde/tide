@@ -6,7 +6,7 @@ ts-sync:
 ts-check:
     pnpm run check
     pnpm run typecheck
-    pnpm run test
+    pnpm run coverage
     pnpm run build
     pnpm run budget
     pnpm audit --prod --audit-level=moderate

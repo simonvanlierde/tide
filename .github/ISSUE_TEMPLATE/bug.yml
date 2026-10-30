@@ -1,16 +1,19 @@
 name: Bug report
-description: Something isn't working as expected.
+description: Something does not work as the docs say
 labels: [bug]
 body:
+  - type: markdown
+    attributes:
+      value: Report a vulnerability as SECURITY.md says, not here.
   - type: textarea
     id: what-happened
     attributes:
-      label: What happened?
-      description: What did you do, what did you expect, and what happened instead?
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
     validations:
       required: true
   - type: textarea
-    id: steps
+    id: reproduce
     attributes:
       label: Steps to reproduce
       placeholder: |
