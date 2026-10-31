@@ -1,0 +1,9 @@
+# The translations are in German, Spanish, French and Dutch, which typos reads as
+# misspelt English and would "fix" into wrong UI text.
+[files]
+extend-exclude = ["src/i18n/de.ts", "src/i18n/es.ts", "src/i18n/fr.ts", "src/i18n/nl.ts", "src/features/today/explainMessages.ts"]
+
+[default.extend-words]
+unparseable = "unparseable"
+# French, quoted in a CSS comment.
+appareil = "appareil"
