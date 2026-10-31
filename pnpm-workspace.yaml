@@ -5,6 +5,9 @@
 # Dependabot's cooldown have it: a compromised release is usually caught and yanked
 # within that window.
 minimumReleaseAge: 10080
+# `pnpm audit --fix=update` lists a fresh security fix under minimumReleaseAgeExclude;
+# pnpm drops an entry once the lockfile no longer holds that version.
+minimumReleaseAgeExcludePrune: true
 allowBuilds:
   esbuild: true
 overrides:

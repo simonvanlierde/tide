@@ -27,6 +27,8 @@ The repo follows the [project-templates](https://github.com/simonvanlierde/proje
 Copier template (`.copier-answers.yml`). `copier update` brings in its CI and tooling changes.
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org) (`feat:`, `fix:`, `docs:`, …).
+A pull request from a fork needs a `Signed-off-by` line on each commit, the
+[Developer Certificate of Origin](https://developercertificate.org): commit with `git commit -s`.
 
 Things that trip people up:
 

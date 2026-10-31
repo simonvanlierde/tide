@@ -42,6 +42,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   than clear it to free space. Firefox shows its own prompt for this.
 - The crash screen can download your stored data as a file, exactly as saved,
   and speaks your language instead of always English.
+- With JavaScript turned off, the page now says the app needs it and gives an
+  email address to report a problem, instead of showing a blank screen.
 
 ### Changed
 
