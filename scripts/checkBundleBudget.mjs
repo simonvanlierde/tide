@@ -5,8 +5,11 @@ import { join } from "node:path";
 import process from "node:process";
 import { gzipSync } from "node:zlib";
 
-// The budget, in gzipped bytes. Raise it on purpose, in its own commit.
-const MAX_GZIP_BYTES = 100 * 1024;
+// The budget, in gzipped bytes. It catches a dependency or a chunk split gone wrong, not
+// the next feature: keep it at least 25% above the build. When a change goes over, find
+// what grew first, then raise it in its own commit, back to 25% headroom.
+// The main chunk measured 101,604 bytes when this was set.
+const MAX_GZIP_BYTES = 128 * 1024;
 const DIST_ASSETS_DIR = join(process.cwd(), "dist", "assets");
 
 const jsAssets = readdirSync(DIST_ASSETS_DIR).filter((filename) => filename.endsWith(".js"));

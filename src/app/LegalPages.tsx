@@ -1,33 +1,22 @@
+import type { MessageKey } from "../i18n";
+
 const SITE_TITLE = "tide";
 
 // The pages rendered from docs/, by path. The host answers an unknown path with
-// index.html, so each loads the app.
-const PAGES: Record<string, { title: string }> = {
-  "/accessibility": { title: "Accessibility statement" },
-  "/privacy": { title: "Privacy statement" },
+// index.html, so each loads the app. The title stays English, like the text.
+const PAGES: Record<string, { title: string; labelKey: MessageKey }> = {
+  "/privacy": { title: "Privacy statement", labelKey: "legal.privacy" },
+  "/accessibility": { title: "Accessibility statement", labelKey: "legal.accessibility" },
 };
 
 const TRAILING_SLASH = /\/$/;
 
-function currentPage() {
-  return PAGES[window.location.pathname.replace(TRAILING_SLASH, "")];
+function legalPage(pathname: string) {
+  const path = pathname.replace(TRAILING_SLASH, "");
+  const page = PAGES[path];
+  return page ? { path, ...page } : undefined;
 }
 
-function LegalFooter({ showHome }: { showHome: boolean }) {
-  const page = currentPage();
+type LegalPageEntry = NonNullable<ReturnType<typeof legalPage>>;
 
-  return (
-    <footer className="legal-footer">
-      <nav lang="en" aria-label="About this site">
-        {showHome ? <a href="/">{SITE_TITLE}</a> : null}
-        {Object.entries(PAGES).map(([path, { title }]) => (
-          <a key={path} href={path} aria-current={PAGES[path] === page ? "page" : undefined}>
-            {title}
-          </a>
-        ))}
-      </nav>
-    </footer>
-  );
-}
-
-export { currentPage as currentLegalPage, LegalFooter, SITE_TITLE };
+export { type LegalPageEntry, legalPage, PAGES as LEGAL_PAGES, SITE_TITLE };

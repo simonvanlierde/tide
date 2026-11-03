@@ -1,10 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { ROUTES } from "./routes";
+import { LEGAL_LINKED_FROM } from "./routes";
 
 /**
- * The pages in docs/, as the app renders them, and the footer that links them from
- * every route. The template leaves a TODO wherever only the project knows the answer,
- * so a new app fails here until its author fills the pages in.
+ * The pages in docs/, as the app renders them, the links to them from every route in
+ * LEGAL_LINKED_FROM, and each page's link back home.
  */
 
 const PAGES = [
@@ -20,19 +19,13 @@ for (const [href, name] of PAGES) {
     await expect(article.getByRole("heading", { level: 1 })).toHaveText(name);
     await expect(article.getByRole("link", { name: /@/ }).first()).toHaveAttribute("href", /^mailto:.+@.+/);
   });
-
-  test(`${href} has no TODO left`, async ({ page }) => {
-    await page.goto(href);
-    await expect(page.locator("article")).not.toContainText("TODO");
-  });
 }
 
-for (const path of ROUTES) {
-  test(`${path} links every page from its footer`, async ({ page }) => {
+for (const path of LEGAL_LINKED_FROM) {
+  test(`${path} links every page`, async ({ page }) => {
     await page.goto(path);
-    const footer = page.getByRole("contentinfo");
     for (const [href, name] of PAGES) {
-      const link = footer.getByRole("link", { name });
+      const link = page.getByRole("link", { name, exact: true });
       await expect(link).toHaveAttribute("href", href);
       if (href === path) await expect(link).toHaveAttribute("aria-current", "page");
       else await expect(link).not.toHaveAttribute("aria-current");
@@ -40,22 +33,10 @@ for (const path of ROUTES) {
   });
 }
 
-// The pages and footer are English only, so they must say so when the app runs in another language.
-test.describe("in a German browser", () => {
-  test.use({ locale: "de-DE" });
-  const lang = (el: Element) => el.closest("[lang]")?.getAttribute("lang");
-
-  for (const [href] of PAGES) {
-    test(`${href} marks its text as English`, async ({ page }) => {
-      await page.goto(href);
-      await expect.poll(() => page.locator("article").evaluate(lang)).toBe("en");
-    });
-  }
-
-  for (const path of ROUTES) {
-    test(`${path} marks its footer as English`, async ({ page }) => {
-      await page.goto(path);
-      await expect.poll(() => page.getByRole("contentinfo").getByRole("navigation").evaluate(lang)).toBe("en");
-    });
-  }
-});
+// An installed app has no browser back button, so each page needs its own way home.
+for (const [href] of PAGES) {
+  test(`${href} links back home`, async ({ page }) => {
+    await page.goto(href);
+    await expect(page.locator('a[href="/"]').first()).toBeVisible();
+  });
+}

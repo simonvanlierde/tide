@@ -5,7 +5,6 @@ import { seedAppState } from "./seed";
 
 // WCAG 2.0, 2.1 and 2.2 at levels A and AA, plus axe's best-practice rules (landmarks,
 // one h1). Any violation fails, whatever its impact.
-const LEGAL_ROUTES = ["/accessibility", "/privacy"];
 const TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
 
 // Open any overlay a route hides behind an interaction, so axe scans it too —
@@ -58,10 +57,9 @@ for (const colorScheme of ["light", "dark"] as const) {
 
         await page.goto(path);
         await expect(page.getByRole("main")).toBeVisible();
-        // The legal pages are standalone documents, without the tab bar.
-        if (!LEGAL_ROUTES.includes(path)) {
-          await expect(page.getByRole("navigation", { name: /primary navigation/i })).toBeVisible();
-        }
+        await expect(page.getByRole("navigation", { name: /primary navigation/i })).toBeVisible();
+        // The legal pages' text arrives in its own chunk, after main.
+        await expect(page.getByRole("heading", { level: 1 })).toBeAttached();
 
         await openOverlays(page, path);
 

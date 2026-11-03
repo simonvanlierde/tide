@@ -47,3 +47,14 @@ export function shouldHandleAppNavigation(event: MouseEvent<HTMLAnchorElement>) 
     event.shiftKey
   );
 }
+
+// Follows a same-app link without a reload. The shell listens for popstate, so a
+// screen can link to another without being handed the shell's navigate.
+export function followAppLink(event: MouseEvent<HTMLAnchorElement>) {
+  if (!shouldHandleAppNavigation(event)) {
+    return;
+  }
+  event.preventDefault();
+  window.history.pushState(null, "", event.currentTarget.pathname);
+  window.dispatchEvent(new PopStateEvent("popstate"));
+}

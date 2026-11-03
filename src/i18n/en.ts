@@ -184,6 +184,9 @@ export const en = {
   "settings.cycleNumbersHelp":
     "Numbers the days of your current cycle (1, 2, 3, ...) on the calendar, up to your next expected period.",
   "settings.about": "About",
+  "legal.privacy": "Privacy statement",
+  "legal.accessibility": "Accessibility statement",
+  "legal.inEnglish": "In English",
   "settings.privacy": "Your data never leaves this device.",
   "settings.fertilityDisclaimer": "Fertility estimates are for information only. They are not birth control.",
   "settings.fertilityMethod":

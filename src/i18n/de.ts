@@ -172,6 +172,9 @@ export const de: Dictionary = {
   "settings.cycleNumbersHelp":
     "Nummeriert die Tage deines aktuellen Zyklus (1, 2, 3, ...) im Kalender, bis zu deiner nächsten erwarteten Periode.",
   "settings.about": "Über",
+  "legal.privacy": "Datenschutz\u00aderklärung",
+  "legal.accessibility": "Erklärung zur Barrierefreiheit",
+  "legal.inEnglish": "Auf Englisch",
   "settings.privacy": "Deine Daten verlassen dieses Gerät nie.",
   "settings.fertilityDisclaimer":
     "Fruchtbarkeitsschätzungen dienen nur der Information. Sie sind keine Verhütungsmethode.",
