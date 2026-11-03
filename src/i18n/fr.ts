@@ -172,6 +172,9 @@ export const fr: Dictionary = {
   "settings.cycleNumbersHelp":
     "Numérote les jours de ton cycle actuel (1, 2, 3, ...) sur le calendrier, jusqu’à tes prochaines règles prévues.",
   "settings.about": "À propos",
+  "legal.privacy": "Déclaration de confidentialité",
+  "legal.accessibility": "Déclaration d’accessibilité",
+  "legal.inEnglish": "En anglais",
   "settings.privacy": "Tes données ne quittent jamais cet appareil.",
   "settings.fertilityDisclaimer":
     "Les estimations de fertilité sont données à titre indicatif. Elles ne sont pas une contraception.",

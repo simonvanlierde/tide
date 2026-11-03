@@ -172,6 +172,9 @@ export const nl: Dictionary = {
   "settings.cycleNumbersHelp":
     "Nummert de dagen van je huidige cyclus (1, 2, 3, ...) op de kalender, tot je volgende verwachte menstruatie.",
   "settings.about": "Over",
+  "legal.privacy": "Privacyverklaring",
+  "legal.accessibility": "Toegankelijkheids\u00adverklaring",
+  "legal.inEnglish": "In het Engels",
   "settings.privacy": "Je gegevens verlaten dit apparaat nooit.",
   "settings.fertilityDisclaimer": "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
   "settings.fertilityMethod":

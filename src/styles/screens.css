@@ -427,4 +427,87 @@
       padding-inline: 12px;
     }
   }
+
+  /* Settings > About: the legal pages as drill-in rows, like the fact list's. */
+  .link-rows {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .link-rows .fact-list__more {
+    text-decoration: none;
+  }
+
+  .link-rows__text {
+    display: grid;
+    text-align: start;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    gap: 2px;
+    min-height: 44px;
+    color: var(--tide-strong);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .back-link:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
+  .back-link__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* The legal pages: Markdown on a card, set in the app's type scale. */
+  .legal-document {
+    display: block;
+    line-height: 1.5;
+  }
+
+  .legal-document h1 {
+    margin: 0 0 16px;
+    font-size: var(--text-xl);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .legal-document h2 {
+    margin: 24px 0 8px;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .legal-document p,
+  .legal-document ul,
+  .legal-document ol {
+    margin: 0 0 12px;
+  }
+
+  .legal-document ul,
+  .legal-document ol {
+    padding-inline-start: 20px;
+  }
+
+  .legal-document li + li {
+    margin-top: 4px;
+  }
+
+  .legal-document > :last-child {
+    margin-bottom: 0;
+  }
+
+  /* Only addresses break anywhere; words keep the body's rule. */
+  .legal-document a {
+    overflow-wrap: anywhere;
+  }
 }
