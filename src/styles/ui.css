@@ -439,13 +439,13 @@
 
   .primary-action {
     border: 0;
-    background: var(--bleed);
-    color: var(--ink-on-fill);
+    background: var(--action);
+    color: var(--ink-on-solid);
     box-shadow: var(--shadow-glow);
   }
 
   .primary-action:hover {
-    background: var(--bleed-strong);
+    background: var(--action-strong);
   }
 
   .secondary-action {

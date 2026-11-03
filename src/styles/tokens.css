@@ -7,8 +7,8 @@
     --surface: #ffffff;
     --surface-soft: #f1f7f7;
     --surface-border: rgba(20, 48, 58, 0.09);
-    /* Near-opaque so the coral log button behind it can't bleed through and
-       hurt the tab-label contrast. */
+    /* Near-opaque so the log button behind it can't bleed through and hurt
+       the tab-label contrast. */
     --tab-bg: rgba(245, 249, 249, 0.96);
 
     --ink: #14303a;
@@ -25,7 +25,12 @@
        white text at AA in both themes. */
     --accent-solid: #1f6a65;
 
-    /* Coral — the bleeding signal only: the log action and period days. */
+    /* Blue for the primary log button; stays the same in both themes, with
+       white text at AA (5.2:1, hover 6.7:1). */
+    --action: #2563eb;
+    --action-strong: #1d4ed8;
+
+    /* Coral — the bleeding signal only: period days. */
     --bleed: #e26d5a;
     --bleed-strong: #cf5741;
 
@@ -59,8 +64,8 @@
 
     --shadow-soft: 0 18px 44px rgba(20, 48, 58, 0.1);
     --shadow-card: 0 10px 28px rgba(20, 48, 58, 0.06);
-    /* The dial ring only, and the coral glow under the primary log button. */
-    --shadow-glow: 0 10px 24px rgba(226, 109, 90, 0.26);
+    /* The glow under the primary log button. */
+    --shadow-glow: 0 10px 24px rgba(37, 99, 235, 0.26);
     --shadow-knob: 0 1px 3px rgba(20, 48, 58, 0.25);
     --scrim: rgba(8, 17, 19, 0.42);
 
@@ -138,7 +143,7 @@
 
     --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
     --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);
-    --shadow-glow: 0 10px 24px rgba(232, 120, 95, 0.3);
+    --shadow-glow: 0 10px 24px rgba(37, 99, 235, 0.3);
     --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.4);
     --scrim: rgba(0, 0, 0, 0.55);
 

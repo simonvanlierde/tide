@@ -6,6 +6,8 @@ colors:
   tide-deep: "#1f6a65"
   tide-soft: "#d9ecea"
   tide-tint: "rgba(47, 143, 138, 0.1)"
+  action: "#2563eb"
+  action-deep: "#1d4ed8"
   coral: "#e26d5a"
   coral-deep: "#cf5741"
   flow-heavy: "#d45d47"
@@ -78,12 +80,12 @@ spacing:
   gutter: "20px"
 components:
   button-primary:
-    backgroundColor: "{colors.coral}"
-    textColor: "{colors.ink-on-fill}"
+    backgroundColor: "{colors.action}"
+    textColor: "{colors.ink-on-solid}"
     rounded: "{rounded.button}"
     padding: "16px 18px"
   button-primary-hover:
-    backgroundColor: "{colors.coral-deep}"
+    backgroundColor: "{colors.action-deep}"
   button-commit:
     backgroundColor: "{colors.tide-deep}"
     textColor: "{colors.ink-on-solid}"
@@ -165,8 +167,10 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
 
 ### Secondary
 
-- **Coral** (`coral`): bleeding, and nothing else. Logged days, the log button, the dial's
+- **Coral** (`coral`): bleeding, and nothing else. Logged days and the dial's
   period arc. The dashed expected outline uses `coral-deep` in light and `coral` in dark.
+- **Action Blue** (`action`, hover `action-deep`): the primary log button only. White
+  text on it passes AA, and it stays the same in both themes.
 - **Flow ramp** (`flow-spotting` → `flow-light` → coral → `flow-heavy`): rising intensity.
   Heavy gets its own step so the near-black number on it still passes AA.
 
@@ -271,7 +275,7 @@ Every shadow is a token, tuned again for dark.
 - **Soft** (`--shadow-soft`): the dial ring, and the layers that float over a screen:
   dialogs and the info popover.
 - **Card** (`--shadow-card`): every card, and the active segmented option.
-- **Coral glow** (`--shadow-glow`): the primary log button.
+- **Blue glow** (`--shadow-glow`): the primary log button.
 - **Knob** (`--shadow-knob`): the switch thumb, the dial marker, the ghost dot.
 - **Scrim** (`--scrim`): the backdrop behind a dialog. A flat tint, never a blur.
 
@@ -303,7 +307,7 @@ The values are in the front matter. This section says what each component is *fo
 
 ### Buttons
 
-- **Primary**: coral, with the coral glow. It has one job: logging bleeding when a bleed is
+- **Primary**: action blue, with the blue glow. It has one job: logging bleeding when a bleed is
   plausible.
 - **Quiet / Secondary**: surface and hairline, with a tide-tint wash on hover. The log
   button switches to this once the day is logged. A pair of equal card actions (Export,
