@@ -1,10 +1,13 @@
 # pnpm reads its project settings here, not from .npmrc. One package, so no
 # `packages:` list.
 
-# Resolve only releases at least a week old (in minutes), as the template and
-# Dependabot's cooldown have it: a compromised release is usually caught and yanked
-# within that window.
+# Resolve only releases at least a week old (in minutes): a compromised release
+# is usually caught and yanked within that window. The dependency bot waits the
+# same week.
 minimumReleaseAge: 10080
+# `pnpm audit --fix=update` lists a fresh security fix under minimumReleaseAgeExclude;
+# pnpm drops an entry once the lockfile no longer holds that version.
+minimumReleaseAgeExcludePrune: true
 allowBuilds:
   esbuild: true
 overrides:

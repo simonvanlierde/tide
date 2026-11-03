@@ -35,7 +35,7 @@
 
   .app-main {
     flex: 1;
-    padding: 10px 20px calc(94px + env(safe-area-inset-bottom));
+    padding: 10px 20px 0;
   }
 
   .tab-bar {
@@ -114,5 +114,22 @@
     width: 16px;
     height: 16px;
     flex: none;
+  }
+
+  .legal-page .app-main {
+    overflow-wrap: anywhere;
+  }
+
+  .legal-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 24px;
+    padding: 24px 20px calc(94px + env(safe-area-inset-bottom));
+    font-size: var(--text-sm);
+  }
+
+  .legal-page .legal-footer nav {
+    padding-bottom: 20px;
   }
 }

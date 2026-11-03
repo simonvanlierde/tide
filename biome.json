@@ -60,7 +60,7 @@
       "includes": ["scripts/**", "*.config.ts"],
       "linter": {
         "rules": {
-          "correctness": { "noNodejsModules": "off" },
+          "correctness": { "noNodejsModules": "off", "useQwikValidLexicalScope": "off" },
           "suspicious": { "noConsole": "off" }
         }
       }

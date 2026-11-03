@@ -1,0 +1,4 @@
+[default.extend-words]
+# A standard spelling, and the French word in a comment about the language picker.
+unparseable = "unparseable"
+appareil = "appareil"
