@@ -1,0 +1,2 @@
+# index.html links the files in public/ from the site root, as Vite serves them.
+root_dir = "public"

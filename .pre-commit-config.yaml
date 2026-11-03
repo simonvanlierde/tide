@@ -96,7 +96,7 @@ repos:
     hooks:
       - id: lychee
         name: lychee --offline
-        entry: lychee --no-progress --offline --root-dir public
+        entry: lychee --no-progress --offline
         language: python
         additional_dependencies: [lychee-bin==0.24.2]
         types_or: [markdown, html]
