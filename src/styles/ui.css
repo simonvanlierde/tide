@@ -440,8 +440,8 @@
   .primary-action {
     border: 0;
     background: var(--action);
-    color: var(--ink-on-solid);
-    box-shadow: var(--shadow-glow);
+    color: var(--ink-on-action);
+    box-shadow: var(--shadow-action);
   }
 
   .primary-action:hover {
