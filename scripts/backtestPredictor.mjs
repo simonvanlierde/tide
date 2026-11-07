@@ -74,12 +74,48 @@ const { module: cycle } = await runnerImport("/src/domain/cycle.ts", {
 const { module: date } = await runnerImport("/src/utils/date.ts", {
   configFile: false,
 });
-const { forecast, DEFAULT_CYCLE_LENGTH } = cycle;
+const { forecast, getCompletedCycleLengths, DEFAULT_CYCLE_LENGTH } = cycle;
 const { addDays, differenceInDays } = date;
 
 const stretches = parseStretches(await loadCsv());
 const women = new Set(stretches.map((s) => s[0].id)).size;
 check(women === 581 && stretches.flat().length === 3324, "unexpected row count");
+
+function median(values) {
+  const sorted = [...values].sort((a, b) => a - b);
+  if (sorted.length === 0) return DEFAULT_CYCLE_LENGTH;
+  return (sorted[Math.floor((sorted.length - 1) / 2)] + sorted[Math.floor(sorted.length / 2)]) / 2;
+}
+
+function mean(values) {
+  return values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : DEFAULT_CYCLE_LENGTH;
+}
+
+// Frozen production rule for comparisons after the app's predictor changes.
+// Every estimator receives only earlier completed cycles.
+const estimators = {
+  median6: (history) => median(history.slice(-6)),
+  median3: (history) => median(history.slice(-3)),
+  median12: (history) => median(history.slice(-12)),
+  medianAll: (history) => median(history),
+  mean6: (history) => mean(history.slice(-6)),
+  trimmed6: (history) => {
+    const recent = history.slice(-6).sort((a, b) => a - b);
+    return mean(recent.length >= 4 ? recent.slice(1, -1) : recent);
+  },
+  prior28: (history) => median([...history.slice(-6), DEFAULT_CYCLE_LENGTH]),
+};
+
+check(
+  Object.values(estimators).every((estimate) => estimate([]) === 28),
+  "empty-history estimate changed",
+);
+check(estimators.median6([27, 28, 45, 28, 29]) === 28, "frozen median lost outlier resistance");
+check(estimators.median6([40, 27, 30, 28, 29, 31, 26]) === 28.5, "frozen window changed");
+check(estimators.prior28([40]) === 34 && estimators.prior28([40, 40]) === 40, "prior weighting changed");
+
+// A participant's separate stretches must never straddle the two groups.
+const isHoldout = (id) => createHash("sha256").update(id).digest()[0] < 51;
 
 // Each record: errors in days (predicted minus actual start) and how many
 // completed cycles the app had learned from when it predicted.
@@ -99,8 +135,15 @@ for (const stretch of stretches) {
     });
     const actual = addDays(current.start, current.length);
     const lastLength = stretch[k - 1]?.length ?? DEFAULT_CYCLE_LENGTH;
+    const history = getCompletedCycleLengths(periodDays);
     records.push({
+      holdout: isHoldout(current.id),
+      irregular: (summary.stats.variabilityDays ?? 0) >= 5,
+      previousLength: history.at(-1) ?? null,
       history: k,
+      ...Object.fromEntries(
+        Object.entries(estimators).map(([name, estimate]) => [name, Math.round(estimate(history)) - current.length]),
+      ),
       tide: differenceInDays(summary.nextPeriod.date, actual),
       fixed28: differenceInDays(addDays(current.start, 28), actual),
       lastCycle: differenceInDays(addDays(current.start, lastLength), actual),
@@ -112,6 +155,10 @@ for (const stretch of stretches) {
 check(
   records.every((r) => r.history > 0 || r.tide === r.fixed28),
   "app did not fall back to 28 days without history",
+);
+check(
+  records.every((r) => r.tide === r.median6),
+  "app differs from the frozen six-cycle median",
 );
 
 function score(errors) {
@@ -129,6 +176,38 @@ for (const [label, minHistory] of [
   const subset = records.filter((r) => r.history >= minHistory);
   console.log(`\n${label} (n=${subset.length})`);
   for (const method of ["tide", "fixed28", "lastCycle"]) {
+    console.log(`  ${method.padEnd(10)} ${score(subset.map((r) => r[method]))}`);
+  }
+}
+
+function meanAbsoluteError(rows, method) {
+  return rows.reduce((sum, row) => sum + Math.abs(row[method]), 0) / rows.length;
+}
+
+const development = records.filter((r) => !r.holdout);
+const candidates = Object.keys(estimators).filter((name) => name !== "median6");
+// Holdout outcomes never choose the estimator. Do not retune after reading them.
+const selected = candidates.reduce((best, name) =>
+  meanAbsoluteError(development, name) < meanAbsoluteError(development, best) ? name : best,
+);
+check(development.length === 2450 && records.length - development.length === 694, "participant split changed");
+console.log("\nDevelopment comparison (participant SHA-256 first byte >= 51)");
+for (const method of ["median6", ...candidates]) {
+  console.log(`  ${method.padEnd(10)} ${score(development.map((r) => r[method]))}`);
+}
+console.log(`\nSelected on development: ${selected}`);
+for (const [label, include] of [
+  ["holdout", (r) => r.holdout],
+  ["holdout, 1 prior cycle", (r) => r.holdout && r.history === 1],
+  ["holdout, 6+ prior cycles", (r) => r.holdout && r.history >= 6],
+  ["holdout, recent SD >= 5 days", (r) => r.holdout && r.irregular],
+  ["holdout, previous cycle < 25 days", (r) => r.holdout && r.previousLength !== null && r.previousLength < 25],
+  ["holdout, previous cycle > 35 days", (r) => r.holdout && r.previousLength !== null && r.previousLength > 35],
+  ["same full cohort", () => true],
+]) {
+  const subset = records.filter(include);
+  console.log(`\n${label} (n=${subset.length})`);
+  for (const method of ["median6", selected]) {
     console.log(`  ${method.padEnd(10)} ${score(subset.map((r) => r[method]))}`);
   }
 }
