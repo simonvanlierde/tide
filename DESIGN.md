@@ -368,6 +368,14 @@ the arrow keys. Logging a past period uses the same grid: the first day you pick
 selection ring until you pick the last day, and a status line under the grid says what
 comes next.
 
+### Documents
+
+The privacy and accessibility statements open from Settings > About, as drill-in rows that
+say "In English" in the other languages. They render inside the shell: the header names the
+page, Settings stays the active tab, and a "‹ Settings" link at the top goes back without a
+reload. The Markdown sits on one card, in the type scale: `xl` and `lg` headings at 600,
+body at 1.5 line height. There is no footer on any screen.
+
 ## Do's and Don'ts
 
 ### Do

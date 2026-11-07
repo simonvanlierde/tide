@@ -31,7 +31,7 @@ Commits follow [Conventional Commits](https://www.conventionalcommits.org) (`fea
 Things that trip people up:
 
 - `vitest.config.ts` starts the test workers with `--no-experimental-webstorage`, so Node's own web storage does not get in the way of the test DOM.
-- The largest JS file in `dist/assets` must stay under 100 KiB gzip (`scripts/checkBundleBudget.mjs`), so think twice before adding a heavy dependency.
+- The largest JS file in `dist/assets` must stay under 128 KiB gzip (`scripts/checkBundleBudget.mjs`), so think twice before adding a heavy dependency. The budget keeps at least 25% headroom above the build: when a change goes over, find what grew before raising it.
 - The Content-Security-Policy in `public/_headers` allows no inline script. Code that must run before first paint goes in a file under `public/`, like `public/theme.js`.
 - Dependency overrides live in `pnpm-workspace.yaml`, not `package.json`. Read the comment next to an override before removing it.
 - `pnpm-workspace.yaml` blocks releases younger than three days (`minimumReleaseAge`), and Dependabot waits a week. If a fresh version will not install, pick an older one.

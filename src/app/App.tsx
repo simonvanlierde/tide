@@ -2,7 +2,7 @@ import { CircleAlert } from "lucide-react";
 import { lazy, type MouseEvent, Suspense, startTransition, useEffect, useRef, useState } from "react";
 import { useIsReadOnly, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
-import { currentLegalPage, LegalFooter } from "./LegalPages";
+import { legalPage } from "./LegalPages";
 import { appScreens, getAppScreen, shouldHandleAppNavigation } from "./navigation";
 
 function usePathname() {
@@ -32,11 +32,12 @@ function usePathname() {
 }
 
 interface TabBarProps {
+  pathname: string;
   activePath: string;
   onNavigate: (nextPath: string) => void;
 }
 
-function TabBar({ activePath, onNavigate }: TabBarProps) {
+function TabBar({ pathname, activePath, onNavigate }: TabBarProps) {
   const t = useT();
 
   function handleClick(event: MouseEvent<HTMLAnchorElement>, nextPath: string) {
@@ -54,7 +55,8 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
         <a
           key={screen.path}
           href={screen.path}
-          aria-current={screen.path === activePath ? "page" : undefined}
+          // A legal page sits under Settings: the tab is current, but not the page.
+          aria-current={screen.path === pathname ? "page" : screen.path === activePath ? "true" : undefined}
           className={screen.path === activePath ? "tab-item is-active" : "tab-item"}
           onClick={(event) => handleClick(event, screen.path)}
         >
@@ -71,19 +73,10 @@ function TabBar({ activePath, onNavigate }: TabBarProps) {
 const LegalPage = lazy(() => import("./LegalPage"));
 
 export function App() {
-  // The legal pages are static text: they need none of the app's screens.
-  return currentLegalPage() ? (
-    <Suspense fallback={null}>
-      <LegalPage />
-    </Suspense>
-  ) : (
-    <TideApp />
-  );
-}
-
-function TideApp() {
   const { pathname, navigate } = usePathname();
-  const activeScreen = getAppScreen(pathname);
+  const legal = legalPage(pathname);
+  // The legal pages open from Settings > About, so Settings stays the active tab.
+  const activeScreen = getAppScreen(legal ? "/settings" : pathname);
   const t = useT();
   const mainRef = useRef<HTMLElement>(null);
   const isFirstRender = useRef(true);
@@ -113,7 +106,7 @@ function TideApp() {
       </a>
       <header className="app-header">
         <span className="app-wordmark">tide</span>
-        <span className="app-header__title">{t(activeScreen.labelKey)}</span>
+        <span className="app-header__title">{t(legal ? legal.labelKey : activeScreen.labelKey)}</span>
       </header>
       <main id="main" ref={mainRef} className="app-main" tabIndex={-1}>
         {/* Mounted empty from the start: screen readers announce text added to
@@ -131,10 +124,15 @@ function TideApp() {
             </div>
           ) : null}
         </div>
-        {activeScreen.render()}
+        {legal ? (
+          <Suspense fallback={null}>
+            <LegalPage page={legal} />
+          </Suspense>
+        ) : (
+          activeScreen.render()
+        )}
       </main>
-      <LegalFooter showHome={false} />
-      <TabBar activePath={activeScreen.path} onNavigate={navigate} />
+      <TabBar pathname={pathname} activePath={activeScreen.path} onNavigate={navigate} />
     </div>
   );
 }
