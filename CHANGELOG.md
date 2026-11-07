@@ -8,12 +8,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- Cycle insights shows the latest 12 completed cycles as a chart and a table.
-  Mark an incomplete cycle to leave its length out of estimates without deleting
-  its logged days. Backups keep the markers, and changing a cycle's boundaries
-  clears its marker. Calendar event ids stay the same when a marker changes.
-- A backup reminder appears on Today after 30 days of history, or 30 days after
-  your last backup download. Download a backup there, or snooze it for a week.
+- [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles as a chart
+  and a table. Mark incomplete cycles to leave their lengths out of estimates
+  without deleting logged days.
+- Today reminds you to download a backup after 30 days, with a one-week snooze.
   The reminder dates stay on this device and are left out of exported backups.
 - With JavaScript turned off, Tide now says it needs JavaScript and gives an
   email address to report a problem, instead of showing a blank page.
