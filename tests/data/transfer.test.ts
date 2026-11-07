@@ -66,10 +66,8 @@ describe("parseImportedState", () => {
       expect(text).not.toContain("dismissedOn");
       expect(parseImportedState(text)).toEqual({
         ...state,
-        // Export writes an explicit flow for every logged day, so a logged-but-
-        // unrated day comes back as an explicit default rather than an absent key.
         intensityByDay: { "2026-04-02": "heavy", "2026-04-03": "medium" },
-        settings: { ...state.settings, dismissedOn: null },
+        settings: { ...state.settings, dismissedOn: null, lastBackupOn: null, backupReminderDismissedOn: null },
       });
       expect(click).toHaveBeenCalledOnce();
     });
@@ -132,8 +130,9 @@ describe("downloadAppState", () => {
     expect(await blob.text()).toBe(
       JSON.stringify(
         {
-          schemaVersion: 2,
+          schemaVersion: 3,
           days: { "2026-04-02": "medium" },
+          incompleteCycleStarts: [],
           settings: {
             showFertility: null,
             showCycleDayNumbers: true,
@@ -168,9 +167,12 @@ describe("backup round-trip property", () => {
     })
     .map(formatIsoDate);
   const appState: fc.Arbitrary<AppState> = fc.record({
+    incompleteCycleStarts: fc.constant([]),
     intensityByDay: fc.dictionary(day, fc.constantFrom<LoggedFlow>(null, ...FLOW_INTENSITIES)),
     settings: fc.record({
       dismissedOn: fc.option(day),
+      lastBackupOn: fc.option(day),
+      backupReminderDismissedOn: fc.option(day),
       showFertility: fc.option(fc.boolean()),
       showCycleDayNumbers: fc.boolean(),
       theme: fc.constantFrom<ThemePreference>("system", "light", "dark"),
@@ -190,7 +192,7 @@ describe("backup round-trip property", () => {
         const blob = createObjectURL.mock.calls.at(-1)?.[0] as Blob;
         expect(parseImportedState(await blob.text(), TODAY)).toEqual({
           ...state,
-          settings: { ...state.settings, dismissedOn: null },
+          settings: { ...state.settings, dismissedOn: null, lastBackupOn: null, backupReminderDismissedOn: null },
         });
       }),
     );

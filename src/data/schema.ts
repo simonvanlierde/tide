@@ -1,4 +1,5 @@
-import { FLOW_INTENSITIES } from "../domain/flow";
+import { getCycleHistory } from "../domain/cycle";
+import { FLOW_INTENSITIES, getPredictionDays } from "../domain/flow";
 import type {
   AppSettings,
   AppState,
@@ -16,15 +17,19 @@ export const STORAGE_KEY = "tide.period-tracker.state";
 // lose data in an older build that rewrites the blob with only the fields it
 // knows. Blobs from before versioning have no schemaVersion and read as 0.
 // 2: showFertility can be null (not asked yet); see normalizeAppState.
-export const SCHEMA_VERSION = 2;
+// 3: incomplete cycle markers and local backup dates.
+export const SCHEMA_VERSION = 3;
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 const LANGUAGE_PREFERENCES: LanguagePreference[] = ["system", ...SUPPORTED_LANGUAGES];
 
 export const defaultAppState: AppState = {
   intensityByDay: {},
+  incompleteCycleStarts: [],
   settings: {
     dismissedOn: null,
+    lastBackupOn: null,
+    backupReminderDismissedOn: null,
     showFertility: null,
     showCycleDayNumbers: true,
     theme: "system",
@@ -74,6 +79,10 @@ export function normalizeSettings(settings: unknown): AppSettings {
 
   return {
     dismissedOn: isIsoDate(candidate.dismissedOn) ? candidate.dismissedOn : defaultAppState.settings.dismissedOn,
+    lastBackupOn: isIsoDate(candidate.lastBackupOn) ? candidate.lastBackupOn : null,
+    backupReminderDismissedOn: isIsoDate(candidate.backupReminderDismissedOn)
+      ? candidate.backupReminderDismissedOn
+      : null,
     showFertility:
       typeof candidate.showFertility === "boolean" ? candidate.showFertility : defaultAppState.settings.showFertility,
     showCycleDayNumbers:
@@ -114,8 +123,33 @@ export function normalizeAppState(state: unknown): AppState {
   }
 
   // Backups use `days`; current state uses `intensityByDay`.
+  const rawDays = candidate.days ?? candidate.intensityByDay;
+  const intensityByDay = normalizeIntensityByDay(rawDays);
+  // Dropped logs may have been interval boundaries; their markers cannot safely survive.
+  const logsUnchanged =
+    rawDays && typeof rawDays === "object" && Object.keys(rawDays).length === Object.keys(intensityByDay).length;
+  const markers =
+    logsUnchanged && Array.isArray(candidate.incompleteCycleStarts)
+      ? candidate.incompleteCycleStarts.filter(isIsoDate)
+      : [];
   return {
-    intensityByDay: normalizeIntensityByDay(candidate.days ?? candidate.intensityByDay),
+    intensityByDay,
+    incompleteCycleStarts: getCycleHistory(getPredictionDays(intensityByDay), markers)
+      .filter((cycle) => cycle.incomplete)
+      .map((cycle) => cycle.start),
     settings,
+  };
+}
+
+// A marker belongs to an interval, not just a date. Changed boundaries need a new choice.
+export function updateLoggedDays(state: AppState, intensityByDay: AppState["intensityByDay"]): AppState {
+  const previous = getCycleHistory(getPredictionDays(state.intensityByDay), state.incompleteCycleStarts);
+  const next = new Map(getCycleHistory(getPredictionDays(intensityByDay)).map((cycle) => [cycle.start, cycle.end]));
+  return {
+    ...state,
+    intensityByDay,
+    incompleteCycleStarts: previous
+      .filter((cycle) => cycle.incomplete && next.get(cycle.start) === cycle.end)
+      .map((cycle) => cycle.start),
   };
 }

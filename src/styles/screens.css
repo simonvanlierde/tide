@@ -40,6 +40,13 @@
     text-align: center;
   }
 
+  .backup-reminder__title {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--text-base);
+    font-weight: 600;
+  }
+
   /* Overdue is the highest-anxiety moment on the screen: one calm line,
      quieter than the question, before the actions. */
   .reminder-prompt__reassure {
@@ -83,7 +90,7 @@
        frame is a container: the text inside sizes against the disc (cqw), so
        when the cap wins the type still fits. */
     container-type: inline-size;
-    width: min(17.5rem, 64vw);
+    width: min(17.5rem, 64vw, 100%);
     aspect-ratio: 1;
     border-radius: 50%;
     touch-action: none;

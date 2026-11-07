@@ -2,6 +2,26 @@
 import type { Dictionary } from "./en";
 
 export const nl: Dictionary = {
+  // History and local backups
+  "history.title": "Cyclusgeschiedenis",
+  "history.description": "Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste {n} worden getoond.",
+  "history.empty": "Registreer de start van een volgende menstruatie om je voltooide cycli te zien.",
+  "history.days": "Dagen",
+  "history.start": "Menstruatiestart",
+  "history.length": "Duur",
+  "history.incomplete": "Onvolledig",
+  "history.incompleteFor": "Onvolledige cyclus vanaf {date}",
+  "history.help":
+    "Geregistreerde dagen blijven bewaard. Onvolledige cycli tellen niet mee voor de geschatte cyclusduur.",
+  "history.excluded": "Onvolledig; telt niet mee voor schattingen",
+  "history.chartDates": "Menstruatiestarts, van oud naar nieuw",
+  "backup.title": "Bewaar een kopie van je geschiedenis",
+  "backup.body":
+    "Je geschiedenis blijft in deze browser. Download een reservekopie om je gegevens te herstellen als ze worden gewist.",
+  "backup.download": "Reservekopie maken",
+  "backup.snooze": "Herinner me over een week",
+  "backup.error": "De reservekopie kon niet worden gedownload. Probeer het opnieuw.",
+
   "nav.today": "Vandaag",
   "nav.calendar": "Kalender",
   "nav.settings": "Instellingen",
@@ -70,9 +90,9 @@ export const nl: Dictionary = {
   "insights.title": "Cyclusinzichten",
   "insights.cycleLength": "Cyclus\u00adlengte",
   "insights.periodLength": "Menstruatie\u00adduur",
-  "insights.cyclesTracked": "Gevolgde cycli",
+  "insights.cyclesTracked": "Gebruikte cycli",
   "insights.basedOn":
-    "Gebaseerd op een gemiddelde cyclus van {cycle} dagen totdat je een volledige cyclus hebt geregistreerd.",
+    "Gebaseerd op een gebruikelijke cyclus van {cycle} dagen zolang er geen volledige cycli beschikbaar zijn.",
   "insights.regularity": "Cyclusregelmaat",
   "insights.regularityAria": "Cyclusregelmaat: {label}",
   "regularity.none": "Nog niet genoeg gegevens",
@@ -85,7 +105,7 @@ export const nl: Dictionary = {
   "insights.howCycleStart":
     "Een tussenpoos van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere tussenpozen horen bij dezelfde menstruatie.",
   "insights.how2":
-    "De cycluslengte is de mediaan van je laatste {recent} cycli, zodat één afwijkende maand het beeld niet verstoort. Vóór twee cycli wordt een gemiddelde cyclus van {cycle} dagen gebruikt.",
+    "De cyclusduur is de mediaan van je laatste {recent} volledige cycli. Onvolledige cycli tellen niet mee. Zonder volledige cycli wordt een gebruikelijke cyclus van {cycle} dagen gebruikt.",
   "insights.how3": "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
   "insights.how4":
     "Je volgende menstruatie is je laatste begindatum plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",

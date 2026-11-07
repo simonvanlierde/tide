@@ -17,9 +17,11 @@ import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
 import { differenceInDays, formatShortDate } from "../../utils/date";
 import { LogAction } from "../log/LogAction";
+import { BackupReminder } from "../reminders/BackupReminder";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
 import { InfoPopover } from "../settings/InfoPopover";
 import { CycleDial } from "./CycleDial";
+import { CycleHistory } from "./CycleHistory";
 import { CycleInsights } from "./CycleInsights";
 import { FertilityQuestion } from "./FertilityQuestion";
 
@@ -200,7 +202,9 @@ export function TodayScreen(props: TodayScreenProps) {
           stats={forecast.stats}
           showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
-        />
+        >
+          <CycleHistory today={today} />
+        </CycleInsights>
       ) : null}
 
       {Explainer === false ? (
@@ -234,6 +238,7 @@ export function TodayScreen(props: TodayScreenProps) {
           autoFocus={focusPending}
         />
       )}
+      <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />
       <p className="today-screen__privacy">{t("today.privacy")}</p>
     </section>
   );

@@ -2,6 +2,27 @@
 import type { Dictionary } from "./en";
 
 export const de: Dictionary = {
+  // History and local backups
+  "history.title": "Zyklusverlauf",
+  "history.description":
+    "Abgeschlossene Zyklen, von einem Periodenbeginn zum nächsten. Die letzten {n} werden angezeigt.",
+  "history.empty": "Trage den Beginn einer weiteren Periode ein, um deine abgeschlossenen Zyklen zu sehen.",
+  "history.days": "Tage",
+  "history.start": "Periodenbeginn",
+  "history.length": "Länge",
+  "history.incomplete": "Unvollständig",
+  "history.incompleteFor": "Unvollständiger Zyklus ab {date}",
+  "history.help":
+    "Eingetragene Tage bleiben erhalten. Unvollständige Zyklen zählen nicht für die Schätzung der Zykluslänge.",
+  "history.excluded": "Unvollständig; nicht für Schätzungen verwendet",
+  "history.chartDates": "Periodenbeginn, vom ältesten zum neuesten",
+  "backup.title": "Bewahre eine Kopie deines Verlaufs auf",
+  "backup.body":
+    "Dein Verlauf bleibt in diesem Browser. Lade eine Sicherung herunter, damit du gelöschte Daten wiederherstellen kannst.",
+  "backup.download": "Sicherung erstellen",
+  "backup.snooze": "In einer Woche erinnern",
+  "backup.error": "Die Sicherung konnte nicht heruntergeladen werden. Versuch es erneut.",
+
   "nav.today": "Heute",
   "nav.calendar": "Kalender",
   "nav.settings": "Einstellungen",
@@ -70,9 +91,9 @@ export const de: Dictionary = {
   "insights.title": "Zyklus-Einblicke",
   "insights.cycleLength": "Zyklus\u00adlänge",
   "insights.periodLength": "Perioden\u00addauer",
-  "insights.cyclesTracked": "Erfasste Zyklen",
+  "insights.cyclesTracked": "Verwendete Zyklen",
   "insights.basedOn":
-    "Basierend auf einem typischen {cycle}-Tage-Zyklus, bis du einen vollständigen Zyklus erfasst hast.",
+    "Solange keine vollständigen Zyklen vorliegen, wird ein typischer Zyklus von {cycle} Tagen verwendet.",
   "insights.regularity": "Zyklusregelmäßigkeit",
   "insights.regularityAria": "Zyklusregelmäßigkeit: {label}",
   "regularity.none": "Noch nicht genügend Daten",
@@ -85,7 +106,7 @@ export const de: Dictionary = {
   "insights.howCycleStart":
     "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Tagen beginnt einen neuen Zyklus; kürzere Lücken gehören zur selben Periode.",
   "insights.how2":
-    "Die Zykluslänge ist der Median deiner letzten {recent} Zyklen, damit ein einzelner ungewöhnlicher Monat sie nicht verfälscht. Vor zwei Zyklen wird ein typischer {cycle}-Tage-Zyklus verwendet.",
+    "Die Zykluslänge ist der Median deiner letzten {recent} vollständigen Zyklen. Unvollständige Zyklen zählen nicht mit. Ohne vollständige Zyklen wird ein typischer Zyklus von {cycle} Tagen verwendet.",
   "insights.how3": "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
   "insights.how4":
     "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",

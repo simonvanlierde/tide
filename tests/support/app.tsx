@@ -29,18 +29,20 @@ interface AppStateOverrides {
   // Convenience: seed these days at the default (medium) flow. Explicit
   // intensityByDay entries override the default for the same day.
   periodDays?: IsoDate[];
+  incompleteCycleStarts?: IsoDate[];
   intensityByDay?: Record<IsoDate, FlowIntensity>;
   settings?: Partial<AppSettings>;
 }
 
 export function createAppState(overrides: AppStateOverrides = {}): AppState {
-  const { periodDays = [], intensityByDay = {}, settings } = overrides;
+  const { periodDays = [], incompleteCycleStarts = [], intensityByDay = {}, settings } = overrides;
   return {
     intensityByDay: {
       // Seeded days carry an explicit level; a one-tap log in the app stores null.
       ...Object.fromEntries(periodDays.map((day) => [day, "medium"])),
       ...intensityByDay,
     },
+    incompleteCycleStarts,
     settings: {
       ...defaultAppState.settings,
       ...settings,

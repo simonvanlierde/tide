@@ -1,6 +1,6 @@
 import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
-import { normalizeAppState, SCHEMA_VERSION } from "./schema";
+import { normalizeAppState, SCHEMA_VERSION, updateLoggedDays } from "./schema";
 
 // Dated so repeated backups don't overwrite each other in Downloads.
 // Local day, not UTC, so a backup made just after midnight carries today's date.
@@ -10,6 +10,7 @@ interface BackupFile {
   // Read on import like the stored blob's: an older backup's showFertility was
   // never chosen (see normalizeAppState).
   schemaVersion: number;
+  incompleteCycleStarts: IsoDate[];
   // The logged days and their flow — its keys are the period days, so they
   // aren't listed a second time. This is the app's own state shape.
   days: Record<IsoDate, LoggedFlow>;
@@ -22,6 +23,7 @@ function toBackupFile(state: AppState): BackupFile {
   return {
     schemaVersion: SCHEMA_VERSION,
     days: state.intensityByDay,
+    incompleteCycleStarts: state.incompleteCycleStarts,
     settings: {
       showFertility: state.settings.showFertility,
       showCycleDayNumbers: state.settings.showCycleDayNumbers,
@@ -72,10 +74,10 @@ export function parseImportedState(text: string, today: IsoDate = getTodayIsoDat
     throw new Error("Backup is from a newer Tide");
   }
   const state = normalizeAppState(parsed);
-  return {
-    ...state,
-    intensityByDay: Object.fromEntries(Object.entries(state.intensityByDay).filter(([day]) => day <= today)),
-  };
+  return updateLoggedDays(
+    state,
+    Object.fromEntries(Object.entries(state.intensityByDay).filter(([day]) => day <= today)),
+  );
 }
 
 // Days from another app's export (see otherApps.ts). Kept here, not in the
@@ -83,8 +85,5 @@ export function parseImportedState(text: string, today: IsoDate = getTodayIsoDat
 // Imported days fill only the days not logged here: what the user already
 // logged in Tide wins over another app's record of the same day.
 export function mergeImportedDays(state: AppState, days: Record<IsoDate, LoggedFlow>): AppState {
-  return {
-    ...state,
-    intensityByDay: { ...days, ...state.intensityByDay },
-  };
+  return updateLoggedDays(state, { ...days, ...state.intensityByDay });
 }

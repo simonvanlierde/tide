@@ -110,9 +110,18 @@ export function DataSection({ today }: DataSectionProps) {
   }
 
   function handleExport() {
-    downloadAppState(state);
-    setError(null);
-    setStatus({ kind: "exported" });
+    try {
+      downloadAppState(state);
+      if (!readOnly) {
+        actions.setSetting("lastBackupOn", today);
+        actions.setSetting("backupReminderDismissedOn", null);
+      }
+      setError(null);
+      setStatus({ kind: "exported" });
+    } catch {
+      setStatus(null);
+      setError(t("backup.error"));
+    }
   }
 
   async function handleCalendarExport() {

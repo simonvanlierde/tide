@@ -7,7 +7,8 @@ device. The code is in `src/domain/cycle.ts`.
   counts as missed logs within the same period.
 - **Cycle length.** The **median of your last 6 completed cycles**, counted in days between
   starts. I use the median so one odd cycle doesn't skew it, and only recent cycles because cycle
-  length drifts. Until you've logged two period starts (one full cycle), Tide uses **28 days**.
+  length drifts. Cycles marked incomplete are left out. When no complete cycles are available,
+  Tide uses **28 days**.
 - **Period length.** The average of your past periods, kept within the **2–7 day** range that ACOG
   (the American College of Obstetricians and Gynecologists) gives as normal. It leaves out the
   current, unfinished period, and uses **4 days** when there's no history.
@@ -25,7 +26,15 @@ device. The code is in `src/domain/cycle.ts`.
   ±1 day) or luteal, read from the ovulation estimate. With fertility estimates off, Tide makes no
   ovulation estimate, so every other day is simply "between periods".
 
-On Today, **How was this worked out?** shows these steps with your own numbers. Settings → Data →
+On Today, **How was this worked out?** shows these steps with your own numbers. **Cycle insights**
+shows the latest 12 completed intervals in a chart and table, oldest first. Tick **Incomplete**
+when a cycle is missing logs. Its days stay in the calendar, but its length does not count toward
+the next-period estimate, regularity or the date range. Its past fertility estimates are hidden.
+The average period length still uses recorded bleeding days. Untick it to include the cycle again.
+Changing an interval's start or end clears its marker, so an old choice cannot attach to a different
+cycle. Tide backups keep these markers.
+
+Settings → Data →
 **Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
 made on your device. The events are marked private, so most shared calendars hide their details, and
 they never mark you as busy. Each event is identified by its cycle number and a random id this
@@ -34,6 +43,7 @@ instead of adding a copy, and two people's events in one calendar stay apart. Th
 backup, so a new device restored from one keeps updating the same events. Importing older history
 renumbers the cycles, and deleting all data makes a new id: either way the next file adds new
 events, and the old ones need deleting by hand.
+Marking a cycle incomplete does not renumber calendar events.
 
 To see how close the next-period estimate lands on real cycle data, read
 [backtest.md](backtest.md).

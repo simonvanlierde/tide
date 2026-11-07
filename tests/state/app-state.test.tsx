@@ -1,7 +1,7 @@
 import { act, renderHook, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SCHEMA_VERSION } from "../../src/data/schema";
+import { defaultAppState, SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
 import { AppStateProvider, useAppState, useAppStateActions, useForecast } from "../../src/state/provider";
@@ -167,6 +167,19 @@ describe("app state", () => {
   it("refuses to expose state or actions outside a provider", () => {
     expect(() => renderHook(() => useAppState())).toThrow(/must be used inside AppStateProvider/);
     expect(() => renderHook(() => useAppStateActions())).toThrow(/must be used inside AppStateProvider/);
+  });
+
+  it("resets incomplete markers and local backup metadata along with history", () => {
+    const initial = createAppState({
+      periodDays: ["2026-01-01", "2026-01-29"],
+      incompleteCycleStarts: ["2026-01-01"],
+      settings: { lastBackupOn: "2026-04-01", backupReminderDismissedOn: "2026-04-20" },
+    });
+    const { result } = renderHook(() => ({ state: useAppState(), actions: useAppStateActions() }), {
+      wrapper: ({ children }) => <AppStateProvider initialState={initial}>{children}</AppStateProvider>,
+    });
+    act(() => result.current.actions.resetState());
+    expect(result.current.state).toEqual(defaultAppState);
   });
 
   it("forecasts for the day the caller passes", () => {

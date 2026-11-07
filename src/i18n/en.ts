@@ -4,6 +4,24 @@
 // autocomplete + typo-checking. Keys ending in `.one`/`.other` are plural forms
 // selected by plural() (see index.ts).
 export const en = {
+  // History and local backups
+  "history.title": "Cycle history",
+  "history.description": "Completed cycles, from one period start to the next. Showing the latest {n}.",
+  "history.empty": "Log the start of another period to see your completed cycles.",
+  "history.days": "Days",
+  "history.start": "Period start",
+  "history.length": "Length",
+  "history.incomplete": "Incomplete",
+  "history.incompleteFor": "Incomplete cycle starting {date}",
+  "history.help": "Keep logged days. Leave incomplete cycles out of cycle-length estimates.",
+  "history.excluded": "Incomplete; excluded from estimates",
+  "history.chartDates": "Period starts, oldest to newest",
+  "backup.title": "Keep a copy of your history",
+  "backup.body": "Your history stays in this browser. Download a backup you can restore if its data is cleared.",
+  "backup.download": "Back up data",
+  "backup.snooze": "Remind me in a week",
+  "backup.error": "The backup couldn't be downloaded. Try again.",
+
   // Navigation & app shell
   "nav.today": "Today",
   "nav.calendar": "Calendar",
@@ -76,8 +94,8 @@ export const en = {
   "insights.title": "Cycle insights",
   "insights.cycleLength": "Cycle length",
   "insights.periodLength": "Period length",
-  "insights.cyclesTracked": "Cycles tracked",
-  "insights.basedOn": "Based on a typical {cycle}-day cycle until you’ve logged a full cycle.",
+  "insights.cyclesTracked": "Cycles used",
+  "insights.basedOn": "Based on a typical {cycle}-day cycle while no complete cycles are available.",
   "insights.regularity": "Cycle regularity",
   "insights.regularityAria": "Cycle regularity: {label}",
   "regularity.none": "Not enough data yet",
@@ -90,7 +108,7 @@ export const en = {
   "insights.howCycleStart":
     "A gap of {gap} days or more between logged days starts a new cycle; shorter gaps are the same period.",
   "insights.how2":
-    "Cycle length is the median of your last {recent} cycles, so one odd month doesn’t throw it off. Before two cycles, a typical {cycle}-day cycle is used.",
+    "Cycle length is the median of your last {recent} complete cycles. Incomplete cycles are left out. With no complete cycles, a typical {cycle}-day cycle is used.",
   "insights.how3": "Period length is your recent average, kept to a normal {min}–{max} days.",
   "insights.how4":
     "Your next period is your last start plus that cycle length; ovulation is estimated {luteal} days before it.",

@@ -8,6 +8,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Cycle insights shows the latest 12 completed cycles as a chart and a table.
+  Mark an incomplete cycle to leave its length out of estimates without deleting
+  its logged days. Backups keep the markers, and changing a cycle's boundaries
+  clears its marker. Calendar event ids stay the same when a marker changes.
+- A backup reminder appears on Today after 30 days of history, or 30 days after
+  your last backup download. Download a backup there, or snooze it for a week.
+  The reminder dates stay on this device and are left out of exported backups.
 - With JavaScript turned off, Tide now says it needs JavaScript and gives an
   email address to report a problem, instead of showing a blank page.
 - "How was this worked out?" on Today shows the sums behind your next-period
@@ -72,6 +79,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Off switches have a contrasting thumb and border in both themes. At 200% text,
+  the Today dial stays within its column and flow labels get enough room.
+- Keyboard focus scrolls controls above the fixed bottom navigation.
 - Screen readers name the source-code link in Settings "Source code, v0.4.0,
   opens in a new tab", so the version you see on it is part of its name and
   voice control can find it.
@@ -156,6 +166,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Tested
 
+- A criterion-by-criterion [accessibility self-assessment](docs/accessibility-assessment.md)
+  records browser evidence for all 55 WCAG 2.2 level A and AA criteria. Added
+  keyboard, enlarged-text, text-spacing, target-size and new-feature checks.
 - Every screen is checked against WCAG 2.2 level AA and axe's best-practice
   rules, fails on any finding however minor, and must not scroll sideways at
   320 px wide. CI also checks the shipped dependencies for known advisories.
