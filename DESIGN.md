@@ -1,4 +1,5 @@
 ---
+<<<<<<< before updating
 name: Tide
 description: A privacy-first period tracker; calm teal chrome, one warm coral signal.
 colors:
@@ -392,3 +393,44 @@ body at 1.5 line height. There is no footer on any screen.
 - **Don't** add sharp corners, or radii under 10 px on anything larger than a 16 px
   swatch.
 - **Don't** decorate around the dial. It is the only expressive element on Today.
+=======
+name: "tide"
+description: "Privacy-first, local-first period tracker PWA \u2014 React + TypeScript + Vite, data stays in the browser"
+---
+
+# Design System: tide
+
+TODO: fill this in once the app has a look. Add the colors, type and spacing the app uses to the frontmatter above.
+
+## Overview
+
+TODO: the look in two or three sentences, and the people it is for ([PRODUCT.md](PRODUCT.md)).
+
+## Colors
+
+TODO: the palette, one line per color and what it is for.
+
+## Typography
+
+TODO: the fonts, sizes and weights.
+
+## Layout
+
+TODO: spacing, grid and breakpoints.
+
+## Elevation & Depth
+
+TODO: shadows and layers, or say there are none.
+
+## Shapes
+
+TODO: corner radii and borders.
+
+## Components
+
+TODO: buttons, inputs, cards and the states they have.
+
+## Do's and Don'ts
+
+- TODO: one thing to do and one to avoid.
+>>>>>>> after updating

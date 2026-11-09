@@ -12,10 +12,19 @@ body:
       description: What you did, what you expected, and what happened instead.
     validations:
       required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: Page URL
+      description: The page where it happens, for example https://example.org/settings.
+    validations:
+      required: true
   - type: textarea
     id: reproduce
     attributes:
       label: Steps to reproduce
+<<<<<<< before updating
       placeholder: |
         1. …
         2. …
@@ -24,3 +33,20 @@ body:
     attributes:
       label: Device & browser
       placeholder: e.g. iPhone 15, Safari 18 / Desktop Chrome 130
+=======
+      description: What you clicked or typed, one step per line. If the bug is in a command or code, give that instead.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Name and version, for example Firefox 130 on Windows 11.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit
+      description: If you run the app locally, the commit you used.
+>>>>>>> after updating

@@ -8,6 +8,7 @@ minimumReleaseAge: 10080
 # `pnpm audit --fix=update` lists a fresh security fix under minimumReleaseAgeExclude;
 # pnpm drops an entry once the lockfile no longer holds that version.
 minimumReleaseAgeExcludePrune: true
+<<<<<<< before updating
 allowBuilds:
   esbuild: true
 overrides:
@@ -18,3 +19,10 @@ overrides:
   # Remove once vite-plugin-pwa no longer pulls minimatch 5.
   "brace-expansion@>=2 <3": ^2.1.7
   esbuild: ^0.28.1
+=======
+# wrangler's esbuild and workerd run install scripts to set up their binaries; pnpm
+# refuses an install that skips a build no one has allowed or denied.
+allowBuilds:
+  esbuild: true
+  workerd: true
+>>>>>>> after updating

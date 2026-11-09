@@ -21,6 +21,13 @@ for (const [href, name] of PAGES) {
   });
 }
 
+<<<<<<< before updating
+=======
+test("some route links the legal pages", () => {
+  expect(LEGAL_LINKED_FROM.length).toBeGreaterThan(0);
+});
+
+>>>>>>> after updating
 for (const path of LEGAL_LINKED_FROM) {
   test(`${path} links every page`, async ({ page }) => {
     await page.goto(path);

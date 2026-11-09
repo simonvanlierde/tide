@@ -1,11 +1,17 @@
 # Product
 
+<<<<<<< before updating
+=======
+TODO: fill this in by hand. Describe the people who use the app and what they need, so design work starts from them.
+
+>>>>>>> after updating
 ## Platform
 
 web
 
 ## Users
 
+<<<<<<< before updating
 Tide is for people who menstruate and want to leave a mainstream period tracker (Flo, Clue
 and similar) because of what it does with their data. They come with history they want to
 keep, and they distrust anything that looks like it phones home. Tide sits on the home
@@ -82,3 +88,25 @@ usage data. Don't make any up.
 WCAG AA contrast is the minimum, and axe checks every screen in the end-to-end tests. The
 app respects reduced motion everywhere. Users are "people who menstruate", and we never
 assume they are women.
+=======
+TODO: name the people who use tide and where they are when they do. Visitors are people who want to see what the project does.
+
+## Product Purpose
+
+Privacy-first, local-first period tracker PWA — React + TypeScript + Vite, data stays in the browser
+
+TODO: say what tide has done when it has done its job.
+
+## Brand Commitments
+
+- Name: tide.
+- TODO: voice, in a sentence.
+
+## Product Principles
+
+1. TODO: the first thing the app gets right.
+
+## Accessibility & Inclusion
+
+TODO: the needs of your users. The [accessibility statement](docs/accessibility.md) holds the conformance level.
+>>>>>>> after updating

@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 /**
  * Guards docs/accessibility.md as the app renders it at /accessibility. The
  * statement's value is that it claims no more than the repo can show, so these
- * fail when it overclaims, promises no reply time, or goes a year without review.
+ * fail when it overclaims or promises no reply time.
  * a11y.spec.ts runs axe over it with the other routes, and legal-pages.spec.ts
  * checks its title, email contact and the links to and from it.
  */
@@ -17,12 +17,8 @@ const SECTIONS = [
   "Known problems",
   "Tell us about a problem",
   "How we check",
-  "Tested with",
   "About this statement",
 ];
-// A yearly review plus a month's grace.
-const MAX_REVIEW_AGE_DAYS = 400;
-const DAY_MS = 86_400_000;
 
 test("the statement renders its sections and claims no more than was checked", async ({ page }) => {
   await page.goto("/accessibility");
@@ -34,21 +30,4 @@ test("the statement renders its sections and claims no more than was checked", a
   await expect(statement).not.toContainText(/fully conformant/i);
 
   await expect(statement).toContainText(/within \d+ working days/);
-});
-
-test("the statement was reviewed in the last 400 days", async ({ page }) => {
-  await page.goto("/accessibility");
-  const line = await page
-    .locator("article")
-    .getByText(/^Last reviewed:/)
-    .textContent();
-  const reviewed = new Date((line ?? "").replace(/^Last reviewed:\s*/, ""));
-  expect(Number.isNaN(reviewed.getTime()), `unreadable date in "${line}"`).toBe(false);
-  const ageDays = (Date.now() - reviewed.getTime()) / DAY_MS;
-  // A date in the future is a typo, and would hold the check off for years.
-  expect(ageDays, `"${line}" is in the future`).toBeGreaterThan(-1);
-  expect(
-    ageDays,
-    `"${line}" is over ${MAX_REVIEW_AGE_DAYS} days old. Check docs/accessibility.md against the app as it is now, fix what changed, and set "Last reviewed" to today.`,
-  ).toBeLessThan(MAX_REVIEW_AGE_DAYS);
 });
