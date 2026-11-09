@@ -126,8 +126,11 @@ export function normalizeAppState(state: unknown): AppState {
   const rawDays = candidate.days ?? candidate.intensityByDay;
   const intensityByDay = normalizeIntensityByDay(rawDays);
   // Dropped logs may have been interval boundaries; their markers cannot safely survive.
+  // A key that is not a date was never a boundary, so it doesn't count.
   const logsUnchanged =
-    rawDays && typeof rawDays === "object" && Object.keys(rawDays).length === Object.keys(intensityByDay).length;
+    rawDays &&
+    typeof rawDays === "object" &&
+    Object.keys(rawDays).filter(isIsoDate).length === Object.keys(intensityByDay).length;
   const markers =
     logsUnchanged && Array.isArray(candidate.incompleteCycleStarts)
       ? candidate.incompleteCycleStarts.filter(isIsoDate)

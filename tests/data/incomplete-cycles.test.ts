@@ -38,6 +38,15 @@ describe("incomplete cycle persistence", () => {
     expect(result.incompleteCycleStarts).toEqual([]);
   });
 
+  it("keeps markers when only a key that is not a date is dropped", () => {
+    const result = normalizeAppState({
+      schemaVersion: 3,
+      intensityByDay: { ...days, bogus: "medium" },
+      incompleteCycleStarts: ["2026-01-29"],
+    });
+    expect(result.incompleteCycleStarts).toEqual(["2026-01-29"]);
+  });
+
   it("exports and restores markers while keeping backup metadata on this device", async () => {
     const state = normalizeAppState({
       schemaVersion: 3,
