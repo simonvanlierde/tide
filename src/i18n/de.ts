@@ -4,7 +4,9 @@ import type { Dictionary } from "./en";
 export const de: Dictionary = {
   // History and local backups
   "history.title": "Zyklusverlauf",
-  "history.description":
+  "history.description.one":
+    "Abgeschlossene Zyklen, von einem Periodenbeginn zum nächsten. Der letzte Zyklus wird angezeigt.",
+  "history.description.other":
     "Abgeschlossene Zyklen, von einem Periodenbeginn zum nächsten. Die letzten {n} werden angezeigt.",
   "history.empty": "Trage den Beginn einer weiteren Periode ein, um deine abgeschlossenen Zyklen zu sehen.",
   "history.days": "Tage",

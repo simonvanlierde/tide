@@ -14,6 +14,13 @@ describe("CycleHistory", () => {
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
   });
 
+  it("describes a single completed cycle without a count", () => {
+    renderWithAppState(<CycleHistory today="2026-04-15" />, {
+      state: createAppState({ periodDays: ["2026-02-01", "2026-03-01"], settings: { language: "en" } }),
+    });
+    expect(screen.getByText(/Showing the latest cycle\./)).toBeInTheDocument();
+  });
+
   it("shows recorded intervals and reversibly excludes an incomplete cycle without removing logs", () => {
     const days = ["2026-01-01", "2026-01-29", "2026-03-01"] as const;
     renderWithAppState(<CycleHistory today="2026-04-15" />, {

@@ -3,7 +3,9 @@ import type { Dictionary } from "./en";
 export const es: Dictionary = {
   // History and local backups
   "history.title": "Historial de ciclos",
-  "history.description":
+  "history.description.one":
+    "Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestra el último ciclo.",
+  "history.description.other":
     "Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestran los últimos {n}.",
   "history.empty": "Registra el inicio de otro período para ver tus ciclos completados.",
   "history.days": "Días",

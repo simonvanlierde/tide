@@ -4,7 +4,10 @@ import type { Dictionary } from "./en";
 export const nl: Dictionary = {
   // History and local backups
   "history.title": "Cyclusgeschiedenis",
-  "history.description": "Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste {n} worden getoond.",
+  "history.description.one":
+    "Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste cyclus wordt getoond.",
+  "history.description.other":
+    "Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste {n} worden getoond.",
   "history.empty": "Registreer de start van een volgende menstruatie om je voltooide cycli te zien.",
   "history.days": "Dagen",
   "history.start": "Menstruatiestart",

@@ -6,7 +6,8 @@
 export const en = {
   // History and local backups
   "history.title": "Cycle history",
-  "history.description": "Completed cycles, from one period start to the next. Showing the latest {n}.",
+  "history.description.one": "Completed cycles, from one period start to the next. Showing the latest cycle.",
+  "history.description.other": "Completed cycles, from one period start to the next. Showing the latest {n}.",
   "history.empty": "Log the start of another period to see your completed cycles.",
   "history.days": "Days",
   "history.start": "Period start",
