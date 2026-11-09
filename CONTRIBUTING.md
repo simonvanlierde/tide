@@ -40,20 +40,7 @@ Things that trip people up:
 
 ## Architecture
 
-I keep the cycle logic pure and away from React and the browser, so it can be tested as plain functions. Dependencies point inward. The React layer reads through `state`, and `state` is the only code that calls the pure `domain` and the `data` layer, where data is saved and loaded:
-
-- `src/domain`: pure cycle and reminder logic (no React, storage, or browser APIs)
-- `src/data`: defaults, validation, and normalization at the `localStorage` boundary
-- `src/state`: reducer and selectors, separate from the React provider
-- `src/app`: app shell and pathname-based routing (`/`, `/calendar`, `/settings`)
-- `src/features`: screen components and presentation helpers
-- `src/i18n`: typed message dictionaries, one per locale
-- `src/ui`: reusable UI primitives
-- `src/styles`: design tokens and shared styling
-- `src/utils`: shared date helpers
-
-The tests follow the same layers. On top sits a thin layer of Playwright end-to-end tests: routing, data that survives a reload, and a smoke test of the PWA.
-
+[docs/architecture.md](docs/architecture.md) describes the layers and how data moves through them.
 [docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md) records why all data stays on the device. [CHANGELOG.md](CHANGELOG.md) lists the releases.
 
 ## Accessibility
