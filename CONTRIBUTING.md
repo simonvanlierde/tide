@@ -21,6 +21,8 @@ pnpm dev
 | `just hooks` | Every git hook over the whole repo, as CI runs them |
 | `just ts-cov` | Tests with coverage and its thresholds |
 | `just ts-e2e` | Playwright tests against the production build: flows, accessibility, CSP, layout |
+| `just ts-shots` | Screenshots of every route at several widths and both themes, into `shots/` |
+| `just repo-settings` | Apply the rulesets, environments and repo settings (maintainers) |
 | `pnpm build` | Production build to `dist/` |
 
 The repo follows the [project-templates](https://github.com/simonvanlierde/project-templates)
@@ -55,6 +57,6 @@ Two automated checks run in CI:
 Tide has no backend, so a fork needs no infrastructure. `pnpm build` writes a static site to
 `dist/`, and any static host will serve it as-is.
 
-**[tide.duinlab.nl](https://tide.duinlab.nl)** builds from `main` on Cloudflare Pages, so a merged
-pull request ships on its own. [`wrangler.jsonc`](wrangler.jsonc) pins the output directory for
-that setup; other hosts need nothing from the repo.
+**[tide.duinlab.nl](https://tide.duinlab.nl)** ships every merge to `main` from CI, to a Cloudflare
+Worker configured in [`wrangler.jsonc`](wrangler.jsonc); the README's
+[Deploy](README.md#deploy) section has the setup. Other hosts need nothing from the repo.

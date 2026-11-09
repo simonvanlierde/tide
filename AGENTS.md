@@ -16,7 +16,7 @@ Run `just check` before you call a change done. It runs what CI runs for each st
 
 `README.md` says how to set up, run and release the project. Record user-facing changes
 under `[Unreleased]` in `CHANGELOG.md`.
-Read `docs/decisions/` if present before changing a recorded choice.
+Read `docs/adr/` before changing a recorded choice.
 `.github/CONTRIBUTING.md` has the commit and sign-off rules.
 The legal pages the web app serves are in `docs/`.
 `PRODUCT.md` and `DESIGN.md` beside them say who the app is for and how it looks.

@@ -11,7 +11,7 @@ export default defineConfig({
   testDir: "tests/e2e",
   forbidOnly: ci,
   reporter: ci ? [["github"], ["html", { open: "never" }]] : [["list"], ["html", { open: "never" }]],
-  use: { baseURL: url, trace: "on-first-retry" },
+  use: { baseURL: url, trace: "retain-on-failure" },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     // `just ts-shots` only: the normal run has no such project, so it skips tests/shots.
