@@ -10,11 +10,11 @@
       "parameters": {
         "strict_required_status_checks_policy": false,
         "required_status_checks": [
+          { "context": "ts: lint, types, tests", "integration_id": 15368 },
           { "context": "git hooks", "integration_id": 15368 },
           { "context": "pull request title", "integration_id": 15368 },
           { "context": "DCO sign-off", "integration_id": 15368 },
-          { "context": "dependency review", "integration_id": 15368 },
-          { "context": "ts: lint, types, tests", "integration_id": 15368 }
+          { "context": "dependency review", "integration_id": 15368 }
         ]
       }
     }

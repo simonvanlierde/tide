@@ -61,6 +61,9 @@ export default defineConfig({
       // The manifest icons are precached on their own (includeManifestIcons).
       includeAssets: ["favicon.ico", "icons/icon.svg"],
       registerType: "autoUpdate",
+      // The service worker answers page loads with the app shell; security.txt
+      // must still reach the network, or a browser shows the app instead.
+      workbox: { navigateFallbackDenylist: [/^\/\.well-known\//] },
       manifest,
     }),
   ],
