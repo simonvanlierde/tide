@@ -3,15 +3,11 @@ import { ROUTES } from "./routes";
 import { seedAppState } from "./seed";
 
 // vite preview sends no headers, so apply the Content-Security-Policy from the
-<<<<<<< before updating
-// built _headers file, the one Cloudflare Pages serves, and fail on any violation.
+// built _headers file, the one the Cloudflare Worker serves, and fail on any violation.
 // A service worker would answer later navigations from its cache, past the
 // route that adds the header.
 test.use({ serviceWorkers: "block" });
 
-=======
-// built _headers file, the one the Cloudflare Worker serves, and fail on any violation.
->>>>>>> after updating
 test("the built app runs under its own Content-Security-Policy", async ({ page }) => {
   const headersFile = await (await page.request.get("/_headers")).text();
   const policy = headersFile.match(/Content-Security-Policy:\s*(.+)/)?.[1];

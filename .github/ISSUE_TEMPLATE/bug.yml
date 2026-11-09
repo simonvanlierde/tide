@@ -17,36 +17,20 @@ body:
     id: url
     attributes:
       label: Page URL
-      description: The page where it happens, for example https://example.org/settings.
+      description: The page where it happens, for example https://tide.duinlab.nl/settings.
     validations:
       required: true
   - type: textarea
     id: reproduce
     attributes:
       label: Steps to reproduce
-<<<<<<< before updating
-      placeholder: |
-        1. …
-        2. …
+      description: What you tapped or typed, one step per line.
+    validations:
+      required: true
   - type: input
     id: environment
     attributes:
       label: Device & browser
-      placeholder: e.g. iPhone 15, Safari 18 / Desktop Chrome 130
-=======
-      description: What you clicked or typed, one step per line. If the bug is in a command or code, give that instead.
+      description: For example iPhone 15 with Safari 18, or Chrome 130 on Windows 11. Say if tide is installed to the home screen.
     validations:
       required: true
-  - type: input
-    id: browser
-    attributes:
-      label: Browser
-      description: Name and version, for example Firefox 130 on Windows 11.
-    validations:
-      required: true
-  - type: input
-    id: version
-    attributes:
-      label: Commit
-      description: If you run the app locally, the commit you used.
->>>>>>> after updating

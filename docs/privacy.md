@@ -9,7 +9,6 @@ says how to fill it in, with an example, and how the template builds and tests i
 
 # Privacy statement
 
-<<<<<<< before updating
 Everything you log in tide stays on your device. It isn't sent to us or to anyone else. tide has
 no accounts, no cookies and no analytics.
 
@@ -43,10 +42,10 @@ Delete saved files yourself when you no longer want them.
 
 ## What our host sees
 
-[Cloudflare Pages](https://www.cloudflare.com/privacypolicy/) hosts tide. As with any website,
+[Cloudflare](https://www.cloudflare.com/privacypolicy/) hosts tide. As with any website,
 Cloudflare sees your IP address and browser details when you load the app. It may log these to
-keep the site running and safe, and its privacy policy says for how long. We don't get these logs
-and keep none of our own.
+keep the site running and safe, which the law counts as a legitimate interest, and its privacy
+policy says for how long. We don't get these logs and keep none of our own.
 
 tide loads all its files from tide.duinlab.nl and contacts no other site.
 
@@ -57,68 +56,20 @@ keep, and that needs no consent.
 
 To work offline, tide keeps a copy of its own files in your browser's cache. That copy holds no
 personal data.
-=======
-tide keeps your work on your device. It isn't sent to us or to anyone else.
-tide has no accounts, no cookies and no analytics.
-
-This page covers tide at [tide.duinlab.nl](https://tide.duinlab.nl). Simon van Lierde runs
-tide and is responsible for it. "We" on this page means Simon van Lierde.
-
-## What tide stores on your device
-
-tide saves your work in your browser's local storage. Nothing is saved until you
-start working. It stores:
-
-- TODO: one bullet for each thing, in the words a user would use, such as "the list you are
-  editing" or "your theme".
-
-## How to delete it
-
-Clear this site's data in your browser's settings.
-
-## What our host sees
-
-[Cloudflare](https://www.cloudflare.com/privacypolicy/) hosts tide on Cloudflare Workers. As with
-any website, Cloudflare sees your IP address and browser details when you load a page. It may log
-these to keep the site running and safe, which the law counts as a legitimate interest, and its
-privacy policy says for how long. We don't get these logs and keep none of our own.
-
-tide loads all its files from tide.duinlab.nl and contacts no other site.
-
-## Cookies
-
-tide sets no cookies, so there's no cookie banner. Local storage holds only what you
-asked tide to keep, and that needs no consent.
->>>>>>> after updating
 
 ## Your rights
 
 You can ask us to show you the data we have about you, and to correct it, delete it, limit how we
-<<<<<<< before updating
 use it, or stop using it. We never get what you log in tide, so we can't see or change it.
 
 To ask, or with any other question about this page, email
 [code@duinlab.nl](mailto:code@duinlab.nl). If you're not happy with our answer, you can complain
 to your data protection authority. In the Netherlands, that's the
-=======
-use it, or stop using it. We never get what you keep in tide, so we can't see or
-change it.
-
-To ask, or with any other question about this page, email
-[code@duinlab.nl](mailto:code@duinlab.nl). If you're not happy with our answer, you can
-complain to your data protection authority. In the Netherlands, that's the
->>>>>>> after updating
 [Autoriteit Persoonsgegevens](https://www.autoriteitpersoonsgegevens.nl/).
 
 ## About this page
 
 Last updated: 29 October 2026
 
-<<<<<<< before updating
 tide is free software under the [MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE)
 and comes with no warranty.
-=======
-tide is free software under the
-[MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE) and
-comes with no warranty.
->>>>>>> after updating
