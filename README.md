@@ -5,6 +5,7 @@
 [![Website](https://img.shields.io/website?url=https%3A%2F%2Ftide.duinlab.nl)](https://tide.duinlab.nl)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![PWA](https://img.shields.io/badge/PWA-installable-5a0fc8.svg)](https://tide.duinlab.nl)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/simonvanlierde/tide/badge)](https://scorecard.dev/viewer/?uri=github.com/simonvanlierde/tide)
 
 Tide is a privacy-first period tracker. It's a small React web app that you can install (a PWA),
 and it keeps all your cycle data in your browser: no accounts, no network and no analytics.
@@ -55,7 +56,7 @@ pnpm exec prek install                  # git hooks
 `pnpm dev` starts the app. `just check` runs what CI runs, and `just ts-e2e` the browser tests.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks, architecture and deploy setup, and
-[docs/](docs/) for the [prediction backtest](docs/backtest.md) and the
+[docs/](docs/) for the [architecture](docs/architecture.md), the [prediction backtest](docs/backtest.md) and the
 [decision to keep data on the device](docs/adr/0001-local-first-no-backend.md).
 [Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose) for bugs and ideas.
 

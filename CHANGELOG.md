@@ -13,6 +13,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   without deleting logged days.
 - Today reminds you to download a backup after 30 days, with a one-week snooze.
   The reminder dates stay on this device and are left out of exported backups.
+- The site now has a `/.well-known/security.txt` that says where to report a
+  security problem, and link previews show Tide's name, description and icon.
 - With JavaScript turned off, Tide now says it needs JavaScript and gives an
   email address to report a problem, instead of showing a blank page.
 - "How was this worked out?" on Today shows the sums behind your next-period
