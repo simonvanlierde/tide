@@ -64,7 +64,7 @@ describe("parseImportedState", () => {
     return blob.text().then((text) => {
       // dismissedOn is transient UI state and must not leave in the backup.
       expect(text).not.toContain("dismissedOn");
-      expect(parseImportedState(text)).toEqual({
+      expect(parseImportedState(text, "2026-04-15")).toEqual({
         ...state,
         intensityByDay: { "2026-04-02": "heavy", "2026-04-03": "medium" },
         settings: { ...state.settings, dismissedOn: null, lastBackupOn: null, backupReminderDismissedOn: null },

@@ -91,7 +91,8 @@ function mean(values) {
   return values.length > 0 ? values.reduce((sum, value) => sum + value, 0) / values.length : DEFAULT_CYCLE_LENGTH;
 }
 
-// Frozen production rule for comparisons after the app's predictor changes.
+// median6 is the app's current rule. The tide === median6 check below pins the
+// docs/backtest.md result to it: the script stops once the predictor changes.
 // Every estimator receives only earlier completed cycles.
 const estimators = {
   median6: (history) => median(history.slice(-6)),
