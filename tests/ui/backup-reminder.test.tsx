@@ -1,5 +1,6 @@
 import { fireEvent, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+import { SCHEMA_VERSION, STORAGE_KEY } from "../../src/data/schema";
 import { downloadAppState } from "../../src/data/transfer";
 import { BackupReminder } from "../../src/features/reminders/BackupReminder";
 import { useAppState } from "../../src/state/provider";
@@ -55,5 +56,14 @@ describe("backup reminder", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("The backup couldn't be downloaded. Try again.");
     expect(screen.getByText("never/never")).toBeInTheDocument();
     expect(onDone).not.toHaveBeenCalled();
+  });
+
+  it("stays hidden when a newer build owns the stored data", () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...createAppState({ periodDays: ["2026-03-01"] }), schemaVersion: SCHEMA_VERSION + 1 }),
+    );
+    renderWithAppState(<BackupReminder today="2026-04-15" onDone={vi.fn()} />);
+    expect(screen.queryByRole("button", { name: "Back up data" })).toBeNull();
   });
 });

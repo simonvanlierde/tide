@@ -178,7 +178,7 @@ test("backup reminders can be snoozed with a keyboard", async ({ page }) => {
   await prompt.getByRole("button", { name: en["backup.snooze"] }).focus();
   await page.keyboard.press("Enter");
   await expect(prompt).toHaveCount(0);
-  expect(await page.evaluate(() => document.activeElement?.tagName)).not.toBe("BODY");
+  await expect(page.getByRole("button", { name: en["today.cycleInsights"] })).toBeFocused();
 });
 
 for (const colorScheme of ["light", "dark"] as const) {

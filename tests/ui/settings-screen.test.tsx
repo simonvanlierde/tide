@@ -5,6 +5,7 @@ import { App } from "../../src/app/App";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { loadStoredState, STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
+import { BackupReminder } from "../../src/features/reminders/BackupReminder";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
 
@@ -251,6 +252,35 @@ describe("SettingsScreen", () => {
       "2026-04-02": "heavy",
     });
     expect(screen.getByRole("status")).toHaveTextContent(/imported 1 logged day\./i);
+  });
+
+  it("keeps this device's backup dates when a backup is imported", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(
+      <>
+        <BackupReminder today="2026-04-15" onDone={() => {}} />
+        <SettingsScreen today="2026-04-15" />
+      </>,
+      {
+        state: createAppState({
+          periodDays: ["2026-03-01"],
+          settings: { lastBackupOn: "2026-04-10", backupReminderDismissedOn: "2026-04-12" },
+        }),
+      },
+    );
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(createAppState({ periodDays: ["2026-02-01", "2026-03-01"] }))], "tide.json", {
+        type: "application/json",
+      }),
+    );
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^replace$/i }));
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-02-01", "2026-03-01"]);
+    expect(loadStoredState().state.settings).toMatchObject({
+      lastBackupOn: "2026-04-10",
+      backupReminderDismissedOn: "2026-04-12",
+    });
+    expect(screen.queryByRole("complementary", { name: "Keep a copy of your history" })).not.toBeInTheDocument();
   });
 
   it("asks before an import overwrites existing days, and says what it will cost", async () => {

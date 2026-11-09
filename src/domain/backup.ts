@@ -11,9 +11,12 @@ interface BackupReminderInput {
 export function shouldRemindBackup(input: BackupReminderInput): boolean {
   const firstDay = input.loggedDays.filter((day) => day <= input.today).sort()[0];
   if (!firstDay) return false;
-  const lastBackup = input.lastBackupOn ?? firstDay;
+  // A date after today means the clock was set back; it must not hold the reminder off until then.
+  const past = (day: IsoDate | null) => (day !== null && day <= input.today ? day : null);
+  const lastBackup = past(input.lastBackupOn) ?? firstDay;
+  const dismissedOn = past(input.dismissedOn);
   return (
     differenceInDays(input.today, lastBackup) >= 30 &&
-    (input.dismissedOn === null || differenceInDays(input.today, input.dismissedOn) >= 7)
+    (dismissedOn === null || differenceInDays(input.today, dismissedOn) >= 7)
   );
 }

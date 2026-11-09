@@ -30,8 +30,9 @@ describe("backup reminder", () => {
     expect(shouldRemindBackup({ ...history, loggedDays: ["2026-05-01", "2026-03-16"] })).toBe(true);
   });
 
-  it("does not repeat after a clock moves back", () => {
-    expect(shouldRemindBackup({ ...history, lastBackupOn: "2026-04-16" })).toBe(false);
-    expect(shouldRemindBackup({ ...history, dismissedOn: "2026-04-16" })).toBe(false);
+  it("ignores backup and snooze dates after today, as after a clock moves back", () => {
+    expect(shouldRemindBackup({ ...history, lastBackupOn: "2026-04-16" })).toBe(true);
+    expect(shouldRemindBackup({ ...history, dismissedOn: "2026-04-16" })).toBe(true);
+    expect(shouldRemindBackup({ ...history, lastBackupOn: "2026-05-01", dismissedOn: "2026-05-01" })).toBe(true);
   });
 });
