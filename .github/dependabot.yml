@@ -3,8 +3,8 @@
 # workflow with contents:write.
 #
 # `cooldown` holds a version update back until the release has been public for a
-# week, long enough for a compromised release to be caught and yanked. Security
-# updates ignore it. github-actions and pre-commit take default-days only.
+# week, long enough for a compromised release to be caught and yanked. One number for
+# every ecosystem and every update type. Security updates ignore it.
 #
 # No docker ecosystem: it reads FROM lines only, and those tags are copier answers,
 # so its PRs would fight the next `copier update`.
@@ -35,9 +35,8 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule: {interval: weekly}
-    cooldown: {default-days: 7, semver-major-days: 30}
-    labels: [dependencies]
-    commit-message: {prefix: chore(deps)}
+    cooldown: {default-days: 7}
+    commit-message: {prefix: chore, include: scope}
     groups:
       dev-tooling:
         dependency-type: development

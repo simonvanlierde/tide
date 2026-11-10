@@ -1,4 +1,6 @@
-# Response headers for Cloudflare Pages, which reads this file from the build output.
+# Response headers for the Cloudflare Worker, which reads this file from the build output.
+# These apply to production. The preview job in ts.yml appends X-Robots-Tag: noindex to
+# its own copy of the build, so previews stay out of search results and this site does not.
 # All cycle history lives in localStorage on this origin, so keep the page unframeable
 # and the network surface closed: the policy allows this origin only.
 # script-src 'self' blocks inline scripts: code that must run before first paint

@@ -30,6 +30,22 @@ repos:
         # git writes a merge commit's message itself, so skip the check during a merge.
         entry: sh -c 'test -f "$(git rev-parse --git-path MERGE_HEAD)" || exec committed "$@"' --
 
+  # Refuse an unsigned commit before the dco workflow sees it: that checks fork pull requests,
+  # and every pull request with openssf_badge=silver. Merge commits are skipped, as there.
+  - repo: local
+    hooks:
+      - id: dco-signoff
+        name: commit message has a Signed-off-by line (git commit -s)
+        entry: sh -c 'test -f "$(git rev-parse --git-path MERGE_HEAD)" || grep -qE "^Signed-off-by:[ ].+ <[^>]+>[[:space:]]*$" "$1"' --
+        language: system
+        stages: [commit-msg]
+
+  # Every file has a copyright and license, from REUSE.toml or its own header.
+  - repo: https://github.com/fsfe/reuse-tool
+    rev: a1bb792acda6fd0724936b4ebbdbc8eceb9c0459 # frozen: v6.2.0
+    hooks:
+      - id: reuse
+
   # Not gated to ts: .vscode/ and .github/rulesets/ JSON ship to every stack.
   # .json files are read as JSON5, so comments and trailing commas in tsconfig
   # and VS Code settings pass; syntax errors and duplicate keys fail.
@@ -43,6 +59,7 @@ repos:
     rev: 21ca5323a9c87ee37a434e0ca908efc0a89daa07 # frozen: v0.21.0
     hooks:
       - id: yamlfmt
+        exclude: (^|/)pnpm-lock\.yaml$
 
   - repo: https://github.com/adrienverge/yamllint
     rev: cba56bcde1fdd01c1deb3f945e69764c291a6530 # frozen: v1.38.0
