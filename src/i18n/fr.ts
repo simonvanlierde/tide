@@ -24,6 +24,39 @@ export const fr: Dictionary = {
   "backup.snooze": "Me rappeler dans une semaine",
   "backup.error": "La sauvegarde n'a pas pu être téléchargée. Réessaie.",
 
+  // Optional daily details
+  "diary.addDetails": "Ajouter des détails",
+  "diary.editDetails": "Modifier les détails",
+  "diary.finishEditing": "Enregistre ou annule tes modifications avant de choisir une autre date.",
+  "diary.date": "Date",
+  "diary.symptoms": "Symptômes",
+  "diary.symptomsHelp": "Laisse vide si tu n’as pas noté tes symptômes.",
+  "diary.noSymptoms": "Aucun symptôme",
+  "diary.mood": "Humeur",
+  "diary.moodUnlogged": "Non notée",
+  "diary.note": "Note (facultative)",
+  "diary.noteHint":
+    "Jusqu’à {max} caractères. Les détails restent sur cet appareil et sont inclus dans les sauvegardes.",
+  "diary.saveHelp": "Enregistre tes détails avant de quitter cet écran.",
+  "diary.save": "Enregistrer les détails",
+  "diary.saved": "Détails enregistrés.",
+  "diary.removed": "Détails effacés.",
+  "diary.clear": "Effacer les détails",
+  "diary.cancel": "Annuler",
+  "diary.history": "Détails quotidiens",
+  "diary.openDay": "Voir les détails du {date}",
+  "diary.conflict":
+    "Cette journée a été modifiée dans un autre onglet. Ferme les détails et rouvre-les avant d’enregistrer.",
+  "diary.symptom.cramps": "Crampes",
+  "diary.symptom.headache": "Mal de tête",
+  "diary.symptom.bloating": "Ballonnements",
+  "diary.symptom.breastTenderness": "Seins sensibles",
+  "diary.symptom.fatigue": "Fatigue",
+  "diary.mood.low": "Moral bas",
+  "diary.mood.okay": "Ça va",
+  "diary.mood.good": "Bonne",
+  "settings.importReplacesDetails": "Ton historique de règles et tes détails quotidiens actuels seront remplacés.",
+
   "nav.today": "Aujourd’hui",
   "nav.calendar": "Calendrier",
   "nav.settings": "Réglages",
@@ -170,7 +203,7 @@ export const fr: Dictionary = {
 
   // Crash screen
   "error.title": "Un problème est survenu",
-  "error.body": "Tes jours enregistrés sont toujours sur cet appareil.",
+  "error.body": "Tes données sont toujours enregistrées sur cet appareil.",
   "error.downloadRaw": "Télécharger les données brutes",
 
   "settings.title": "Réglages",
@@ -207,7 +240,7 @@ export const fr: Dictionary = {
   "settings.data": "Données",
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":
-    "L’export enregistre tes jours dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours depuis Clue ou Flo.",
+    "L’export enregistre ton historique de règles et tes détails quotidiens dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours de règles depuis Clue ou Flo.",
   "settings.importSources": "Tu peux importer une sauvegarde Tide, ou un export de Clue ou Flo.",
   "settings.export": "Exporter",
   "settings.exportSuccess": "Sauvegarde enregistrée dans tes téléchargements.",
@@ -235,5 +268,5 @@ export const fr: Dictionary = {
   "settings.resetTitle": "Supprimer toutes les données ?",
   "settings.resetAction": "Supprimer",
   "settings.resetConfirm":
-    "Tous les jours enregistrés et les réglages de cet appareil sont effacés, sans retour possible.",
+    "Toutes les données et tous les réglages sur cet appareil sont effacés. Cette action est irréversible.",
 };

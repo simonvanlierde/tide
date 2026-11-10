@@ -10,6 +10,7 @@ import {
 } from "react";
 import { defaultAppState } from "../data/schema";
 import { clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../data/storage";
+import type { DailyDetails } from "../domain/diary";
 import type {
   AppSettings,
   AppState,
@@ -46,7 +47,7 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
   // Ask the browser to keep this origin's storage through disk pressure (and,
   // in Safari, past a week without a visit): the logged days live nowhere
   // else. Asked once there is something to keep, never on a blank first run.
-  const hasLoggedDays = Object.keys(state.intensityByDay).length > 0;
+  const hasLoggedDays = Object.keys(state.intensityByDay).length > 0 || Object.keys(state.detailsByDay).length > 0;
   useEffect(() => {
     if (hasLoggedDays) {
       navigator.storage?.persist?.().catch(() => undefined);
@@ -178,6 +179,9 @@ export function useAppStateActions() {
 
   return useMemo(
     () => ({
+      setDayDetails(day: IsoDate, details: DailyDetails, today: IsoDate) {
+        dispatch({ type: "setDayDetails", day, details, today });
+      },
       togglePeriodDay(day: IsoDate, today: IsoDate) {
         dispatch({ type: "togglePeriodDay", day, today });
       },
@@ -213,6 +217,13 @@ export function useAppStateActions() {
 // The forecast for `today`. Callers pass the day they render for (useToday, or
 // a fixed day in tests), so the app has one clock.
 export function useForecast(today: IsoDate) {
-  const state = useAppState();
-  return useMemo(() => selectForecast(state, today), [state, today]);
+  const {
+    intensityByDay,
+    incompleteCycleStarts,
+    settings: { showFertility },
+  } = useAppState();
+  return useMemo(
+    () => selectForecast({ intensityByDay, incompleteCycleStarts, settings: { showFertility } }, today),
+    [intensityByDay, incompleteCycleStarts, showFertility, today],
+  );
 }

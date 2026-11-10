@@ -44,6 +44,7 @@ export function DataSection({ today }: DataSectionProps) {
   const showFertility = state.settings.showFertility === true;
   const expectedCycles = getExpectedCycles(useForecast(today), today, CALENDAR_CYCLES);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
+  const hasHistory = loggedDayCount > 0 || Object.keys(state.detailsByDay).length > 0;
 
   // The status counts the days the import added: all of a backup, or only the
   // new days of a merge. The backup dates describe this device, not the file,
@@ -101,7 +102,7 @@ export function DataSection({ today }: DataSectionProps) {
     }
     // Import replaces everything and there is no undo, so ask first, but
     // only when there is something to lose.
-    if (loggedDayCount > 0) {
+    if (hasHistory) {
       setPendingImport({
         next,
         fileDays: Object.keys(next.intensityByDay).length,
@@ -285,6 +286,7 @@ export function DataSection({ today }: DataSectionProps) {
                   n: pendingImport.fileDays,
                 })}
               </p>
+              {"next" in pendingImport ? <p>{t("settings.importReplacesDetails")}</p> : null}
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")

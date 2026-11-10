@@ -25,6 +25,38 @@ export const de: Dictionary = {
   "backup.snooze": "In einer Woche erinnern",
   "backup.error": "Die Sicherung konnte nicht heruntergeladen werden. Versuch es erneut.",
 
+  // Optional daily details
+  "diary.addDetails": "Details hinzufügen",
+  "diary.editDetails": "Details bearbeiten",
+  "diary.finishEditing": "Speichere oder verwerfe deine Änderungen, bevor du ein anderes Datum wählst.",
+  "diary.date": "Datum",
+  "diary.symptoms": "Beschwerden",
+  "diary.symptomsHelp": "Lass dies leer, wenn du keine Beschwerden erfasst hast.",
+  "diary.noSymptoms": "Keine Beschwerden",
+  "diary.mood": "Stimmung",
+  "diary.moodUnlogged": "Nicht erfasst",
+  "diary.note": "Notiz (optional)",
+  "diary.noteHint": "Bis zu {max} Zeichen. Details bleiben auf diesem Gerät und werden in Sicherungen gespeichert.",
+  "diary.saveHelp": "Speichere deine Details, bevor du diesen Bildschirm verlässt.",
+  "diary.save": "Details speichern",
+  "diary.saved": "Details gespeichert.",
+  "diary.removed": "Details gelöscht.",
+  "diary.clear": "Details löschen",
+  "diary.cancel": "Abbrechen",
+  "diary.history": "Tägliche Details",
+  "diary.openDay": "Details für {date} ansehen",
+  "diary.conflict":
+    "Dieser Tag wurde in einem anderen Tab geändert. Schließe die Details und öffne sie vor dem Speichern erneut.",
+  "diary.symptom.cramps": "Krämpfe",
+  "diary.symptom.headache": "Kopfschmerzen",
+  "diary.symptom.bloating": "Blähbauch",
+  "diary.symptom.breastTenderness": "Empfindliche Brüste",
+  "diary.symptom.fatigue": "Müdigkeit",
+  "diary.mood.low": "Niedergeschlagen",
+  "diary.mood.okay": "Geht so",
+  "diary.mood.good": "Gut",
+  "settings.importReplacesDetails": "Dein bisheriger Menstruationsverlauf und deine täglichen Details werden ersetzt.",
+
   "nav.today": "Heute",
   "nav.calendar": "Kalender",
   "nav.settings": "Einstellungen",
@@ -171,7 +203,7 @@ export const de: Dictionary = {
 
   // Crash screen
   "error.title": "Etwas ist schiefgelaufen",
-  "error.body": "Deine erfassten Tage sind weiterhin auf diesem Gerät gespeichert.",
+  "error.body": "Deine Daten sind weiterhin auf diesem Gerät gespeichert.",
   "error.downloadRaw": "Rohdaten herunterladen",
 
   "settings.title": "Einstellungen",
@@ -207,7 +239,7 @@ export const de: Dictionary = {
   "settings.data": "Daten",
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":
-    "Der Export speichert deine Tage in einer Datei. Der Import ersetzt sie aus einer Tide-Sicherung oder fügt Tage aus Clue oder Flo hinzu.",
+    "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Der Import ersetzt sie aus einer Tide-Sicherung oder fügt Menstruationstage aus Clue oder Flo hinzu.",
   "settings.importSources": "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
@@ -237,5 +269,5 @@ export const de: Dictionary = {
   "settings.resetTitle": "Alle Daten löschen?",
   "settings.resetAction": "Löschen",
   "settings.resetConfirm":
-    "Alle erfassten Tage und Einstellungen auf diesem Gerät werden gelöscht. Das lässt sich nicht rückgängig machen.",
+    "Alle Daten und Einstellungen auf diesem Gerät werden gelöscht. Das kann nicht rückgängig gemacht werden.",
 };

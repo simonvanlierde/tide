@@ -1,4 +1,5 @@
 import { getCycleHistory } from "../domain/cycle";
+import { type DailyDetails, hasDailyDetails, normalizeDailyDetails } from "../domain/diary";
 import { FLOW_INTENSITIES, getPredictionDays } from "../domain/flow";
 import type {
   AppSettings,
@@ -18,13 +19,15 @@ export const STORAGE_KEY = "tide.period-tracker.state";
 // knows. Blobs from before versioning have no schemaVersion and read as 0.
 // 2: showFertility can be null (not asked yet); see normalizeAppState.
 // 3: incomplete cycle markers and local backup dates.
-export const SCHEMA_VERSION = 3;
+// 4: independent daily symptoms, mood, and notes.
+export const SCHEMA_VERSION = 4;
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 const LANGUAGE_PREFERENCES: LanguagePreference[] = ["system", ...SUPPORTED_LANGUAGES];
 
 export const defaultAppState: AppState = {
   intensityByDay: {},
+  detailsByDay: {},
   incompleteCycleStarts: [],
   settings: {
     dismissedOn: null,
@@ -125,6 +128,13 @@ export function normalizeAppState(state: unknown): AppState {
   // Backups use `days`; current state uses `intensityByDay`.
   const rawDays = candidate.days ?? candidate.intensityByDay;
   const intensityByDay = normalizeIntensityByDay(rawDays);
+  const detailsByDay: Record<IsoDate, DailyDetails> = {};
+  if (candidate.detailsByDay && typeof candidate.detailsByDay === "object" && !Array.isArray(candidate.detailsByDay)) {
+    for (const [day, value] of Object.entries(candidate.detailsByDay)) {
+      const details = normalizeDailyDetails(value);
+      if (isIsoDate(day) && details && hasDailyDetails(details)) detailsByDay[day] = details;
+    }
+  }
   // Dropped logs may have been interval boundaries; their markers cannot safely survive.
   // A key that is not a date was never a boundary, so it doesn't count.
   const logsUnchanged =
@@ -137,6 +147,7 @@ export function normalizeAppState(state: unknown): AppState {
       : [];
   return {
     intensityByDay,
+    detailsByDay,
     incompleteCycleStarts: getCycleHistory(getPredictionDays(intensityByDay), markers)
       .filter((cycle) => cycle.incomplete)
       .map((cycle) => cycle.start),

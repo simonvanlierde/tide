@@ -16,6 +16,7 @@ import {
 import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
 import { differenceInDays, formatShortDate } from "../../utils/date";
+import { DailyDetails } from "../diary/DailyDetails";
 import { LogAction } from "../log/LogAction";
 import { BackupReminder } from "../reminders/BackupReminder";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
@@ -238,6 +239,7 @@ export function TodayScreen(props: TodayScreenProps) {
           autoFocus={focusPending}
         />
       )}
+      <DailyDetails today={today} />
       <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />
       <p className="today-screen__privacy">{t("today.privacy")}</p>
     </section>

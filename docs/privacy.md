@@ -20,6 +20,7 @@ and is responsible for it. "We" on this page means him.
 tide saves your data in your browser's local storage. It stores:
 
 - the days you log, the flow level if you pick one, and which cycles you mark incomplete;
+- the symptoms, mood and notes you choose to record for a day;
 - your settings: theme, language, and whether to show fertility estimates and cycle day numbers;
 - the days you last closed the period reminder, downloaded a backup or snoozed its reminder;
 - a random ID for your calendar file, so a newer file updates its events instead of adding them
@@ -30,8 +31,8 @@ tide saves an empty copy with the default settings as soon as you first open it.
 
 ## How to delete it
 
-- In tide, go to Settings and choose **Delete all data**. This erases every logged day and
-  setting on this device, including the backup copy.
+- In tide, go to Settings and choose **Delete all data**. This erases every logged day,
+  daily detail and setting on this device, including the backup copy.
 - Or clear this site's data in your browser's settings.
 
 ## Files you save or open
@@ -39,6 +40,10 @@ tide saves an empty copy with the default settings as soon as you first open it.
 tide can save a backup file or a calendar file to your device. It can also open a tide backup, or
 a Clue or Flo export, that you pick. All of this happens on your device and nothing is uploaded.
 Delete saved files yourself when you no longer want them.
+
+A tide backup includes your symptoms, moods and notes. Anyone who can open that file can
+read them, so keep it somewhere private. A calendar file contains expected dates, not your
+daily details.
 
 ## What our host sees
 
@@ -68,7 +73,7 @@ to your data protection authority. In the Netherlands, that's the
 
 ## About this page
 
-Last updated: 7 November 2026
+Last updated: 10 November 2026
 
 tide is free software under the [MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE)
 and comes with no warranty.

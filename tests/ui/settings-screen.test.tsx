@@ -106,6 +106,7 @@ describe("SettingsScreen", () => {
     expect(JSON.parse(await blob.text())).toEqual({
       schemaVersion: SCHEMA_VERSION,
       days: { "2026-04-02": "medium" },
+      detailsByDay: {},
       incompleteCycleStarts: [],
       settings: {
         showFertility: null,
@@ -252,6 +253,26 @@ describe("SettingsScreen", () => {
       "2026-04-02": "heavy",
     });
     expect(screen.getByRole("status")).toHaveTextContent(/imported 1 logged day\./i);
+  });
+
+  it("asks before replacing diary-only history with an older backup", async () => {
+    const user = userEvent.setup();
+    renderSettings(
+      createAppState({
+        detailsByDay: {
+          "2026-04-12": { symptoms: null, mood: "low", note: "Keep this until confirmed." },
+        },
+      }),
+    );
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify({ days: {}, schemaVersion: 3 })], "old.json", { type: "application/json" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveTextContent("Your current period history and daily details will be replaced.");
+    expect(loadStoredState().state.detailsByDay["2026-04-12"]?.note).toBe("Keep this until confirmed.");
+    await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
+    expect(loadStoredState().state.detailsByDay["2026-04-12"]?.note).toBe("Keep this until confirmed.");
   });
 
   it("keeps this device's backup dates when a backup is imported", async () => {
