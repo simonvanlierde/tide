@@ -54,6 +54,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The privacy statement names Cloudflare as the host without naming the product,
+  since the app moves from Cloudflare Pages to a Cloudflare Worker.
 - Tide asks once whether to show fertility estimates, and hides them until you
   answer. This includes current users, who had them on without being asked.
   If you had turned them off in Settings, that choice stays. The Settings

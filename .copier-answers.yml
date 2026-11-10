@@ -1,9 +1,10 @@
 # Managed by copier. Do not edit by hand. Run: copier update
-_commit: v0.12.0
+_commit: v0.13.0
 _src_path: gh:simonvanlierde/project-templates
 author_email: code@duinlab.nl
 author_name: Simon van Lierde
 codecov: true
+cold_install: false
 copyright_year: '2026'
 customise: false
 dependency_bot: dependabot
@@ -15,10 +16,10 @@ project_description: Privacy-first, local-first period tracker PWA — React + T
     + Vite, data stays in the browser
 project_name: tide
 public: true
+site: none
 site_url: https://tide.duinlab.nl
 stacks:
 - ts
-status: experimental
 ts_dir: .
 ts_kind: web-app
 user_data: browser

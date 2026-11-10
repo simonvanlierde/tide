@@ -1,8 +1,10 @@
 <!--
-Keep this page true. The app serves it at /privacy, without this note. Keep Cloudflare Web
-Analytics off for this project: it adds a script that this page says the app doesn't load.
+Keep this page true, and write it for the person using the app: the facts they need first,
+short sentences, everyday words. The app serves it at /privacy, without this note. Keep
+Cloudflare Web Analytics off for this project: it adds a script that this page says the app
+doesn't load.
 https://github.com/simonvanlierde/project-templates/blob/main/docs/web-legal.md
-says how to fill it in, and how the template builds and tests it.
+says how to fill it in, with an example, and how the template builds and tests it.
 -->
 
 # Privacy statement
@@ -40,10 +42,9 @@ Delete saved files yourself when you no longer want them.
 
 ## What our host sees
 
-[Cloudflare Pages](https://www.cloudflare.com/privacypolicy/) hosts tide. As with any website,
+[Cloudflare](https://www.cloudflare.com/privacypolicy/) hosts tide. As with any website,
 Cloudflare sees your IP address and browser details when you load the app. It may log these to
-keep the site running and safe, and its privacy policy says for how long. We don't get these logs
-and keep none of our own.
+keep the site running and safe, and its privacy policy says for how long. We don't get these logs and keep none of our own.
 
 tide loads all its files from tide.duinlab.nl and contacts no other site.
 

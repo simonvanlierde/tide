@@ -12,8 +12,12 @@ export default defineConfig({
   forbidOnly: ci,
   reporter: ci ? [["github"], ["html", { open: "never" }]] : [["list"], ["html", { open: "never" }]],
   use: { baseURL: url, trace: "retain-on-failure" },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  // The tests run against the production build, which is what Cloudflare Pages serves.
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    // `just ts-shots` only: the normal run has no such project, so it skips tests/shots.
+    ...(process.env.SHOTS ? [{ name: "shots", testDir: "tests/shots", use: { ...devices["Desktop Chrome"] } }] : []),
+  ],
+  // The tests run against the production build, which is what the Cloudflare Worker serves.
   webServer: {
     command: "pnpm build && pnpm preview --host 127.0.0.1 --port 4179 --strictPort",
     url,

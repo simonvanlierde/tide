@@ -27,6 +27,10 @@ and the git hooks. `just check` runs the checks CI runs, and `just fmt` fixes an
 formats. It also has the architecture and the
 things that trip people up.
 
+pnpm locks only releases at least a week old. If `just check` fails on
+a security fix newer than that, add the package to `minimumReleaseAgeExclude` in `pnpm-workspace.yaml`,
+and remove it a week later ([how](https://github.com/simonvanlierde/project-templates/blob/main/docs/tooling.md#dependencies)).
+
 ## Write commits and pull requests
 
 - **Commits** follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
@@ -40,20 +44,32 @@ things that trip people up.
   `Revert "..."` title that GitHub's Revert button writes.
 - **The pull request body** has the shape of
   [the pull request template](pull_request_template.md): what it fixes and why, three or
-  four bullets, and a `Tests:` line.
+  four bullets, a `Tests:` line, and a `How I know it works:` line with the proof (the
+  command and its output, or a test that fails without the change). Add a `What to check:` line for
+  what only a person can judge.
 - **The changelog** ([CHANGELOG.md](../CHANGELOG.md)) follows
   [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/). Write each entry for
   the people who use the project, not as a commit subject. Mark breaking changes
   **Breaking**, and put upgrade steps first under the version.
 - **The release notes** are that version's changelog section.
 
+## Make a release
+
+The maintainer runs `just release X.Y.Z`. [Publishing](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#publishing) has the steps and the one-time setup.
+
 ## Sign off your commits
 
 Every commit in a pull request carries a `Signed-off-by:` line, which says you wrote the
 change or have the right to submit it under this project's license: the
 [Developer Certificate of Origin 1.1](https://developercertificate.org/). `git commit -s`
-adds the line. To add it to commits you already made, run
-`git rebase --signoff upstream/main` (the branch you started from) and force-push the branch.
+adds the line, and the commit-msg hook refuses a commit without it.
+
+To add it to commits you already made, run `git fetch origin`, then
+`git rebase --signoff origin/main`. That works in a clone of this repository, where `origin`
+is the only remote. If you work from a fork, use the remote that points at this repository
+(often `upstream`) in place of `origin`. If you have not pushed the branch yet, that is all.
+If you pushed it already, update it with `git push --force-with-lease`, which refuses to
+overwrite work you have not seen. Do not use a plain `git push --force`.
 
 The `dco` workflow checks every pull request from a fork and fails on a commit without the line. Pull requests from a branch in this repository skip it: pushing that branch already needed write access.
 

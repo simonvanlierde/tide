@@ -55,10 +55,37 @@ pnpm exec prek install                  # git hooks
 
 `pnpm dev` starts the app. `just check` runs what CI runs, and `just ts-e2e` the browser tests.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks, architecture and deploy setup, and
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks and architecture,
 [docs/](docs/) for the [architecture](docs/architecture.md), the [prediction backtest](docs/backtest.md) and the
 [decision to keep data on the device](docs/adr/0001-local-first-no-backend.md).
 [Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose) for bugs and ideas.
+
+## Deploy
+
+The app runs on a Cloudflare Worker that serves the build as static assets, configured in
+[`wrangler.jsonc`](wrangler.jsonc). CI deploys it: every push to `main` deploys the build the
+checks ran on. [`public/_headers`](public/_headers) sets the response headers, including the
+Content-Security-Policy that the e2e tests run under. Until the custom domain moves to the Worker,
+<https://tide.duinlab.nl> is still served by the Cloudflare Pages project that builds `main`.
+
+One-time setup, for production and previews alike:
+
+1. Run `just repo-settings` to create the `production` and `preview` environments, with
+   `production` limited to `main`.
+2. Add the secrets `CLOUDFLARE_API_TOKEN` (a custom token with Account > Workers Scripts: Edit)
+   and `CLOUDFLARE_ACCOUNT_ID` to both environments, not to the repository.
+3. Give the Cloudflare account a workers.dev subdomain, if it has none yet.
+
+Without the token, the deploy jobs skip with a notice. To roll back, revert the commit on `main`,
+or re-run an earlier run's production job while its build artifact exists (7 days).
+
+### Pull request previews
+
+Each pull request that is open, not a draft and not from a bot gets its own Cloudflare Worker,
+`tide-pr-<number>`, deployed from the same `wrangler.jsonc` under that name and deleted again when
+the pull request closes or turns draft
+([how it works](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#pull-request-previews)).
+Previews are public: anyone with the address can open one.
 
 ## License
 
