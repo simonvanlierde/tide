@@ -44,8 +44,7 @@ Delete saved files yourself when you no longer want them.
 
 [Cloudflare](https://www.cloudflare.com/privacypolicy/) hosts tide. As with any website,
 Cloudflare sees your IP address and browser details when you load the app. It may log these to
-keep the site running and safe, which the law counts as a legitimate interest, and its privacy
-policy says for how long. We don't get these logs and keep none of our own.
+keep the site running and safe, and its privacy policy says for how long. We don't get these logs and keep none of our own.
 
 tide loads all its files from tide.duinlab.nl and contacts no other site.
 
