@@ -33,6 +33,9 @@ export const de: Dictionary = {
   "app.newerData":
     "Eine neuere Version von Tide hat deine Daten gespeichert. Lade neu, um zu aktualisieren; Änderungen hier werden nicht gespeichert.",
 
+  "app.storageError":
+    "Deine letzten Änderungen konnten nicht auf diesem Gerät gespeichert werden. Lass Tide geöffnet und exportiere eine Sicherung in den Einstellungen.",
+
   "today.srCycleDay": "Zyklustag {day}, {phase}",
   "today.nextPeriod": "Nächste Periode",
   "today.fertility": "Fruchtbarkeit",
@@ -220,6 +223,7 @@ export const de: Dictionary = {
   "settings.import": "Importieren",
   "settings.importFile": "Datendatei importieren",
   "settings.importError": "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export.",
+  "settings.importUnavailable": "Der Import konnte nicht geöffnet werden. Lade die Seite neu und versuche es erneut.",
   "settings.importSuccess.one": "{n} protokollierter Tag importiert.",
   "settings.importSuccess.other": "{n} protokollierte Tage importiert.",
   "settings.importConfirmTitle": "Deine Daten ersetzen?",

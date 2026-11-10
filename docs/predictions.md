@@ -40,9 +40,9 @@ made on your device. The events are marked private, so most shared calendars hid
 they never mark you as busy. Each event is identified by its cycle number and a random id this
 device makes on the first export, with no date in it, so importing a newer file moves the event
 instead of adding a copy, and two people's events in one calendar stay apart. The id travels with a
-backup, so a new device restored from one keeps updating the same events. Importing older history
-renumbers the cycles, and deleting all data makes a new id: either way the next file adds new
-events, and the old ones need deleting by hand.
+backup, so a new device restored from one keeps updating the same events. Changing existing cycle
+starts, importing older history or deleting all data makes a new id. The next file adds new events;
+delete the old ones from your calendar by hand.
 Marking a cycle incomplete does not renumber calendar events.
 
 To see how close the next-period estimate lands on real cycle data, read

@@ -1,5 +1,5 @@
 import { CalendarPlus, CircleAlert, Download, ShieldCheck, Trash2, Upload } from "lucide-react";
-import { type ChangeEvent, useRef, useState } from "react";
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import type { OtherAppImport } from "../../data/otherApps";
 import { downloadAppState, mergeImportedDays, parseImportedState } from "../../data/transfer";
 import { getExpectedCycles } from "../../domain/cycle";
@@ -30,6 +30,9 @@ export function DataSection({ today }: DataSectionProps) {
   // A newer build saved the data and this tab never saves, so an import would
   // vanish on reload and a delete would wipe data this build can't read.
   const readOnly = useIsReadOnly();
+  // Another tab can save while a file or its import reader is loading.
+  const latest = useRef({ state, readOnly });
+  latest.current = { state, readOnly };
   const fileInput = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<DataStatus | null>(null);
@@ -45,16 +48,25 @@ export function DataSection({ today }: DataSectionProps) {
   const expectedCycles = getExpectedCycles(useForecast(today), today, CALENDAR_CYCLES);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
+  useEffect(() => {
+    if (readOnly) {
+      setPendingImport(null);
+      setConfirmingReset(false);
+    }
+  }, [readOnly]);
+
   // The status counts the days the import added: all of a backup, or only the
   // new days of a merge. The backup dates describe this device, not the file,
   // so an import keeps them.
   function applyImport(next: AppState, merged = false) {
-    const { lastBackupOn, backupReminderDismissedOn } = state.settings;
+    if (latest.current.readOnly) return;
+    const current = latest.current.state;
+    const { lastBackupOn, backupReminderDismissedOn } = current.settings;
     actions.importState({ ...next, settings: { ...next.settings, lastBackupOn, backupReminderDismissedOn } });
     setError(null);
     setStatus({
       kind: "imported",
-      days: Object.keys(next.intensityByDay).length - (merged ? loggedDayCount : 0),
+      days: Object.keys(next.intensityByDay).length - (merged ? Object.keys(current.intensityByDay).length : 0),
     });
   }
 
@@ -82,12 +94,21 @@ export function DataSection({ today }: DataSectionProps) {
       setError(t("settings.importError"));
       return;
     }
+    if (latest.current.readOnly) return;
     let next: AppState;
     try {
       next = parseImportedState(text, today);
     } catch {
       // Not a Tide backup: try the other apps' formats, loaded only now.
-      const { parseOtherAppExport } = await import("../../data/otherApps");
+      let parseOtherAppExport: typeof import("../../data/otherApps").parseOtherAppExport;
+      try {
+        ({ parseOtherAppExport } = await import("../../data/otherApps"));
+      } catch {
+        setStatus(null);
+        setError(t("settings.importUnavailable"));
+        return;
+      }
+      if (latest.current.readOnly) return;
       const other = parseOtherAppExport(text, today);
       if (!other) {
         setStatus(null);
@@ -101,7 +122,7 @@ export function DataSection({ today }: DataSectionProps) {
     }
     // Import replaces everything and there is no undo, so ask first, but
     // only when there is something to lose.
-    if (loggedDayCount > 0) {
+    if (Object.keys(latest.current.state.intensityByDay).length > 0) {
       setPendingImport({
         next,
         fileDays: Object.keys(next.intensityByDay).length,
@@ -271,7 +292,7 @@ export function DataSection({ today }: DataSectionProps) {
         </button>
       </div>
 
-      {pendingImport ? (
+      {pendingImport && !readOnly ? (
         <ConfirmDialog
           title={
             "source" in pendingImport
@@ -304,7 +325,7 @@ export function DataSection({ today }: DataSectionProps) {
         />
       ) : null}
 
-      {confirmingReset ? (
+      {confirmingReset && !readOnly ? (
         <ConfirmDialog
           title={t("settings.resetTitle")}
           body={<p>{t("settings.resetConfirm")}</p>}

@@ -50,7 +50,7 @@ interface ForecastInput {
   incompleteCycleStarts?: IsoDate[];
 }
 
-function getCycleStarts(periodDays: IsoDate[]) {
+export function getCycleStarts(periodDays: IsoDate[]) {
   const sortedDays = [...periodDays].sort();
 
   return sortedDays.filter((day, index) => {
