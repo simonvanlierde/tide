@@ -5,6 +5,7 @@ import { App } from "../../src/app/App";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { loadStoredState, STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { getPeriodDays } from "../../src/domain/flow";
+import { BackupReminder } from "../../src/features/reminders/BackupReminder";
 import { SettingsScreen } from "../../src/features/settings/SettingsScreen";
 import { createAppState, renderWithAppState } from "../support/app";
 
@@ -97,14 +98,15 @@ describe("SettingsScreen", () => {
     const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
     const createObjectURL = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
     const revokeObjectURL = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
-    renderSettings(state);
+    renderWithAppState(<SettingsScreen today="2026-04-15" />, { state });
 
     await user.click(screen.getByRole("button", { name: /^export$/i }));
 
     const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
     expect(JSON.parse(await blob.text())).toEqual({
-      schemaVersion: 2,
+      schemaVersion: SCHEMA_VERSION,
       days: { "2026-04-02": "medium" },
+      incompleteCycleStarts: [],
       settings: {
         showFertility: null,
         showCycleDayNumbers: true,
@@ -120,6 +122,18 @@ describe("SettingsScreen", () => {
       download: expect.stringMatching(/^tide-backup-\d{4}-\d{2}-\d{2}\.json$/),
     });
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:tide-backup");
+    expect(loadStoredState().state.settings.lastBackupOn).toBe("2026-04-15");
+  });
+
+  it("keeps the backup date unchanged when exporting fails", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(URL, "createObjectURL").mockImplementation(() => {
+      throw new Error("download blocked");
+    });
+    renderSettings(createAppState({ periodDays: ["2026-04-02"] }));
+    await user.click(screen.getByRole("button", { name: /^export$/i }));
+    expect(screen.getByRole("alert")).toHaveTextContent("The backup couldn't be downloaded. Try again.");
+    expect(loadStoredState().state.settings.lastBackupOn).toBeNull();
   });
 
   it("saves the next three expected periods as a calendar file", async () => {
@@ -238,6 +252,35 @@ describe("SettingsScreen", () => {
       "2026-04-02": "heavy",
     });
     expect(screen.getByRole("status")).toHaveTextContent(/imported 1 logged day\./i);
+  });
+
+  it("keeps this device's backup dates when a backup is imported", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(
+      <>
+        <BackupReminder today="2026-04-15" onDone={() => {}} />
+        <SettingsScreen today="2026-04-15" />
+      </>,
+      {
+        state: createAppState({
+          periodDays: ["2026-03-01"],
+          settings: { lastBackupOn: "2026-04-10", backupReminderDismissedOn: "2026-04-12" },
+        }),
+      },
+    );
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify(createAppState({ periodDays: ["2026-02-01", "2026-03-01"] }))], "tide.json", {
+        type: "application/json",
+      }),
+    );
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^replace$/i }));
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-02-01", "2026-03-01"]);
+    expect(loadStoredState().state.settings).toMatchObject({
+      lastBackupOn: "2026-04-10",
+      backupReminderDismissedOn: "2026-04-12",
+    });
+    expect(screen.queryByRole("complementary", { name: "Keep a copy of your history" })).not.toBeInTheDocument();
   });
 
   it("asks before an import overwrites existing days, and says what it will cost", async () => {

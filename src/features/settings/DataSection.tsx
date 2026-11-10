@@ -46,9 +46,11 @@ export function DataSection({ today }: DataSectionProps) {
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
   // The status counts the days the import added: all of a backup, or only the
-  // new days of a merge.
+  // new days of a merge. The backup dates describe this device, not the file,
+  // so an import keeps them.
   function applyImport(next: AppState, merged = false) {
-    actions.importState(next);
+    const { lastBackupOn, backupReminderDismissedOn } = state.settings;
+    actions.importState({ ...next, settings: { ...next.settings, lastBackupOn, backupReminderDismissedOn } });
     setError(null);
     setStatus({
       kind: "imported",
@@ -110,9 +112,18 @@ export function DataSection({ today }: DataSectionProps) {
   }
 
   function handleExport() {
-    downloadAppState(state);
-    setError(null);
-    setStatus({ kind: "exported" });
+    try {
+      downloadAppState(state);
+      if (!readOnly) {
+        actions.setSetting("lastBackupOn", today);
+        actions.setSetting("backupReminderDismissedOn", null);
+      }
+      setError(null);
+      setStatus({ kind: "exported" });
+    } catch {
+      setStatus(null);
+      setError(t("backup.error"));
+    }
   }
 
   async function handleCalendarExport() {

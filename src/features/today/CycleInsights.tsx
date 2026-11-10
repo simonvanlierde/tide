@@ -1,5 +1,5 @@
 import { ChevronRight, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import {
   DEFAULT_CYCLE_LENGTH,
   DEFAULT_LUTEAL_LENGTH,
@@ -19,13 +19,14 @@ interface CycleInsightsProps {
   stats: CycleStats;
   showFertility: boolean;
   onClose: () => void;
+  children?: ReactNode;
 }
 
 // The numbers behind the estimate, plus a plain-language note on how they're
 // worked out. A native <dialog> gives us the focus trap, Esc-to-close, and
 // backdrop for free. Mounted only while open, so it's shown on mount and a
 // native close (Esc, backdrop) unmounts it via onClose.
-export function CycleInsights({ summary, stats, showFertility, onClose }: CycleInsightsProps) {
+export function CycleInsights({ summary, stats, showFertility, onClose, children }: CycleInsightsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const t = useT();
 
@@ -87,6 +88,8 @@ export function CycleInsights({ summary, stats, showFertility, onClose }: CycleI
         </span>
         <span className="insights__regularity-word">{regularityLabel}</span>
       </div>
+
+      {children}
 
       <details className="insights__how">
         <summary className="insights__how-summary">

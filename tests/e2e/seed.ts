@@ -1,4 +1,5 @@
 import type { Page } from "@playwright/test";
+import { defaultAppState, SCHEMA_VERSION } from "../../src/data/schema";
 
 // Every e2e run sees the same "today", so logged/predicted day counts never
 // shift with the calendar date CI happens to run on.
@@ -8,12 +9,13 @@ const FIXED_TODAY = "2026-04-15";
 // A fresh cycle ending today, so every screen renders real content — a dial
 // with a day, and a calendar with logged and predicted days.
 const SEED_STATE = {
-  schemaVersion: 2,
+  schemaVersion: SCHEMA_VERSION,
+  ...defaultAppState,
   intensityByDay: Object.fromEntries(
     ["2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", FIXED_TODAY].map((day) => [day, "medium"]),
   ),
   // A user who said yes to fertility estimates, so every estimate shows.
-  settings: { dismissedOn: null, theme: "system", showFertility: true },
+  settings: { ...defaultAppState.settings, showFertility: true },
 };
 
 export async function seedAppState(

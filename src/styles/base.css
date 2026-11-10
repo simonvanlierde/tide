@@ -1,4 +1,8 @@
 @layer base {
+  html {
+    /* Keep keyboard-focused controls above the fixed navigation. */
+    scroll-padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
   * {
     box-sizing: border-box;
   }

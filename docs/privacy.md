@@ -19,9 +19,9 @@ and is responsible for it. "We" on this page means him.
 
 tide saves your data in your browser's local storage. It stores:
 
-- the days you log, and the flow level if you pick one;
+- the days you log, the flow level if you pick one, and which cycles you mark incomplete;
 - your settings: theme, language, and whether to show fertility estimates and cycle day numbers;
-- the day you last closed the period reminder;
+- the days you last closed the period reminder, downloaded a backup or snoozed its reminder;
 - a random ID for your calendar file, so a newer file updates its events instead of adding them
   twice;
 - a backup copy of your data, if tide had to convert it to a newer format or couldn't read it.
@@ -68,7 +68,7 @@ to your data protection authority. In the Netherlands, that's the
 
 ## About this page
 
-Last updated: 29 October 2026
+Last updated: 7 November 2026
 
 tide is free software under the [MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE)
 and comes with no warranty.

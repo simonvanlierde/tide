@@ -566,7 +566,6 @@
     margin: 0;
     padding: 0;
     border: 0;
-    container: flow-gauge / inline-size;
   }
 
   /* Same eyebrow voice as every other section label. */
@@ -582,21 +581,9 @@
 
   .flow-gauge__levels {
     display: grid;
-    /* minmax(0, …) so a long label (de "Schmierblutung") wraps instead of
-       pushing the grid past the card. */
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* The app stays narrow on desktop too; two columns leave room for enlarged labels. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-  }
-
-  /* Four columns need about 82px each for the longest whole word (a bold
-     nl "Gemiddeld", es "Abundante"). Narrower than that (any phone up to
-     about 430px, the calendar's day picker) the levels go two by two, still
-     read in order, rather than splitting words mid-syllable or spilling out
-     of the column. */
-  @container flow-gauge (max-width: 22rem) {
-    .flow-gauge__levels {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 
   .flow-gauge__level {
@@ -1029,7 +1016,7 @@
     height: 28px;
     padding: 0;
     border-radius: var(--radius-pill);
-    border: 1px solid var(--surface-border);
+    border: 1px solid var(--ink-muted);
     background: var(--surface-soft);
     transition:
       background-color 160ms ease,
@@ -1050,7 +1037,7 @@
     width: 22px;
     height: 22px;
     border-radius: var(--radius-pill);
-    background: var(--surface);
+    background: var(--ink-muted);
     box-shadow: var(--shadow-knob);
     transition: transform 160ms ease;
   }

@@ -47,6 +47,7 @@ interface ForecastInput {
    * between periods, and the timeline marks only the expected period.
    */
   fertility: boolean;
+  incompleteCycleStarts?: IsoDate[];
 }
 
 function getCycleStarts(periodDays: IsoDate[]) {
@@ -93,32 +94,26 @@ export function getAveragePeriodLength(periodDays: IsoDate[], today: IsoDate): n
 // tiling the forward forecast backward, since luteal length is the stable part
 // of the cycle. The last (in-progress) cycle has no next start yet, so it's
 // left to the forward forecast.
-export function getPastOvulationDates(periodDays: IsoDate[]): IsoDate[] {
-  const starts = getCycleStarts(periodDays);
-  const dates: IsoDate[] = [];
-  for (let index = 1; index < starts.length; index++) {
-    const nextStart = starts[index];
-    if (nextStart) {
-      dates.push(addDays(nextStart, -DEFAULT_LUTEAL_LENGTH));
-    }
-  }
-  return dates;
+export function getPastOvulationDates(periodDays: IsoDate[], incompleteCycleStarts: IsoDate[] = []): IsoDate[] {
+  return getCycleHistory(periodDays, incompleteCycleStarts)
+    .filter((cycle) => !cycle.incomplete)
+    .map((cycle) => addDays(cycle.end, -DEFAULT_LUTEAL_LENGTH));
 }
 
-export function getCompletedCycleLengths(periodDays: IsoDate[]) {
-  const cycleStarts = getCycleStarts(periodDays);
-  const lengths: number[] = [];
+/** Completed intervals, oldest first; end is the following period start (exclusive). */
+export function getCycleHistory(periodDays: IsoDate[], incompleteCycleStarts: IsoDate[] = []) {
+  const starts = getCycleStarts(periodDays);
+  const incomplete = new Set(incompleteCycleStarts);
+  return starts.slice(1).map((end, index) => {
+    const start = starts[index] as IsoDate;
+    return { start, end, length: differenceInDays(end, start), incomplete: incomplete.has(start) };
+  });
+}
 
-  for (let index = 1; index < cycleStarts.length; index++) {
-    const start = cycleStarts[index];
-    const previousStart = cycleStarts[index - 1];
-
-    if (start && previousStart) {
-      lengths.push(differenceInDays(start, previousStart));
-    }
-  }
-
-  return lengths;
+export function getCompletedCycleLengths(periodDays: IsoDate[], incompleteCycleStarts: IsoDate[] = []) {
+  return getCycleHistory(periodDays, incompleteCycleStarts)
+    .filter((cycle) => !cycle.incomplete)
+    .map((cycle) => cycle.length);
 }
 
 function median(values: number[]): number {
@@ -207,13 +202,14 @@ export function forecast(input: ForecastInput): Forecast {
   // A future-dated day (possible via import, or a clock that moved backwards)
   // would otherwise become the "last cycle start" and blow up every estimate.
   const periodDays = input.periodDays.filter((day) => day <= input.today);
-  const completedCycleLengths = getCompletedCycleLengths(periodDays);
-  const lastCycleStart = getCycleStarts(periodDays).at(-1);
+  const completedCycleLengths = getCompletedCycleLengths(periodDays, input.incompleteCycleStarts);
+  const cycleStarts = getCycleStarts(periodDays);
+  const lastCycleStart = cycleStarts.at(-1);
   const stats = cycleStats(completedCycleLengths);
-  const pastOvulationDates = input.fertility ? getPastOvulationDates(periodDays) : [];
+  const pastOvulationDates = input.fertility ? getPastOvulationDates(periodDays, input.incompleteCycleStarts) : [];
 
   if (!lastCycleStart) {
-    return withTimeline(INSUFFICIENT_SUMMARY, stats, null, null, []);
+    return withTimeline(INSUFFICIENT_SUMMARY, stats, null, null, [], cycleStarts.length);
   }
 
   const cycleLength = estimateCycleLength(completedCycleLengths);
@@ -233,6 +229,7 @@ export function forecast(input: ForecastInput): Forecast {
       null,
       null,
       pastOvulationDates,
+      cycleStarts.length,
     );
   }
 
@@ -257,6 +254,7 @@ export function forecast(input: ForecastInput): Forecast {
     // once that is overdue, it is simply running long, through today.
     input.today >= nextPeriodDate ? input.today : addDays(nextPeriodDate, -1),
     ovulationDate === null ? pastOvulationDates : [...pastOvulationDates, ovulationDate],
+    cycleStarts.length,
   );
 }
 
@@ -267,12 +265,14 @@ function withTimeline(
   cycleEnd: IsoDate | null,
   // Oldest first.
   ovulationDates: IsoDate[],
+  cycleNumber: number,
 ): Forecast {
   const { cycleLength, periodLength, fertileWindow } = summary;
   const nextPeriod = summary.nextPeriod.date;
 
   return {
     ...summary,
+    cycleNumber,
     cycleStart,
     cycleEnd,
     stats,
@@ -413,8 +413,7 @@ export function getExpectedCycles(f: Forecast, today: IsoDate, count: number): E
     }
     const ovulation = addDays(periodStart, -DEFAULT_LUTEAL_LENGTH);
     cycles.push({
-      // cyclesTracked completed cycles, plus the current one, come before.
-      number: f.stats.cyclesTracked + 2 + step,
+      number: f.cycleNumber + 1 + step,
       periodStart,
       fertileFrom: addDays(ovulation, f.fertileWindow.start),
       fertileTo: addDays(ovulation, f.fertileWindow.end),

@@ -1,6 +1,29 @@
 import type { Dictionary } from "./en";
 
 export const fr: Dictionary = {
+  // History and local backups
+  "history.title": "Historique des cycles",
+  "history.description.one":
+    "Cycles terminés, du début d'une période de règles à la suivante. Le dernier cycle est affiché.",
+  "history.description.other":
+    "Cycles terminés, du début d'une période de règles à la suivante. Les {n} derniers sont affichés.",
+  "history.empty": "Note le début de tes prochaines règles pour voir tes cycles terminés.",
+  "history.days": "Jours",
+  "history.start": "Début des règles",
+  "history.length": "Durée",
+  "history.incomplete": "Incomplet",
+  "history.incompleteFor": "Cycle incomplet commençant le {date}",
+  "history.help":
+    "Les jours notés sont conservés. Les cycles incomplets ne comptent pas pour estimer la durée des cycles.",
+  "history.excluded": "Incomplet ; exclu des estimations",
+  "history.chartDates": "Débuts des règles, du plus ancien au plus récent",
+  "backup.title": "Garde une copie de ton historique",
+  "backup.body":
+    "Ton historique reste dans ce navigateur. Télécharge une sauvegarde pour le restaurer si les données sont effacées.",
+  "backup.download": "Sauvegarder les données",
+  "backup.snooze": "Me rappeler dans une semaine",
+  "backup.error": "La sauvegarde n'a pas pu être téléchargée. Réessaie.",
+
   "nav.today": "Aujourd’hui",
   "nav.calendar": "Calendrier",
   "nav.settings": "Réglages",
@@ -69,8 +92,8 @@ export const fr: Dictionary = {
   "insights.title": "Aperçu du cycle",
   "insights.cycleLength": "Durée du cycle",
   "insights.periodLength": "Durée des règles",
-  "insights.cyclesTracked": "Cycles suivis",
-  "insights.basedOn": "Basé sur un cycle type de {cycle} jours jusqu’à ce que tu aies enregistré un cycle complet.",
+  "insights.cyclesTracked": "Cycles utilisés",
+  "insights.basedOn": "Basé sur un cycle type de {cycle} jours tant qu'aucun cycle complet n'est disponible.",
   "insights.regularity": "Régularité du cycle",
   "insights.regularityAria": "Régularité du cycle : {label}",
   "regularity.none": "Pas encore assez de données",
@@ -83,7 +106,7 @@ export const fr: Dictionary = {
   "insights.howCycleStart":
     "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle ; les écarts plus courts font partie des mêmes règles.",
   "insights.how2":
-    "La durée du cycle est la médiane de tes {recent} derniers cycles, pour qu’un mois inhabituel ne la fausse pas. Avant deux cycles, un cycle type de {cycle} jours est utilisé.",
+    "La durée du cycle est la médiane de tes {recent} derniers cycles complets. Les cycles incomplets sont exclus. Sans cycle complet, un cycle type de {cycle} jours est utilisé.",
   "insights.how3": "La durée des règles est ta moyenne récente, limitée à une normale de {min} à {max} jours.",
   "insights.how4":
     "Tes prochaines règles correspondent au début de tes dernières règles plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",

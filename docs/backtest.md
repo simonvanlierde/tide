@@ -3,7 +3,7 @@
 How close does Tide's next-period date land on real cycles? This page answers that on one
 public dataset. Run it yourself with `pnpm backtest`.
 
-Last run: 2026-10-12, against `src/domain/cycle.ts` at the commit that added this page.
+Last run: 2026-11-07. The production predictor still uses the six-cycle median described below.
 
 ## Dataset
 
@@ -61,6 +61,55 @@ as the six-cycle window fills.
 
 **Fertile window:** not tested. The shared file has no ovulation marker (the study's
 cervical-mucus peak day is not included), so there is nothing to check the window against.
+
+## Predictor comparison
+
+The script also compares six simple alternatives with a frozen copy of the current rule.
+It checks that the app and the frozen rule agree on every prediction.
+All alternatives receive the same earlier completed cycles; none sees the cycle being predicted.
+
+Participants are split by the first byte of SHA-256 of their dataset identifier.
+A value below 51 assigns all of that participant's stretches to the holdout group.
+The remaining participants form the development group: 2,450 predictions, compared with 694 held out.
+The lowest development MAE selects one candidate before its holdout results are inspected.
+
+| Rule | Development MAE | Within ±2 days |
+|---|---|---|
+| Current: median of last 6 | 3.33 d | 60.7% |
+| Median of last 3 | 3.37 d | 60.3% |
+| Median of last 12 | 3.32 d | 60.7% |
+| Median of all history | 3.32 d | 60.7% |
+| Mean of last 6 | 3.39 d | 60.1% |
+| Mean of last 6, dropping min and max with 4+ cycles | 3.35 d | 60.4% |
+| Median of last 6 plus one 28-day reference | 3.17 d | 62.3% |
+
+The 28-day reference candidate wins on development data. Its reference is an extra value in the
+median, not a logged cycle. With no history, it still returns 28 days.
+
+| Holdout predictions | n | Current | 28-day reference candidate |
+|---|---|---|---|
+| All | 694 | 3.53 d, 58.5% | 3.40 d, 60.4% |
+| Exactly 1 prior cycle | 109 | 3.91 d, 54.1% | 3.34 d, 58.7% |
+| 6+ prior cycles | 138 | 2.17 d, 69.6% | 2.10 d, 70.3% |
+| Recent cycle standard deviation ≥5 days | 42 | 7.69 d, 28.6% | 7.24 d, 40.5% |
+| Previous cycle <25 days | 24 | 4.50 d, 45.8% | 4.17 d, 54.2% |
+| Previous cycle >35 days | 56 | 8.61 d, 28.6% | 7.80 d, 35.7% |
+
+On the same full cohort, the candidate scores 3.22 days MAE and 61.9% within ±2 days,
+against the current 3.37 days and 60.2%. This includes the development data, so it is not independent validation.
+
+**Decision: keep the production predictor.** The holdout improvement is 0.13 day, and the
+candidate can pull a user's estimate away from their own history. After one 40-day cycle,
+it predicts 34 days; after two 40-day cycles, it predicts 40 days.
+The analogous one-cycle estimate for a 20-day cycle becomes 24 days.
+Those are material changes for someone with consistently long or short cycles.
+The small subgroups above describe previous cycles, not people known to have consistently long or short cycles.
+
+The holdout separates people, but still comes from the same selected population.
+It does not establish performance for the populations missing from this dataset.
+Predictions from one participant are correlated; the table gives point estimates, not confidence intervals.
+No candidate was retuned after reading the holdout results.
+A further attempt to tune against this dataset would be exploratory and would need new validation data before promotion.
 
 ## Limits
 

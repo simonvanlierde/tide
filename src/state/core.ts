@@ -1,4 +1,5 @@
-import { forecast } from "../domain/cycle";
+import { updateLoggedDays } from "../data/schema";
+import { forecast, getCycleHistory } from "../domain/cycle";
 import { getPeriodRange, getPredictionDays } from "../domain/flow";
 import type { AppSettings, AppState, FlowIntensity, IsoDate } from "../domain/types";
 
@@ -20,6 +21,7 @@ export type AppStateAction =
       today: IsoDate;
     }
   | { type: "logPeriodRange"; from: IsoDate; to: IsoDate; today: IsoDate }
+  | { type: "toggleIncompleteCycle"; start: IsoDate; today: IsoDate }
   | { type: "dismissReminder"; today: IsoDate }
   | SetSettingAction
   | { type: "importState"; state: AppState };
@@ -45,10 +47,7 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
         intensityByDay[action.day] = null;
       }
 
-      return {
-        ...state,
-        intensityByDay,
-      };
+      return updateLoggedDays(state, intensityByDay);
     }
 
     case "setDayIntensity": {
@@ -59,13 +58,7 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
         return state;
       }
 
-      return {
-        ...state,
-        intensityByDay: {
-          ...state.intensityByDay,
-          [action.day]: action.intensity,
-        },
-      };
+      return updateLoggedDays(state, { ...state.intensityByDay, [action.day]: action.intensity });
     }
 
     // A past period in one go: every day not yet logged gets a one-tap log,
@@ -83,6 +76,19 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
               }),
         state,
       );
+
+    case "toggleIncompleteCycle": {
+      const completed = getCycleHistory(getPredictionDays(state.intensityByDay).filter((day) => day <= action.today));
+      if (!completed.some((cycle) => cycle.start === action.start)) {
+        return state;
+      }
+      return {
+        ...state,
+        incompleteCycleStarts: state.incompleteCycleStarts.includes(action.start)
+          ? state.incompleteCycleStarts.filter((start) => start !== action.start)
+          : [...state.incompleteCycleStarts, action.start].sort(),
+      };
+    }
 
     case "dismissReminder":
       return {
@@ -105,6 +111,7 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
 export function selectForecast(state: AppState, today: IsoDate) {
   return forecast({
     today,
+    incompleteCycleStarts: state.incompleteCycleStarts,
     periodDays: getPredictionDays(state.intensityByDay),
     // null (not asked yet) counts as off.
     fertility: state.settings.showFertility === true,

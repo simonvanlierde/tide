@@ -247,13 +247,14 @@ One centred column, 460 px at most, with 20 px gutters, over the full dynamic vi
 height. The header lines up the wordmark's baseline with the screen title. Blocks stack on
 a 16 px grid, and the main area adds bottom padding of 94 px plus the safe-area inset, so
 nothing hides behind the fixed tab bar.
+Scroll padding also leaves room above the tab bar when a control receives keyboard focus.
 
 The shell is a size container, so layout changes follow the shell, not the viewport. Below
 28em the theme control moves under its label, and below 24em its options stack too. The
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
-reads as the list going on. The dial is `min(17.5rem, 64vw)` and is a
+reads as the list going on. The dial is `min(17.5rem, 64vw, 100%)` and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
@@ -336,8 +337,10 @@ drilling in at the end.
 - **Segmented control**: a soft-surface track, with the active option raised out of it as a
   white card. When space runs out it moves under its label and then stacks its own options,
   rather than swapping its words for icons.
-- **Switch**: fills with deep tide when on.
+- **Switch**: muted-ink border and thumb on soft surface when off; deep-tide fill and
+  white thumb when on.
 - **Flow gauge**: four radio steps, spotting to heavy, coloured from the flow ramp.
+  Keep two equal columns so long labels and enlarged text fit.
 
 ### Navigation
 
@@ -367,6 +370,21 @@ the user asked for reduced motion. The grid is one tab stop, and you move throug
 the arrow keys. Logging a past period uses the same grid: the first day you pick keeps the
 selection ring until you pick the last day, and a status line under the grid says what
 comes next.
+
+### Backup reminder
+
+Reuse the teal-tinted reminder prompt on Today, with a plain heading and supporting text.
+The download action uses the secondary button; snooze uses the quiet dismiss action.
+Keep backup actions free of coral. A failed download shows an alert below the actions.
+
+### Cycle history
+
+Inside Cycle insights, separate history with a hairline rather than another card.
+Show up to twelve completed cycles as a quiet chart above a two-column table.
+Use teal dots for ordinary cycles and ink crosses for cycles marked incomplete, with a
+matching legend. The chart gives the overview; the table supplies every date and length
+and remains available to screen readers. Put the incomplete checkbox below each start
+date, with a 44 px label target. Labels and dates wrap inside the table's fixed columns.
 
 ### Documents
 

@@ -1,6 +1,29 @@
 import type { Dictionary } from "./en";
 
 export const es: Dictionary = {
+  // History and local backups
+  "history.title": "Historial de ciclos",
+  "history.description.one":
+    "Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestra el último ciclo.",
+  "history.description.other":
+    "Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestran los últimos {n}.",
+  "history.empty": "Registra el inicio de otro período para ver tus ciclos completados.",
+  "history.days": "Días",
+  "history.start": "Inicio del período",
+  "history.length": "Duración",
+  "history.incomplete": "Incompleto",
+  "history.incompleteFor": "Ciclo incompleto que empieza el {date}",
+  "history.help":
+    "Los días registrados se conservan. Los ciclos incompletos no cuentan para estimar la duración del ciclo.",
+  "history.excluded": "Incompleto; excluido de las estimaciones",
+  "history.chartDates": "Inicios de períodos, del más antiguo al más reciente",
+  "backup.title": "Guarda una copia de tu historial",
+  "backup.body":
+    "Tu historial se queda en este navegador. Descarga una copia de seguridad para restaurarlo si se borran los datos.",
+  "backup.download": "Crear copia de seguridad",
+  "backup.snooze": "Recordar en una semana",
+  "backup.error": "No se ha podido descargar la copia de seguridad. Inténtalo de nuevo.",
+
   "nav.today": "Hoy",
   "nav.calendar": "Calendario",
   "nav.settings": "Ajustes",
@@ -69,8 +92,8 @@ export const es: Dictionary = {
   "insights.title": "Detalles del ciclo",
   "insights.cycleLength": "Duración del ciclo",
   "insights.periodLength": "Duración del período",
-  "insights.cyclesTracked": "Ciclos registrados",
-  "insights.basedOn": "Basado en un ciclo típico de {cycle} días hasta que registres un ciclo completo.",
+  "insights.cyclesTracked": "Ciclos utilizados",
+  "insights.basedOn": "Se usa un ciclo típico de {cycle} días mientras no haya ciclos completos.",
   "insights.regularity": "Regularidad del ciclo",
   "insights.regularityAria": "Regularidad del ciclo: {label}",
   "regularity.none": "Aún no hay suficientes datos",
@@ -83,7 +106,7 @@ export const es: Dictionary = {
   "insights.howCycleStart":
     "Un intervalo de {gap} días o más entre días registrados inicia un ciclo nuevo; los intervalos menores son la misma regla.",
   "insights.how2":
-    "La duración del ciclo es la mediana de tus últimos {recent} ciclos, para que un mes atípico no la altere. Antes de dos ciclos, se usa un ciclo típico de {cycle} días.",
+    "La duración del ciclo es la mediana de tus últimos {recent} ciclos completos. Los ciclos incompletos no cuentan. Sin ciclos completos, se usa un ciclo típico de {cycle} días.",
   "insights.how3": "La duración del período es tu promedio reciente, limitado a unos {min}–{max} días normales.",
   "insights.how4":
     "Tu próximo período es el inicio de tu último período más esa duración del ciclo; la ovulación se estima {luteal} días antes.",

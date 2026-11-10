@@ -187,6 +187,9 @@ export function useAppStateActions() {
       logPeriodRange(from: IsoDate, to: IsoDate, today: IsoDate) {
         dispatch({ type: "logPeriodRange", from, to, today });
       },
+      toggleIncompleteCycle(start: IsoDate, today: IsoDate) {
+        dispatch({ type: "toggleIncompleteCycle", start, today });
+      },
       dismissReminder(today: IsoDate) {
         dispatch({ type: "dismissReminder", today });
       },

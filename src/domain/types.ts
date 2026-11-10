@@ -53,6 +53,8 @@ interface DayInfo {
 
 /** The cycle summary plus the whole timeline it implies, built once. */
 export interface Forecast extends CycleSummary {
+  /** Current cycle's position among logged starts; unaffected by exclusions. */
+  cycleNumber: number;
   /** First day of the current cycle; null without a live forecast. */
   cycleStart: IsoDate | null;
   /**
@@ -66,7 +68,7 @@ export interface Forecast extends CycleSummary {
 }
 
 export interface CycleStats {
-  /** Completed cycles observed so far — the history the estimate is built on. */
+  /** Completed cycles included in the estimate; incomplete logs are excluded. */
   cyclesTracked: number;
   /** The recent completed cycle lengths the estimate uses, oldest first. */
   recentCycleLengths: number[];
@@ -81,6 +83,9 @@ export interface AppSettings {
   /** Day the reminder was dismissed with "Not yet"; suppresses the prompt only
    * while it equals today. Transient UI state — persisted locally, not exported. */
   dismissedOn: IsoDate | null;
+  /** Local backup dates; never included in exported backups. */
+  lastBackupOn: IsoDate | null;
+  backupReminderDismissedOn: IsoDate | null;
   /** Show fertile-window and ovulation estimates on the home screen and
    * calendar. null until the user answers the question on Today; estimates
    * stay hidden until then. */
@@ -105,5 +110,7 @@ export interface AppState {
    * null (no flow level). Derive the sorted day list with getPeriodDays().
    */
   intensityByDay: Record<IsoDate, LoggedFlow>;
+  /** Completed intervals excluded from estimates, identified by their start. */
+  incompleteCycleStarts: IsoDate[];
   settings: AppSettings;
 }

@@ -27,6 +27,20 @@ function renderInsights(
 }
 
 describe("CycleInsights", () => {
+  it("renders the supplied cycle history inside the dialog", () => {
+    render(
+      <CycleInsights
+        summary={SUMMARY}
+        stats={{ cyclesTracked: 1, variabilityDays: null, recentCycleLengths: [29] }}
+        showFertility
+        onClose={vi.fn()}
+      >
+        <p>Recorded cycle history</p>
+      </CycleInsights>,
+    );
+    expect(screen.getByRole("dialog")).toHaveTextContent("Recorded cycle history");
+  });
+
   it("shows the cycle and period lengths from the summary", () => {
     renderInsights({ cyclesTracked: 3, variabilityDays: 1.2 });
 
@@ -34,13 +48,13 @@ describe("CycleInsights", () => {
     expect(screen.getByText("29")).toBeInTheDocument(); // cycleLength
     expect(screen.getByText("Period length")).toBeInTheDocument();
     // No "learn a full cycle" note once at least one cycle is tracked.
-    expect(screen.queryByText(/until you’ve logged a full cycle/i)).toBeNull();
+    expect(screen.queryByText(/while no complete cycles/i)).toBeNull();
   });
 
   it("notes the fallback until a full cycle is logged", () => {
     renderInsights({ cyclesTracked: 0, variabilityDays: null });
 
-    expect(screen.getByText(/until you’ve logged a full cycle/i)).toBeInTheDocument();
+    expect(screen.getByText(/while no complete cycles/i)).toBeInTheDocument();
   });
 
   it.each([

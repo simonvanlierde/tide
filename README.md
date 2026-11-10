@@ -32,8 +32,11 @@ Once installed, it works offline, and all data stays on your device.
   ovulation estimate. Every prediction is a dashed outline, so it never looks like a logged day.
   [How predictions work](docs/predictions.md), and Today shows the sums behind your own date.
 - Save your next expected periods as a calendar file for any calendar app.
-- Insights, and a calendar with cycle day numbers.
+- Cycle insights show the latest 12 completed cycle lengths as a chart and a table.
+  Mark a cycle incomplete to leave it out of cycle-length estimates while keeping its logged days.
+- A calendar with cycle day numbers.
 - Back up to a JSON file, restore it on any device, or delete everything in one go.
+  A local reminder appears after 30 days; you can snooze it for a week.
 - Import a Clue export (`measurements.json` from the export zip, or an older `.cluedata` backup)
   or a Flo export from Settings → Data → Import. It adds to the days you already logged; a Tide
   backup replaces your data instead.

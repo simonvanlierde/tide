@@ -40,6 +40,8 @@ out: import it to bring your history, export it to leave.
 - Today asks you to log when a period is expected or overdue and the day isn't logged yet.
 - State lives in `localStorage` under `tide.period-tracker.state`. The theme is picked
   before the first paint, so the app never flashes the wrong one.
+- Today offers a local backup reminder, and Cycle insights has a history chart and table.
+  Incomplete cycles keep their logged days but do not influence cycle-length estimates.
 - It runs at <https://tide.duinlab.nl> (Cloudflare; see `wrangler.jsonc`).
 
 ## Capabilities and Constraints
