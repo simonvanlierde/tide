@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY } from "../../src/data/storage";
+import { MAX_NOTE_LENGTH } from "../../src/domain/diary";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
 import { DailyDetails, DetailsForm } from "../../src/features/diary/DailyDetails";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
@@ -187,6 +188,45 @@ describe("optional daily details", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Details saved.");
     fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-04-12" } });
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
+  });
+
+  it("drops Undo once another tab writes to the cleared day", async () => {
+    const user = userEvent.setup();
+    const state = {
+      ...createAppState(),
+      detailsByDay: { "2026-04-18": { symptoms: ["cramps" as const], mood: null, note: "" } },
+    };
+    renderWithAppState(<TodayScreen today="2026-04-18" />, { state });
+    await user.click(screen.getByRole("button", { name: "Edit details" }));
+    await user.click(screen.getByRole("button", { name: "Clear details" }));
+    const other = {
+      ...stored(),
+      schemaVersion: SCHEMA_VERSION,
+      detailsByDay: { "2026-04-18": { symptoms: null, mood: "good", note: "Other tab" } },
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(other));
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+    expect(screen.queryByRole("button", { name: "Undo" })).not.toBeInTheDocument();
+    expect(stored().detailsByDay["2026-04-18"].note).toBe("Other tab");
+  });
+
+  it("ignores a future date, lists only the shown month and caps the note", async () => {
+    const user = userEvent.setup();
+    const state = {
+      ...createAppState(),
+      detailsByDay: {
+        "2026-03-30": { symptoms: null, mood: "low" as const, note: "" },
+        "2026-04-12": { symptoms: null, mood: "good" as const, note: "" },
+      },
+    };
+    renderWithAppState(<DailyDetails today="2026-04-18" month="2026-04-01" />, { state });
+    expect(screen.getByRole("button", { name: /12/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /30/ })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-04-25" } });
+    expect(screen.getByLabelText("Date")).toHaveValue("2026-04-18");
+    expect(screen.getByRole("textbox", { name: /note/i })).toHaveAttribute("maxLength", String(MAX_NOTE_LENGTH));
   });
 
   it("lets calendar readers revisit a detail-only day without logging bleeding", async () => {

@@ -135,6 +135,9 @@ export function DetailsForm({
   const value = state.detailsByDay[day] ?? EMPTY;
   const [status, setStatus] = useState<"saved" | { cleared: Details } | null>(null);
   const editable = !readOnly && day <= today;
+  // Undo restores the cleared snapshot, so it only stands while the day is still
+  // empty: an edit since then (here or in another tab) would be overwritten.
+  const undoable = status !== null && status !== "saved" && sameDetails(value, EMPTY);
 
   useEffect(() => {
     first.current?.focus();
@@ -250,7 +253,7 @@ export function DetailsForm({
             <AppIcon icon={Check} className="text-action__icon" />
             {t("diary.saved")}
           </>
-        ) : status ? (
+        ) : undoable ? (
           <>
             {t("diary.removed")}{" "}
             <button
