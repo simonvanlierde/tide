@@ -59,8 +59,10 @@ precaches the build, so the app works offline and updates itself on the next vis
 The legal pages in `docs/` are Markdown, turned into HTML at build time by the `markdown` plugin
 in the same file.
 
-Cloudflare Pages serves `dist/` with the headers in `public/_headers`. Their Content-Security-Policy
-allows this origin only, so the app cannot load or send anything elsewhere.
+Cloudflare hosts `dist/` with the headers in `public/_headers`. The README
+[Deploy section](../README.md#deploy) describes the Worker deployment and pending custom-domain migration.
+The Content-Security-Policy limits app requests to this origin. Cloudflare can also instruct the browser
+to send network error reports, as the [privacy statement](privacy.md#what-our-host-sees) explains.
 
 ## Tests
 

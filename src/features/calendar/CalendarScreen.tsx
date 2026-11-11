@@ -59,6 +59,21 @@ export function CalendarScreen(props: CalendarScreenProps) {
     articleRef.current?.querySelector<HTMLElement>('.calendar-grid__day[tabindex="0"]')?.focus();
   }
 
+  function focusDay(day: IsoDate | null) {
+    const cells = articleRef.current?.querySelectorAll<HTMLButtonElement>(".calendar-grid__day");
+    const cell = cells?.[days.findIndex((entry) => entry.value === day)];
+    const fallback = articleRef.current?.querySelector<HTMLElement>(
+      '.calendar-grid__day[tabindex="0"]:not(.is-future)',
+    );
+    (cell ?? fallback ?? articleRef.current?.querySelector<HTMLElement>(".calendar__nav"))?.focus();
+  }
+
+  function handleUndo() {
+    const day = log.justLoggedDay ?? log.justLoggedRange?.from ?? null;
+    log.undoJustLogged();
+    focusDay(day);
+  }
+
   function handleTouchStart(event: TouchEvent) {
     const touch = event.touches[0];
     if (touch) {
@@ -152,11 +167,16 @@ export function CalendarScreen(props: CalendarScreenProps) {
         <CalendarLegend days={days} />
         {log.selectedDay ? (
           <DayFlowPicker
+            key={log.selectedDay}
             day={log.selectedDay}
             intensity={log.selectedIntensity}
             isLogged={log.isSelectedLogged}
             onSelect={(intensity) => log.setDayIntensity(log.selectedDay as IsoDate, intensity)}
-            onRemove={() => log.removeDay(log.selectedDay as IsoDate)}
+            onRemove={() => {
+              log.removeDay(log.selectedDay as IsoDate);
+              // An imported future day becomes disabled once removed.
+              focusDay((log.selectedDay as IsoDate) > today ? today : log.selectedDay);
+            }}
             onClose={log.closePicker}
           />
         ) : log.rangePick ? (
@@ -177,7 +197,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
                 ? `${formatShortDate(log.justLoggedRange.from, locale)} – ${formatShortDate(log.justLoggedRange.to, locale)}`
                 : formatShortDate(log.justLoggedDay as IsoDate, locale),
             })}{" "}
-            <button type="button" className="text-action calendar__undo" onClick={log.undoJustLogged}>
+            <button type="button" className="text-action calendar__undo" onClick={handleUndo}>
               {t("calendar.undo")}
             </button>
           </p>

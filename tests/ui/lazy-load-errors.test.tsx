@@ -12,8 +12,25 @@ vi.mock("../../src/features/today/ForecastExplainer", () => {
 vi.mock("../../src/data/calendarFile", () => {
   throw new Error("chunk failed to load");
 });
+vi.mock("../../src/data/otherApps", () => {
+  throw new Error("chunk failed to load");
+});
 
 describe("a lazy chunk that fails to load", () => {
+  it("reports a failed import reader without changing existing history", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<SettingsScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File(["{}"], "clue.json", { type: "application/json" }),
+    );
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/import couldn't be opened/i);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
   it("says so on Today instead of opening nothing", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-21" />, {

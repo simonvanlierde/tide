@@ -1,4 +1,4 @@
-import { getCycleHistory } from "../domain/cycle";
+import { getCycleHistory, getCycleStarts } from "../domain/cycle";
 import { type DailyDetails, hasDailyDetails, normalizeDailyDetails } from "../domain/diary";
 import { FLOW_INTENSITIES, getPredictionDays } from "../domain/flow";
 import type {
@@ -159,9 +159,14 @@ export function normalizeAppState(state: unknown): AppState {
 export function updateLoggedDays(state: AppState, intensityByDay: AppState["intensityByDay"]): AppState {
   const previous = getCycleHistory(getPredictionDays(state.intensityByDay), state.incompleteCycleStarts);
   const next = new Map(getCycleHistory(getPredictionDays(intensityByDay)).map((cycle) => [cycle.start, cycle.end]));
+  const previousStarts = getCycleStarts(getPredictionDays(state.intensityByDay));
+  const nextStarts = getCycleStarts(getPredictionDays(intensityByDay));
+  // Historical edits can reuse a cycle number for a different exported event.
+  const renumbered = previousStarts.some((start, index) => nextStarts[index] !== start);
   return {
     ...state,
     intensityByDay,
+    settings: renumbered ? { ...state.settings, calendarId: null } : state.settings,
     incompleteCycleStarts: previous
       .filter((cycle) => cycle.incomplete && next.get(cycle.start) === cycle.end)
       .map((cycle) => cycle.start),

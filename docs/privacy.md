@@ -51,7 +51,9 @@ daily details.
 Cloudflare sees your IP address and browser details when you load the app. It may log these to
 keep the site running and safe, and its privacy policy says for how long. We don't get these logs and keep none of our own.
 
-tide loads all its files from tide.duinlab.nl and contacts no other site.
+tide loads its files from tide.duinlab.nl. Cloudflare also instructs browsers to report failed
+network requests to Cloudflare. Your browser may send these reports to a separate Cloudflare address.
+These reports describe connection failures.
 
 ## Cookies and offline use
 

@@ -507,4 +507,56 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("button", { name: /^export$/i })).toBeEnabled();
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
   });
+
+  it("closes a pending delete when another tab writes newer data", async () => {
+    const user = userEvent.setup();
+    renderSettings(createAppState({ periodDays: ["2026-04-02"] }));
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    const raw = JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: { "2026-04-09": "light" } });
+    window.localStorage.setItem(STORAGE_KEY, raw);
+
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
+    expect(screen.getByRole("button", { name: /delete all data/i })).toBeDisabled();
+  });
+
+  it.each([
+    { schemaVersion: SCHEMA_VERSION, diaryOnly: false },
+    { schemaVersion: SCHEMA_VERSION, diaryOnly: true },
+    { schemaVersion: SCHEMA_VERSION + 1, diaryOnly: false },
+    { schemaVersion: SCHEMA_VERSION + 1, diaryOnly: true },
+  ])(
+    "checks current data after reading a backup (schema $schemaVersion, diary-only $diaryOnly)",
+    async ({ schemaVersion, diaryOnly }) => {
+      const user = userEvent.setup();
+      renderSettings();
+      let finishReading!: (text: string) => void;
+      const file = new File(["{}"], "tide.json", { type: "application/json" });
+      vi.spyOn(file, "text").mockReturnValue(
+        new Promise((resolve) => {
+          finishReading = resolve;
+        }),
+      );
+      await user.upload(screen.getByLabelText(/import data file/i), file);
+      const history = diaryOnly
+        ? createAppState({ detailsByDay: { "2026-03-01": { symptoms: [], mood: "good", note: "" } } })
+        : createAppState({ periodDays: ["2026-03-01"] });
+      const raw = JSON.stringify({ schemaVersion, ...history });
+      window.localStorage.setItem(STORAGE_KEY, raw);
+      act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+
+      await act(async () => finishReading(JSON.stringify(createAppState({ periodDays: ["2026-04-02"] }))));
+
+      expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog")?.textContent ?? null).toEqual(
+        schemaVersion === SCHEMA_VERSION
+          ? expect.stringMatching(diaryOnly ? /daily details will be replaced/i : /replaces the 1 day/i)
+          : null,
+      );
+    },
+  );
 });

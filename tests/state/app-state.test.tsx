@@ -203,6 +203,20 @@ describe("app state", () => {
     }
   });
 
+  it.each([true, false])("never deletes newer data, even before its storage event (notified: %s)", (notified) => {
+    const { result } = renderHook(() => ({ state: useAppState(), actions: useAppStateActions() }), {
+      wrapper: ({ children }) => <AppStateProvider>{children}</AppStateProvider>,
+    });
+    const raw = JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: { "2026-04-09": "light" } });
+    window.localStorage.setItem(STORAGE_KEY, raw);
+    if (notified) act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+
+    act(() => result.current.actions.resetState());
+
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
+    expect(result.current.state.intensityByDay).toEqual(notified ? { "2026-04-09": "light" } : {});
+  });
+
   it("forecasts for the day the caller passes", () => {
     const { result } = renderHook(() => useForecast("2026-04-18"), {
       wrapper: ({ children }) => (

@@ -60,7 +60,7 @@ export function loadRawAppState(): string | null {
 }
 
 export function saveAppState(state: AppState) {
-  setItemSafely(STORAGE_KEY, serialize(state));
+  return setItemSafely(STORAGE_KEY, serialize(state));
 }
 
 function serialize(state: AppState) {
@@ -83,9 +83,11 @@ export function clearAppState() {
 function setItemSafely(key: string, value: string) {
   try {
     window.localStorage.setItem(key, value);
+    return true;
   } catch (error) {
     // Don't crash, but surface it: a swallowed failure here is silent data loss.
     // biome-ignore lint/suspicious/noConsole: last-resort diagnostic for lost persistence
     console.warn(`tide: could not persist "${key}" to localStorage`, error);
+    return false;
   }
 }

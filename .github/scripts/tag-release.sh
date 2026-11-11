@@ -20,11 +20,15 @@ git show "$sha:CHANGELOG.md" | grep "^## \[$version\] - " >/dev/null || {
   echo "CHANGELOG.md on origin/main has no $version section" >&2
   exit 1
 }
+manifest_version=$(git show "$sha:package.json" | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).version')
+[[ $manifest_version == "$version" ]] || {
+  echo "package.json on origin/main has version $manifest_version, expected $version" >&2
+  exit 1
+}
 [[ $(git rev-parse HEAD) == "$sha" ]] || {
   echo "HEAD is not origin/main: check out and pull main first" >&2
   exit 1
 }
-# The manifest version checks read the working tree, not the commit being tagged.
 git diff --quiet HEAD || {
   echo "uncommitted changes to tracked files: commit or stash them first" >&2
   exit 1
