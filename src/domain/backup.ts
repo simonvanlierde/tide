@@ -8,6 +8,12 @@ interface BackupReminderInput {
   dismissedOn: IsoDate | null;
 }
 
+/** Days of history, or since the last backup, before the first reminder. */
+const BACKUP_REMINDER_DAYS = 60;
+
+/** Days a dismissed reminder stays hidden. */
+const SNOOZE_DAYS = 7;
+
 export function shouldRemindBackup(input: BackupReminderInput): boolean {
   const firstDay = input.loggedDays.filter((day) => day <= input.today).sort()[0];
   if (!firstDay) return false;
@@ -16,7 +22,7 @@ export function shouldRemindBackup(input: BackupReminderInput): boolean {
   const lastBackup = past(input.lastBackupOn) ?? firstDay;
   const dismissedOn = past(input.dismissedOn);
   return (
-    differenceInDays(input.today, lastBackup) >= 30 &&
-    (dismissedOn === null || differenceInDays(input.today, dismissedOn) >= 7)
+    differenceInDays(input.today, lastBackup) >= BACKUP_REMINDER_DAYS &&
+    (dismissedOn === null || differenceInDays(input.today, dismissedOn) >= SNOOZE_DAYS)
   );
 }
