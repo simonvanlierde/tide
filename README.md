@@ -22,7 +22,7 @@ Open **[tide.duinlab.nl](https://tide.duinlab.nl)** and add it to your home scre
 - **Android (Chrome):** menu (⋮) → *Install app*
 - **Desktop (Chrome/Edge):** install icon in the address bar
 
-Once installed, it works offline, and all data stays on your device.
+Once installed, it works offline, and Tide does not upload what you log.
 Clearing this site's browser data removes your history. Keep a backup from Settings → Data → Export
 so you can restore it later. Installing Tide does not create a separate backup or sync devices.
 
