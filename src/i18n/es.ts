@@ -134,10 +134,10 @@ export const es: Dictionary = {
   "insights.how": "Cómo funcionan las predicciones",
   "insights.how1": "Todo se calcula en tu dispositivo a partir de los días que registras.",
   "insights.howCycleStart":
-    "Un intervalo de {gap} días o más entre días registrados inicia un ciclo nuevo. Un intervalo menor cuenta como el mismo período.",
+    "Un intervalo de {gap} días o más entre días de sangrado registrados inicia un ciclo nuevo. Un intervalo menor cuenta como el mismo período. El manchado no cuenta.",
   "insights.how2":
     "La duración del ciclo es la mediana de tus últimos {recent} ciclos completos. Los ciclos incompletos no cuentan. Sin ciclos completos, se usa un ciclo típico de {cycle} días.",
-  "insights.how3": "La duración del período es tu promedio reciente, limitada a un rango normal de {min} a {max} días.",
+  "insights.how3": "La duración estimada del período es tu promedio anterior, limitada a {min}–{max} días.",
   "insights.how4":
     "Tu próximo período se prevé una duración de ciclo después del inicio del último. La ovulación se estima {luteal} días antes.",
   "insights.howNextPeriod": "Tu próximo período se prevé una duración de ciclo después del inicio del último.",
@@ -227,7 +227,7 @@ export const es: Dictionary = {
   "legal.privacy": "Declaración de privacidad",
   "legal.accessibility": "Declaración de accesibilidad",
   "legal.inEnglish": "En inglés",
-  "settings.privacy": "Tus datos nunca salen de este dispositivo.",
+  "settings.privacy": "Tide no sube tus datos a un servidor.",
   "settings.fertilityDisclaimer":
     "Las estimaciones de fertilidad son solo informativas. No las uses como método anticonceptivo.",
   "settings.fertilityMethod":

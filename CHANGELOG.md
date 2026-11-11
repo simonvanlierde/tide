@@ -14,7 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles as a chart
   and a table. Mark incomplete cycles to leave their lengths out of estimates
   without deleting logged days.
-- Today reminds you to download a backup after 30 days, with a one-week snooze.
+- Today reminds you to download a backup after 60 days, with a one-week snooze.
   The reminder dates stay on this device and are left out of exported backups.
 - The site now has a `/.well-known/security.txt` that says where to report a
   security problem, and link previews show Tide's name, description and icon.
@@ -75,6 +75,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   there is no Save button to forget. Today's details are always for today.
 - The fertility line on Today drops "(estimate)" so it fits on one line; the line under it
   now reads "An estimate. Don't use it as birth control."
+- Settings says Tide does not upload your data, instead of saying it never leaves the
+  device: backups and calendar exports do leave it when you ask.
+- The privacy statement says the same: Tide does not upload what you log, and it leaves
+  the browser only in a backup or calendar file you save.
+- Prediction explanations distinguish recent variation from a guaranteed date range.
+  The backtest now reports large errors, range coverage and a synthetic missing-log check.
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.
 - Tide asks once whether to show fertility estimates, and hides them until you

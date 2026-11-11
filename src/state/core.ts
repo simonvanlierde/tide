@@ -71,21 +71,17 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
       return updateLoggedDays(state, { ...state.intensityByDay, [action.day]: action.intensity });
     }
 
-    // A past period in one go: every day not yet logged gets a one-tap log,
-    // through the same case (and the same future-day check) as a single tap.
-    // Days already logged keep their flow. A run past the cap changes nothing.
-    case "logPeriodRange":
-      return (getPeriodRange(action.from, action.to) ?? []).reduce(
-        (next, day) =>
-          day in next.intensityByDay
-            ? next
-            : appStateReducer(next, {
-                type: "togglePeriodDay",
-                day,
-                today: action.today,
-              }),
-        state,
-      );
+    case "logPeriodRange": {
+      const intensityByDay = { ...state.intensityByDay };
+      let changed = false;
+      for (const day of getPeriodRange(action.from, action.to) ?? []) {
+        if (day <= action.today && !(day in intensityByDay)) {
+          intensityByDay[day] = null;
+          changed = true;
+        }
+      }
+      return changed ? updateLoggedDays(state, intensityByDay) : state;
+    }
 
     case "toggleIncompleteCycle": {
       const completed = getCycleHistory(getPredictionDays(state.intensityByDay).filter((day) => day <= action.today));

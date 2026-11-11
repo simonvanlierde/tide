@@ -135,10 +135,10 @@ export const fr: Dictionary = {
   "insights.how": "Comment les prévisions fonctionnent",
   "insights.how1": "Tout est calculé sur ton appareil à partir des jours que tu enregistres.",
   "insights.howCycleStart":
-    "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle. Un écart plus court fait partie des mêmes règles.",
+    "Un écart de {gap} jours ou plus entre deux jours de saignement enregistrés marque le début d’un nouveau cycle. Un écart plus court fait partie des mêmes règles. Le spotting ne compte pas.",
   "insights.how2":
     "La durée du cycle est la médiane de tes {recent} derniers cycles complets. Les cycles incomplets sont exclus. Sans cycle complet, un cycle type de {cycle} jours est utilisé.",
-  "insights.how3": "La durée des règles est ta moyenne récente, limitée à une normale de {min} à {max} jours.",
+  "insights.how3": "La durée estimée des règles est ta moyenne passée, limitée à {min}–{max} jours.",
   "insights.how4":
     "Tes prochaines règles sont prévues une durée de cycle après le début de tes dernières règles. L’ovulation est estimée {luteal} jours avant.",
   "insights.howNextPeriod":
@@ -230,7 +230,7 @@ export const fr: Dictionary = {
   "legal.privacy": "Déclaration de confidentialité",
   "legal.accessibility": "Déclaration d’accessibilité",
   "legal.inEnglish": "En anglais",
-  "settings.privacy": "Tes données ne quittent jamais cet appareil.",
+  "settings.privacy": "Tide n’envoie pas tes données sur un serveur.",
   "settings.fertilityDisclaimer":
     "Les estimations de fertilité sont données à titre indicatif. Ne les utilise pas comme contraception.",
   "settings.fertilityMethod":

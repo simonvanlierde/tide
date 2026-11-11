@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
-import { type MouseEvent, useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { followAppLink } from "../../app/links";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
@@ -190,7 +191,7 @@ export function TodayScreen(props: TodayScreenProps) {
         <p className="today-screen__note">
           {t("today.importPrompt")}{" "}
           {/* biome-ignore lint/a11y/useValidAnchor: real page navigation with an href; the handler only keeps it client-side, like the tab bar */}
-          <a href="/settings#import" onClick={openImport}>
+          <a href="/settings#import" onClick={followAppLink}>
             {t("today.importLink")}
           </a>
         </p>
@@ -263,17 +264,6 @@ export function TodayScreen(props: TodayScreenProps) {
       <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />
     </section>
   );
-}
-
-// Client-side, like the tab bar: the app shell follows popstate, then focuses
-// the #import target. A modified click opens the page the browser's way.
-function openImport(event: MouseEvent<HTMLAnchorElement>) {
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-    return;
-  }
-  event.preventDefault();
-  window.history.pushState(null, "", event.currentTarget.href);
-  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 function getNextPeriodPhrase(

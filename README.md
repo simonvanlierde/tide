@@ -8,7 +8,7 @@
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/simonvanlierde/tide/badge)](https://scorecard.dev/viewer/?uri=github.com/simonvanlierde/tide)
 
 Tide is a privacy-first period tracker. It's a small React web app that you can install (a PWA),
-and it keeps all your cycle data in your browser: no accounts, no network and no analytics.
+and it keeps all your cycle data in your browser, without accounts or uploading your history.
 
 | Today | Calendar |
 | --- | --- |
@@ -23,6 +23,8 @@ Open **[tide.duinlab.nl](https://tide.duinlab.nl)** and add it to your home scre
 - **Desktop (Chrome/Edge):** install icon in the address bar
 
 Once installed, it works offline, and all data stays on your device.
+Clearing this site's browser data removes your history. Keep a backup from Settings → Data → Export
+so you can restore it later. Installing Tide does not create a separate backup or sync devices.
 
 ## Features
 
@@ -39,7 +41,7 @@ Once installed, it works offline, and all data stays on your device.
 - A calendar with cycle day numbers.
 - Back up to a JSON file, restore it on any device, or delete everything in one go.
   Backups include your daily details as well as your bleeding history and settings.
-  A local reminder appears after 30 days; you can snooze it for a week.
+  A local reminder appears after 60 days; you can snooze it for a week.
 - Import a Clue export (`measurements.json` from the export zip, or an older `.cluedata` backup)
   or a Flo export from Settings → Data → Import. It adds to the days you already logged; a Tide
   backup replaces your data instead. Clue and Flo imports bring in bleeding days only.
@@ -57,7 +59,8 @@ month, or choose a date in the editor.
 
 ## Development
 
-You need [just](https://just.systems) and [pnpm](https://pnpm.io).
+You need Node.js 26 or newer, [just](https://just.systems) and [pnpm](https://pnpm.io).
+The `packageManager` field in `package.json` names the pnpm version used by this project.
 
 ```sh
 pnpm install
@@ -65,12 +68,24 @@ pnpm exec playwright install chromium   # once per machine, for the e2e tests
 pnpm exec prek install                  # git hooks
 ```
 
+[Predictor performance](docs/performance.md) describes the synthetic benchmark and its limits.
+
 `pnpm dev` starts the app. `just check` runs what CI runs, and `just ts-e2e` the browser tests.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks and architecture,
 [docs/](docs/) for the [architecture](docs/architecture.md), the [prediction backtest](docs/backtest.md) and the
 [decision to keep data on the device](docs/adr/0001-local-first-no-backend.md).
 [Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose) for bugs and ideas.
+
+## Social card
+
+`public/og.png` is the 1200x630 card shown when the link is shared. Its source is
+[`docs/og-card.html`](docs/og-card.html). The ring in it, `docs/og-ring.png`, is the app's own cycle dial,
+captured with sample cycles. After a change to the card or the dial, render both again (needs Playwright Chromium):
+
+```sh
+pnpm og-card
+```
 
 ## Deploy
 

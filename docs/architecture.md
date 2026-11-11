@@ -45,8 +45,8 @@ flowchart TD
    `src/data/otherApps.ts` to read Clue and Flo exports. A Tide backup replaces the state, and
    includes daily symptoms, mood and notes. Bleeding days from another app are merged under
    the ones already logged; these imports leave daily details unchanged.
-5. A `storage` event from another tab or the installed app replaces the state, so two windows
-   don't overwrite each other.
+5. A `storage` event from another tab or the installed app replaces the state with that window's
+   saved copy. Simultaneous edits are not merged; the last save wins.
 
 Daily details are separate from bleeding logs. The forecast uses bleeding history only;
 symptoms, mood and notes do not change estimates. An empty symptom list means the user

@@ -5,7 +5,7 @@ import privacy from "../../docs/privacy.md";
 import { useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
 import { type LegalPageEntry, SITE_TITLE } from "./LegalPages";
-import { followAppLink } from "./navigation";
+import { followAppLink } from "./links";
 
 const HTML: Record<string, string> = { "/accessibility": accessibility, "/privacy": privacy };
 

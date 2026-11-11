@@ -17,7 +17,7 @@ function renderReminder() {
   const onDone = vi.fn();
   renderWithAppState(
     <>
-      <BackupReminder today="2026-04-15" onDone={onDone} />
+      <BackupReminder today="2026-05-15" onDone={onDone} />
       <StoredDates />
     </>,
     { state: createAppState({ periodDays: ["2026-03-01"] }) },
@@ -27,7 +27,7 @@ function renderReminder() {
 
 describe("backup reminder", () => {
   it("offers backup for diary-only history", () => {
-    renderWithAppState(<BackupReminder today="2026-04-15" onDone={vi.fn()} />, {
+    renderWithAppState(<BackupReminder today="2026-05-15" onDone={vi.fn()} />, {
       state: createAppState({ detailsByDay: { "2026-03-01": { symptoms: [], mood: null, note: "" } } }),
     });
     expect(screen.getByRole("button", { name: "Back up data" })).toBeInTheDocument();
@@ -38,7 +38,7 @@ describe("backup reminder", () => {
     const onDone = renderReminder();
     fireEvent.click(screen.getByRole("button", { name: "Back up data" }));
     expect(downloadAppState).toHaveBeenCalledTimes(1);
-    expect(screen.getByText("2026-04-15/never")).toBeInTheDocument();
+    expect(screen.getByText("2026-05-15/never")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Back up data" })).toBeNull();
     expect(onDone).toHaveBeenCalledOnce();
   });
@@ -48,7 +48,7 @@ describe("backup reminder", () => {
     const onDone = renderReminder();
     fireEvent.click(screen.getByRole("button", { name: "Remind me in a week" }));
     expect(downloadAppState).not.toHaveBeenCalled();
-    expect(screen.getByText("never/2026-04-15")).toBeInTheDocument();
+    expect(screen.getByText("never/2026-05-15")).toBeInTheDocument();
     expect(onDone).toHaveBeenCalledOnce();
   });
 
@@ -70,7 +70,7 @@ describe("backup reminder", () => {
       STORAGE_KEY,
       JSON.stringify({ ...createAppState({ periodDays: ["2026-03-01"] }), schemaVersion: SCHEMA_VERSION + 1 }),
     );
-    renderWithAppState(<BackupReminder today="2026-04-15" onDone={vi.fn()} />);
+    renderWithAppState(<BackupReminder today="2026-05-15" onDone={vi.fn()} />);
     expect(screen.queryByRole("button", { name: "Back up data" })).toBeNull();
   });
 });
