@@ -57,6 +57,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
+  number sits small inside the day's corner instead of in a bubble, with its own legend entry.
+- "Add details" on the calendar names its day, and adds details for the day you last picked.
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.
 - Tide asks once whether to show fertility estimates, and hides them until you

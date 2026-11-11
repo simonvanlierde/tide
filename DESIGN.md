@@ -285,7 +285,7 @@ casting a second shadow. The active segmented option is the only exception.
 
 Everything is rounded, every radius is a token, and bigger blocks get bigger corners:
 
-- **Pill**: chips, switches, markers, corner bubbles, the skip link.
+- **Pill**: chips, switches, markers, the skip link.
 - **Swatch** (5 px), **control** (10 px): legend swatches, and options inside a segmented
   track.
 - **Field** (12 px): selects and inputs.
@@ -294,9 +294,10 @@ Everything is rounded, every radius is a token, and bigger blocks get bigger cor
 - **Prompt** (18 px): the reminder prompt.
 - **Card** (20–22 px): the fact list, utility cards.
 
-The dial is a circle. Calendar days are rounded squares. A day that has happened shows its
-cycle-day number in a corner bubble, and an estimated day gets a 2 px dashed outline with
-no fill. Borders are 1 px hairlines at 9% ink.
+The dial is a circle. A calendar day with nothing on it is a bare number; only logged,
+estimated and selected days get a rounded square. A day that has happened shows its
+cycle-day number small and muted inside the top corner, with no bubble, so it never reads as
+an unread count. An estimated day gets a 2 px dashed outline with no fill. Borders are 1 px hairlines at 9% ink.
 
 ## Components
 

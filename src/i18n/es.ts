@@ -27,6 +27,8 @@ export const es: Dictionary = {
   // Optional daily details
   "diary.addDetails": "Añadir detalles",
   "diary.editDetails": "Editar detalles",
+  "diary.addDetailsFor": "Añadir detalles del {date}",
+  "diary.editDetailsFor": "Editar detalles del {date}",
   "diary.finishEditing": "Guarda o cancela tus cambios antes de elegir otra fecha.",
   "diary.date": "Fecha",
   "diary.symptoms": "Síntomas",
@@ -153,6 +155,7 @@ export const es: Dictionary = {
   "legend.expected": "Período previsto",
   "legend.fertileWindow": "Ventana fértil",
   "legend.ovulation": "Ovulación",
+  "legend.cycleDay": "Día del ciclo",
 
   "flow.legend": "Flujo",
   "flow.spotting": "Manchado",

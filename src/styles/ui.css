@@ -1133,27 +1133,21 @@
     min-width: 0;
     border-radius: var(--radius-segment);
     padding: 8px 0;
+    /* A day with nothing on it is a bare number; only marked days get a
+       shape. The border stays, transparent, so marking a day doesn't move it. */
+    border-color: transparent;
     color: var(--ink);
-    background: var(--surface-soft);
+    background: transparent;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Running cycle-day count in the corner of a day that has happened. Opaque
-     disc + hairline so it reads on the soft surface and on fertile/ovulation
-     fills alike, and quieter than the day number so it never competes. */
+  /* Running cycle-day count, inside the tile's corner and quieter than the
+     day number. No disc: a disc on the corner reads as an unread count. */
   .calendar-grid__period-day {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    display: inline-grid;
-    place-items: center;
-    min-width: 15px;
-    height: 15px;
-    padding: 0 3px;
-    border-radius: var(--radius-pill);
-    background: var(--surface);
+    top: 3px;
+    right: 4px;
     color: var(--ink-muted);
-    box-shadow: inset 0 0 0 1px var(--surface-border);
     font-size: var(--text-xs);
     line-height: 1;
     font-variant-numeric: tabular-nums;

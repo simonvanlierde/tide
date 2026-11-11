@@ -28,6 +28,8 @@ export const nl: Dictionary = {
   // Optional daily details
   "diary.addDetails": "Details toevoegen",
   "diary.editDetails": "Details bewerken",
+  "diary.addDetailsFor": "Details toevoegen voor {date}",
+  "diary.editDetailsFor": "Details van {date} bewerken",
   "diary.finishEditing": "Sla je wijzigingen op of annuleer ze voordat je een andere datum kiest.",
   "diary.date": "Datum",
   "diary.symptoms": "Klachten",
@@ -155,6 +157,7 @@ export const nl: Dictionary = {
   "legend.expected": "Verwachte menstruatie",
   "legend.fertileWindow": "Vruchtbare periode",
   "legend.ovulation": "Eisprong",
+  "legend.cycleDay": "Cyclusdag",
 
   "flow.legend": "Bloedverlies",
   "flow.spotting": "Spotting",

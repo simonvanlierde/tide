@@ -9,7 +9,9 @@ import "./diary.css";
 const EMPTY: Details = { symptoms: null, mood: null, note: "" };
 const sameDetails = (a: Details, b: Details) => JSON.stringify(a) === JSON.stringify(b);
 
-export function DailyDetails({ today, month }: { today: IsoDate; month?: IsoDate }) {
+// `day` is the day the trigger opens, named in its label (the Calendar's
+// selected day). Without it the trigger opens today and needs no date.
+export function DailyDetails({ today, day: target, month }: { today: IsoDate; day?: IsoDate; month?: IsoDate }) {
   const state = useAppState();
   const t = useT();
   const locale = useLocale();
@@ -39,11 +41,15 @@ export function DailyDetails({ today, month }: { today: IsoDate; month?: IsoDate
         aria-expanded={open}
         aria-controls={id}
         onClick={() => {
-          setDay(today);
+          setDay(target ?? today);
           setOpen(true);
         }}
       >
-        {t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
+        {target
+          ? t(state.detailsByDay[target] ? "diary.editDetailsFor" : "diary.addDetailsFor", {
+              date: formatShortDate(target, locale),
+            })
+          : t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
       </button>
       <div id={id}>{open ? <DetailsForm day={day} today={today} onDayChange={setDay} onClose={close} /> : null}</div>
       {!open && entries.length > 0 ? (

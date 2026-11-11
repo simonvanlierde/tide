@@ -484,6 +484,7 @@ describe("CalendarScreen", () => {
       state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
     });
     expect(withNumbers.container.querySelectorAll(".calendar-grid__period-day")).not.toHaveLength(0);
+    expect(withNumbers.container.querySelector(".calendar-legend")).toHaveTextContent(/cycle day/i);
     withNumbers.unmount();
 
     const hidden = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
@@ -493,6 +494,20 @@ describe("CalendarScreen", () => {
       }),
     });
     expect(hidden.container.querySelectorAll(".calendar-grid__period-day")).toHaveLength(0);
+    expect(hidden.container.querySelector(".calendar-legend")).not.toHaveTextContent(/cycle day/i);
+  });
+
+  it("adds details for the selected day, today until one is picked", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    });
+
+    expect(screen.getByRole("button", { name: /add details for sat, apr 18/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /april 2, 2026/i }));
+    await user.click(screen.getByRole("button", { name: /add details for thu, apr 2/i }));
+
+    expect(screen.getByLabelText(/^date$/i)).toHaveValue("2026-04-02");
   });
 
   it("tells a first-timer what to tap, and shows no legend for markers that aren't there", () => {
