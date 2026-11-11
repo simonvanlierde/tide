@@ -1,0 +1,38 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Tide social card</title>
+<!-- Source of public/og.png (1200x630). Render with `pnpm og-card`. The ring is docs/og-ring.png,
+     captured from the app's own cycle dial with sample cycles by scripts/ogCard.mjs.
+     Name, line and address sit inside the centred 630 px (x 285-915). -->
+<style>
+  /* Tokens from src/styles/tokens.css and DESIGN.md. */
+  :root {
+    --bg-top: #f5f9f9; --bg-bottom: #e4eef0;
+    --ink: #14303a; --ink-soft: #486069;
+    --tide: #2f8f8a; --tide-strong: #1f6a65; --tide-soft: #d9ecea;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden; position: relative;
+    background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+  }
+  /* The sea behind the ring: one soft disc in the app's tide-soft. */
+  .sea { position: absolute; left: 495px; top: -35px; width: 700px; height: 700px; border-radius: 50%;
+         background: radial-gradient(circle, var(--tide-soft) 0 62%, transparent 72%); }
+  .ring { position: absolute; left: 507px; top: -28px; width: 686px; height: 686px; }
+  .copy { position: absolute; left: 285px; top: 72px; width: 330px; height: 486px;
+          display: flex; flex-direction: column; }
+  h1 { font-size: 112px; line-height: .9; font-weight: 600; letter-spacing: -.03em; color: var(--tide-strong); }
+  .line { margin-top: 34px; font-size: 37px; line-height: 1.22; font-weight: 500; letter-spacing: -.01em; }
+  .line b { white-space: nowrap; font-weight: 700; color: var(--tide-strong); }
+  .addr { margin-top: auto; font-size: 32px; font-weight: 600; letter-spacing: .01em; color: var(--ink-soft); }
+</style>
+<div class="sea"></div>
+<img class="ring" src="og-ring.png" alt="">
+<div class="copy">
+  <h1>Tide</h1>
+  <p class="line">A private period tracker that keeps cycle data <b>on this device.</b></p>
+  <p class="addr">tide.duinlab.nl</p>
+</div>

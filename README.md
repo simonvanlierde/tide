@@ -73,14 +73,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks and architecture,
 
 ## Social card
 
-`public/og.png` is the 1200x630 card shown when the link is shared. It is made with the generator in
-[my site repo](https://github.com/simonvanlierde/simonvanlierde.github.io/tree/main/scripts/social-card)
-(needs Docker). From a checkout of that repo, with this repo next to it:
+`public/og.png` is the 1200x630 card shown when the link is shared. Its source is
+[`docs/og-card.html`](docs/og-card.html). The ring in it, `docs/og-ring.png`, is the app's own cycle dial,
+captured with sample cycles. After a change to the card or the dial, render both again (needs Playwright Chromium):
 
 ```sh
-pnpm gen:card --visual ../tide/docs/screenshots/today-light.png --name "Tide" \
-  --line "A private period tracker that keeps cycle data on this device." \
-  --domain tide.duinlab.nl --out ../tide/public/og.png
+pnpm og-card
 ```
 
 ## Deploy
