@@ -23,6 +23,37 @@ export const en = {
   "backup.snooze": "Remind me in a week",
   "backup.error": "The backup couldn't be downloaded. Try again.",
 
+  // Optional daily details
+  "diary.addDetails": "Add details",
+  "diary.editDetails": "Edit details",
+  "diary.finishEditing": "Save or cancel your changes before choosing another date.",
+  "diary.date": "Date",
+  "diary.symptoms": "Symptoms",
+  "diary.symptomsHelp": "Leave blank if you have not logged symptoms.",
+  "diary.noSymptoms": "No symptoms",
+  "diary.mood": "Mood",
+  "diary.moodUnlogged": "Not logged",
+  "diary.note": "Note (optional)",
+  "diary.noteHint": "Up to {max} characters. Details stay on this device and are included in backups.",
+  "diary.saveHelp": "Save your details before leaving this screen.",
+  "diary.save": "Save details",
+  "diary.saved": "Details saved.",
+  "diary.removed": "Details cleared.",
+  "diary.clear": "Clear details",
+  "diary.cancel": "Cancel",
+  "diary.history": "Daily details",
+  "diary.openDay": "View details for {date}",
+  "diary.conflict": "This day changed in another tab. Close and reopen the details before saving.",
+  "diary.symptom.cramps": "Cramps",
+  "diary.symptom.headache": "Headache",
+  "diary.symptom.bloating": "Bloating",
+  "diary.symptom.breastTenderness": "Breast tenderness",
+  "diary.symptom.fatigue": "Fatigue",
+  "diary.mood.low": "Low",
+  "diary.mood.okay": "Okay",
+  "diary.mood.good": "Good",
+  "settings.importReplacesDetails": "Your current period history and daily details will be replaced.",
+
   // Navigation & app shell
   "nav.today": "Today",
   "nav.calendar": "Calendar",
@@ -179,7 +210,7 @@ export const en = {
 
   // Crash screen
   "error.title": "Something went wrong",
-  "error.body": "Your logged days are still saved on this device.",
+  "error.body": "Your data is still saved on this device.",
   "error.downloadRaw": "Download raw data",
 
   // Settings
@@ -216,7 +247,7 @@ export const en = {
   "settings.data": "Data",
   "settings.dataInfo": "About import and export",
   "settings.dataHelp":
-    "Export saves your days to a file. Import replaces them from a Tide backup, or adds days from Clue or Flo.",
+    "Export saves your period history and daily details to a file. Import replaces them from a Tide backup, or adds period days from Clue or Flo.",
   "settings.importSources": "You can import a Tide backup, or an export from Clue or Flo.",
   "settings.export": "Export",
   "settings.exportSuccess": "Backup saved to your downloads.",
@@ -244,7 +275,7 @@ export const en = {
   "settings.reset": "Delete all data",
   "settings.resetTitle": "Delete all data?",
   "settings.resetAction": "Delete",
-  "settings.resetConfirm": "Every logged day and setting on this device is erased. This cannot be undone.",
+  "settings.resetConfirm": "All data and settings on this device are erased. This cannot be undone.",
 } as const;
 
 export type MessageKey = keyof typeof en;

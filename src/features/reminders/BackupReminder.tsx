@@ -19,7 +19,7 @@ export function BackupReminder({ today, onDone }: BackupReminderProps) {
     readOnly ||
     !shouldRemindBackup({
       today,
-      loggedDays: Object.keys(state.intensityByDay) as IsoDate[],
+      loggedDays: [...Object.keys(state.intensityByDay), ...Object.keys(state.detailsByDay)] as IsoDate[],
       lastBackupOn: state.settings.lastBackupOn,
       dismissedOn: state.settings.backupReminderDismissedOn,
     })

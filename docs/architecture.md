@@ -43,9 +43,14 @@ flowchart TD
    [How predictions work](predictions.md) has the rules and numbers.
 4. Settings → Data uses `src/data/transfer.ts` to save a JSON backup and to read one back, and
    `src/data/otherApps.ts` to read Clue and Flo exports. A Tide backup replaces the state, and
-   days from another app are merged under the ones already logged.
+   includes daily symptoms, mood and notes. Bleeding days from another app are merged under
+   the ones already logged; these imports leave daily details unchanged.
 5. A `storage` event from another tab or the installed app replaces the state with that window's
    saved copy. Simultaneous edits are not merged; the last save wins.
+
+Daily details are separate from bleeding logs. The forecast uses bleeding history only;
+symptoms, mood and notes do not change estimates. An empty symptom list means the user
+recorded no symptoms; a null value means symptoms were not recorded.
 
 ## Offline and hosting
 

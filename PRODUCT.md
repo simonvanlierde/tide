@@ -6,24 +6,26 @@ web
 
 ## Users
 
-Tide is for people who menstruate and want to leave a mainstream period tracker (Flo, Clue
-and similar) because of what it does with their data. They come with history they want to
-keep, and they distrust anything that looks like it phones home. Tide sits on the home
-screen and gets a few seconds at a time: log today, check the cycle day, and now and then
-look back through the calendar.
+Tide is for anyone who wants simple period tracking. It gets a few seconds at a time:
+log today, check when the next period is expected, and look back through the calendar.
+People moving from another tracker can bring their bleeding history from Flo or Clue.
 
 Second: people who read Dutch, German, French or Spanish. The app ships in all five
 languages.
 
 ## Product Purpose
 
-Tide is a period tracker built for privacy, and your data stays on your device. You
-log the days you bleed, and if you like, how heavily. It shows the current cycle day and
-phase, when the next period is expected, an ovulation estimate and a fertile window. It
-works out every number on the device.
+**Mission:** Make period tracking quick, clear and private.
 
-It works when people trust that nothing leaves the device, log every time because it takes
-no effort, and find the forecast good enough to plan around.
+**Vision:** Tide becomes a trusted everyday companion: easy to log, useful for planning,
+and honest about what it cannot predict.
+
+Fast period logging and a clear next-period estimate come first. Symptoms, mood and a short
+note are optional daily records. Fertility estimates are secondary and appear only when
+requested. Everything is stored and worked out on the device.
+
+Success means a small group of people choose Tide for everyday tracking and trust it enough
+to keep using it.
 
 ## Positioning
 
@@ -42,6 +44,8 @@ out: import it to bring your history, export it to leave.
   before the first paint, so the app never flashes the wrong one.
 - Today offers a local backup reminder, and Cycle insights has a history chart and table.
   Incomplete cycles keep their logged days but do not influence cycle-length estimates.
+- Optional daily details record symptoms, mood and a note, independently of bleeding.
+  They are included in Tide backups and do not affect predictions.
 - It runs at <https://tide.duinlab.nl> (Cloudflare; see `wrangler.jsonc`).
 
 ## Capabilities and Constraints

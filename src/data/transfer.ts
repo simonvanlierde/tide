@@ -1,6 +1,7 @@
+import { normalizeDailyDetails } from "../domain/diary";
 import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
-import { normalizeAppState, SCHEMA_VERSION, updateLoggedDays } from "./schema";
+import { isIsoDate, normalizeAppState, SCHEMA_VERSION, updateLoggedDays } from "./schema";
 
 // Dated so repeated backups don't overwrite each other in Downloads.
 // Local day, not UTC, so a backup made just after midnight carries today's date.
@@ -14,6 +15,7 @@ interface BackupFile {
   // The logged days and their flow — its keys are the period days, so they
   // aren't listed a second time. This is the app's own state shape.
   days: Record<IsoDate, LoggedFlow>;
+  detailsByDay: AppState["detailsByDay"];
   settings: Pick<AppState["settings"], "showFertility" | "showCycleDayNumbers" | "theme" | "language" | "calendarId">;
 }
 
@@ -23,6 +25,7 @@ function toBackupFile(state: AppState): BackupFile {
   return {
     schemaVersion: SCHEMA_VERSION,
     days: state.intensityByDay,
+    detailsByDay: state.detailsByDay,
     incompleteCycleStarts: state.incompleteCycleStarts,
     settings: {
       showFertility: state.settings.showFertility,
@@ -73,9 +76,20 @@ export function parseImportedState(text: string, today: IsoDate = getTodayIsoDat
   if (typeof version === "number" && version > SCHEMA_VERSION) {
     throw new Error("Backup is from a newer Tide");
   }
+  // Refuse malformed diary data instead of importing a backup with missing notes.
+  if ("detailsByDay" in candidate) {
+    const details = candidate.detailsByDay;
+    if (
+      !details ||
+      typeof details !== "object" ||
+      Array.isArray(details) ||
+      Object.entries(details).some(([day, value]) => !isIsoDate(day) || !normalizeDailyDetails(value))
+    )
+      throw new Error("Invalid daily details in backup");
+  }
   const state = normalizeAppState(parsed);
   return updateLoggedDays(
-    state,
+    { ...state, detailsByDay: Object.fromEntries(Object.entries(state.detailsByDay).filter(([day]) => day <= today)) },
     Object.fromEntries(Object.entries(state.intensityByDay).filter(([day]) => day <= today)),
   );
 }

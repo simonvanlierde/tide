@@ -24,6 +24,38 @@ export const es: Dictionary = {
   "backup.snooze": "Recordar en una semana",
   "backup.error": "No se ha podido descargar la copia de seguridad. Inténtalo de nuevo.",
 
+  // Optional daily details
+  "diary.addDetails": "Añadir detalles",
+  "diary.editDetails": "Editar detalles",
+  "diary.finishEditing": "Guarda o cancela tus cambios antes de elegir otra fecha.",
+  "diary.date": "Fecha",
+  "diary.symptoms": "Síntomas",
+  "diary.symptomsHelp": "Déjalo en blanco si no has registrado tus síntomas.",
+  "diary.noSymptoms": "Sin síntomas",
+  "diary.mood": "Ánimo",
+  "diary.moodUnlogged": "Sin registrar",
+  "diary.note": "Nota (opcional)",
+  "diary.noteHint":
+    "Hasta {max} caracteres. Los detalles se quedan en este dispositivo y se incluyen en las copias de seguridad.",
+  "diary.saveHelp": "Guarda tus detalles antes de salir de esta pantalla.",
+  "diary.save": "Guardar detalles",
+  "diary.saved": "Detalles guardados.",
+  "diary.removed": "Detalles borrados.",
+  "diary.clear": "Borrar detalles",
+  "diary.cancel": "Cancelar",
+  "diary.history": "Detalles diarios",
+  "diary.openDay": "Ver detalles del {date}",
+  "diary.conflict": "Este día cambió en otra pestaña. Cierra los detalles y vuelve a abrirlos antes de guardar.",
+  "diary.symptom.cramps": "Cólicos",
+  "diary.symptom.headache": "Dolor de cabeza",
+  "diary.symptom.bloating": "Hinchazón",
+  "diary.symptom.breastTenderness": "Sensibilidad en los pechos",
+  "diary.symptom.fatigue": "Cansancio",
+  "diary.mood.low": "Bajo",
+  "diary.mood.okay": "Normal",
+  "diary.mood.good": "Bueno",
+  "settings.importReplacesDetails": "Se reemplazarán tu historial de menstruación y tus detalles diarios actuales.",
+
   "nav.today": "Hoy",
   "nav.calendar": "Calendario",
   "nav.settings": "Ajustes",
@@ -172,7 +204,7 @@ export const es: Dictionary = {
 
   // Crash screen
   "error.title": "Algo salió mal",
-  "error.body": "Tus días registrados siguen guardados en este dispositivo.",
+  "error.body": "Tus datos siguen guardados en este dispositivo.",
   "error.downloadRaw": "Descargar datos sin procesar",
 
   "settings.title": "Ajustes",
@@ -208,7 +240,7 @@ export const es: Dictionary = {
   "settings.data": "Datos",
   "settings.dataInfo": "Acerca de importar y exportar",
   "settings.dataHelp":
-    "Exportar guarda tus días en un archivo. Importar los reemplaza desde una copia de seguridad de Tide, o añade días desde Clue o Flo.",
+    "Exportar guarda tu historial de menstruación y tus detalles diarios en un archivo. Importar los reemplaza desde una copia de Tide, o añade días de menstruación de Clue o Flo.",
   "settings.importSources": "Puedes importar una copia de seguridad de Tide o una exportación de Clue o Flo.",
   "settings.export": "Exportar",
   "settings.exportSuccess": "Copia de seguridad guardada en tus descargas.",
@@ -237,6 +269,5 @@ export const es: Dictionary = {
   "settings.reset": "Borrar todos los datos",
   "settings.resetTitle": "¿Eliminar todos los datos?",
   "settings.resetAction": "Eliminar",
-  "settings.resetConfirm":
-    "Se borran todos los días registrados y los ajustes de este dispositivo. No se puede deshacer.",
+  "settings.resetConfirm": "Se borran todos los datos y ajustes de este dispositivo. Esta acción no se puede deshacer.",
 };

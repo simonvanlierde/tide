@@ -31,17 +31,19 @@ interface AppStateOverrides {
   periodDays?: IsoDate[];
   incompleteCycleStarts?: IsoDate[];
   intensityByDay?: Record<IsoDate, FlowIntensity>;
+  detailsByDay?: AppState["detailsByDay"];
   settings?: Partial<AppSettings>;
 }
 
 export function createAppState(overrides: AppStateOverrides = {}): AppState {
-  const { periodDays = [], incompleteCycleStarts = [], intensityByDay = {}, settings } = overrides;
+  const { periodDays = [], incompleteCycleStarts = [], intensityByDay = {}, detailsByDay = {}, settings } = overrides;
   return {
     intensityByDay: {
       // Seeded days carry an explicit level; a one-tap log in the app stores null.
       ...Object.fromEntries(periodDays.map((day) => [day, "medium"])),
       ...intensityByDay,
     },
+    detailsByDay,
     incompleteCycleStarts,
     settings: {
       ...defaultAppState.settings,

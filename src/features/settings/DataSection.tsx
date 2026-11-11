@@ -122,7 +122,8 @@ export function DataSection({ today }: DataSectionProps) {
     }
     // Import replaces everything and there is no undo, so ask first, but
     // only when there is something to lose.
-    if (Object.keys(latest.current.state.intensityByDay).length > 0) {
+    const current = latest.current.state;
+    if (Object.keys(current.intensityByDay).length > 0 || Object.keys(current.detailsByDay).length > 0) {
       setPendingImport({
         next,
         fileDays: Object.keys(next.intensityByDay).length,
@@ -306,6 +307,7 @@ export function DataSection({ today }: DataSectionProps) {
                   n: pendingImport.fileDays,
                 })}
               </p>
+              {"next" in pendingImport ? <p>{t("settings.importReplacesDetails")}</p> : null}
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")

@@ -1,7 +1,8 @@
 import fc from "fast-check";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { defaultAppState } from "../../src/data/schema";
+import { defaultAppState, SCHEMA_VERSION } from "../../src/data/schema";
 import { downloadAppState, parseImportedState } from "../../src/data/transfer";
+import { MOODS, SYMPTOMS } from "../../src/domain/diary";
 import { FLOW_INTENSITIES } from "../../src/domain/flow";
 import type { AppState, LanguagePreference, LoggedFlow, ThemePreference } from "../../src/domain/types";
 import { SUPPORTED_LANGUAGES } from "../../src/i18n";
@@ -130,8 +131,9 @@ describe("downloadAppState", () => {
     expect(await blob.text()).toBe(
       JSON.stringify(
         {
-          schemaVersion: 3,
+          schemaVersion: SCHEMA_VERSION,
           days: { "2026-04-02": "medium" },
+          detailsByDay: {},
           incompleteCycleStarts: [],
           settings: {
             showFertility: null,
@@ -167,6 +169,14 @@ describe("backup round-trip property", () => {
     })
     .map(formatIsoDate);
   const appState: fc.Arbitrary<AppState> = fc.record({
+    detailsByDay: fc.dictionary(
+      day,
+      fc.record({
+        symptoms: fc.option(fc.uniqueArray(fc.constantFrom(...SYMPTOMS))),
+        mood: fc.option(fc.constantFrom(...MOODS)),
+        note: fc.string({ minLength: 1, maxLength: 1000 }),
+      }),
+    ),
     incompleteCycleStarts: fc.constant([]),
     intensityByDay: fc.dictionary(day, fc.constantFrom<LoggedFlow>(null, ...FLOW_INTENSITIES)),
     settings: fc.record({
