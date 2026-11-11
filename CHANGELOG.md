@@ -57,6 +57,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The dial's fertile window, ovulation and expected period fill its band with a pale wash
+  of their colour, so the ring reads as one band. The ring fills in on the first look of the
+  day, the scrub dot glides home when you let go, and logging today sends one ring out from
+  the marker. Reduced motion turns all three off.
 - Plainer wording across the app in all five languages. The fertility note now reads "An
   estimate. Don't use it as birth control." on Today, in the one-time question and in
   Settings; the calendar, backup and import texts say exactly what is stored where.

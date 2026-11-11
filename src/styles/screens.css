@@ -276,6 +276,93 @@
     box-shadow: var(--shadow-knob);
   }
 
+  /* Dial motion: a sweep on the first view of the day, a glide home after a
+     scrub, one ripple when today is logged. Reduced motion gets none of it;
+     every state is complete without the motion. */
+  .cycle-dial__marker-dot,
+  .cycle-dial__ripple {
+    grid-area: 1 / 1;
+  }
+
+  .cycle-dial__ripple {
+    width: 20px;
+    height: 20px;
+    margin-top: 3px;
+    box-sizing: border-box;
+    border-radius: var(--radius-pill);
+    border: 2px solid color-mix(in srgb, var(--ink) 55%, transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @property --dial-sweep {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 360deg;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* The band fills clockwise from the top; the centre disc and the shadow
+       outside the ring stay unmasked, so only the band moves. */
+    .is-sweeping .cycle-dial__ring {
+      --band: min(30px, 11cqw);
+      -webkit-mask:
+        radial-gradient(circle closest-side, #000 calc(100% - var(--band)), transparent 0 100%, #000 100%),
+        conic-gradient(#000 var(--dial-sweep), transparent 0);
+      mask:
+        radial-gradient(circle closest-side, #000 calc(100% - var(--band)), transparent 0 100%, #000 100%),
+        conic-gradient(#000 var(--dial-sweep), transparent 0);
+      animation: dial-sweep 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .is-sweeping .cycle-dial__estimates,
+    .is-sweeping .cycle-dial__ticks,
+    .is-sweeping .cycle-dial__marker {
+      animation: dial-settle-in 200ms ease-out 520ms both;
+    }
+
+    .cycle-dial__ghost.is-settling {
+      transition:
+        transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 120ms ease-in 260ms;
+      opacity: 0;
+    }
+
+    .cycle-dial__inner > * {
+      animation: dial-settle-in 160ms ease-out;
+    }
+
+    .cycle-dial__ripple {
+      animation: dial-ripple 450ms ease-out both;
+    }
+  }
+
+  @keyframes dial-sweep {
+    from {
+      --dial-sweep: 0deg;
+    }
+    to {
+      --dial-sweep: 360deg;
+    }
+  }
+
+  @keyframes dial-settle-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes dial-ripple {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(2.6);
+    }
+  }
+
   .cycle-dial__legend {
     display: flex;
     flex-wrap: wrap;

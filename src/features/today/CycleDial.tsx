@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Forecast, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
@@ -15,6 +15,19 @@ interface CycleDialProps {
   prompt?: string | null;
   intensityByDay: Record<IsoDate, LoggedFlow>;
   today: IsoDate;
+}
+
+// The ring sweeps in on the first view of each day: when the app opens, and
+// again after midnight, but not on every tab switch. Kept in memory rather than
+// storage, so the dial adds nothing to what Tide stores.
+let sweptOn: IsoDate | null = null;
+const prefersMotion = () =>
+  typeof window !== "undefined" && !window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
+function firstViewToday(today: IsoDate) {
+  if (!prefersMotion() || sweptOn === today) return false;
+  sweptOn = today;
+  return true;
 }
 
 // Day-boundary tick, drawn on its own masked layer near the outer rim (see
@@ -36,15 +49,21 @@ const BLEND_DEG = 1.4;
 // the last logged day fades out into it.
 const FADE_DEG = 8;
 
-// The filled ring carries facts only: logged days and the idle stretch.
-// Estimated days stay hollow there and get their outline from estimateColor.
+// Estimated days fill the same band with a wash of their colour, so the ring
+// stays one band; the dashed rails from estimateColor mark them as estimates.
+// The filled ring: logged days in their flow colour, the idle stretch, and a
+// wash under each estimate.
 function phaseColor(segment: CycleSegment) {
   // isPeriod first: a day logged without a level still belongs to the period
   // arc, in base coral, rather than falling through to fertile or idle.
   if (segment.isPeriod) {
     return segment.flow ? `var(--flow-${segment.flow})` : "var(--bleed)";
   }
-  return segment.isOvulation || segment.isFertile ? "transparent" : "var(--cycle-idle)";
+  return segment.isOvulation
+    ? "var(--dial-wash-ovulation)"
+    : segment.isFertile
+      ? "var(--dial-wash-fertile)"
+      : "var(--cycle-idle)";
 }
 
 function estimateColor(segment: CycleSegment) {
@@ -162,12 +181,24 @@ export function CycleDial({
   // The ring's geometry is constant for the length of a drag; measure once on
   // pointerdown instead of forcing layout on every move.
   const dragRect = useRef<DOMRect | null>(null);
+  const [sweeping] = useState(() => firstViewToday(today));
+  // After a scrub the ghost glides from the finger back to today: the angle it
+  // starts from, then (moving) today's angle with a CSS transition.
+  const [settle, setSettle] = useState<{ angle: number; moving: boolean } | null>(null);
 
   const segments = useMemo(
     () => buildCycleSegments(forecast, intensityByDay, today),
     [forecast, intensityByDay, today],
   );
   const currentIndex = segments.findIndex((segment) => segment.isCurrent);
+  // Logging today rings the marker once; the counter restarts the animation.
+  const loggedToday = segments[currentIndex]?.isPeriod === true;
+  const wasLogged = useRef(loggedToday);
+  const [ripples, setRipples] = useState(0);
+  useEffect(() => {
+    if (loggedToday && !wasLogged.current && prefersMotion()) setRipples((n) => n + 1);
+    wasLogged.current = loggedToday;
+  }, [loggedToday]);
 
   // A compact expected-period nub past the logged cycle (plus a decorative tail
   // drawn in the gradient). Kept to PREDICTED_SPAN_DAYS so it hints at the next
@@ -186,7 +217,7 @@ export function CycleDial({
   // Three conic gradients with up to ~40 stops each: rebuilt only when the data
   // changes, not on every scrub frame.
   const dialStyle = useMemo(
-    () => ringStyle(segments, predictedCount, phaseColor, "transparent"),
+    () => ringStyle(segments, predictedCount, phaseColor, "var(--dial-wash-period)"),
     [segments, predictedCount],
   );
   const estimatesStyle = useMemo(
@@ -262,6 +293,19 @@ export function CycleDial({
     setPreviewState({ index: null, angle: null });
   }
 
+  function releasePreview() {
+    const from = ghostAngle;
+    clearPreview();
+    if (from !== null && currentIndex >= 0 && prefersMotion()) setSettle({ angle: from, moving: false });
+  }
+
+  useEffect(() => {
+    if (settle && !settle.moving) {
+      const frame = requestAnimationFrame(() => setSettle({ angle: rotation, moving: true }));
+      return () => cancelAnimationFrame(frame);
+    }
+  }, [settle, rotation]);
+
   function stepPreview(step: number) {
     setPreviewState(({ index }) => {
       const from = typeof index === "number" ? index : currentIndex >= 0 ? currentIndex : 0;
@@ -290,7 +334,7 @@ export function CycleDial({
           slider is read-only and the preview reverts on blur/Escape. */}
       <div
         ref={frameRef}
-        className="cycle-dial__frame"
+        className={sweeping ? "cycle-dial__frame is-sweeping" : "cycle-dial__frame"}
         role="slider"
         aria-label={t("dial.days")}
         aria-readonly="true"
@@ -311,8 +355,8 @@ export function CycleDial({
             updatePreview(event);
           }
         }}
-        onPointerUp={clearPreview}
-        onPointerLeave={clearPreview}
+        onPointerUp={releasePreview}
+        onPointerLeave={releasePreview}
         onPointerCancel={clearPreview}
         onKeyDown={handleKeyDown}
         onBlur={clearPreview}
@@ -357,7 +401,18 @@ export function CycleDial({
         <div className="cycle-dial__ticks" style={ticksStyle} aria-hidden="true" />
         <div className="cycle-dial__marker" style={{ transform: `rotate(${rotation}deg)` }}>
           <span aria-hidden="true" className="cycle-dial__marker-dot" />
+          {ripples > 0 ? <span key={ripples} aria-hidden="true" className="cycle-dial__ripple" /> : null}
         </div>
+        {ghostAngle === null && settle ? (
+          <div
+            className={settle.moving ? "cycle-dial__ghost is-settling" : "cycle-dial__ghost"}
+            style={{ transform: `rotate(${settle.angle}deg)` }}
+            aria-hidden="true"
+            onTransitionEnd={() => setSettle(null)}
+          >
+            <span className="cycle-dial__ghost-dot" />
+          </div>
+        ) : null}
         {ghostAngle !== null ? (
           <div className="cycle-dial__ghost" style={{ transform: `rotate(${ghostAngle}deg)` }} aria-hidden="true">
             <span className="cycle-dial__ghost-dot" />

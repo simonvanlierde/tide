@@ -375,8 +375,11 @@ tracked eyebrow. A teal skip link appears top-left on keyboard focus.
 
 An open circular gauge. A conic ring fills logged days in coral at their logged intensity,
 and the ordinary days in sea-idle. Estimated days (fertile window, ovulation, the expected
-next period) stay hollow: a second layer draws them as dashed rails along the inner and
-outer edge of the band. That is the dial's version of the calendar's dashed outline.
+next period) fill the same band with a pale wash of their colour, mixed with the card
+colour so it stays a clean pastel, and a second layer draws dashed rails along the band's
+inner and outer edge. That is the dial's version of the calendar's dashed outline. The band
+stays one continuous ring; small ticks at the rim count the days. In dark mode ovulation
+keeps the fertile wash under its amber rails, because amber over the dark ground turns brown.
 Small per-day ticks sit in a thin band at the rim. A white inner disc holds, at rest, the
 estimate: an eyebrow ("Next period", or "Period" when late), "In 19 days" as the screen's
 headline, the date, and a small "Day 10 · Between periods" line (only the day when late).
@@ -385,6 +388,12 @@ previewed day: eyebrow, numeral, phase and date. Text inside the slider is not r
 the same estimate sits in a visually hidden line before it. An ink marker circles today, and a teal ghost dot follows your
 finger while you scrub. Scrubbing previews any day and changes nothing. The legend only
 names the colours the ring is actually showing.
+
+Three motions, each tied to something you do, and none under reduced motion: on the first
+view of the day the band fills clockwise from the top (600 ms), then its ticks, rails and
+marker fade in; after a scrub the ghost dot glides back to today (300 ms); logging today
+sends one thin ring out from the marker (450 ms). The sweep is remembered in memory only,
+so it adds nothing to what Tide stores.
 
 ### Calendar grid
 
