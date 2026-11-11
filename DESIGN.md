@@ -12,9 +12,9 @@ colors:
   flow-spotting: "#f0c1b6"
   flow-light: "#e89a88"
   amber: "#e8a24b"
-  sand: "#f4d6a8"
-  amber-line: "#c2610f"
-  sand-line: "#8a7a20"
+  lilac: "#ecd2f5"
+  amber-line: "#d45d00"
+  violet-line: "#b454d4"
   sea-idle: "rgba(84, 123, 121, 0.4)"
   ink: "#14303a"
   ink-soft: "#486069"
@@ -138,7 +138,7 @@ components:
 Picture a still pool of cool water with white surfaces floating on it. Navigation, labels
 and controls are calm teal and sea-grey, and cards sit on a faint gradient ground under
 wide, soft shadows. Only one warm colour breaks the calm: coral, for the body's own signal
-and nothing else. Sand and amber sit next to it, for the fertile window and ovulation.
+and nothing else. Lilac and amber sit next to it, for the fertile window and ovulation.
 
 Nothing is in a hurry: big rounded corners, 160 ms transitions, and one expressive element,
 the cycle dial on Today. Everything else stays in the background so the eye lands there
@@ -173,10 +173,11 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
 ### Tertiary
 
 - **Amber** (`amber`): the ovulation estimate.
-- **Sand** (`sand`): the fertile window.
-- **Amber Line** / **Sand Line** (`amber-line`, `sand-line`): the same two estimates as
-  outlines in the light theme, where amber and sand are too pale for a line. Dark uses
-  amber and sand themselves.
+- **Lilac** (`lilac`): the fertile window.
+- **Amber Line** / **Violet Line** (`amber-line`, `violet-line`): the same two estimates as
+  outlines in the light theme, where amber and lilac are too pale for a line. A yellow dark
+  enough for a 3:1 line turns brown, which is why the fertile window is violet. Dark uses
+  amber and a brighter lilac themselves.
 - **Sea Idle** (`sea-idle`): the ordinary days on the dial ring.
 
 ### Neutral
@@ -187,7 +188,7 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
   sizes.
 - **Ink on Solid**: white, on the solid deep-tide fills (the commit button, a switch that
   is on). Deep tide stays deep in dark mode, so this stays white too.
-- **Ink on Fill**: near-black text on coral, sand and amber. One value for both themes,
+- **Ink on Fill**: near-black text on coral, lilac and amber. One value for both themes,
   because those fills stay light in both.
 - **Surface** / **Soft Surface** / **Surface Border**: card white, inset panel, hairline.
 - **Ground**: the page gradient under a radial teal halo.
@@ -363,7 +364,7 @@ names the colours the ring is actually showing.
 ### Calendar grid
 
 Seven columns of rounded-square day buttons. Logged days fill with their flow-ramp colour.
-Expected, fertile and ovulation days are dashed outlines in coral, sand and amber, with no
+Expected, fertile and ovulation days are dashed outlines in coral, violet and amber, with no
 fill. Logged days from the next or previous month keep a lighter fill. Their estimates keep
 the full outline, because a lighter one would drop below 3:1. Today gets a short underscore
 in `currentColor`, and the selected day a teal ring. A newly logged day pulses once, unless

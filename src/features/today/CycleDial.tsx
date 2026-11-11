@@ -253,7 +253,7 @@ export function CycleDial({ forecast, phaseLabel, intensityByDay, today }: Cycle
 
   function stepPreview(step: number) {
     setPreviewState(({ index }) => {
-      const from = typeof index === "number" ? index : currentIndex >= 0 ? currentIndex : 0;
+      const from = typeof index === "number" ? index : Math.max(currentIndex, 0);
       return {
         index: Math.min(Math.max(from + step, 0), maxIndex),
         angle: null,
@@ -334,7 +334,7 @@ export function CycleDial({ forecast, phaseLabel, intensityByDay, today }: Cycle
       <CycleLegend
         className="cycle-dial__legend"
         // The key only names colours the ring actually shows: no coral dot
-        // over an all-grey first-run ring, no sand or amber without an
+        // over an all-grey first-run ring, no lilac or amber without an
         // ovulation estimate.
         showPeriod={Object.keys(intensityByDay).length > 0}
         showExpected={hasPrediction}

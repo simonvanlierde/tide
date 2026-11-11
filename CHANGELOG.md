@@ -59,6 +59,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
   number sits small inside the day's corner instead of in a bubble, with its own legend entry.
+- The fertile window is violet instead of olive, and ovulation a brighter orange, on the
+  dial and the calendar, so the two no longer look alike or brown.
 - "Add details" on the calendar names its day, and adds details for the day you last picked.
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.

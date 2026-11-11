@@ -41,14 +41,15 @@
     /* Cycle phases */
     --cycle-period: var(--bleed);
     --cycle-ovulation: #e8a24b;
-    --cycle-fertile: #f4d6a8;
+    --cycle-fertile: #ecd2f5;
     --cycle-idle: rgba(84, 123, 121, 0.4);
-    /* Estimates are dashed outlines, never fills. Sand and amber are too pale
+    /* Estimates are dashed outlines, never fills. Lilac and amber are too pale
        for a line on the light ground, so their outlines take deeper shades:
-       each clears 4.1:1 on the white card and 3.4:1 on the darkest ground. */
+       each clears 3.9:1 on the white card and 3.3:1 on the darkest ground. A
+       yellow that dark turns brown, so the fertile window is violet. */
     --estimate-period: var(--bleed-strong);
-    --estimate-fertile: #8a7a20;
-    --estimate-ovulation: #c2610f;
+    --estimate-fertile: #b454d4;
+    --estimate-ovulation: #d45d00;
     /* Text on the warm cycle fills — they stay light in both themes, so this
        stays near-black in both themes (not overridden in the dark block) to
        clear AA on coral, sand, and amber. */
@@ -126,10 +127,10 @@
     --flow-medium: #e2745c;
     --flow-heavy: #d95f45;
 
-    /* Fertile a pale warm sand, ovulation a saturated amber — clearly apart
-       from each other and from coral on the dark ground. */
+    /* Fertile a pale lilac, ovulation a saturated amber: clearly apart from
+       each other and from coral on the dark ground. */
     --cycle-ovulation: #f2a63c;
-    --cycle-fertile: #ecd3a4;
+    --cycle-fertile: #ddabed;
     --cycle-idle: rgba(194, 238, 234, 0.3);
     /* On the dark ground the fills themselves are bright enough for a line. */
     --estimate-period: var(--bleed);
