@@ -15,8 +15,7 @@ and is responsible for this page.
 
 You can:
 
-- use tide on a screen 320 px wide without scrolling sideways, which is the same as zooming in to
-  400% on a laptop;
+- use tide on a screen 320 px wide without scrolling sideways;
 - choose a dark theme in Settings, or let tide follow your device;
 - use tide in English, German, Spanish, French or Dutch;
 - turn off animations with your device's reduced-motion setting.

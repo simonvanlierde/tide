@@ -141,10 +141,10 @@ export const nl: Dictionary = {
   "insights.how": "Hoe voorspellingen werken",
   "insights.how1": "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
   "insights.howCycleStart":
-    "Een tussenpoos van {gap} dagen of meer tussen gelogde dagen start een nieuwe cyclus; kortere tussenpozen horen bij dezelfde menstruatie.",
+    "Een tussenpoos van {gap} dagen of meer tussen gelogde bloedingsdagen start een nieuwe cyclus; kortere tussenpozen horen bij dezelfde menstruatie. Spotting telt niet mee.",
   "insights.how2":
     "De cyclusduur is de mediaan van je laatste {recent} volledige cycli. Onvolledige cycli tellen niet mee. Zonder volledige cycli wordt een gebruikelijke cyclus van {cycle} dagen gebruikt.",
-  "insights.how3": "De menstruatieduur is je recente gemiddelde, beperkt tot een normale {min}–{max} dagen.",
+  "insights.how3": "De geschatte menstruatieduur is je eerdere gemiddelde, beperkt tot {min}–{max} dagen.",
   "insights.how4":
     "Je volgende menstruatie is je laatste begindatum plus die cycluslengte; de eisprong wordt {luteal} dagen daarvoor geschat.",
   "insights.howNextPeriod": "Je volgende menstruatie is je laatste begindatum plus die cycluslengte.",
@@ -233,7 +233,7 @@ export const nl: Dictionary = {
   "legal.privacy": "Privacyverklaring",
   "legal.accessibility": "Toegankelijkheids\u00adverklaring",
   "legal.inEnglish": "In het Engels",
-  "settings.privacy": "Je gegevens verlaten dit apparaat nooit.",
+  "settings.privacy": "Tide uploadt je gegevens niet.",
   "settings.fertilityDisclaimer": "Vruchtbaarheidsschattingen zijn alleen ter informatie. Ze zijn geen anticonceptie.",
   "settings.fertilityMethod":
     "De vruchtbare periode zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes.",

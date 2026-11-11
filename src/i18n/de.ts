@@ -141,10 +141,10 @@ export const de: Dictionary = {
   "insights.how": "So funktionieren die Vorhersagen",
   "insights.how1": "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet.",
   "insights.howCycleStart":
-    "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Tagen beginnt einen neuen Zyklus; kürzere Lücken gehören zur selben Periode.",
+    "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Blutungstagen beginnt einen neuen Zyklus; kürzere Lücken gehören zur selben Periode. Schmierblutungen zählen nicht mit.",
   "insights.how2":
     "Die Zykluslänge ist der Median deiner letzten {recent} vollständigen Zyklen. Unvollständige Zyklen zählen nicht mit. Ohne vollständige Zyklen wird ein typischer Zyklus von {cycle} Tagen verwendet.",
-  "insights.how3": "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
+  "insights.how3": "Die geschätzte Periodendauer ist dein bisheriger Durchschnitt, begrenzt auf {min}–{max} Tage.",
   "insights.how4":
     "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",
   "insights.howNextPeriod": "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge.",
@@ -233,7 +233,7 @@ export const de: Dictionary = {
   "legal.privacy": "Datenschutz\u00aderklärung",
   "legal.accessibility": "Erklärung zur Barrierefreiheit",
   "legal.inEnglish": "Auf Englisch",
-  "settings.privacy": "Deine Daten verlassen dieses Gerät nie.",
+  "settings.privacy": "Tide lädt deine Daten nicht hoch.",
   "settings.fertilityDisclaimer":
     "Fruchtbarkeitsschätzungen dienen nur der Information. Sie sind keine Verhütungsmethode.",
   "settings.fertilityMethod":

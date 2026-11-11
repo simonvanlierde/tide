@@ -57,6 +57,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Settings says Tide does not upload your data, instead of saying it never leaves the
+  device: backups and calendar exports do leave it when you ask.
+- Prediction explanations distinguish recent variation from a guaranteed date range.
+  The backtest now reports large errors, range coverage and a synthetic missing-log check.
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.
 - Tide asks once whether to show fertility estimates, and hides them until you

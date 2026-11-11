@@ -8,7 +8,7 @@
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/simonvanlierde/tide/badge)](https://scorecard.dev/viewer/?uri=github.com/simonvanlierde/tide)
 
 Tide is a privacy-first period tracker. It's a small React web app that you can install (a PWA),
-and it keeps all your cycle data in your browser: no accounts, no network and no analytics.
+and it keeps all your cycle data in your browser, without accounts or uploading your history.
 
 | Today | Calendar |
 | --- | --- |
@@ -23,6 +23,8 @@ Open **[tide.duinlab.nl](https://tide.duinlab.nl)** and add it to your home scre
 - **Desktop (Chrome/Edge):** install icon in the address bar
 
 Once installed, it works offline, and all data stays on your device.
+Clearing this site's browser data removes your history. Keep a backup from Settings → Data → Export
+so you can restore it later. Installing Tide does not create a separate backup or sync devices.
 
 ## Features
 
@@ -56,13 +58,16 @@ Choose **Save details** before leaving the screen. On Calendar, use the dated li
 
 ## Development
 
-You need [just](https://just.systems) and [pnpm](https://pnpm.io).
+You need Node.js 26 or newer, [just](https://just.systems) and [pnpm](https://pnpm.io).
+The `packageManager` field in `package.json` names the pnpm version used by this project.
 
 ```sh
 pnpm install
 pnpm exec playwright install chromium   # once per machine, for the e2e tests
 pnpm exec prek install                  # git hooks
 ```
+
+[Predictor performance](docs/performance.md) describes the synthetic benchmark and its limits.
 
 `pnpm dev` starts the app. `just check` runs what CI runs, and `just ts-e2e` the browser tests.
 

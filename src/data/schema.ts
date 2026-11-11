@@ -157,10 +157,12 @@ export function normalizeAppState(state: unknown): AppState {
 
 // A marker belongs to an interval, not just a date. Changed boundaries need a new choice.
 export function updateLoggedDays(state: AppState, intensityByDay: AppState["intensityByDay"]): AppState {
-  const previous = getCycleHistory(getPredictionDays(state.intensityByDay), state.incompleteCycleStarts);
-  const next = new Map(getCycleHistory(getPredictionDays(intensityByDay)).map((cycle) => [cycle.start, cycle.end]));
-  const previousStarts = getCycleStarts(getPredictionDays(state.intensityByDay));
-  const nextStarts = getCycleStarts(getPredictionDays(intensityByDay));
+  const previousDays = getPredictionDays(state.intensityByDay);
+  const nextDays = getPredictionDays(intensityByDay);
+  const previous = getCycleHistory(previousDays, state.incompleteCycleStarts);
+  const next = new Map(getCycleHistory(nextDays).map((cycle) => [cycle.start, cycle.end]));
+  const previousStarts = getCycleStarts(previousDays);
+  const nextStarts = getCycleStarts(nextDays);
   // Historical edits can reuse a cycle number for a different exported event.
   const renumbered = previousStarts.some((start, index) => nextStarts[index] !== start);
   return {
