@@ -40,6 +40,24 @@ describe("app navigation", () => {
     expect(window.location.hash).toBe("");
   });
 
+  it.each([
+    ["middle", { button: 1 }],
+    ["ctrl", { ctrlKey: true }],
+    ["shift", { shiftKey: true }],
+    ["alt", { altKey: true }],
+  ])("leaves a %s click to the browser", (_name, init) => {
+    window.history.replaceState(null, "", "/calendar");
+    render(
+      // biome-ignore lint/a11y/useValidAnchor: tests real page links handled without a reload
+      <a href="/settings" onClick={followAppLink}>
+        Settings
+      </a>,
+    );
+    const link = screen.getByRole("link", { name: "Settings" });
+    expect(fireEvent.click(link, init)).toBe(true);
+    expect(window.location.pathname).toBe("/calendar");
+  });
+
   it("resolves the known Tide screen paths", () => {
     expect(getAppScreen("/").labelKey).toBe("nav.today");
     expect(getAppScreen("/calendar").labelKey).toBe("nav.calendar");

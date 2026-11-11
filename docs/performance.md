@@ -34,23 +34,22 @@ Existing flow levels and future-date protection stay in place. Generated tests c
 the result with individually logging the same days, including incomplete-cycle markers.
 
 On a shared Ryzen 7 H 255 with Node 26.13.0, pinned to one logical CPU, a twenty-year history
-contained 1,300 logs across 260 cycles. A matched warm comparison measured:
+contained 1,300 logs across 260 cycles. The two trees ran back to back on a busy host
+(load average about 7), so read the direction, not exact ratios:
 
 | Model operation | Earlier median / p95 | Current median / p95 |
 |---|---|---|
-| Period duration | 4.39 / 5.40 ms | 1.24 / 1.25 ms |
-| Forecast with fertility enabled | 8.68 / 9.47 ms | 5.62 / 6.35 ms |
-| Add a fourteen-day range | 43.8 / 52.8 ms | 5.54 / 5.60 ms |
+| Period duration | 3.62 / 4.77 ms | 1.44 / 1.94 ms |
+| Forecast with fertility enabled | 11.7 / 19.2 ms | 6.21 / 6.26 ms |
+| Add a fourteen-day range | 91.0 / 108 ms | 6.49 / 9.22 ms |
 
-With one year of history, the separate duration comparison improved from 0.064 to 0.047 ms
-median. Small histories were already cheap; these results do not establish a visible
+With one year of history, the duration median went from 0.080 to 0.053 ms. Small histories were already cheap; these results do not establish a visible
 speed-up on a user's device. Process memory includes benchmark tooling and is not an
 estimate of the app's memory use.
 
 ## Regression checks and remaining trade-offs
 
-A counted test increases the duration fixture tenfold and checks that filter work does
-not grow quadratically. A range test checks that history reconciliation happens once,
+A range test checks that history reconciliation happens once,
 regardless of how many new days are added. Timing thresholds are deliberately absent
 from tests, so shared CI load does not decide correctness.
 
