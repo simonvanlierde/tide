@@ -28,7 +28,7 @@ export const fr: Dictionary = {
   "diary.addDetails": "Ajouter des détails",
   "diary.editDetails": "Modifier les détails",
   "diary.addDetailsFor": "Ajouter des détails pour le {date}",
-  "diary.editDetailsFor": "Modifier les détails du {date}",
+  "diary.editDetailsFor": "Modifier les détails pour le {date}",
   "diary.finishEditing": "Enregistre ou annule tes modifications avant de choisir une autre date.",
   "diary.date": "Date",
   "diary.symptoms": "Symptômes",

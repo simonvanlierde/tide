@@ -29,9 +29,10 @@ export function CalendarScreen(props: CalendarScreenProps) {
   // Details follow the last past day picked, and keep it once the picker
   // closes: tapping "Add details" closes the picker on pointerdown, before the
   // click lands.
-  const [detailsDay, setDetailsDay] = useState(today);
-  if (log.selectedDay && log.selectedDay <= today && log.selectedDay !== detailsDay) {
-    setDetailsDay(log.selectedDay);
+  // Null until a day is picked, so the default follows today past midnight.
+  const [picked, setPicked] = useState<IsoDate | null>(null);
+  if (log.selectedDay && log.selectedDay <= today && log.selectedDay !== picked) {
+    setPicked(log.selectedDay);
   }
 
   // Pop the today cell so people see exactly where they landed after "Today".
@@ -236,7 +237,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
               {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
             </button>
           )}
-          <DailyDetails today={today} day={detailsDay} month={month.visibleMonth} />
+          <DailyDetails today={today} day={picked ?? today} month={month.visibleMonth} />
         </div>
       </article>
     </section>
