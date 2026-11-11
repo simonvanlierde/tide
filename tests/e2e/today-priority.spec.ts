@@ -46,3 +46,12 @@ for (const language of SUPPORTED_LANGUAGES) {
     });
   }
 }
+
+test("the flow levels are one Tab stop after a fresh log", async ({ page }) => {
+  await seedAppState(page, "en", { showFertility: false }, {});
+  await page.goto("/");
+  await page.getByRole("button", { name: "Log bleeding today", exact: true }).click();
+  await expect(page.getByRole("radio", { name: "Spotting" })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "Add details" })).toBeFocused();
+});

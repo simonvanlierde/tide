@@ -53,6 +53,9 @@ export function FlowGauge({
               name={name}
               className="visually-hidden"
               checked={selected === level}
+              // Chromium stops on a second radio of a group with none checked;
+              // keep the group one Tab stop, arrows still move through it.
+              tabIndex={selected || level === FLOW_INTENSITIES[0] ? undefined : -1}
               onChange={() => onSelect(level)}
             />
             <span className="flow-gauge__swatch" aria-hidden="true" />
