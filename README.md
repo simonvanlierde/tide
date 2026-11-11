@@ -71,6 +71,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks and architecture,
 [decision to keep data on the device](docs/adr/0001-local-first-no-backend.md).
 [Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose) for bugs and ideas.
 
+## Social card
+
+`public/og.png` is the 1200x630 card shown when the link is shared. Its source is
+[`docs/og-card.html`](docs/og-card.html). The ring in it, `docs/og-ring.png`, is the app's own cycle dial,
+captured with sample cycles. After a change to the card or the dial, render both again (needs Playwright Chromium):
+
+```sh
+pnpm og-card
+```
+
 ## Deploy
 
 The app runs on a Cloudflare Worker that serves the build as static assets, configured in
