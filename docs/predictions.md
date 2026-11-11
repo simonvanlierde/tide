@@ -1,7 +1,7 @@
 # How predictions work
 
-Tide works out every estimate on your device, from the bleeding days you log. Nothing leaves your
-device. The code is in `src/domain/cycle.ts`.
+Tide works out every estimate on your device, from the bleeding days you log. Tide does not upload
+what you log. The code is in `src/domain/cycle.ts`.
 
 - **Cycles.** A gap of **10+ days** between logged bleeding days starts a new cycle. Bleeding days separated by a shorter gap
   belong to the same period in the model. Spotting does not count toward these estimates.

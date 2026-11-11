@@ -40,7 +40,7 @@ contained 1,300 logs across 260 cycles. A matched warm comparison measured:
 |---|---|---|
 | Period duration | 4.39 / 5.40 ms | 1.24 / 1.25 ms |
 | Forecast with fertility enabled | 8.68 / 9.47 ms | 5.62 / 6.35 ms |
-| Add a fourteen-day range | 43.8 / 52.8 ms | 3.16 / 3.44 ms |
+| Add a fourteen-day range | 43.8 / 52.8 ms | 5.54 / 5.60 ms |
 
 With one year of history, the separate duration comparison improved from 0.064 to 0.047 ms
 median. Small histories were already cheap; these results do not establish a visible
