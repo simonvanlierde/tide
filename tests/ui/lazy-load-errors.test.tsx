@@ -44,6 +44,18 @@ describe("a lazy chunk that fails to load", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
+  it("raises no alert in Cycle insights when there is no estimate to explain", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<TodayScreen today="2026-04-21" />, {
+      state: createAppState(),
+    });
+
+    await user.click(screen.getByRole("button", { name: /cycle insights/i }));
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
   it("says so in Settings instead of saving nothing", async () => {
     const user = userEvent.setup();
     renderWithAppState(<SettingsScreen today="2026-04-18" />, {

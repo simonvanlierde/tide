@@ -46,7 +46,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const [Explainer, setExplainer] = useState<Explainer | null | false>(null);
   const openInsights = () => {
     setInsightsOpen(true);
-    if (!Explainer) {
+    if (explanation && !Explainer) {
       import("./ForecastExplainer").then(
         (m) => setExplainer(() => m.ForecastExplainer),
         () => setExplainer(false),
@@ -79,7 +79,6 @@ export function TodayScreen(props: TodayScreenProps) {
     isTodayLogged,
     dismissedOn: state.settings.dismissedOn,
   });
-  const explanation = explainForecast(forecast);
   const learningNote = getLearningNote(t, forecast.estimateMode);
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
@@ -98,6 +97,8 @@ export function TodayScreen(props: TodayScreenProps) {
             ? t("today.expectedOn", { date: formatShortDate(forecast.nextPeriod.date, locale) })
             : formatShortDate(forecast.nextPeriod.date, locale),
         };
+  // Explain only an estimate the dial shows.
+  const explanation = estimate ? explainForecast(forecast) : null;
   const logVariant =
     !isTodayLogged &&
     (forecast.phaseLabel === "menstrual" || reminderState.isExpectedSoon || forecast.estimateMode === "insufficient")
@@ -223,7 +224,7 @@ export function TodayScreen(props: TodayScreenProps) {
           onClose={() => setInsightsOpen(false)}
         >
           {explanation && Explainer ? <Explainer explanation={explanation} /> : null}
-          {Explainer === false ? (
+          {explanation && Explainer === false ? (
             <p className="insights__note" role="alert">
               {t("today.explainError")}
             </p>
