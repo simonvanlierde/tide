@@ -122,8 +122,8 @@
     box-shadow: var(--shadow-soft);
   }
 
-  /* Estimates (fertile window, ovulation, the expected period) are hollow in
-     the ring. This layer draws their outline: the estimate colours, masked to
+  /* Estimates (fertile window, ovulation, the expected period) are a pale wash
+     in the ring (--dial-wash-*). This layer draws their outline: the estimate colours, masked to
      two thin rails at the band's inner and outer edge and cut into dashes,
      the same dashed outline the calendar uses. */
   .cycle-dial__estimates {
