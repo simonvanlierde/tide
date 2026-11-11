@@ -27,8 +27,10 @@ export const fr: Dictionary = {
   // Optional daily details
   "diary.addDetails": "Ajouter des détails",
   "diary.editDetails": "Modifier les détails",
+  "diary.addDetailsFor": "Ajouter des détails pour le {date}",
   "diary.details": "Détails",
   "diary.done": "Terminé",
+  "diary.editDetailsFor": "Modifier les détails pour le {date}",
   "diary.undo": "Annuler",
   "diary.date": "Date",
   "diary.symptoms": "Symptômes",
@@ -74,7 +76,7 @@ export const fr: Dictionary = {
   "today.inDays.one": "Dans {n} jour",
   "today.inDays.other": "Dans {n} jours",
   "today.higherToday": "Dans la fenêtre de fertilité",
-  "today.lowerToday": "Hors de la fenêtre de fertilité",
+  "today.lowerToday": "Hors fenêtre de fertilité",
   "today.notBirthControl": "Une estimation. Ne l’utilise pas comme contraception.",
   "fertilityAsk.title": "Afficher les estimations de fertilité ?",
   "fertilityAsk.body":
@@ -149,7 +151,9 @@ export const fr: Dictionary = {
   "legend.period": "Règles",
   "legend.expected": "Règles prévues",
   "legend.fertileWindow": "Fenêtre de fertilité",
+  "legend.fertile": "Fertile",
   "legend.ovulation": "Ovulation",
+  "legend.cycleDay": "Jour du cycle",
 
   "flow.legend": "Flux",
   "flow.spotting": "Spotting",

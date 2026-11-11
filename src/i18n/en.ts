@@ -27,8 +27,10 @@ export const en = {
   // Optional daily details
   "diary.addDetails": "Add details",
   "diary.editDetails": "Edit details",
+  "diary.addDetailsFor": "Add details for {date}",
   "diary.details": "Details",
   "diary.done": "Done",
+  "diary.editDetailsFor": "Edit details for {date}",
   "diary.undo": "Undo",
   "diary.date": "Date",
   "diary.symptoms": "Symptoms",
@@ -150,7 +152,9 @@ export const en = {
   "legend.period": "Period",
   "legend.expected": "Expected period",
   "legend.fertileWindow": "Fertile window",
+  "legend.fertile": "Fertile",
   "legend.ovulation": "Ovulation",
+  "legend.cycleDay": "Cycle day",
 
   // Flow gauge
   "flow.legend": "Flow",

@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { type KeyboardEvent, type TouchEvent, useEffect, useRef } from "react";
+import { CalendarRange, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { type KeyboardEvent, type TouchEvent, useEffect, useRef, useState } from "react";
 import { MAX_PERIOD_RANGE_DAYS } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
 import type { MessageKey } from "../../i18n";
@@ -26,6 +26,14 @@ export function CalendarScreen(props: CalendarScreenProps) {
   const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wantPinpoint = useRef(false);
+  // Details follow the last past day picked, and keep it once the picker
+  // closes: tapping "Add details" closes the picker on pointerdown, before the
+  // click lands.
+  // Null until a day is picked, so the default follows today past midnight.
+  const [picked, setPicked] = useState<IsoDate | null>(null);
+  if (log.selectedDay && log.selectedDay <= today && log.selectedDay !== picked) {
+    setPicked(log.selectedDay);
+  }
 
   // Pop the today cell so people see exactly where they landed after "Today".
   // goToToday changes the month inside a transition, so wait for the current
@@ -201,19 +209,10 @@ export function CalendarScreen(props: CalendarScreenProps) {
               {t("calendar.undo")}
             </button>
           </p>
-        ) : (
+        ) : helpKey === "calendar.tapHelp" ? null : (
+          // Once something is logged, tapping a day is known; only first use
+          // and future months need the hint.
           <p className="supporting-note calendar__help">{t(helpKey)}</p>
-        )}
-        {log.selectedDay ? null : (
-          // One button that turns into Cancel, so focus stays put when a
-          // pick is cancelled.
-          <button
-            type="button"
-            className="text-action calendar__range"
-            onClick={log.rangePick ? log.cancelRangePick : handleStartRange}
-          >
-            {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
-          </button>
         )}
         {month.isCurrent ? null : (
           <button
@@ -225,7 +224,21 @@ export function CalendarScreen(props: CalendarScreenProps) {
             {t("calendar.today")}
           </button>
         )}
-        <DailyDetails today={today} month={month.visibleMonth} />
+        <div className="calendar__actions">
+          {log.selectedDay ? null : (
+            // One button that turns into Cancel, so focus stays put when a
+            // pick is cancelled.
+            <button
+              type="button"
+              className="calendar__action"
+              onClick={log.rangePick ? log.cancelRangePick : handleStartRange}
+            >
+              {log.rangePick ? null : <CalendarRange aria-hidden="true" size={18} strokeWidth={1.8} />}
+              {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
+            </button>
+          )}
+          <DailyDetails today={today} day={picked ?? today} month={month.visibleMonth} />
+        </div>
       </article>
     </section>
   );
@@ -239,8 +252,9 @@ const LEGEND_ITEMS = [
   // The same words as the Today dial's legend: one name per marker.
   { key: "logged", labelKey: "legend.period" },
   { key: "predicted", labelKey: "legend.expected" },
-  { key: "fertile", labelKey: "legend.fertileWindow" },
+  { key: "fertile", labelKey: "legend.fertile" },
   { key: "ovulation", labelKey: "legend.ovulation" },
+  { key: "cycle-day", labelKey: "legend.cycleDay" },
 ] as const satisfies readonly { key: string; labelKey: MessageKey }[];
 
 const LEGEND_KEY = {
@@ -254,7 +268,12 @@ const LEGEND_KEY = {
 // own marker to screen readers, so the visual legend is decorative here.
 function CalendarLegend({ days }: { days: CalendarCell[] }) {
   const t = useT();
-  const present = new Set(days.map((day) => (day.isLogged ? "logged" : day.estimate && LEGEND_KEY[day.estimate])));
+  const present = new Set<string | null>(
+    days.map((day) => (day.isLogged ? "logged" : day.estimate && LEGEND_KEY[day.estimate])),
+  );
+  if (days.some((day) => day.cycleDay)) {
+    present.add("cycle-day");
+  }
   const items = LEGEND_ITEMS.filter((item) => present.has(item.key));
   if (items.length === 0) {
     return null;
@@ -264,7 +283,11 @@ function CalendarLegend({ days }: { days: CalendarCell[] }) {
     <div className="calendar-legend" aria-hidden="true">
       {items.map((item) => (
         <span key={item.key} className="calendar-legend__item">
-          <span className={`calendar-legend__swatch calendar-legend__swatch--${item.key}`} />
+          {item.key === "cycle-day" ? (
+            <span className="calendar-legend__count">3</span>
+          ) : (
+            <span className={`calendar-legend__swatch calendar-legend__swatch--${item.key}`} />
+          )}
           {t(item.labelKey)}
         </span>
       ))}

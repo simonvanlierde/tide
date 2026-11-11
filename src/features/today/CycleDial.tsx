@@ -35,7 +35,7 @@ function firstViewToday(today: IsoDate) {
 // whole ring.
 const TICK_DEG = 0.8;
 const TICK_COLOR = "color-mix(in srgb, var(--ink) 16%, transparent)";
-// The expected period is an estimate, drawn like the fertile window: a dashed
+// The expected period is an estimate, drawn like the fertile window: an
 // outline (see .cycle-dial__estimates) that dissolves toward the top seam.
 const PREDICTED_FADE_DEG = 16; // how far the expected outline tapers toward the top
 const PREDICTED_TAIL_STEP = 1.25; // tail length past the arc, in day-widths
@@ -50,7 +50,7 @@ const BLEND_DEG = 1.4;
 const FADE_DEG = 8;
 
 // Estimated days fill the same band with a wash of their colour, so the ring
-// stays one band; the dashed rails from estimateColor mark them as estimates.
+// stays one band; the rails from estimateColor mark them as estimates.
 // The filled ring: logged days in their flow colour, the idle stretch, and a
 // wash under each estimate.
 function phaseColor(segment: CycleSegment) {
@@ -308,7 +308,7 @@ export function CycleDial({
 
   function stepPreview(step: number) {
     setPreviewState(({ index }) => {
-      const from = typeof index === "number" ? index : currentIndex >= 0 ? currentIndex : 0;
+      const from = typeof index === "number" ? index : Math.max(currentIndex, 0);
       return {
         index: Math.min(Math.max(from + step, 0), maxIndex),
         angle: null,
@@ -422,7 +422,7 @@ export function CycleDial({
       <CycleLegend
         className="cycle-dial__legend"
         // The key only names colours the ring actually shows: no coral dot
-        // over an all-grey first-run ring, no sand or amber without an
+        // over an all-grey first-run ring, no periwinkle or amber without an
         // ovulation estimate.
         showPeriod={Object.keys(intensityByDay).length > 0}
         showExpected={hasPrediction}

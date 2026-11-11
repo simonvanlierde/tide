@@ -1229,27 +1229,21 @@
     min-width: 0;
     border-radius: var(--radius-segment);
     padding: 8px 0;
+    /* A day with nothing on it is a bare number; only marked days get a
+       shape. The border stays, transparent, so marking a day doesn't move it. */
+    border-color: transparent;
     color: var(--ink);
-    background: var(--surface-soft);
+    background: transparent;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Running cycle-day count in the corner of a day that has happened. Opaque
-     disc + hairline so it reads on the soft surface and on fertile/ovulation
-     fills alike, and quieter than the day number so it never competes. */
+  /* Running cycle-day count, inside the tile's corner and quieter than the
+     day number. No disc: a disc on the corner reads as an unread count. */
   .calendar-grid__period-day {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    display: inline-grid;
-    place-items: center;
-    min-width: 15px;
-    height: 15px;
-    padding: 0 3px;
-    border-radius: var(--radius-pill);
-    background: var(--surface);
+    top: 3px;
+    right: 4px;
     color: var(--ink-muted);
-    box-shadow: inset 0 0 0 1px var(--surface-border);
     font-size: var(--text-xs);
     line-height: 1;
     font-variant-numeric: tabular-nums;
@@ -1299,25 +1293,31 @@
     opacity: 0.7;
   }
 
-  /* Estimates: a dashed outline in the estimate's colour and no fill, so no
-     estimate reads as a logged day. The outline is the only cue: the day
+  /* Estimates: an outline in the estimate's colour over a faint wash, never a
+     logged day's full fill, so no estimate reads as a logged day. The outline is the only cue: the day
      number keeps its own colour, as on every other estimate. Placed after
      the future/disabled rules, and at full opacity, so the outline keeps its
      3:1 contrast. */
   .calendar-grid__day.is-fertile,
   .calendar-grid__day.is-ovulation,
   .calendar-grid__day.is-predicted-period {
-    background: transparent;
-    border: 2px dashed var(--estimate-fertile);
+    --estimate: var(--estimate-fertile);
+    /* A faint wash groups the window into a band. */
+    background: color-mix(in srgb, var(--estimate) var(--estimate-tint), transparent);
+    border: 1.5px solid var(--estimate);
     opacity: 1;
   }
 
+  /* One peak day: a heavier line and a wash of the amber fill, so it differs
+     from the period estimate in weight as well as hue. */
   .calendar-grid__day.is-ovulation {
-    border-color: var(--estimate-ovulation);
+    --estimate: var(--estimate-ovulation);
+    background: color-mix(in srgb, var(--cycle-ovulation) calc(var(--estimate-tint) * 2.2), transparent);
+    border-width: 2.5px;
   }
 
   .calendar-grid__day.is-predicted-period {
-    border-color: var(--estimate-period);
+    --estimate: var(--estimate-period);
   }
 
   .calendar-grid__day.is-logged {

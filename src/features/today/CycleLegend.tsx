@@ -30,7 +30,7 @@ export function CycleLegend({ className, showPeriod, showExpected, showFertility
         <>
           <span className="cycle-view__legend-item">
             <span className="cycle-view__dot cycle-view__dot--fertile" aria-hidden="true" />
-            {t("legend.fertileWindow")}
+            {t("legend.fertile")}
           </span>
           <span className="cycle-view__legend-item">
             <span className="cycle-view__dot cycle-view__dot--ovulation" aria-hidden="true" />

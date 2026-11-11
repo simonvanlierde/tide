@@ -33,7 +33,7 @@ so you can restore it later. Installing Tide does not create a separate backup o
   you logged bleeding. These details stay in your diary and do not affect predictions.
 - A cycle dial shows today's cycle day and phase. Drag along it to preview other days.
 - Next-period estimates, and if you choose to see them, an approximate fertile window and
-  ovulation estimate. Every prediction is a dashed outline, so it never looks like a logged day.
+  ovulation estimate. Every prediction is an outline, so it never looks like a logged day.
   [How predictions work](docs/predictions.md), and Today shows the sums behind your own date.
 - Save your next expected periods as a calendar file for any calendar app.
 - Cycle insights show the latest 12 completed cycle lengths as a chart and a table.

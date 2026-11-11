@@ -1,4 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
+import { translate } from "../../src/i18n";
 import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 
@@ -110,7 +111,7 @@ const SCREENS: {
   {
     name: "calendar past period",
     path: "/calendar",
-    open: (page) => page.locator(".calendar__range").click(),
+    open: (page) => page.locator(".calendar__actions > .calendar__action").click(),
   },
   { name: "settings", path: "/settings" },
   {
@@ -272,6 +273,21 @@ for (const size of SIZES) {
           });
 
           expect(maxBottom).toBeLessThanOrEqual(tabTop + 1);
+        });
+      }
+
+      // The fertility status is a short label beside its heading; on a common
+      // phone a second line reads as a sentence, not a status.
+      if (size.width >= 360) {
+        test("keeps the fertility status on one line", async ({ page }) => {
+          await page.goto("/");
+          const status = page.getByText(translate(language, "today.lowerToday"), { exact: true });
+          const lines = await status.evaluate((span) => {
+            const range = document.createRange();
+            range.selectNodeContents(span);
+            return range.getClientRects().length;
+          });
+          expect(lines).toBe(1);
         });
       }
 

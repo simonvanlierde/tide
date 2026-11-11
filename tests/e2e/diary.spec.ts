@@ -9,7 +9,7 @@ test("keyboard date edits keep the selected day segment and load its details", a
   await page.clock.setFixedTime(new Date("2026-11-11T12:00:00Z"));
   // Only the Calendar's details pick a date; Today's are for today.
   await page.goto("/calendar");
-  await page.getByRole("button", { name: en["diary.addDetails"], exact: true }).click();
+  await page.getByRole("button", { name: /^Add details for / }).click();
   const date = page.getByLabel(en["diary.date"], { exact: true });
   await expect(date).toHaveValue("2026-11-11");
   await date.press("ArrowRight");

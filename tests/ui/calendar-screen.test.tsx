@@ -2,6 +2,7 @@ import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
+import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, createLearnedCycleState, renderWithAppState } from "../support/app";
 
 const originalAnimate = HTMLElement.prototype.animate;
@@ -33,6 +34,17 @@ describe("CalendarScreen", () => {
 
     expect(screen.getByLabelText(/calendar/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /april 2026/i })).toBeInTheDocument();
+  });
+
+  it("drops the tap hint once something is logged, and keeps both actions on one row", () => {
+    const { container } = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    expect(screen.queryByText(/tap a day to log or edit bleeding/i)).not.toBeInTheDocument();
+    const row = container.querySelector(".calendar__actions");
+    expect(row).toContainElement(screen.getByRole("button", { name: /log a past period/i }));
+    expect(row).toContainElement(screen.getByRole("button", { name: /add details for/i }));
   });
 
   it("lays the month out as a table with a weekday header per column", () => {
@@ -484,6 +496,7 @@ describe("CalendarScreen", () => {
       state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
     });
     expect(withNumbers.container.querySelectorAll(".calendar-grid__period-day")).not.toHaveLength(0);
+    expect(withNumbers.container.querySelector(".calendar-legend")).toHaveTextContent(/cycle day/i);
     withNumbers.unmount();
 
     const hidden = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
@@ -493,6 +506,48 @@ describe("CalendarScreen", () => {
       }),
     });
     expect(hidden.container.querySelectorAll(".calendar-grid__period-day")).toHaveLength(0);
+    expect(hidden.container.querySelector(".calendar-legend")).not.toHaveTextContent(/cycle day/i);
+  });
+
+  it("adds details for the selected day, today until one is picked", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    });
+
+    expect(screen.getByRole("button", { name: /add details for sat, apr 18/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /april 2, 2026/i }));
+    await user.click(screen.getByRole("button", { name: /add details for thu, apr 2/i }));
+
+    expect(screen.getByLabelText(/^date$/i)).toHaveValue("2026-04-02");
+  });
+
+  it("keeps details on the last past day when a logged future day is picked", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02", "2026-04-20"] }),
+    });
+    await user.click(screen.getByRole("button", { name: /april 2, 2026/i }));
+    // A picked day takes the place of the range action.
+    expect(screen.queryByRole("button", { name: /log a past period/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /edit april 20, 2026/i }));
+    expect(screen.getByRole("button", { name: /add details for thu, apr 2/i })).toBeInTheDocument();
+  });
+
+  it("names Edit for a day with details, and moves to the new today at midnight", () => {
+    const state = {
+      ...createAppState({ periodDays: ["2026-04-02"] }),
+      detailsByDay: { "2026-04-18": { symptoms: null, mood: "good" as const, note: "" } },
+    };
+    const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, { state });
+    expect(screen.getByRole("button", { name: /edit details for sat, apr 18/i })).toBeInTheDocument();
+
+    view.rerender(
+      <AppStateProvider initialState={state}>
+        <CalendarScreen today="2026-04-19" />
+      </AppStateProvider>,
+    );
+    expect(screen.getByRole("button", { name: /add details for sun, apr 19/i })).toBeInTheDocument();
   });
 
   it("tells a first-timer what to tap, and shows no legend for markers that aren't there", () => {
@@ -511,7 +566,9 @@ describe("CalendarScreen", () => {
 
     const legend = container.querySelector(".calendar-legend");
     expect(legend).toHaveTextContent(/period/i);
-    expect(legend).toHaveTextContent(/fertile window/i);
+    expect(legend).toHaveTextContent(/fertile/i);
+    // The short name keeps the legend on one line.
+    expect(legend).not.toHaveTextContent(/window/i);
     expect(legend).not.toHaveTextContent(/logged/i);
   });
 

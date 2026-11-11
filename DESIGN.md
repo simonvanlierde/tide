@@ -12,9 +12,9 @@ colors:
   flow-spotting: "#f0c1b6"
   flow-light: "#e89a88"
   amber: "#e8a24b"
-  sand: "#f4d6a8"
-  amber-line: "#c2610f"
-  sand-line: "#8a7a20"
+  periwinkle: "#e0e3f7"
+  amber-line: "#b07d00"
+  periwinkle-line: "#5d68c4"
   sea-idle: "rgba(84, 123, 121, 0.4)"
   ink: "#14303a"
   ink-soft: "#486069"
@@ -138,7 +138,7 @@ components:
 Picture a still pool of cool water with white surfaces floating on it. Navigation, labels
 and controls are calm teal and sea-grey, and cards sit on a faint gradient ground under
 wide, soft shadows. Only one warm colour breaks the calm: coral, for the body's own signal
-and nothing else. Sand and amber sit next to it, for the fertile window and ovulation.
+and nothing else. Periwinkle and amber sit next to it, for the fertile window and ovulation.
 
 Nothing is in a hurry: big rounded corners, 160 ms transitions, and one expressive element,
 the cycle dial on Today. The dial leads and carries the next-period estimate in its
@@ -166,17 +166,19 @@ centre; the log block sits under it, in thumb reach. Dark mode is the same pool 
 ### Secondary
 
 - **Coral** (`coral`): bleeding, and nothing else. Logged days, the log button, the dial's
-  period arc. The dashed expected outline uses `coral-deep` in light and `coral` in dark.
+  period arc. The expected-period outline uses `coral-deep` in light and `coral` in dark.
 - **Flow ramp** (`flow-spotting` → `flow-light` → coral → `flow-heavy`): rising intensity.
   Heavy gets its own step so the near-black number on it still passes AA.
 
 ### Tertiary
 
 - **Amber** (`amber`): the ovulation estimate.
-- **Sand** (`sand`): the fertile window.
-- **Amber Line** / **Sand Line** (`amber-line`, `sand-line`): the same two estimates as
-  outlines in the light theme, where amber and sand are too pale for a line. Dark uses
-  amber and sand themselves.
+- **Periwinkle** (`periwinkle`): the fertile window.
+- **Amber Line** / **Periwinkle Line** (`amber-line`, `periwinkle-line`): the same two estimates as
+  outlines in the light theme, where amber and periwinkle are too pale for a line. A yellow dark
+  enough for a 3:1 line turns brown, which is why the fertile window is a cool periwinkle, well apart from coral and the teal ring. Amber Line
+  is a gold rather than an orange, so ovulation stays apart from the coral period. Dark uses
+  amber and a brighter periwinkle themselves.
 - **Sea Idle** (`sea-idle`): the ordinary days on the dial ring.
 
 ### Neutral
@@ -187,7 +189,7 @@ centre; the log block sits under it, in thumb reach. Dark mode is the same pool 
   sizes.
 - **Ink on Solid**: white, on the solid deep-tide fills (the commit button, a switch that
   is on). Deep tide stays deep in dark mode, so this stays white too.
-- **Ink on Fill**: near-black text on coral, sand and amber. One value for both themes,
+- **Ink on Fill**: near-black text on coral, periwinkle and amber. One value for both themes,
   because those fills stay light in both.
 - **Surface** / **Soft Surface** / **Surface Border**: card white, inset panel, hairline.
 - **Ground**: the page gradient under a radial teal halo.
@@ -197,12 +199,18 @@ centre; the log block sits under it, in thumb reach. Dark mode is the same pool 
 **The One Warm Voice Rule.** Coral means bleeding. Never use it for a button, badge or
 accent that isn't about the period.
 
-**The Outline Rule.** Every estimate is a dashed outline in its colour, with no fill: the
-expected period, the fertile window and ovulation, on the dial, the calendar and both
-legends, in both themes. Only logged days get a fill. The outline is the whole encoding:
+**The Outline Rule.** Every estimate is a thin solid outline in its colour, never a full
+fill: the expected period, the fertile window and ovulation, on the dial, the calendar and
+both legends, in both themes. Only logged days get a full fill. No line is dashed: dashes in
+several colours read as noise, and an outline against a full fill already tells an estimate
+from a logged day. On the light calendar an estimated
+day also takes a 10% wash of its colour (`--estimate-tint`), so a window reads as one band;
+dark mode has none, because amber over the dark ground turns brown. The outline is the whole encoding:
 an estimated day's number keeps its ordinary colour, so the expected period looks no more
 certain than the fertile window. Each outline passes 3:1 against the card and the page
-ground.
+ground. Ovulation, the one peak day, takes a heavier line on the calendar (2.5 px; legend
+swatches keep 1.5 px) and a wash of amber, so it differs from the period estimate by weight as
+well as hue.
 
 **The Paired Themes Rule.** Dark is not light inverted. Tune every fill and ink step again
 for the dark ground, so `ink-on-fill` still passes AA on it. The values above are the
@@ -254,9 +262,11 @@ The shell is a size container, so layout changes follow the shell, not the viewp
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
-reads as the list going on. The dial is `min(17rem, 70vw, 34dvh, 100%)`, capped by height so the log block stays
-above the tab bar on a short phone, and is a
-container itself. So are the fact rows: below 22em each label sits above its value. A
+reads as the list going on. Legend labels are the short names ("Fertile", not "Fertile
+window"), so the row fits one line at 390 px in every language. The dial's larger legend
+never fits one row on a phone, so it is two even rows of two. The dial is
+`min(17rem, 70vw, 34dvh, 100%)`, capped by height so the log block stays above the tab bar on
+a short phone, and is a container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
 ## Elevation & Depth
@@ -286,7 +296,7 @@ casting a second shadow. The active segmented option is the only exception.
 
 Everything is rounded, every radius is a token, and bigger blocks get bigger corners:
 
-- **Pill**: chips, switches, markers, corner bubbles, the skip link.
+- **Pill**: chips, switches, markers, the skip link.
 - **Swatch** (5 px), **control** (10 px): legend swatches, and options inside a segmented
   track.
 - **Field** (12 px): selects and inputs.
@@ -295,9 +305,10 @@ Everything is rounded, every radius is a token, and bigger blocks get bigger cor
 - **Prompt** (18 px): the backup reminder.
 - **Card** (20–22 px): the fact list, utility cards.
 
-The dial is a circle. Calendar days are rounded squares. A day that has happened shows its
-cycle-day number in a corner bubble, and an estimated day gets a 2 px dashed outline with
-no fill. Borders are 1 px hairlines at 9% ink.
+The dial is a circle. A calendar day with nothing on it is a bare number; only logged,
+estimated and selected days get a rounded square. A day that has happened shows its
+cycle-day number small and muted inside the top corner, with no bubble, so it never reads as
+an unread count. An estimated day gets a 1.5 px outline and, in light mode, a faint wash. Borders are 1 px hairlines at 9% ink.
 
 ## Components
 
@@ -376,8 +387,8 @@ tracked eyebrow. A teal skip link appears top-left on keyboard focus.
 An open circular gauge. A conic ring fills logged days in coral at their logged intensity,
 and the ordinary days in sea-idle. Estimated days (fertile window, ovulation, the expected
 next period) fill the same band with a pale wash of their colour, mixed with the card
-colour so it stays a clean pastel, and a second layer draws dashed rails along the band's
-inner and outer edge. That is the dial's version of the calendar's dashed outline. The band
+colour so it stays a clean pastel, and a second layer draws thin rails along the band's
+inner and outer edge. That is the dial's version of the calendar's outline. The band
 stays one continuous ring; small ticks at the rim count the days. In dark mode ovulation
 keeps the fertile wash under its amber rails, because amber over the dark ground turns brown.
 Small per-day ticks sit in a thin band at the rim. A white inner disc holds, at rest, the
@@ -398,14 +409,16 @@ so it adds nothing to what Tide stores.
 ### Calendar grid
 
 Seven columns of rounded-square day buttons. Logged days fill with their flow-ramp colour.
-Expected, fertile and ovulation days are dashed outlines in coral, sand and amber, with no
-fill. Logged days from the next or previous month keep a lighter fill. Their estimates keep
+Expected, fertile and ovulation days are fine outlines in coral, periwinkle and amber,
+washed at 10% in light mode. Logged days from the next or previous month keep a lighter fill. Their estimates keep
 the full outline, because a lighter one would drop below 3:1. Today gets a short underscore
 in `currentColor`, and the selected day a teal ring. A newly logged day pulses once, unless
 the user asked for reduced motion. The grid is one tab stop, and you move through it with
 the arrow keys. Logging a past period uses the same grid: the first day you pick keeps the
 selection ring until you pick the last day, and a status line under the grid says what
-comes next.
+comes next. Under the legend, "Log a past period" and the picked day's details are two
+quiet buttons in one group, side by side when they fit. The "Tap a day" hint shows only
+until the first log, and for future months.
 
 ### Backup reminder
 

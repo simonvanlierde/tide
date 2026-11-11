@@ -47,7 +47,9 @@ export function DetailsButton({
 }
 
 /** The Calendar's details: a trigger for the shown day and the month's detail-only days. */
-export function DailyDetails({ today, month }: { today: IsoDate; month: IsoDate }) {
+// `day` is the day the trigger opens, named in its label (the Calendar's
+// selected day). Without it the trigger opens today and needs no date.
+export function DailyDetails({ today, day: target, month }: { today: IsoDate; day?: IsoDate; month: IsoDate }) {
   const state = useAppState();
   const t = useT();
   const locale = useLocale();
@@ -70,16 +72,21 @@ export function DailyDetails({ today, month }: { today: IsoDate; month: IsoDate 
       <button
         ref={trigger}
         type="button"
-        className="text-action daily-details__trigger"
+        className={target ? "calendar__action daily-details__trigger" : "text-action daily-details__trigger"}
         disabled={open}
         aria-expanded={open}
         aria-controls={id}
         onClick={() => {
-          setDay(today);
+          setDay(target ?? today);
           setOpen(true);
         }}
       >
-        {t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
+        {target ? <AppIcon icon={NotebookPen} className="button-icon" /> : null}
+        {target
+          ? t(state.detailsByDay[target] ? "diary.editDetailsFor" : "diary.addDetailsFor", {
+              date: formatShortDate(target, locale),
+            })
+          : t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
       </button>
       <div id={id}>{open ? <DetailsForm day={day} today={today} onDayChange={setDay} onClose={close} /> : null}</div>
       {!open && entries.length > 0 ? (

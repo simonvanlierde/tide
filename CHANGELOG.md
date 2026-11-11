@@ -57,6 +57,19 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
+  number sits small inside the day's corner instead of in a bubble, with its own legend entry.
+- The fertile window is periwinkle instead of olive, and ovulation gold, on the dial and the
+  calendar, so neither looks brown and ovulation no longer looks like the expected period.
+  The ovulation day also has a heavier line.
+- Estimates are no longer dashed. Expected, fertile and ovulation days have a thin solid
+  outline and, in light mode, a faint wash of their colour, on the dial, the calendar and the
+  legends, so the fertile window reads as one band instead of a row of boxes.
+- Under the calendar, "Log a past period" and the day's details are two buttons in one
+  group, and the "Tap a day" hint shows only until your first log.
+- "Add details" on the calendar names its day, and adds details for the day you last picked.
+- The German and French fertility line on Today is shorter, so it fits on one line on a phone.
+- The legend under the dial sits in two even rows instead of three items and one on its own.
 - The dial's fertile window, ovulation and expected period fill its band with a pale wash
   of their colour, so the ring reads as one band. The ring fills in on the first look of the
   day, the scrub dot glides home when you let go, and logging today sends one ring out from
@@ -97,7 +110,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   names the same fertile window as the legends, and no longer says a day is
   "less likely", which could read as a safe day.
 - The calendar legend uses the same words as the Today legend: Period,
-  Expected period, Fertile window, Ovulation.
+  Expected period, Fertile, Ovulation. "Fertile" is short for the fertile window,
+  so the calendar legend fits on one line on most phones.
 - One word for every forecast in all five languages: "expected" (the expected
   period, expected ovulation), where some screens said "predicted" or "likely".
   Settings explains the fertile window in those words and says the estimates
