@@ -340,11 +340,7 @@ describe("TodayScreen", () => {
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.getAllByText(/^period$/i).some((el) => el.tagName === "DT")).toBe(true);
     expect(screen.getByText(/1 day late/i)).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        (_, el) => el?.classList.contains("fact__meta") === true && /^Expected /.test(el.textContent ?? ""),
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^Expected /)).toBeInTheDocument();
   });
 
   it("dismisses the prompt for the day with 'Not yet'", async () => {

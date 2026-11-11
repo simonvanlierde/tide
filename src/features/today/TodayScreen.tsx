@@ -101,14 +101,53 @@ export function TodayScreen(props: TodayScreenProps) {
           phase: getPhaseWord(t, forecast.phaseLabel),
         })}
       </h1>
-      <CycleDial
-        forecast={forecast}
-        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
-        intensityByDay={state.intensityByDay}
-        today={today}
-      />
+      <div className="today-screen__lead">
+        {forecast.estimateMode === "insufficient" ? (
+          <p className="today-screen__intro">{learningNote}</p>
+        ) : (
+          <dl className="today-forecast">
+            <dt className="today-forecast__label">{t(isOverdue ? "today.periodLate" : "today.nextPeriod")}</dt>
+            <dd className="today-forecast__value">
+              <span>{getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil)}</span>
+              {forecast.nextPeriod.date ? (
+                <span className="today-forecast__date">
+                  {isOverdue
+                    ? t("today.expectedOn", {
+                        date: formatShortDate(forecast.nextPeriod.date, locale),
+                      })
+                    : formatShortDate(forecast.nextPeriod.date, locale)}
+                </span>
+              ) : null}
+            </dd>
+          </dl>
+        )}
+        {forecast.estimateMode !== "insufficient" && learningNote ? (
+          <p className="today-screen__note">{learningNote}</p>
+        ) : null}
+        {reminderState.shouldPrompt && reminderState.expectedDate ? (
+          <ReminderPrompt
+            isOverdue={reminderState.isOverdue}
+            expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
+            onLog={toggleToday}
+            onDismiss={() => {
+              setFocusPending(true);
+              actions.dismissReminder(today);
+            }}
+            autoFocus={focusPending}
+          />
+        ) : (
+          <LogAction
+            isLogged={isTodayLogged}
+            intensity={state.intensityByDay[today]}
+            variant={logVariant}
+            onToggle={toggleToday}
+            onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
+            autoFocus={focusPending}
+          />
+        )}
+        <p className="today-screen__privacy">{t("today.privacy")}</p>
+      </div>
 
-      {learningNote ? <p className="today-screen__note">{learningNote}</p> : null}
       {/* Import is disabled while read-only, so the link would lead nowhere. */}
       {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
         <p className="today-screen__note">
@@ -120,56 +159,40 @@ export function TodayScreen(props: TodayScreenProps) {
         </p>
       ) : null}
 
+      <CycleDial
+        forecast={forecast}
+        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
+        intensityByDay={state.intensityByDay}
+        today={today}
+      />
+
       <div className="fact-list">
-        {/* With no estimate, the learning note above is the one line that
-            says so; empty rows would only repeat it. */}
-        {forecast.estimateMode === "insufficient" ? null : (
+        {forecast.estimateMode === "insufficient" || !showFertility ? null : (
           <dl className="fact-list__rows">
-            {/* Once the forecast date has passed, "next period" with a date in
-              the past contradicts itself; the row becomes "Period · N days
-              late · Expected <date>". */}
             <div className="fact">
-              <dt className="fact__label">{t(isOverdue ? "today.periodLate" : "today.nextPeriod")}</dt>
+              <dt className="fact__label fact__label--with-info">
+                {t("today.fertility")}
+                <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
+                  <p>{t("settings.fertilityMethod")}</p>
+                  <p>{t("settings.fertilityDisclaimer")}</p>
+                </InfoPopover>
+              </dt>
               <dd className="fact__value">
-                <span>{getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil)}</span>
-                {forecast.nextPeriod.date ? (
-                  <span className="fact__meta">
-                    {isOverdue
-                      ? t("today.expectedOn", {
-                          date: formatShortDate(forecast.nextPeriod.date, locale),
-                        })
-                      : formatShortDate(forecast.nextPeriod.date, locale)}
-                  </span>
+                {isOverdue ? (
+                  // The cycle ran past its forecast, so this cycle's ovulation
+                  // estimate is spent and the next one isn't known yet.
+                  <span>{t("today.fertilityUnclear")}</span>
+                ) : forecast.ovulationDate ? (
+                  <>
+                    <span>{getFertilityEstimate(t, forecast.phaseLabel, forecast.fertile)}</span>
+                    <span className="fact__meta">
+                      {getOvulationPhrase(t, locale, differenceInDays(forecast.ovulationDate, today))}
+                    </span>
+                    <span className="fact__meta">{t("today.notBirthControl")}</span>
+                  </>
                 ) : null}
               </dd>
             </div>
-
-            {showFertility ? (
-              <div className="fact">
-                <dt className="fact__label fact__label--with-info">
-                  {t("today.fertility")}
-                  <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
-                    <p>{t("settings.fertilityMethod")}</p>
-                    <p>{t("settings.fertilityDisclaimer")}</p>
-                  </InfoPopover>
-                </dt>
-                <dd className="fact__value">
-                  {isOverdue ? (
-                    // The cycle ran past its forecast, so this cycle's ovulation
-                    // estimate is spent and the next one isn't known yet.
-                    <span>{t("today.fertilityUnclear")}</span>
-                  ) : forecast.ovulationDate ? (
-                    <>
-                      <span>{getFertilityEstimate(t, forecast.phaseLabel, forecast.fertile)}</span>
-                      <span className="fact__meta">
-                        {getOvulationPhrase(t, locale, differenceInDays(forecast.ovulationDate, today))}
-                      </span>
-                      <span className="fact__meta">{t("today.notBirthControl")}</span>
-                    </>
-                  ) : null}
-                </dd>
-              </div>
-            ) : null}
           </dl>
         )}
 
@@ -217,29 +240,7 @@ export function TodayScreen(props: TodayScreenProps) {
         <Explainer explanation={explanation} onClose={() => setExplainOpen(false)} />
       ) : null}
 
-      {reminderState.shouldPrompt && reminderState.expectedDate ? (
-        <ReminderPrompt
-          isOverdue={reminderState.isOverdue}
-          expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
-          onLog={toggleToday}
-          onDismiss={() => {
-            setFocusPending(true);
-            actions.dismissReminder(today);
-          }}
-          autoFocus={focusPending}
-        />
-      ) : (
-        <LogAction
-          isLogged={isTodayLogged}
-          intensity={state.intensityByDay[today]}
-          variant={logVariant}
-          onToggle={toggleToday}
-          onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
-          autoFocus={focusPending}
-        />
-      )}
       <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />
-      <p className="today-screen__privacy">{t("today.privacy")}</p>
     </section>
   );
 }

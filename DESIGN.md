@@ -141,8 +141,8 @@ wide, soft shadows. Only one warm colour breaks the calm: coral, for the body's 
 and nothing else. Sand and amber sit next to it, for the fertile window and ovulation.
 
 Nothing is in a hurry: big rounded corners, 160 ms transitions, and one expressive element,
-the cycle dial on Today. Everything else stays in the background so the eye lands there
-first. Dark mode is the same pool at night, tuned again rather than inverted.
+the cycle dial on Today. The estimate and logging action lead; the smaller dial supports
+them with a scrubbable view of the cycle. Dark mode is the same pool at night, tuned again rather than inverted.
 
 **Key Characteristics:**
 
@@ -254,7 +254,7 @@ The shell is a size container, so layout changes follow the shell, not the viewp
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
-reads as the list going on. The dial is `min(17.5rem, 64vw, 100%)` and is a
+reads as the list going on. The dial is `min(13.5rem, 64vw, 100%)` and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
