@@ -252,7 +252,7 @@ const LEGEND_ITEMS = [
   // The same words as the Today dial's legend: one name per marker.
   { key: "logged", labelKey: "legend.period" },
   { key: "predicted", labelKey: "legend.expected" },
-  { key: "fertile", labelKey: "legend.fertileWindow" },
+  { key: "fertile", labelKey: "legend.fertile" },
   { key: "ovulation", labelKey: "legend.ovulation" },
   { key: "cycle-day", labelKey: "legend.cycleDay" },
 ] as const satisfies readonly { key: string; labelKey: MessageKey }[];

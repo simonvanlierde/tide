@@ -45,13 +45,14 @@
     --cycle-idle: rgba(84, 123, 121, 0.4);
     /* Estimates are dashed outlines, never fills. Lilac and amber are too pale
        for a line on the light ground, so their outlines take deeper shades:
-       each clears 3.9:1 on the white card and 3.3:1 on the darkest ground. A
-       yellow that dark turns brown, so the fertile window is violet. */
+       each clears 3.6:1 on the white card and 3.1:1 on the darkest ground. A
+       yellow that dark turns brown, so the fertile window is violet; ovulation
+       is gold, apart from the coral period, with a thicker dash and a yellow wash. */
     --estimate-period: var(--bleed-strong);
     --estimate-fertile: #b454d4;
     /* How much of an estimate's colour washes its calendar day. */
     --estimate-tint: 10%;
-    --estimate-ovulation: #d45d00;
+    --estimate-ovulation: #b07d00;
     /* Text on the warm cycle fills — they stay light in both themes, so this
        stays near-black in both themes (not overridden in the dark block) to
        clear AA on coral, sand, and amber. */

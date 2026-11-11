@@ -156,6 +156,7 @@ export const fr: Dictionary = {
   "legend.period": "Règles",
   "legend.expected": "Règles prévues",
   "legend.fertileWindow": "Fenêtre de fertilité",
+  "legend.fertile": "Fertile",
   "legend.ovulation": "Ovulation",
   "legend.cycleDay": "Jour du cycle",
 

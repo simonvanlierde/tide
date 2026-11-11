@@ -566,7 +566,9 @@ describe("CalendarScreen", () => {
 
     const legend = container.querySelector(".calendar-legend");
     expect(legend).toHaveTextContent(/period/i);
-    expect(legend).toHaveTextContent(/fertile window/i);
+    expect(legend).toHaveTextContent(/fertile/i);
+    // The short name keeps the legend on one line.
+    expect(legend).not.toHaveTextContent(/window/i);
     expect(legend).not.toHaveTextContent(/logged/i);
   });
 

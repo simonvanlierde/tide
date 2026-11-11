@@ -411,14 +411,14 @@
   .calendar-legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px 10px;
+    gap: 4px 8px;
     padding-inline: 2px;
   }
 
   .calendar-legend__item {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     color: var(--ink-muted);
     font-size: var(--text-xs);
   }
@@ -459,6 +459,7 @@
 
   .calendar-legend__swatch--ovulation {
     --estimate: var(--estimate-ovulation);
+    background: color-mix(in srgb, var(--cycle-ovulation) calc(var(--estimate-tint) * 2.2), transparent);
   }
 
   .calendar-grid__weekday-narrow {

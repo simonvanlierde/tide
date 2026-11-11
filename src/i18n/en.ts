@@ -156,6 +156,7 @@ export const en = {
   "legend.period": "Period",
   "legend.expected": "Expected period",
   "legend.fertileWindow": "Fertile window",
+  "legend.fertile": "Fertile",
   "legend.ovulation": "Ovulation",
   "legend.cycleDay": "Cycle day",
 

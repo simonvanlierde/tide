@@ -1213,8 +1213,12 @@
     opacity: 1;
   }
 
+  /* One peak day: a heavier dash and a wash of the amber fill, so it differs
+     from the period estimate in weight as well as hue. */
   .calendar-grid__day.is-ovulation {
     --estimate: var(--estimate-ovulation);
+    background: color-mix(in srgb, var(--cycle-ovulation) calc(var(--estimate-tint) * 2.2), transparent);
+    border-width: 2.5px;
   }
 
   .calendar-grid__day.is-predicted-period {

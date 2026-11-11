@@ -59,8 +59,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
   number sits small inside the day's corner instead of in a bubble, with its own legend entry.
-- The fertile window is violet instead of olive, and ovulation a brighter orange, on the
-  dial and the calendar, so the two no longer look alike or brown.
+- The fertile window is violet instead of olive, and ovulation gold, on the dial and the
+  calendar, so neither looks brown and ovulation no longer looks like the expected period.
+  The ovulation day also has a heavier dash.
 - Estimated calendar days use a finer dash and, in light mode, a faint wash of their
   colour, so the fertile window reads as one band instead of a row of boxes.
 - Under the calendar, "Log a past period" and the day's details are two buttons in one
@@ -82,7 +83,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   names the same fertile window as the legends, and no longer says a day is
   "less likely", which could read as a safe day.
 - The calendar legend uses the same words as the Today legend: Period,
-  Expected period, Fertile window, Ovulation.
+  Expected period, Fertile, Ovulation. "Fertile" is short for the fertile window,
+  so the calendar legend fits on one line on most phones.
 - One word for every forecast in all five languages: "expected" (the expected
   period, expected ovulation), where some screens said "predicted" or "likely".
   Settings explains the fertile window in those words and says the estimates

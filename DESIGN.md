@@ -13,7 +13,7 @@ colors:
   flow-light: "#e89a88"
   amber: "#e8a24b"
   lilac: "#ecd2f5"
-  amber-line: "#d45d00"
+  amber-line: "#b07d00"
   violet-line: "#b454d4"
   sea-idle: "rgba(84, 123, 121, 0.4)"
   ink: "#14303a"
@@ -176,7 +176,8 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
 - **Lilac** (`lilac`): the fertile window.
 - **Amber Line** / **Violet Line** (`amber-line`, `violet-line`): the same two estimates as
   outlines in the light theme, where amber and lilac are too pale for a line. A yellow dark
-  enough for a 3:1 line turns brown, which is why the fertile window is violet. Dark uses
+  enough for a 3:1 line turns brown, which is why the fertile window is violet. Amber Line
+  is a gold rather than an orange, so ovulation stays apart from the coral period. Dark uses
   amber and a brighter lilac themselves.
 - **Sea Idle** (`sea-idle`): the ordinary days on the dial ring.
 
@@ -205,7 +206,9 @@ day also takes a 10% wash of its colour (`--estimate-tint`), so a window reads a
 dark mode has none, because amber over the dark ground turns brown. The outline is the whole encoding:
 an estimated day's number keeps its ordinary colour, so the expected period looks no more
 certain than the fertile window. Each outline passes 3:1 against the card and the page
-ground.
+ground. Ovulation, the one peak day, takes a heavier dash on the calendar (2.5 px; legend swatches
+keep 1.5 px, which a heavier dash breaks into a C) and a wash of amber, so it differs from the period estimate by weight as
+well as hue.
 
 **The Paired Themes Rule.** Dark is not light inverted. Tune every fill and ink step again
 for the dark ground, so `ink-on-fill` still passes AA on it. The values above are the
@@ -257,7 +260,8 @@ The shell is a size container, so layout changes follow the shell, not the viewp
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
-reads as the list going on. The dial is `min(17.5rem, 64vw, 100%)` and is a
+reads as the list going on. Legend labels are the short names ("Fertile", not "Fertile
+window"), so the row fits one line at 390 px in every language. The dial is `min(17.5rem, 64vw, 100%)` and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
