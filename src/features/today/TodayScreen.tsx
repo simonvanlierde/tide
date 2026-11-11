@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
-import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { followAppLink } from "../../app/links";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
@@ -16,7 +17,7 @@ import {
 import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
 import { differenceInDays, formatShortDate } from "../../utils/date";
-import { DailyDetails } from "../diary/DailyDetails";
+import { DetailsButton, DetailsForm } from "../diary/DailyDetails";
 import { LogAction } from "../log/LogAction";
 import { BackupReminder } from "../reminders/BackupReminder";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
@@ -41,19 +42,22 @@ export function TodayScreen(props: TodayScreenProps) {
   const locale = useLocale();
   const forecast = useForecast(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
-  // The sheet loads on first open, so its words stay out of the main bundle.
-  // Null until loaded; false when loading it failed.
+  // The sums load with the insights sheet, so their words stay out of the main
+  // bundle. Null until loaded; false when loading them failed.
   const [Explainer, setExplainer] = useState<Explainer | null | false>(null);
-  const [explainOpen, setExplainOpen] = useState(false);
-  const openExplainer = () =>
-    import("./ForecastExplainer").then(
-      (m) => {
-        setExplainer(() => m.ForecastExplainer);
-        setExplainOpen(true);
-      },
-      () => setExplainer(false),
-    );
+  const openInsights = () => {
+    setInsightsOpen(true);
+    if (explanation && !Explainer) {
+      import("./ForecastExplainer").then(
+        (m) => setExplainer(() => m.ForecastExplainer),
+        () => setExplainer(false),
+      );
+    }
+  };
   const insightsButton = useRef<HTMLButtonElement>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const detailsId = useId();
+  const detailsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
   const showFertility = state.settings.showFertility === true;
@@ -79,7 +83,6 @@ export function TodayScreen(props: TodayScreenProps) {
     isTodayLogged,
     dismissedOn: state.settings.dismissedOn,
   });
-  const explanation = explainForecast(forecast);
   const learningNote = getLearningNote(t, forecast.estimateMode);
   // Prominent only when a fresh bleed is plausible — currently menstruating or a
   // period is expected soon (stays prominent after dismissing the prompt). Once
@@ -88,6 +91,27 @@ export function TodayScreen(props: TodayScreenProps) {
   // Prominent when a fresh bleed is plausible, and on first run: with nothing
   // logged, the log button is the only thing to do, so it must read as the
   // one action. Once today is logged the whole block turns calm.
+  const estimate =
+    forecast.estimateMode === "insufficient" || !forecast.nextPeriod.date
+      ? null
+      : {
+          label: t(isOverdue ? "today.periodLate" : "today.nextPeriod"),
+          value: getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil),
+          date: isOverdue
+            ? t("today.expectedOn", { date: formatShortDate(forecast.nextPeriod.date, locale) })
+            : formatShortDate(forecast.nextPeriod.date, locale),
+        };
+  // Explain only an estimate the dial shows.
+  const explanation = estimate ? explainForecast(forecast) : null;
+  const details = (
+    <DetailsButton
+      ref={detailsButton}
+      day={today}
+      open={detailsOpen}
+      controls={detailsId}
+      onOpen={() => setDetailsOpen(!detailsOpen)}
+    />
+  );
   const logVariant =
     !isTodayLogged &&
     (forecast.phaseLabel === "menstrual" || reminderState.isExpectedSoon || forecast.estimateMode === "insufficient")
@@ -102,88 +126,111 @@ export function TodayScreen(props: TodayScreenProps) {
           phase: getPhaseWord(t, forecast.phaseLabel),
         })}
       </h1>
+      {/* The dial shows the estimate, but a slider's content is not read out. */}
+      <p className="visually-hidden">
+        {estimate
+          ? `${estimate.label}: ${estimate.value}, ${estimate.date}`
+          : forecast.estimateMode === "insufficient"
+            ? learningNote
+            : null}
+      </p>
+
       <CycleDial
         forecast={forecast}
         phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
+        estimate={estimate}
+        prompt={forecast.estimateMode === "insufficient" ? learningNote : null}
         intensityByDay={state.intensityByDay}
         today={today}
       />
+      {forecast.estimateMode !== "insufficient" && learningNote ? (
+        <p className="today-screen__note">{learningNote}</p>
+      ) : null}
 
-      {learningNote ? <p className="today-screen__note">{learningNote}</p> : null}
+      <div className="today-screen__lead">
+        {reminderState.shouldPrompt ? (
+          <ReminderPrompt
+            isOverdue={reminderState.isOverdue}
+            onLog={toggleToday}
+            onDismiss={() => {
+              setFocusPending(true);
+              actions.dismissReminder(today);
+            }}
+            autoFocus={focusPending}
+            aside={details}
+          />
+        ) : (
+          <LogAction
+            isLogged={isTodayLogged}
+            intensity={state.intensityByDay[today]}
+            variant={logVariant}
+            onToggle={toggleToday}
+            onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
+            autoFocus={focusPending}
+            aside={details}
+          />
+        )}
+        <div id={detailsId}>
+          {detailsOpen ? (
+            <DetailsForm
+              // A new day is a new form: an Undo or "saved" from yesterday must not carry over.
+              key={today}
+              day={today}
+              today={today}
+              onClose={() => {
+                setDetailsOpen(false);
+                requestAnimationFrame(() => detailsButton.current?.focus());
+              }}
+            />
+          ) : null}
+        </div>
+      </div>
+
       {/* Import is disabled while read-only, so the link would lead nowhere. */}
       {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
         <p className="today-screen__note">
           {t("today.importPrompt")}{" "}
           {/* biome-ignore lint/a11y/useValidAnchor: real page navigation with an href; the handler only keeps it client-side, like the tab bar */}
-          <a href="/settings#import" onClick={openImport}>
+          <a href="/settings#import" onClick={followAppLink}>
             {t("today.importLink")}
           </a>
         </p>
       ) : null}
 
       <div className="fact-list">
-        {/* With no estimate, the learning note above is the one line that
-            says so; empty rows would only repeat it. */}
-        {forecast.estimateMode === "insufficient" ? null : (
+        {forecast.estimateMode === "insufficient" || !showFertility ? null : (
           <dl className="fact-list__rows">
-            {/* Once the forecast date has passed, "next period" with a date in
-              the past contradicts itself; the row becomes "Period · N days
-              late · Expected <date>". */}
             <div className="fact">
-              <dt className="fact__label">{t(isOverdue ? "today.periodLate" : "today.nextPeriod")}</dt>
+              <dt className="fact__label fact__label--with-info">
+                {t("today.fertility")}
+                <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
+                  <p>{t("settings.fertilityMethod")}</p>
+                  <p>{t("settings.fertilityDisclaimer")}</p>
+                </InfoPopover>
+              </dt>
               <dd className="fact__value">
-                <span>{getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil)}</span>
-                {forecast.nextPeriod.date ? (
-                  <span className="fact__meta">
-                    {isOverdue
-                      ? t("today.expectedOn", {
-                          date: formatShortDate(forecast.nextPeriod.date, locale),
-                        })
-                      : formatShortDate(forecast.nextPeriod.date, locale)}
-                  </span>
+                {isOverdue ? (
+                  // The cycle ran past its forecast, so this cycle's ovulation
+                  // estimate is spent and the next one isn't known yet.
+                  <span>{t("today.fertilityUnclear")}</span>
+                ) : forecast.ovulationDate ? (
+                  <>
+                    <span>{getFertilityEstimate(t, forecast.phaseLabel, forecast.fertile)}</span>
+                    <span className="fact__meta">
+                      {getOvulationPhrase(t, locale, differenceInDays(forecast.ovulationDate, today))}
+                    </span>
+                    <span className="fact__meta">{t("today.notBirthControl")}</span>
+                  </>
                 ) : null}
               </dd>
             </div>
-
-            {showFertility ? (
-              <div className="fact">
-                <dt className="fact__label fact__label--with-info">
-                  {t("today.fertility")}
-                  <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
-                    <p>{t("settings.fertilityMethod")}</p>
-                    <p>{t("settings.fertilityDisclaimer")}</p>
-                  </InfoPopover>
-                </dt>
-                <dd className="fact__value">
-                  {isOverdue ? (
-                    // The cycle ran past its forecast, so this cycle's ovulation
-                    // estimate is spent and the next one isn't known yet.
-                    <span>{t("today.fertilityUnclear")}</span>
-                  ) : forecast.ovulationDate ? (
-                    <>
-                      <span>{getFertilityEstimate(t, forecast.phaseLabel, forecast.fertile)}</span>
-                      <span className="fact__meta">
-                        {getOvulationPhrase(t, locale, differenceInDays(forecast.ovulationDate, today))}
-                      </span>
-                      <span className="fact__meta">{t("today.notBirthControl")}</span>
-                    </>
-                  ) : null}
-                </dd>
-              </div>
-            ) : null}
           </dl>
         )}
 
-        <button ref={insightsButton} type="button" className="fact-list__more" onClick={() => setInsightsOpen(true)}>
+        <button ref={insightsButton} type="button" className="fact-list__more" onClick={openInsights}>
           {t("today.cycleInsights")}
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
-        {explanation ? (
-          <button type="button" className="fact-list__more" onClick={openExplainer}>
-            {t("today.howWorkedOut")}
-            <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
-          </button>
-        ) : null}
       </div>
 
       {askFertility ? (
@@ -204,57 +251,19 @@ export function TodayScreen(props: TodayScreenProps) {
           showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
         >
+          {explanation && Explainer ? <Explainer explanation={explanation} /> : null}
+          {explanation && Explainer === false ? (
+            <p className="insights__note" role="alert">
+              {t("today.explainError")}
+            </p>
+          ) : null}
           <CycleHistory today={today} />
         </CycleInsights>
       ) : null}
 
-      {Explainer === false ? (
-        <p className="today-screen__note" role="alert">
-          {t("today.explainError")}
-        </p>
-      ) : null}
-
-      {explainOpen && explanation && Explainer ? (
-        <Explainer explanation={explanation} onClose={() => setExplainOpen(false)} />
-      ) : null}
-
-      {reminderState.shouldPrompt && reminderState.expectedDate ? (
-        <ReminderPrompt
-          isOverdue={reminderState.isOverdue}
-          expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
-          onLog={toggleToday}
-          onDismiss={() => {
-            setFocusPending(true);
-            actions.dismissReminder(today);
-          }}
-          autoFocus={focusPending}
-        />
-      ) : (
-        <LogAction
-          isLogged={isTodayLogged}
-          intensity={state.intensityByDay[today]}
-          variant={logVariant}
-          onToggle={toggleToday}
-          onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
-          autoFocus={focusPending}
-        />
-      )}
-      <DailyDetails today={today} />
       <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />
-      <p className="today-screen__privacy">{t("today.privacy")}</p>
     </section>
   );
-}
-
-// Client-side, like the tab bar: the app shell follows popstate, then focuses
-// the #import target. A modified click opens the page the browser's way.
-function openImport(event: MouseEvent<HTMLAnchorElement>) {
-  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-    return;
-  }
-  event.preventDefault();
-  window.history.pushState(null, "", event.currentTarget.href);
-  window.dispatchEvent(new PopStateEvent("popstate"));
 }
 
 function getNextPeriodPhrase(

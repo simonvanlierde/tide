@@ -17,7 +17,6 @@ export interface ReminderState {
   isExpectedSoon: boolean;
   shouldPrompt: boolean;
   isOverdue: boolean;
-  expectedDate: IsoDate | null;
 }
 
 export function getReminderState(input: ReminderStateInput): ReminderState {
@@ -26,7 +25,6 @@ export function getReminderState(input: ReminderStateInput): ReminderState {
       isExpectedSoon: false,
       shouldPrompt: false,
       isOverdue: false,
-      expectedDate: null,
     };
   }
 
@@ -41,6 +39,5 @@ export function getReminderState(input: ReminderStateInput): ReminderState {
     isExpectedSoon,
     shouldPrompt: isExpectedSoon && !input.isTodayLogged && !isDismissed,
     isOverdue: daysUntil < 0,
-    expectedDate: input.nextPeriodDate,
   };
 }

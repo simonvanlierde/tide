@@ -15,7 +15,6 @@ describe("getReminderState", () => {
     expect(state.shouldPrompt).toBe(true);
     expect(state.isExpectedSoon).toBe(true);
     expect(state.isOverdue).toBe(false);
-    expect(state.expectedDate).toBe("2026-04-30");
   });
 
   it("stays 'expected soon' even when dismissed or logged", () => {
@@ -74,6 +73,5 @@ describe("getReminderState", () => {
     const state = getReminderState({ ...BASE, nextPeriodDate: null });
 
     expect(state.shouldPrompt).toBe(false);
-    expect(state.expectedDate).toBeNull();
   });
 });

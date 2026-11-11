@@ -1,7 +1,7 @@
 import { ChevronRight, CodeXml } from "lucide-react";
 import { version } from "../../../package.json";
 import { LEGAL_PAGES } from "../../app/LegalPages";
-import { followAppLink } from "../../app/navigation";
+import { followAppLink } from "../../app/links";
 import { useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { REPOSITORY_URL } from "./config";

@@ -53,6 +53,11 @@
     /* How much of an estimate's colour washes its calendar day. */
     --estimate-tint: 10%;
     --estimate-ovulation: #b07d00;
+    /* Washes under the dial's estimated stretches, mixed with the card colour so
+       they stay clean pastels over any ground. */
+    --dial-wash-period: color-mix(in srgb, var(--estimate-period) 16%, var(--surface));
+    --dial-wash-fertile: color-mix(in srgb, var(--estimate-fertile) 18%, var(--surface));
+    --dial-wash-ovulation: color-mix(in srgb, var(--cycle-ovulation) 32%, var(--surface));
     /* Text on the warm cycle fills — they stay light in both themes, so this
        stays near-black in both themes (not overridden in the dark block) to
        clear AA on coral, sand, and amber. */
@@ -141,6 +146,11 @@
     --estimate-tint: 0%;
     --estimate-fertile: var(--cycle-fertile);
     --estimate-ovulation: var(--cycle-ovulation);
+    /* Amber over the dark ground turns brown, so ovulation keeps the fertile
+       wash here and only its dashed rails are amber. */
+    --dial-wash-period: color-mix(in srgb, var(--estimate-period) 20%, var(--surface));
+    --dial-wash-fertile: color-mix(in srgb, var(--estimate-fertile) 20%, var(--surface));
+    --dial-wash-ovulation: var(--dial-wash-fertile);
 
     --shadow-soft: 0 18px 44px rgba(0, 0, 0, 0.45);
     --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.32);

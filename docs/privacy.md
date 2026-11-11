@@ -9,7 +9,8 @@ says how to fill it in, with an example, and how the template builds and tests i
 
 # Privacy statement
 
-Everything you log in tide stays on your device. It isn't sent to us or to anyone else. tide has
+tide does not upload what you log. It isn't sent to us or to anyone else, and it leaves this
+browser only in a backup or calendar file you save yourself. tide has
 no accounts, no cookies and no analytics.
 
 This page covers tide at [tide.duinlab.nl](https://tide.duinlab.nl). Simon van Lierde runs tide
@@ -75,7 +76,7 @@ to your data protection authority. In the Netherlands, that's the
 
 ## About this page
 
-Last updated: 10 November 2026
+Last updated: 11 November 2026
 
 tide is free software under the [MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE)
 and comes with no warranty.

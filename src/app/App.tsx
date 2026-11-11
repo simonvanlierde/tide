@@ -3,7 +3,8 @@ import { lazy, type MouseEvent, Suspense, startTransition, useEffect, useRef, us
 import { useIsReadOnly, useStorageError, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
 import { legalPage } from "./LegalPages";
-import { appScreens, getAppScreen, shouldHandleAppNavigation } from "./navigation";
+import { shouldHandleAppNavigation } from "./links";
+import { appScreens, getAppScreen } from "./navigation";
 
 function usePathname() {
   const [pathname, setPathname] = useState(() => window.location.pathname);

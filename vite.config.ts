@@ -1,8 +1,17 @@
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import react from "@vitejs/plugin-react";
 import { marked } from "marked";
 import { defineConfig, type Plugin } from "vite";
 import type { ManifestOptions } from "vite-plugin-pwa";
 import { VitePWA } from "vite-plugin-pwa";
+
+// Platforms cache a preview by image URL, so the card URL carries the PNG's hash.
+const ogVersion = createHash("sha256").update(readFileSync("public/og.png")).digest("hex").slice(0, 8);
+const ogCardVersion: Plugin = {
+  name: "og-card-version",
+  transformIndexHtml: (html: string) => html.replace('/og.png"', `/og.png?v=${ogVersion}"`),
+};
 
 const manifest: Partial<ManifestOptions> = {
   name: "Tide",
@@ -55,6 +64,7 @@ export default defineConfig({
   // weight in the budget.
   build: { modulePreload: false },
   plugins: [
+    ogCardVersion,
     react(),
     markdown(),
     VitePWA({

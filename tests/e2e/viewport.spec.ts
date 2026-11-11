@@ -1,4 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
+import { translate } from "../../src/i18n";
 import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 
@@ -28,9 +29,10 @@ async function openInsights(page: Page) {
 // then shows its longest lines, a range and a widened fertile window.
 const VARIED_CYCLES = medium(["2026-01-10", "2026-02-12", "2026-03-11", "2026-04-11"]);
 
+// The sums are a section of the insights sheet.
 async function openExplainer(page: Page) {
-  await page.locator(".fact-list__more").nth(1).click();
-  await page.getByRole("dialog").waitFor();
+  await page.locator(".fact-list__more").first().click();
+  await page.locator(".insights__sums").waitFor();
 }
 
 // A period that ended ten days before today, so the dial is between periods.
@@ -271,6 +273,21 @@ for (const size of SIZES) {
           });
 
           expect(maxBottom).toBeLessThanOrEqual(tabTop + 1);
+        });
+      }
+
+      // The fertility status is a short label beside its heading; on a common
+      // phone a second line reads as a sentence, not a status.
+      if (size.width >= 360) {
+        test("keeps the fertility status on one line", async ({ page }) => {
+          await page.goto("/");
+          const status = page.getByText(translate(language, "today.lowerToday"), { exact: true });
+          const lines = await status.evaluate((span) => {
+            const range = document.createRange();
+            range.selectNodeContents(span);
+            return range.getClientRects().length;
+          });
+          expect(lines).toBe(1);
         });
       }
 

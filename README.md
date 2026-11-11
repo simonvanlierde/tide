@@ -8,7 +8,7 @@
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/simonvanlierde/tide/badge)](https://scorecard.dev/viewer/?uri=github.com/simonvanlierde/tide)
 
 Tide is a privacy-first period tracker. It's a small React web app that you can install (a PWA),
-and it keeps all your cycle data in your browser: no accounts, no network and no analytics.
+and it keeps all your cycle data in your browser, without accounts or uploading your history.
 
 | Today | Calendar |
 | --- | --- |
@@ -22,7 +22,9 @@ Open **[tide.duinlab.nl](https://tide.duinlab.nl)** and add it to your home scre
 - **Android (Chrome):** menu (⋮) → *Install app*
 - **Desktop (Chrome/Edge):** install icon in the address bar
 
-Once installed, it works offline, and all data stays on your device.
+Once installed, it works offline, and Tide does not upload what you log.
+Clearing this site's browser data removes your history. Keep a backup from Settings → Data → Export
+so you can restore it later. Installing Tide does not create a separate backup or sync devices.
 
 ## Features
 
@@ -39,7 +41,7 @@ Once installed, it works offline, and all data stays on your device.
 - A calendar with cycle day numbers.
 - Back up to a JSON file, restore it on any device, or delete everything in one go.
   Backups include your daily details as well as your bleeding history and settings.
-  A local reminder appears after 30 days; you can snooze it for a week.
+  A local reminder appears after 60 days; you can snooze it for a week.
 - Import a Clue export (`measurements.json` from the export zip, or an older `.cluedata` backup)
   or a Flo export from Settings → Data → Import. It adds to the days you already logged; a Tide
   backup replaces your data instead. Clue and Flo imports bring in bleeding days only.
@@ -48,21 +50,25 @@ The estimates are for information only. They are not a form of birth control.
 
 ### Daily details
 
-Choose **Add details** to record cramps, a headache, bloating, breast tenderness or fatigue.
-You can choose **No symptoms** to record that you had none; leaving symptoms blank means
-you did not record them. Mood and a note of up to 1,000 characters are optional too.
-Choose **Save details** before leaving the screen. On Calendar, use the dated links under
-**Daily details** to revisit entries for that month. You can also choose a date in the editor.
+Choose **Details**, next to the log button on Today, to record cramps, a headache, bloating,
+breast tenderness or fatigue. You can choose **No symptoms** to record that you had none;
+leaving symptoms blank means you did not record them. Mood and a note of up to 1,000
+characters are optional too. Each choice saves as you make it; **Clear details** offers
+Undo. On Calendar, use the dated links under **Daily details** to revisit entries for that
+month, or choose a date in the editor.
 
 ## Development
 
-You need [just](https://just.systems) and [pnpm](https://pnpm.io).
+You need Node.js 26 or newer, [just](https://just.systems) and [pnpm](https://pnpm.io).
+The `packageManager` field in `package.json` names the pnpm version used by this project.
 
 ```sh
 pnpm install
 pnpm exec playwright install chromium   # once per machine, for the e2e tests
 pnpm exec prek install                  # git hooks
 ```
+
+[Predictor performance](docs/performance.md) describes the synthetic benchmark and its limits.
 
 `pnpm dev` starts the app. `just check` runs what CI runs, and `just ts-e2e` the browser tests.
 
