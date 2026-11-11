@@ -128,7 +128,7 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
 test("Today's import link lands on the Import button", async ({ page }) => {
   // A first run: nothing stored, so Today shows the empty state.
   await page.goto("/");
-  await expect(page.getByText(en["today.learningInsufficient"])).toBeVisible();
+  await expect(page.getByRole("slider").getByText(en["today.learningInsufficient"])).toBeVisible();
 
   await page.getByRole("link", { name: en["today.importLink"] }).click();
   await expect(page).toHaveURL(/\/settings#import$/);
@@ -147,11 +147,12 @@ test("Today explains how the next period was worked out", async ({ page }) => {
   await seedAppState(page, "en");
   await page.goto("/");
 
-  await page.getByRole("button", { name: en["today.howWorkedOut"] }).click();
-  const sheet = page.getByRole("dialog", { name: en["today.howWorkedOut"] });
+  await page.getByRole("button", { name: en["today.cycleInsights"] }).click();
+  const sums = page.getByRole("region", { name: en["today.howWorkedOut"] });
+  const sheet = page.getByRole("dialog");
   // The seed has one period start, so the 28-day default stands in.
-  await expect(sheet).toContainText("typical 28-day cycle");
-  await expect(sheet).toContainText(en["today.notBirthControl"]);
+  await expect(sums).toContainText("typical 28-day cycle");
+  await expect(sums).toContainText(en["today.notBirthControl"]);
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
 });

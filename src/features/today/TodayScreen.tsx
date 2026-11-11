@@ -41,18 +41,18 @@ export function TodayScreen(props: TodayScreenProps) {
   const locale = useLocale();
   const forecast = useForecast(today);
   const [insightsOpen, setInsightsOpen] = useState(false);
-  // The sheet loads on first open, so its words stay out of the main bundle.
-  // Null until loaded; false when loading it failed.
+  // The sums load with the insights sheet, so their words stay out of the main
+  // bundle. Null until loaded; false when loading them failed.
   const [Explainer, setExplainer] = useState<Explainer | null | false>(null);
-  const [explainOpen, setExplainOpen] = useState(false);
-  const openExplainer = () =>
-    import("./ForecastExplainer").then(
-      (m) => {
-        setExplainer(() => m.ForecastExplainer);
-        setExplainOpen(true);
-      },
-      () => setExplainer(false),
-    );
+  const openInsights = () => {
+    setInsightsOpen(true);
+    if (!Explainer) {
+      import("./ForecastExplainer").then(
+        (m) => setExplainer(() => m.ForecastExplainer),
+        () => setExplainer(false),
+      );
+    }
+  };
   const insightsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
@@ -88,6 +88,16 @@ export function TodayScreen(props: TodayScreenProps) {
   // Prominent when a fresh bleed is plausible, and on first run: with nothing
   // logged, the log button is the only thing to do, so it must read as the
   // one action. Once today is logged the whole block turns calm.
+  const estimate =
+    forecast.estimateMode === "insufficient" || !forecast.nextPeriod.date
+      ? null
+      : {
+          label: t(isOverdue ? "today.periodLate" : "today.nextPeriod"),
+          value: getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil),
+          date: isOverdue
+            ? t("today.expectedOn", { date: formatShortDate(forecast.nextPeriod.date, locale) })
+            : formatShortDate(forecast.nextPeriod.date, locale),
+        };
   const logVariant =
     !isTodayLogged &&
     (forecast.phaseLabel === "menstrual" || reminderState.isExpectedSoon || forecast.estimateMode === "insufficient")
@@ -102,35 +112,28 @@ export function TodayScreen(props: TodayScreenProps) {
           phase: getPhaseWord(t, forecast.phaseLabel),
         })}
       </h1>
+      {/* The dial shows the estimate, but a slider's content is not read out. */}
+      <p className="visually-hidden">
+        {estimate
+          ? `${estimate.label}: ${estimate.value}, ${estimate.date}`
+          : forecast.estimateMode === "insufficient"
+            ? learningNote
+            : null}
+      </p>
+
+      <CycleDial
+        forecast={forecast}
+        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
+        estimate={estimate}
+        prompt={forecast.estimateMode === "insufficient" ? learningNote : null}
+        intensityByDay={state.intensityByDay}
+        today={today}
+      />
+      {forecast.estimateMode !== "insufficient" && learningNote ? (
+        <p className="today-screen__note">{learningNote}</p>
+      ) : null}
+
       <div className="today-screen__lead">
-        {forecast.estimateMode === "insufficient" ? (
-          <p className="today-screen__intro">{learningNote}</p>
-        ) : (
-          <dl className="today-forecast">
-            <dt className="today-forecast__label">{t(isOverdue ? "today.periodLate" : "today.nextPeriod")}</dt>
-            <dd className="today-forecast__value">
-              <span>{getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil)}</span>
-              {forecast.nextPeriod.date ? (
-                <span className="today-forecast__date">
-                  {isOverdue
-                    ? t("today.expectedOn", {
-                        date: formatShortDate(forecast.nextPeriod.date, locale),
-                      })
-                    : formatShortDate(forecast.nextPeriod.date, locale)}
-                </span>
-              ) : null}
-            </dd>
-          </dl>
-        )}
-        {forecast.estimateMode !== "insufficient" && learningNote ? (
-          <p className="today-screen__note">{learningNote}</p>
-        ) : null}
-        {explanation ? (
-          <button type="button" className="text-action today-forecast__how" onClick={openExplainer}>
-            {t("today.howWorkedOut")}
-            <AppIcon icon={ChevronRight} className="text-action__icon" />
-          </button>
-        ) : null}
         {reminderState.shouldPrompt ? (
           <ReminderPrompt
             isOverdue={reminderState.isOverdue}
@@ -165,13 +168,6 @@ export function TodayScreen(props: TodayScreenProps) {
         </p>
       ) : null}
 
-      <CycleDial
-        forecast={forecast}
-        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
-        intensityByDay={state.intensityByDay}
-        today={today}
-      />
-
       <div className="fact-list">
         {forecast.estimateMode === "insufficient" || !showFertility ? null : (
           <dl className="fact-list__rows">
@@ -202,7 +198,7 @@ export function TodayScreen(props: TodayScreenProps) {
           </dl>
         )}
 
-        <button ref={insightsButton} type="button" className="fact-list__more" onClick={() => setInsightsOpen(true)}>
+        <button ref={insightsButton} type="button" className="fact-list__more" onClick={openInsights}>
           {t("today.cycleInsights")}
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
@@ -226,18 +222,14 @@ export function TodayScreen(props: TodayScreenProps) {
           showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
         >
+          {explanation && Explainer ? <Explainer explanation={explanation} /> : null}
+          {Explainer === false ? (
+            <p className="insights__note" role="alert">
+              {t("today.explainError")}
+            </p>
+          ) : null}
           <CycleHistory today={today} />
         </CycleInsights>
-      ) : null}
-
-      {Explainer === false ? (
-        <p className="today-screen__note" role="alert">
-          {t("today.explainError")}
-        </p>
-      ) : null}
-
-      {explainOpen && explanation && Explainer ? (
-        <Explainer explanation={explanation} onClose={() => setExplainOpen(false)} />
       ) : null}
 
       <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />

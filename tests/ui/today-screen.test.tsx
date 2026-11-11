@@ -25,7 +25,7 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("heading", { name: /day 17/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^luteal phase$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^day 17 · luteal phase$/i)).toBeInTheDocument();
     expect(screen.getByText(/outside the fertile window \(estimate\)/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/how fertility is estimated/i)).toBeInTheDocument();
   });
@@ -66,7 +66,8 @@ describe("TodayScreen", () => {
     expect(ring?.getAttribute("style")).not.toContain("--estimate-");
     expect(outlines?.getAttribute("style")).toContain("var(--estimate-period)");
     expect(outlines?.getAttribute("style")).toContain("var(--estimate-fertile)");
-    expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument(); // today
+    // At rest the centre is the estimate, not today's date.
+    expect(screen.getByText("Thu, Apr 30")).toBeInTheDocument();
   });
 
   it("previews other cycle days with the keyboard", async () => {
@@ -91,7 +92,9 @@ describe("TodayScreen", () => {
 
     await user.keyboard("{Escape}");
     expect(dial).toHaveAttribute("aria-valuenow", "17");
-    expect(screen.getByText("Sat, Apr 18")).toBeInTheDocument();
+    // Back at rest: the estimate again.
+    expect(screen.queryByText("Sun, Apr 19")).not.toBeInTheDocument();
+    expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
   });
 
   it("scrubs the dial with a pointer and resets on release", () => {
@@ -178,7 +181,7 @@ describe("TodayScreen", () => {
   it("shows plain-language ovulation guidance", () => {
     renderToday("2026-04-15");
 
-    expect(screen.getByText(/^ovulation phase$/i)).toBeInTheDocument();
+    expect(screen.getByText(/· ovulation phase$/i)).toBeInTheDocument();
     expect(screen.getByText(/^in the fertile window \(estimate\)$/i)).toBeInTheDocument();
   });
 
@@ -282,10 +285,9 @@ describe("TodayScreen", () => {
     renderToday("2026-04-18", createAppState({ periodDays: [] }));
 
     expect(screen.getByRole("heading", { name: /cycle day unknown, learning/i })).toBeInTheDocument();
-    expect(screen.getByText(/^learning$/i)).toBeInTheDocument();
-    // One line says there is no forecast yet: no "--" numeral, and no
-    // next-period or fertility rows that each repeat it.
-    expect(screen.getByText(/^log your period to see a forecast\.$/i)).toBeVisible();
+    // One line in the dial says there is no forecast yet: no "--" numeral, and
+    // no next-period or fertility rows that each repeat it.
+    expect(document.querySelector(".cycle-dial__prompt")).toHaveTextContent(/^log your period to see a forecast\.$/i);
     expect(screen.queryByText("--")).not.toBeInTheDocument();
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
@@ -340,8 +342,10 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/variation is common/i)).toBeInTheDocument();
     // The fact row stops claiming a "next" period in the past.
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
-    expect(screen.getAllByText(/^period$/i).some((el) => el.tagName === "DT")).toBe(true);
-    expect(screen.getByText(/1 day late/i)).toBeInTheDocument();
+    expect(document.querySelector(".cycle-dial__eyebrow")).toHaveTextContent(/^period$/i);
+    expect(screen.getByText(/^1 day late$/i)).toBeInTheDocument();
+    // Late already says it; the small line keeps only the cycle day.
+    expect(screen.getByText(/^day \d+$/i)).toBeInTheDocument();
     expect(screen.getByText(/^Expected /)).toBeInTheDocument();
   });
 

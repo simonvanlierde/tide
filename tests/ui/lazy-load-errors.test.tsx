@@ -31,16 +31,17 @@ describe("a lazy chunk that fails to load", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(/import couldn't be opened/i);
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
-  it("says so on Today instead of opening nothing", async () => {
+  it("says so in Cycle insights when the sums fail to load", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-21" />, {
       state: createLearnedCycleState(),
     });
 
-    await user.click(screen.getByRole("button", { name: /how was this worked out/i }));
+    await user.click(screen.getByRole("button", { name: /cycle insights/i }));
 
+    // The rest of the sheet still opens; only the sums are missing.
     expect(await screen.findByRole("alert")).toHaveTextContent(/couldn't be opened/i);
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
   it("says so in Settings instead of saving nothing", async () => {

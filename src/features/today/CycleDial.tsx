@@ -9,6 +9,10 @@ import { ARC_START_DEG, ARC_SWEEP_DEG, dayAngleDeg, dayIndexFromPoint, pointerAn
 interface CycleDialProps {
   forecast: Forecast;
   phaseLabel: string;
+  /** Shown in the centre while nothing is being scrubbed; null without an estimate. */
+  estimate?: { label: string; value: string; date: string } | null;
+  /** Shown in the centre at rest when there is no estimate yet (first run). */
+  prompt?: string | null;
   intensityByDay: Record<IsoDate, LoggedFlow>;
   today: IsoDate;
 }
@@ -129,7 +133,14 @@ function getTicksStyle(total: number, predictedCount: number) {
   };
 }
 
-export function CycleDial({ forecast, phaseLabel, intensityByDay, today }: CycleDialProps) {
+export function CycleDial({
+  forecast,
+  phaseLabel,
+  estimate = null,
+  prompt = null,
+  intensityByDay,
+  today,
+}: CycleDialProps) {
   const t = useT();
   const locale = useLocale();
   // Resolve a segment's status key to text, falling back to the phase line.
@@ -308,16 +319,38 @@ export function CycleDial({ forecast, phaseLabel, intensityByDay, today }: Cycle
       >
         <div className="cycle-dial__ring" style={dialStyle}>
           <div className="cycle-dial__inner">
-            {/* No cycle day yet: no numeral, rather than a "--" placeholder.
-                The learning note under the dial says what to do. */}
-            {centerDay === null ? null : (
+            {/* At rest the centre is the estimate, with today's cycle day under
+                it; scrubbing turns it into the previewed day. */}
+            {estimate && previewIndex === null ? (
               <>
-                <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
-                <strong className="cycle-dial__day">{centerDay}</strong>
+                <span className="cycle-dial__eyebrow">{estimate.label}</span>
+                <strong className="cycle-dial__estimate">{estimate.value}</strong>
+                <span className="cycle-dial__date">{estimate.date}</span>
+                <span className="cycle-dial__phase cycle-dial__phase--small">
+                  {/* Late: the estimate above already says so. */}
+                  {forecast.cycleDay === null
+                    ? phaseLabel
+                    : (forecast.nextPeriod.daysUntil ?? 0) < 0
+                      ? t("dial.day", { n: forecast.cycleDay })
+                      : `${t("dial.day", { n: forecast.cycleDay })} · ${phaseLabel}`}
+                </span>
+              </>
+            ) : prompt && previewIndex === null ? (
+              <span className="cycle-dial__prompt">{prompt}</span>
+            ) : (
+              <>
+                {/* No cycle day yet: no numeral, rather than a "--" placeholder.
+                    The learning note under the dial says what to do. */}
+                {centerDay === null ? null : (
+                  <>
+                    <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
+                    <strong className="cycle-dial__day">{centerDay}</strong>
+                  </>
+                )}
+                <span className="cycle-dial__phase">{centerStatus}</span>
+                {centerDate ? <span className="cycle-dial__date">{formatShortDate(centerDate, locale)}</span> : null}
               </>
             )}
-            <span className="cycle-dial__phase">{centerStatus}</span>
-            {centerDate ? <span className="cycle-dial__date">{formatShortDate(centerDate, locale)}</span> : null}
           </div>
         </div>
         <div className="cycle-dial__estimates" style={estimatesStyle} aria-hidden="true" />

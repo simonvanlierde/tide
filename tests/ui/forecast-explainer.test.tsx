@@ -13,8 +13,9 @@ import {
 async function openExplainer(state = createLearnedCycleState()) {
   const user = userEvent.setup();
   renderWithAppState(<TodayScreen today="2026-04-21" />, { state });
-  await user.click(screen.getByRole("button", { name: /how was this worked out/i }));
-  return within(await screen.findByRole("dialog"));
+  await user.click(screen.getByRole("button", { name: /cycle insights/i }));
+  // The sums are a section of the insights sheet, loaded with it.
+  return within(await screen.findByRole("region", { name: /how was this worked out/i }));
 }
 
 describe("ForecastExplainer", () => {
@@ -61,11 +62,14 @@ describe("ForecastExplainer", () => {
     expect(dialog.queryByText(/median/i)).not.toBeInTheDocument();
   });
 
-  it("is not offered before anything is logged", () => {
+  it("is not offered before anything is logged", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-21" />, {
       state: createAppState(),
     });
 
-    expect(screen.queryByRole("button", { name: /how was this worked out/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /cycle insights/i }));
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: /how was this worked out/i })).not.toBeInTheDocument();
   });
 });

@@ -17,7 +17,7 @@ for (const language of SUPPORTED_LANGUAGES) {
     ["expected soon", ["2026-02-20", "2026-03-20"]],
     ["overdue", ["2026-02-16", "2026-03-16"]],
   ] as const) {
-    test(`${language}: ${name} keeps logging before the dial and above the tabs`, async ({ page }) => {
+    test(`${language}: ${name} keeps logging under the dial and above the tabs`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 568 });
       await seedAppState(
         page,
@@ -32,12 +32,12 @@ for (const language of SUPPORTED_LANGUAGES) {
       const logBox = await log.boundingBox();
       const dialBox = await dial.boundingBox();
       const tabs = await page.getByRole("navigation").boundingBox();
-      expect(logBox?.y).toBeLessThan(dialBox?.y ?? 0);
+      // The dial carries the estimate, so logging follows it, in thumb reach.
+      expect(logBox?.y).toBeGreaterThan((dialBox?.y ?? 0) + (dialBox?.height ?? 0));
       const detailsBox = await page
         .getByRole("button", { name: translate(language, "diary.addDetails") })
         .boundingBox();
       expect(detailsBox?.y).toBeGreaterThan(logBox?.y ?? 0);
-      expect(detailsBox?.y).toBeLessThan(dialBox?.y ?? 0);
       expect((logBox?.y ?? 0) + (logBox?.height ?? 0)).toBeLessThan(tabs?.y ?? 0);
       await log.click();
       await expect(page.getByRole("radio").first()).toBeFocused();

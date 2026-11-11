@@ -141,8 +141,8 @@ wide, soft shadows. Only one warm colour breaks the calm: coral, for the body's 
 and nothing else. Sand and amber sit next to it, for the fertile window and ovulation.
 
 Nothing is in a hurry: big rounded corners, 160 ms transitions, and one expressive element,
-the cycle dial on Today. The estimate and logging action lead; the smaller dial supports
-them with a scrubbable view of the cycle. Dark mode is the same pool at night, tuned again rather than inverted.
+the cycle dial on Today. The dial leads and carries the next-period estimate in its
+centre; the log block sits under it, in thumb reach. Dark mode is the same pool at night, tuned again rather than inverted.
 
 **Key Characteristics:**
 
@@ -254,7 +254,8 @@ The shell is a size container, so layout changes follow the shell, not the viewp
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
-reads as the list going on. The dial is `min(13.5rem, 64vw, 100%)` and is a
+reads as the list going on. The dial is `min(17rem, 70vw, 34dvh, 100%)`, capped by height so the log block stays
+above the tab bar on a short phone, and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
@@ -319,15 +320,14 @@ The values are in the front matter. This section says what each component is *fo
 
 ### Log block
 
-Today's lead is the forecast, then one log block in the same slot in every state, with no
-card. When a period is expected or late, the question "Has your period started?" sits
-above the log button and "Not yet" below it. The forecast already names the date, so the
-question doesn't repeat it. Right after a log, the block is one status line with Remove
+Under the dial comes one log block, in the same slot in every state, with no card. When a
+period is expected or late, the question "Has your period started?" sits above the log
+button and "Not yet" below it. The dial already names the date, so the question doesn't
+repeat it. Right after a log, the block is one status line with Remove
 beside it and the flow gauge under it: nothing asks for another step. On a later visit it
 folds into that one line as a button, ending in "Add flow" (or "Change") as the nudge,
 which opens the gauge and Remove again. It folds on the next visit, never on a timer, so
-nothing moves under a finger. "Add details" closes the block as a text action, and "How
-was this worked out?" sits under the forecast it explains. Logging gets the screen's one moment: the
+nothing moves under a finger. "Add details" closes the block as a text action. Logging gets the screen's one moment: the
 droplet scales in with a coral ring, like a newly logged calendar day, and simply appears
 under reduced motion.
 
@@ -370,8 +370,12 @@ An open circular gauge. A conic ring fills logged days in coral at their logged 
 and the ordinary days in sea-idle. Estimated days (fertile window, ovulation, the expected
 next period) stay hollow: a second layer draws them as dashed rails along the inner and
 outer edge of the band. That is the dial's version of the calendar's dashed outline.
-Small per-day ticks sit in a thin band at the rim. A white inner disc holds the eyebrow,
-numeral, phase and date. An ink marker circles today, and a teal ghost dot follows your
+Small per-day ticks sit in a thin band at the rim. A white inner disc holds, at rest, the
+estimate: an eyebrow ("Next period", or "Period" when late), "In 19 days" as the screen's
+headline, the date, and a small "Day 10 · Between periods" line (only the day when late).
+Before any history it holds the first-run sentence instead. While you scrub it shows the
+previewed day: eyebrow, numeral, phase and date. Text inside the slider is not read out, so
+the same estimate sits in a visually hidden line before it. An ink marker circles today, and a teal ghost dot follows your
 finger while you scrub. Scrubbing previews any day and changes nothing. The legend only
 names the colours the ring is actually showing.
 
@@ -396,7 +400,9 @@ Keep backup actions free of coral. A failed download shows an alert below the ac
 ### Cycle history
 
 Inside Cycle insights, separate history with a hairline rather than another card.
-Show up to twelve completed cycles as a quiet chart above a two-column table.
+"How was this worked out?" comes first, under its own hairline: the personal sums behind
+the next-period date, loaded with the sheet. Then show up to twelve completed cycles as a
+quiet chart above a two-column table.
 Use teal dots for ordinary cycles and ink crosses for cycles marked incomplete, with a
 matching legend. The chart gives the overview; the table supplies every date and length
 and remains available to screen readers. Put the incomplete checkbox below each start

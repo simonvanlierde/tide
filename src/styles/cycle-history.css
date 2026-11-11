@@ -1,4 +1,6 @@
 @layer ui {
+  /* The personal sums and the history each sit under a hairline in the sheet. */
+  .insights__sums,
   .cycle-history {
     margin-top: 20px;
     padding-top: 20px;

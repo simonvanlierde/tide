@@ -20,7 +20,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   security problem, and link previews show Tide's name, description and icon.
 - With JavaScript turned off, Tide now says it needs JavaScript and gives an
   email address to report a problem, instead of showing a blank page.
-- "How was this worked out?" on Today shows the sums behind your next-period
+- "How was this worked out?" in Cycle insights shows the sums behind your next-period
   date: the recent cycle lengths it used, their median, how much your cycles
   vary and the range that gives, or the 28-day default while there is too
   little history. With fertility estimates on, it also shows how the ovulation
@@ -57,14 +57,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Today puts the next-period estimate and logging first, with a smaller interactive
-  cycle dial below. Logging is one line once done: "Logged today", Remove, and an
-  optional row of flow levels, so the dial stays in view. Later the same day it folds
+- Today is simpler: the cycle dial shows the next-period estimate in its centre, and
+  logging sits right under it. Logging is one line once done: "Logged today", Remove,
+  and an optional row of flow levels. Later the same day it folds
   into that one line, which offers to add or change the flow. When a period is due, Today
-  asks "Has your period started?" without repeating the date, and a late period shows
-  as "Period late" on the dial. "Add details" sits under the log button, and "How was
-  this worked out?" under the estimate it explains. The "Stored
-  only on this device" line is gone.
+  asks "Has your period started?" without repeating the date, and a late period no
+  longer reads as "Period expected" on the dial. "Add details" sits under the log
+  button. The "Stored only on this device" line is gone.
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.
 - Tide asks once whether to show fertility estimates, and hides them until you
