@@ -71,6 +71,18 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks and architecture,
 [decision to keep data on the device](docs/adr/0001-local-first-no-backend.md).
 [Open an issue](https://github.com/simonvanlierde/tide/issues/new/choose) for bugs and ideas.
 
+## Social card
+
+`public/og.png` is the 1200x630 card shown when the link is shared. It is made with the generator in
+[my site repo](https://github.com/simonvanlierde/simonvanlierde.github.io/tree/main/scripts/social-card)
+(needs Docker). From a checkout of that repo, with this repo next to it:
+
+```sh
+pnpm gen:card --visual ../tide/docs/screenshots/today-light.png --name "Tide" \
+  --line "A private period tracker that keeps cycle data on this device." \
+  --domain tide.duinlab.nl --out ../tide/public/og.png
+```
+
 ## Deploy
 
 The app runs on a Cloudflare Worker that serves the build as static assets, configured in
