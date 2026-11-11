@@ -85,6 +85,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- If device storage is full or blocked, Tide now warns that changes have not
+  been saved. Keep the app open and export a backup from Settings.
+- A pending delete cannot erase data saved by a newer version in another tab.
+  Imports also recheck the current history after reading a file, so another
+  tab's new logs are not replaced without confirmation.
+- When the import reader cannot load, Tide shows an error with a way to retry
+  instead of leaving the import unanswered.
+- Editing older cycle starts gives calendar exports new event IDs, so IDs
+  cannot move between different cycles. As with importing older history,
+  remove the previous events from your calendar by hand.
+- Keyboard focus returns to the affected calendar day after removing a log
+  or undoing a single-day or range log.
 - Off switches have a contrasting thumb and border in both themes. At 200% text,
   the Today dial stays within its column and flow labels get enough room.
 - Keyboard focus scrolls controls above the fixed bottom navigation.

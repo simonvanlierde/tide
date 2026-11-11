@@ -52,6 +52,7 @@ describe("range logging reconciles history once", () => {
           const days = logged.flatMap((yes, index) => (yes ? [addDays("2026-01-01", index)] : []));
           const state = createAppState({
             periodDays: days,
+            settings: { calendarId: "00000000-0000-4000-8000-000000000001" },
             incompleteCycleStarts: getCycleHistory(days).map((cycle) => cycle.start),
           });
           const from = addDays("2026-01-01", offset);

@@ -1,6 +1,6 @@
 import { CircleAlert } from "lucide-react";
 import { lazy, type MouseEvent, Suspense, startTransition, useEffect, useRef, useState } from "react";
-import { useIsReadOnly, useT } from "../state/provider";
+import { useIsReadOnly, useStorageError, useT } from "../state/provider";
 import { AppIcon } from "../ui/icons";
 import { legalPage } from "./LegalPages";
 import { shouldHandleAppNavigation } from "./links";
@@ -82,6 +82,7 @@ export function App() {
   const mainRef = useRef<HTMLElement>(null);
   const isFirstRender = useRef(true);
   const readOnly = useIsReadOnly();
+  const storageError = useStorageError();
 
   // Move focus to the new screen's content so assistive tech announces the
   // change instead of staying on the now-stale tab, or to the element a
@@ -125,6 +126,14 @@ export function App() {
             </div>
           ) : null}
         </div>
+        {storageError && !readOnly ? (
+          <div className="utility-card utility-card--slim" role="alert">
+            <p className="supporting-note supporting-note--icon supporting-note--error">
+              <AppIcon icon={CircleAlert} className="supporting-note__icon" />
+              <span>{t("app.storageError")}</span>
+            </p>
+          </div>
+        ) : null}
         {legal ? (
           <Suspense fallback={null}>
             <LegalPage page={legal} />

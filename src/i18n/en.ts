@@ -30,6 +30,8 @@ export const en = {
   "app.skipToContent": "Skip to content",
   "app.primaryNav": "Primary navigation",
   "app.newerData": "A newer version of Tide saved your data. Reload to update; changes made here are not saved.",
+  "app.storageError":
+    "Your latest changes couldn't be saved on this device. Keep Tide open and export a backup from Settings.",
 
   // Today screen
   "today.srCycleDay": "Cycle day {day}, {phase}",
@@ -227,6 +229,7 @@ export const en = {
   "settings.import": "Import",
   "settings.importFile": "Import data file",
   "settings.importError": "That file isn't a Tide backup or a Clue or Flo export.",
+  "settings.importUnavailable": "Import couldn't be opened. Reload and try again.",
   "settings.importSuccess.one": "Imported {n} logged day.",
   "settings.importSuccess.other": "Imported {n} logged days.",
   "settings.importConfirmTitle": "Replace your data?",

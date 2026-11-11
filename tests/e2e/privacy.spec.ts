@@ -2,9 +2,8 @@ import { expect, test } from "@playwright/test";
 import { ROUTES } from "./routes";
 
 /**
- * docs/privacy.md says the app sets no cookies, stores only its own state before the user
- * acts and loads nothing from other sites, so it needs no cookie banner. These
- * prove it on a first visit to every route.
+ * Check app-owned storage and requests on a first visit to every route.
+ * Hosting can add scripts or reporting headers, so production needs a separate live check.
  */
 
 // Origins a page may request besides its own. A visitor counter on another origin

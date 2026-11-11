@@ -24,6 +24,7 @@ import { type AppStateAction, appStateReducer, selectForecast } from "./core";
 const AppStateContext = createContext<AppState | null>(null);
 const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(null);
 const ReadOnlyContext = createContext(false);
+const StorageErrorContext = createContext(false);
 
 interface AppStateProviderProps {
   children: ReactNode;
@@ -36,10 +37,11 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
   // A newer build wrote the stored data: saving our normalized copy would
   // strip whatever fields it added, so this tab shows it and never saves.
   const [readOnly, setReadOnly] = useState(loaded.readOnly);
+  const [storageError, setStorageError] = useState(false);
 
   useEffect(() => {
     if (!readOnly) {
-      saveAppState(state);
+      setStorageError(!saveAppState(state));
     }
   }, [state, readOnly]);
 
@@ -74,7 +76,9 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
   return (
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
-        <ReadOnlyContext.Provider value={readOnly}>{children}</ReadOnlyContext.Provider>
+        <ReadOnlyContext.Provider value={readOnly}>
+          <StorageErrorContext.Provider value={storageError}>{children}</StorageErrorContext.Provider>
+        </ReadOnlyContext.Provider>
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
   );
@@ -153,6 +157,10 @@ export function useIsReadOnly() {
   return useContext(ReadOnlyContext);
 }
 
+export function useStorageError() {
+  return useContext(StorageErrorContext);
+}
+
 export function useAppState() {
   const state = useContext(AppStateContext);
 
@@ -175,6 +183,7 @@ function useAppStateDispatch() {
 
 export function useAppStateActions() {
   const dispatch = useAppStateDispatch();
+  const readOnly = useIsReadOnly();
 
   return useMemo(
     () => ({
@@ -202,11 +211,13 @@ export function useAppStateActions() {
       // Wipe every logged day and the orphaned backup blob, so the
       // device holds no history afterwards. Settings reset too.
       resetState() {
+        // Another tab's storage event may still be waiting when Delete is clicked.
+        if (readOnly || loadStoredState().readOnly) return;
         clearAppState();
         dispatch({ type: "importState", state: defaultAppState });
       },
     }),
-    [dispatch],
+    [dispatch, readOnly],
   );
 }
 

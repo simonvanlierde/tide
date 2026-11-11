@@ -42,11 +42,7 @@ and remove it a week later ([how](https://github.com/simonvanlierde/project-temp
   the `pull request title` check fails a pull request whose title does. Lower case isn't
   checked. A revert is titled `revert: <original subject>`: rename the
   `Revert "..."` title that GitHub's Revert button writes.
-- **The pull request body** has the shape of
-  [the pull request template](pull_request_template.md): what it fixes and why, three or
-  four bullets, a `Tests:` line, and a `How I know it works:` line with the proof (the
-  command and its output, or a test that fails without the change). Add a `What to check:` line for
-  what only a person can judge.
+- **The pull request body** follows [the pull request template](pull_request_template.md).
 - **The changelog** ([CHANGELOG.md](../CHANGELOG.md)) follows
   [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/). Write each entry for
   the people who use the project, not as a commit subject. Mark breaking changes
@@ -55,7 +51,12 @@ and remove it a week later ([how](https://github.com/simonvanlierde/project-temp
 
 ## Make a release
 
-The maintainer runs `just release X.Y.Z`. [Publishing](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#publishing) has the steps and the one-time setup.
+First, set the version in `package.json` to `X.Y.Z` and commit it.
+Run `just release X.Y.Z` to prepare the changelog commit. Merge both commits to `main`.
+On up-to-date `main`, run `just release X.Y.Z` again to sign and push the tag.
+The tag script refuses a manifest version that differs from the requested release.
+
+[Publishing](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#publishing) has the steps and the one-time setup.
 
 ## Sign off your commits
 

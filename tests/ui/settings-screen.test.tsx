@@ -486,4 +486,46 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("button", { name: /^export$/i })).toBeEnabled();
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
   });
+
+  it("closes a pending delete when another tab writes newer data", async () => {
+    const user = userEvent.setup();
+    renderSettings(createAppState({ periodDays: ["2026-04-02"] }));
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    const raw = JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: { "2026-04-09": "light" } });
+    window.localStorage.setItem(STORAGE_KEY, raw);
+
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
+    expect(screen.getByRole("button", { name: /delete all data/i })).toBeDisabled();
+  });
+
+  it.each([SCHEMA_VERSION, SCHEMA_VERSION + 1])(
+    "checks current data after reading a backup (schema %s)",
+    async (schemaVersion) => {
+      const user = userEvent.setup();
+      renderSettings();
+      let finishReading!: (text: string) => void;
+      const file = new File(["{}"], "tide.json", { type: "application/json" });
+      vi.spyOn(file, "text").mockReturnValue(
+        new Promise((resolve) => {
+          finishReading = resolve;
+        }),
+      );
+      await user.upload(screen.getByLabelText(/import data file/i), file);
+      const raw = JSON.stringify({ schemaVersion, ...createAppState({ periodDays: ["2026-03-01"] }) });
+      window.localStorage.setItem(STORAGE_KEY, raw);
+      act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+
+      await act(async () => finishReading(JSON.stringify(createAppState({ periodDays: ["2026-04-02"] }))));
+
+      expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog")?.textContent ?? null).toEqual(
+        schemaVersion === SCHEMA_VERSION ? expect.stringMatching(/replaces the 1 day/i) : null,
+      );
+    },
+  );
 });
