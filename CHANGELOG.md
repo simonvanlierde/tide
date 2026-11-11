@@ -84,6 +84,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Opening daily details selects today after midnight. Keyboard date edits keep the
+  selected date segment, so repeated day changes do not change the month instead.
 - If device storage is full or blocked, Tide now warns that changes have not
   been saved. Keep the app open and export a backup from Settings.
 - A pending delete cannot erase data saved by a newer version in another tab.

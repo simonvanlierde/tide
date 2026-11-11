@@ -1,10 +1,12 @@
-import { act, fireEvent, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY } from "../../src/data/storage";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
+import { DailyDetails } from "../../src/features/diary/DailyDetails";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
+import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, renderWithAppState } from "../support/app";
 
 function stored() {
@@ -12,6 +14,50 @@ function stored() {
 }
 
 describe("optional daily details", () => {
+  it.each([false, true])("opens today's details after midnight, previously opened: %s", async (opened) => {
+    const user = userEvent.setup();
+    const state = createAppState();
+    const view = render(
+      <AppStateProvider initialState={state}>
+        <DailyDetails today="2026-04-18" />
+      </AppStateProvider>,
+    );
+    if (opened) {
+      await user.click(screen.getByRole("button", { name: "Add details" }));
+      await user.click(screen.getByRole("button", { name: "Cancel" }));
+    }
+    view.rerender(
+      <AppStateProvider initialState={state}>
+        <DailyDetails today="2026-04-19" />
+      </AppStateProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    expect(screen.getByLabelText("Date")).toHaveValue("2026-04-19");
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "A new day.");
+    await user.click(screen.getByRole("button", { name: "Save details" }));
+    expect(Object.keys(stored().detailsByDay)).toEqual(["2026-04-19"]);
+  });
+
+  it("preserves an open draft's date across midnight", async () => {
+    const user = userEvent.setup();
+    const state = createAppState();
+    const view = render(
+      <AppStateProvider initialState={state}>
+        <DailyDetails today="2026-04-18" />
+      </AppStateProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "Before midnight.");
+    view.rerender(
+      <AppStateProvider initialState={state}>
+        <DailyDetails today="2026-04-19" />
+      </AppStateProvider>,
+    );
+    expect(screen.getByLabelText("Date")).toHaveValue("2026-04-18");
+    await user.click(screen.getByRole("button", { name: "Save details" }));
+    expect(stored().detailsByDay["2026-04-18"].note).toBe("Before midnight.");
+  });
+
   it("saves symptoms, mood and a note without logging bleeding", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });

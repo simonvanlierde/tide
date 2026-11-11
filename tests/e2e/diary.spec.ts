@@ -5,6 +5,26 @@ import { en } from "../../src/i18n/en";
 import { findOverflow } from "./overflow";
 import { FIXED_NOW, seedAppState } from "./seed";
 
+test("keyboard date edits keep the selected day segment and load its details", async ({ page }) => {
+  await page.clock.setFixedTime(new Date("2026-11-11T12:00:00Z"));
+  await page.goto("/");
+  await page.getByRole("button", { name: en["diary.addDetails"], exact: true }).click();
+  const date = page.getByLabel(en["diary.date"], { exact: true });
+  await expect(date).toHaveValue("2026-11-11");
+  await date.press("ArrowRight");
+  await date.press("ArrowDown");
+  await expect(date).toHaveValue("2026-11-10");
+  await date.press("ArrowDown");
+  await expect(date).toHaveValue("2026-11-09");
+  await page.getByRole("textbox", { name: en["diary.note"], exact: true }).fill("A quiet day.");
+  await page.getByRole("button", { name: en["diary.save"], exact: true }).click();
+  await date.fill("2026-11-08");
+  await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("");
+  await expect(page.getByText(en["diary.saved"], { exact: true })).not.toBeVisible();
+  await date.fill("2026-11-09");
+  await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A quiet day.");
+});
+
 for (const language of SUPPORTED_LANGUAGES) {
   for (const width of [320, 1440]) {
     for (const scheme of ["light", "dark"] as const) {

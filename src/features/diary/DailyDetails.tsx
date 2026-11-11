@@ -38,13 +38,14 @@ export function DailyDetails({ today, month }: { today: IsoDate; month?: IsoDate
         disabled={open}
         aria-expanded={open}
         aria-controls={id}
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setDay(today);
+          setOpen(true);
+        }}
       >
-        {t(state.detailsByDay[day] ? "diary.editDetails" : "diary.addDetails")}
+        {t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
       </button>
-      <div id={id}>
-        {open ? <DetailsForm key={day} day={day} today={today} onDayChange={setDay} onClose={close} /> : null}
-      </div>
+      <div id={id}>{open ? <DetailsForm day={day} today={today} onDayChange={setDay} onClose={close} /> : null}</div>
       {!open && entries.length > 0 ? (
         <section className="daily-details__history" aria-labelledby={`${id}-history`}>
           <h2 id={`${id}-history`} className="section-title">
@@ -97,6 +98,13 @@ function DetailsForm({
   const [original, setOriginal] = useState(value);
   const [draft, setDraft] = useState(value);
   const [saved, setSaved] = useState(false);
+  const [draftDay, setDraftDay] = useState(day);
+  if (draftDay !== day) {
+    setDraftDay(day);
+    setOriginal(value);
+    setDraft(value);
+    setSaved(false);
+  }
   const dirty = !sameDetails(draft, original);
   const conflict = !sameDetails(value, original);
 
