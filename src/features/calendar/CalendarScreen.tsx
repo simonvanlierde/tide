@@ -6,6 +6,7 @@ import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
 import { useToday } from "../../state/useToday";
 import { formatShortDate } from "../../utils/date";
+import { DailyDetails } from "../diary/DailyDetails";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarMonthPicker } from "./CalendarMonthPicker";
 import type { CalendarCell } from "./calendar";
@@ -108,7 +109,11 @@ export function CalendarScreen(props: CalendarScreenProps) {
   // left alone — the flow gauge is a radiogroup that owns them. Skip the picker's
   // month/year dropdowns, which handle their own keys.
   function handleKeyDown(event: KeyboardEvent) {
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement) {
+    if (
+      event.target instanceof HTMLInputElement ||
+      event.target instanceof HTMLSelectElement ||
+      event.target instanceof HTMLTextAreaElement
+    ) {
       return;
     }
     if (event.key === "Escape" && log.rangePick) {
@@ -220,6 +225,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
             {t("calendar.today")}
           </button>
         )}
+        <DailyDetails today={today} month={month.visibleMonth} />
       </article>
     </section>
   );
