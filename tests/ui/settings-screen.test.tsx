@@ -26,7 +26,7 @@ describe("SettingsScreen", () => {
     // The promise belongs beside export, import and delete — not adrift in About.
     const dataCard = screen.getByRole("heading", { level: 2, name: /^data$/i }).closest("article");
     expect(dataCard).not.toBeNull();
-    expect(within(dataCard as HTMLElement).getByText(/your data never leaves this device/i)).toBeInTheDocument();
+    expect(within(dataCard as HTMLElement).getByText(/Tide does not upload your data/i)).toBeInTheDocument();
   });
 
   it("links to the source repository from the About card", () => {

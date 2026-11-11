@@ -3,7 +3,7 @@
 How close does Tide's next-period date land on real cycles? This page answers that on one
 public dataset. Run it yourself with `pnpm backtest`.
 
-Last run: 2026-11-07. The production predictor still uses the six-cycle median described below.
+Last run: 2026-11-11. The production predictor still uses the six-cycle median described below.
 
 ## Dataset
 
@@ -110,6 +110,51 @@ It does not establish performance for the populations missing from this dataset.
 Predictions from one participant are correlated; the table gives point estimates, not confidence intervals.
 No candidate was retuned after reading the holdout results.
 A further attempt to tune against this dataset would be exploratory and would need new validation data before promotion.
+
+## Large errors and displayed ranges
+
+These diagnostics use the same cohort and production predictor. They do not select another model.
+The 90th percentile uses the nearest rank of absolute errors. A large error here means more than
+seven days; that is an evaluation threshold, not a clinical definition.
+
+| Earlier completed cycles | Predictions | 90th-percentile error | Error >7 days | Displayed ranges | Target inside range | Mean range width |
+|---|---|---|---|---|---|---|
+| All | 3,144 | 7 d | 9.4% | 1,780 | 69.0% | 6.9 d |
+| None | 732 | 9 d | 14.6% | None | — | — |
+| 1+ | 2,412 | 6 d | 7.8% | 1,780 | 69.0% | 6.9 d |
+| 6+ | 580 | 4 d | 3.3% | 579 | 78.4% | 6.8 d |
+| Recent standard deviation ≥5 days | 173 | 17 d | 30.6% | 173 | 76.3% | 21.3 d |
+
+The last row describes earlier recorded variation, not a diagnosed condition or a distinct population.
+Range coverage uses only predictions for which the app displays a range. No range is displayed with
+fewer than two completed cycles or with zero recent variation. Width counts both end dates.
+
+**These are not calibrated confidence intervals.** The app's range uses recent standard deviation;
+it does not promise an 80%, 90% or 95% chance of containing the next start. Even in this selected
+cohort, a wider band can remain wrong and become too broad to help with planning. Do not use this
+coverage figure as a guarantee for an individual or another population.
+
+## Missing-log stress test
+
+For the 1,858 predictions with at least two earlier completed intervals, the script removes the
+immediately preceding period start from the input. It keeps the current start and the target unchanged.
+The missing record joins two earlier intervals. A third run marks that joined interval incomplete,
+using Tide's existing exclusion rule. This is a controlled synthetic omission, not observed app usage
+or independent validation of a missed-log detector.
+
+| Input | MAE | Within ±2 days | 90th-percentile error | Error >7 days |
+|---|---|---|---|---|
+| Original history | 2.88 d | 64.9% | 6 d | 6.7% |
+| Previous start removed | 11.93 d | 35.3% | 30 d | 46.5% |
+| Joined interval marked incomplete | 3.31 d | 62.1% | 7 d | 8.9% |
+
+Excluding the interval reduces the effect of a known missing log but cannot restore the lost history.
+A genuinely long cycle must not be silently classified as a forgotten record. This experiment supplies
+no evidence for doing that automatically.
+
+The next model comparison needs independent data covering sparse logging and consistently short,
+long and variable cycles. It must compare large errors and range coverage/width alongside MAE,
+with cold-start results reported separately. The production estimator remains unchanged.
 
 ## Limits
 

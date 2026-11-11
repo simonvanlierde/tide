@@ -74,7 +74,7 @@ const { module: cycle } = await runnerImport("/src/domain/cycle.ts", {
 const { module: date } = await runnerImport("/src/utils/date.ts", {
   configFile: false,
 });
-const { forecast, getCompletedCycleLengths, DEFAULT_CYCLE_LENGTH } = cycle;
+const { forecast, explainForecast, getCompletedCycleLengths, DEFAULT_CYCLE_LENGTH } = cycle;
 const { addDays, differenceInDays } = date;
 
 const stretches = parseStretches(await loadCsv());
@@ -121,6 +121,7 @@ const isHoldout = (id) => createHash("sha256").update(id).digest()[0] < 51;
 // Each record: errors in days (predicted minus actual start) and how many
 // completed cycles the app had learned from when it predicted.
 const records = [];
+const missedLogRecords = [];
 for (const stretch of stretches) {
   for (let k = 0; k < stretch.length; k++) {
     const current = stretch[k];
@@ -137,7 +138,30 @@ for (const stretch of stretches) {
     const actual = addDays(current.start, current.length);
     const lastLength = stretch[k - 1]?.length ?? DEFAULT_CYCLE_LENGTH;
     const history = getCompletedCycleLengths(periodDays);
+    const range = explainForecast(summary)?.range;
+    const error = differenceInDays(summary.nextPeriod.date, actual);
+    // Remove the previous start only; the current start and target remain known.
+    // This is synthetic missingness, not an observed rate of forgotten logs.
+    if (k >= 2) {
+      const missing = periodDays.filter((_, index) => index !== periodDays.length - 2);
+      const input = { today: current.start, periodDays: missing, fertility: false };
+      const excludedStart = missing.at(-2);
+      missedLogRecords.push({
+        clean: error,
+        missing: differenceInDays(forecast(input).nextPeriod.date, actual),
+        excluded: differenceInDays(
+          forecast({ ...input, incompleteCycleStarts: [excludedStart] }).nextPeriod.date,
+          actual,
+        ),
+      });
+    }
     records.push({
+      range: range
+        ? {
+            contains: range.from <= actual && actual <= range.to,
+            width: differenceInDays(range.to, range.from) + 1,
+          }
+        : null,
       holdout: isHoldout(current.id),
       irregular: (summary.stats.variabilityDays ?? 0) >= 5,
       previousLength: history.at(-1) ?? null,
@@ -145,7 +169,7 @@ for (const stretch of stretches) {
       ...Object.fromEntries(
         Object.entries(estimators).map(([name, estimate]) => [name, Math.round(estimate(history)) - current.length]),
       ),
-      tide: differenceInDays(summary.nextPeriod.date, actual),
+      tide: error,
       fixed28: differenceInDays(addDays(current.start, 28), actual),
       lastCycle: differenceInDays(addDays(current.start, lastLength), actual),
     });
@@ -211,4 +235,61 @@ for (const [label, include] of [
   for (const method of ["median6", selected]) {
     console.log(`  ${method.padEnd(10)} ${score(subset.map((r) => r[method]))}`);
   }
+}
+
+// Diagnostic metrics describe this cohort; they do not tune a candidate or set a
+// confidence level for the app's descriptive standard-deviation range.
+function errorTails(errors) {
+  const sorted = errors.map(Math.abs).sort((a, b) => a - b);
+  return {
+    p90: sorted[Math.ceil(sorted.length * 0.9) - 1],
+    over7: sorted.filter((error) => error > 7).length / sorted.length,
+  };
+}
+check(errorTails([0, -1, 3, -10]).p90 === 10, "90th-percentile rank changed");
+check(errorTails([0, -1, 3, -10]).over7 === 0.25, "large-error threshold changed");
+
+function rangeCoverage(rows) {
+  const ranges = rows.map((row) => row.range).filter((range) => range !== null);
+  return {
+    count: ranges.length,
+    coverage: ranges.length ? ranges.filter((range) => range.contains).length / ranges.length : null,
+    width: ranges.length ? ranges.reduce((sum, range) => sum + range.width, 0) / ranges.length : null,
+  };
+}
+const rangeCheck = rangeCoverage([
+  { range: null },
+  { range: { contains: true, width: 5 } },
+  { range: { contains: false, width: 3 } },
+]);
+check(rangeCheck.count === 2 && rangeCheck.coverage === 0.5 && rangeCheck.width === 4, "range denominator changed");
+check(rangeCoverage([{ range: null }]).coverage === null, "absent ranges counted as misses");
+
+console.log("\nCurrent predictor diagnostics (same cohort; no candidate selection)");
+for (const [label, include] of [
+  ["all", () => true],
+  ["no prior cycles", (row) => row.history === 0],
+  ["1+ prior cycle", (row) => row.history >= 1],
+  ["6+ prior cycles", (row) => row.history >= 6],
+  ["recent SD >= 5 days", (row) => row.irregular],
+]) {
+  const rows = records.filter(include);
+  const tails = errorTails(rows.map((row) => row.tide));
+  const range = rangeCoverage(rows);
+  console.log(
+    `  ${label} (n=${rows.length}): p90 absolute error ${tails.p90} d, ${(tails.over7 * 100).toFixed(1)}% over 7 d`,
+  );
+  console.log(
+    range.count
+      ? `    displayed ranges ${range.count}/${rows.length}, ${(range.coverage * 100).toFixed(1)}% contain target, mean inclusive width ${range.width.toFixed(1)} d`
+      : "    no displayed ranges",
+  );
+}
+console.log(`\nSynthetic previous-start omission (n=${missedLogRecords.length}; not real-world validation)`);
+for (const method of ["clean", "missing", "excluded"]) {
+  const errors = missedLogRecords.map((row) => row[method]);
+  const tails = errorTails(errors);
+  console.log(
+    `  ${method.padEnd(10)} ${score(errors)}, p90 ${tails.p90} d, ${(tails.over7 * 100).toFixed(1)}% over 7 d`,
+  );
 }

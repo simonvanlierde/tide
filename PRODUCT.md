@@ -27,7 +27,7 @@ no effort, and find the forecast good enough to plan around.
 
 ## Positioning
 
-No account, no network, no analytics, and nothing in the bundle that could send data out.
+No account or backend holds your history. Tide does not upload what you log.
 The docs and the app explain the prediction model in plain language, so you can check the
 sums yourself instead of trusting a black box. A plain JSON file is the way in and the way
 out: import it to bring your history, export it to leave.

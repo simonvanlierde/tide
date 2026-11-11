@@ -44,8 +44,8 @@ flowchart TD
 4. Settings → Data uses `src/data/transfer.ts` to save a JSON backup and to read one back, and
    `src/data/otherApps.ts` to read Clue and Flo exports. A Tide backup replaces the state, and
    days from another app are merged under the ones already logged.
-5. A `storage` event from another tab or the installed app replaces the state, so two windows
-   don't overwrite each other.
+5. A `storage` event from another tab or the installed app replaces the state with that window's
+   saved copy. Simultaneous edits are not merged; the last save wins.
 
 ## Offline and hosting
 

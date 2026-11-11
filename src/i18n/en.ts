@@ -107,10 +107,10 @@ export const en = {
   "insights.how": "How predictions work",
   "insights.how1": "Everything is worked out on your device from the days you log.",
   "insights.howCycleStart":
-    "A gap of {gap} days or more between logged days starts a new cycle; shorter gaps are the same period.",
+    "A gap of {gap} days or more between logged bleeding days starts a new cycle; shorter gaps are the same period. Spotting is left out.",
   "insights.how2":
     "Cycle length is the median of your last {recent} complete cycles. Incomplete cycles are left out. With no complete cycles, a typical {cycle}-day cycle is used.",
-  "insights.how3": "Period length is your recent average, kept to a normal {min}–{max} days.",
+  "insights.how3": "Estimated period length is your past average, limited to {min}–{max} days.",
   "insights.how4":
     "Your next period is your last start plus that cycle length; ovulation is estimated {luteal} days before it.",
   "insights.howNextPeriod": "Your next period is your last start plus that cycle length.",
@@ -206,7 +206,7 @@ export const en = {
   "legal.privacy": "Privacy statement",
   "legal.accessibility": "Accessibility statement",
   "legal.inEnglish": "In English",
-  "settings.privacy": "Your data never leaves this device.",
+  "settings.privacy": "Tide does not upload your data.",
   "settings.fertilityDisclaimer": "Fertility estimates are for information only. They are not birth control.",
   "settings.fertilityMethod":
     "The fertile window is the days around your expected ovulation, estimated from your recent cycle lengths.",
