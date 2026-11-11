@@ -86,7 +86,6 @@ export const nl: Dictionary = {
     "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is een schatting, geen anticonceptie. Je kunt dit wijzigen in Instellingen.",
   "fertilityAsk.show": "Tonen",
   "fertilityAsk.hide": "Niet tonen",
-  "today.privacy": "Alleen op dit apparaat opgeslagen.",
   "today.importPrompt": "Heb je een Tide-back-up of je geschiedenis uit Clue of Flo?",
   "today.importLink": "Importeren",
   "today.fertilityUnclear": "Onduidelijk bij vertraging",

@@ -131,6 +131,12 @@
     transition: color 160ms ease;
   }
 
+  /* With fertility off the card has no rows, so its first button sits on the
+     card's own edge and a divider would draw a second outline. */
+  .fact-list__more:first-child {
+    border-top: 0;
+  }
+
   .fact-list__more:hover {
     color: var(--tide);
   }

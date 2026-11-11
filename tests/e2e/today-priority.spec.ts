@@ -2,6 +2,14 @@ import { expect, test } from "@playwright/test";
 import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
 import { seedAppState } from "./seed";
 
+test("the insights card draws no divider above its first row", async ({ page }) => {
+  await seedAppState(page, "en", { showFertility: false });
+  await page.goto("/");
+  const first = page.locator(".fact-list > :first-child");
+  await expect(first).toHaveText("Cycle insights");
+  await expect(first).toHaveCSS("border-top-width", "0px");
+});
+
 for (const language of SUPPORTED_LANGUAGES) {
   for (const [name, days] of [
     ["first log", []],
@@ -25,6 +33,11 @@ for (const language of SUPPORTED_LANGUAGES) {
       const dialBox = await dial.boundingBox();
       const tabs = await page.getByRole("navigation").boundingBox();
       expect(logBox?.y).toBeLessThan(dialBox?.y ?? 0);
+      const detailsBox = await page
+        .getByRole("button", { name: translate(language, "diary.addDetails") })
+        .boundingBox();
+      expect(detailsBox?.y).toBeGreaterThan(logBox?.y ?? 0);
+      expect(detailsBox?.y).toBeLessThan(dialBox?.y ?? 0);
       expect((logBox?.y ?? 0) + (logBox?.height ?? 0)).toBeLessThan(tabs?.y ?? 0);
       await log.click();
       await expect(page.getByRole("radio").first()).toBeFocused();

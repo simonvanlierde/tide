@@ -86,7 +86,6 @@ export const de: Dictionary = {
     "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
-  "today.privacy": "Nur auf diesem Gerät gespeichert.",
   "today.importPrompt": "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?",
   "today.importLink": "Importieren",
   "today.fertilityUnclear": "Unklar bei Verspätung",

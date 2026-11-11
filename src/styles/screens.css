@@ -55,6 +55,12 @@
     line-height: 1.2;
   }
 
+  /* The diary trigger sits under the full-width log button, so it centres with it. */
+  .today-screen__lead .daily-details__trigger {
+    display: block;
+    margin-inline: auto;
+  }
+
   .today-screen__note {
     margin: 0;
     color: var(--ink-muted);
@@ -63,13 +69,6 @@
   }
 
   /* The privacy promise, stated where the data is made: one quiet line. */
-  .today-screen__privacy {
-    margin: 0;
-    text-align: center;
-    color: var(--ink-muted);
-    font-size: var(--text-sm);
-  }
-
   .reminder-prompt {
     display: grid;
     gap: 14px;

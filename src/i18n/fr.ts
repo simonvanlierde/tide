@@ -86,7 +86,6 @@ export const fr: Dictionary = {
     "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. C’est une estimation, pas une contraception. Tu pourras changer d’avis dans les Réglages.",
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
-  "today.privacy": "Stocké uniquement sur cet appareil.",
   "today.importPrompt": "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?",
   "today.importLink": "L’importer",
   "today.fertilityUnclear": "Incertaine en cas de retard",

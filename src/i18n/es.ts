@@ -85,7 +85,6 @@ export const es: Dictionary = {
     "Tide puede marcar los días en que es más probable que seas fértil, calculados a partir de los períodos que registras. Es una estimación, no un método anticonceptivo. Puedes cambiarlo en Ajustes.",
   "fertilityAsk.show": "Mostrar",
   "fertilityAsk.hide": "No mostrar",
-  "today.privacy": "Guardado solo en este dispositivo.",
   "today.importPrompt": "¿Tienes una copia de seguridad de Tide o tu historial de Clue o Flo?",
   "today.importLink": "Importar",
   "today.fertilityUnclear": "Incierta con retraso",

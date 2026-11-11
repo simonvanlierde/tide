@@ -83,7 +83,6 @@ export const en = {
     "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control. You can change this in Settings.",
   "fertilityAsk.show": "Show",
   "fertilityAsk.hide": "Don't show",
-  "today.privacy": "Stored only on this device.",
   "today.importPrompt": "Have a Tide backup, or history in Clue or Flo?",
   "today.importLink": "Import it",
   "today.fertilityUnclear": "Unclear while late",

@@ -146,7 +146,7 @@ export function TodayScreen(props: TodayScreenProps) {
             autoFocus={focusPending}
           />
         )}
-        <p className="today-screen__privacy">{t("today.privacy")}</p>
+        <DailyDetails today={today} />
       </div>
 
       {/* Import is disabled while read-only, so the link would lead nowhere. */}
@@ -241,7 +241,6 @@ export function TodayScreen(props: TodayScreenProps) {
         <Explainer explanation={explanation} onClose={() => setExplainOpen(false)} />
       ) : null}
 
-      <DailyDetails today={today} />
       <BackupReminder today={today} onDone={() => insightsButton.current?.focus()} />
     </section>
   );
