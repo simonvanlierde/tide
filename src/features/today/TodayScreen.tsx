@@ -125,10 +125,9 @@ export function TodayScreen(props: TodayScreenProps) {
         {forecast.estimateMode !== "insufficient" && learningNote ? (
           <p className="today-screen__note">{learningNote}</p>
         ) : null}
-        {reminderState.shouldPrompt && reminderState.expectedDate ? (
+        {reminderState.shouldPrompt ? (
           <ReminderPrompt
             isOverdue={reminderState.isOverdue}
-            expectedLabel={formatShortDate(reminderState.expectedDate, locale)}
             onLog={toggleToday}
             onDismiss={() => {
               setFocusPending(true);

@@ -113,7 +113,7 @@ export const nl: Dictionary = {
   "phaseLine.luteal": "Luteale fase",
   "phaseLine.learning": "Leren",
   "phaseLine.between": "Tussen menstruaties",
-  "phaseLine.late": "Menstruatie verwacht",
+  "phaseLine.late": "Menstruatie te laat",
 
   "dial.overview": "Cyclusoverzicht",
   "dial.days": "Cyclusdagen",
@@ -165,8 +165,7 @@ export const nl: Dictionary = {
   "log.logged": "Vandaag gelogd",
   "log.loggedWith": "Vandaag gelogd · {flow}",
   "log.add": "Bloedverlies registreren",
-  "reminder.messageOverdue": "Je menstruatie werd verwacht op {date}. Begonnen?",
-  "reminder.messageUpcoming": "Je menstruatie wordt verwacht op {date}. Begonnen?",
+  "reminder.question": "Is je menstruatie begonnen?",
   "reminder.dismiss": "Nog niet — herinner me later",
   "reminder.reassure": "Een paar dagen variatie is normaal.",
 

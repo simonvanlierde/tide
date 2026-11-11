@@ -1,5 +1,5 @@
 import { DropletOff, Droplets } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FlowIntensity, LoggedFlow } from "../../domain/types";
 import { useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
@@ -39,24 +39,14 @@ export function LogAction({
     }
   }, [autoFocus, isLogged]);
 
-  // Logged: the day's last word is the confirmation, then the one decision
-  // left (flow), and only then the undo, as a text action rather than a
-  // button that looks like the next step.
   if (isLogged) {
     return (
-      <div className="log-action log-action--logged">
-        <p className="log-action__status" role="status">
-          <AppIcon icon={Droplets} className="log-action__status-icon" />
-          <span>{intensity ? t("log.loggedWith", { flow: t(`flow.${intensity}`) }) : t("log.logged")}</span>
-        </p>
-        {onSelectIntensity ? (
-          <FlowGauge selected={intensity} onSelect={onSelectIntensity} autoFocus={autoFocus} />
-        ) : null}
-        <button type="button" className="text-action log-action__remove" onClick={onToggle}>
-          <AppIcon icon={DropletOff} className="text-action__icon" />
-          {t("log.remove")}
-        </button>
-      </div>
+      <LoggedToday
+        intensity={intensity}
+        onRemove={onToggle}
+        onSelectIntensity={onSelectIntensity}
+        justLogged={autoFocus}
+      />
     );
   }
 
@@ -73,6 +63,39 @@ export function LogAction({
           <span>{t("log.add")}</span>
         </span>
       </button>
+    </div>
+  );
+}
+
+interface LoggedTodayProps {
+  intensity?: LoggedFlow;
+  onRemove: () => void;
+  onSelectIntensity?: (intensity: FlowIntensity) => void;
+  justLogged: boolean;
+}
+
+// Logged: one line that confirms, with the undo beside it, and the optional
+// flow as a single row of swatches. Nothing here asks for another step.
+function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: LoggedTodayProps) {
+  const t = useT();
+  // The parent's flag lasts one render; keep it so the one-time moment can finish.
+  const [pop] = useState(justLogged);
+
+  return (
+    <div className="log-action log-action--logged" data-just-logged={pop || undefined}>
+      <div className="log-action__row">
+        <p className="log-action__status" role="status">
+          <AppIcon icon={Droplets} className="log-action__status-icon" />
+          <span>{intensity ? t("log.loggedWith", { flow: t(`flow.${intensity}`) }) : t("log.logged")}</span>
+        </p>
+        <button type="button" className="text-action log-action__remove" onClick={onRemove}>
+          <AppIcon icon={DropletOff} className="text-action__icon" />
+          {t("log.remove")}
+        </button>
+      </div>
+      {onSelectIntensity ? (
+        <FlowGauge selected={intensity} onSelect={onSelectIntensity} autoFocus={justLogged} hideLegend />
+      ) : null}
     </div>
   );
 }

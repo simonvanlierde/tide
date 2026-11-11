@@ -111,7 +111,7 @@ export const en = {
   "phaseLine.luteal": "Luteal phase",
   "phaseLine.learning": "Learning",
   "phaseLine.between": "Between periods",
-  "phaseLine.late": "Period expected",
+  "phaseLine.late": "Period late",
 
   // Cycle dial + segment status (shown in the dial centre and read aloud)
   "dial.overview": "Cycle overview",
@@ -167,8 +167,7 @@ export const en = {
   "log.logged": "Logged today",
   "log.loggedWith": "Logged today · {flow}",
   "log.add": "Log bleeding today",
-  "reminder.messageOverdue": "Your period was expected {date}. Started?",
-  "reminder.messageUpcoming": "Your period is expected {date}. Started?",
+  "reminder.question": "Has your period started?",
   "reminder.dismiss": "Not yet — remind me later",
   "reminder.reassure": "A few days of variation is common.",
 

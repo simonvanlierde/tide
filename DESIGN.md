@@ -161,7 +161,7 @@ them with a scrubbable view of the cycle. Dark mode is the same pool at night, t
   at the 10% tint.
 - **Deep Tide** (`tide-deep`): the wordmark, the dial's phase line, link text, selected
   chips. White text on it passes AA in both themes.
-- **Tide Soft** / **Tide Tint**: the reminder prompt, and hover and active washes.
+- **Tide Soft** / **Tide Tint**: the backup reminder, and hover and active washes.
 
 ### Secondary
 
@@ -291,7 +291,7 @@ Everything is rounded, every radius is a token, and bigger blocks get bigger cor
 - **Field** (12 px): selects and inputs.
 - **Segment** (14 px): the segmented track, tab items.
 - **Button** (16 px): buttons and inset panels.
-- **Prompt** (18 px): the reminder prompt.
+- **Prompt** (18 px): the backup reminder.
 - **Card** (20–22 px): the fact list, utility cards.
 
 The dial is a circle. Calendar days are rounded squares. A day that has happened shows its
@@ -307,7 +307,7 @@ The values are in the front matter. This section says what each component is *fo
 - **Primary**: coral, with the coral glow. It has one job: logging bleeding when a bleed is
   plausible.
 - **Quiet / Secondary**: surface and hairline, with a tide-tint wash on hover. The log
-  button switches to this once the day is logged. A pair of equal card actions (Export,
+  button uses it when no bleed is expected. A pair of equal card actions (Export,
   Import) uses it in two columns, which stack when the words stop fitting.
 - **Commit**: solid deep tide, for the confirming action in a dialog. Never coral: coral
   means bleeding, not "this button matters".
@@ -316,6 +316,17 @@ The values are in the front matter. This section says what each component is *fo
   target.
 - Every interactive element gets a `2px solid tide` focus ring at 2 px offset and a 160 ms
   ease.
+
+### Log block
+
+Today's lead is the forecast, then one log block in the same slot in every state, with no
+card. When a period is expected or late, the question "Has your period started?" sits
+above the log button and "Not yet" below it. The forecast already names the date, so the
+question doesn't repeat it. Once today is logged, the block is one status line with
+Remove beside it and the flow gauge under it: nothing asks for another step. "Add
+details" closes the block as a text action. Logging gets the screen's one moment: the
+droplet scales in with a coral ring, like a newly logged calendar day, and simply appears
+under reduced motion.
 
 ### Chips
 
@@ -340,7 +351,9 @@ drilling in at the end.
 - **Switch**: muted-ink border and thumb on soft surface when off; deep-tide fill and
   white thumb when on.
 - **Flow gauge**: four radio steps, spotting to heavy, coloured from the flow ramp.
-  Keep two equal columns so long labels and enlarged text fit.
+  Two equal columns, so long labels and enlarged text fit. On Today the four sit in one
+  row while the longest label fits at the current text size, and the legend is for
+  screen readers only.
 
 ### Navigation
 
@@ -373,7 +386,7 @@ comes next.
 
 ### Backup reminder
 
-Reuse the teal-tinted reminder prompt on Today, with a plain heading and supporting text.
+A teal-tinted prompt card on Today, with a plain heading and supporting text.
 The download action uses the secondary button; snooze uses the quiet dismiss action.
 Keep backup actions free of coral. A failed download shows an alert below the actions.
 

@@ -112,7 +112,7 @@ export const es: Dictionary = {
   "phaseLine.luteal": "Fase lútea",
   "phaseLine.learning": "Aprendiendo",
   "phaseLine.between": "Entre períodos",
-  "phaseLine.late": "Regla prevista",
+  "phaseLine.late": "Regla con retraso",
 
   "dial.overview": "Resumen del ciclo",
   "dial.days": "Días del ciclo",
@@ -163,8 +163,7 @@ export const es: Dictionary = {
   "log.logged": "Registrado hoy",
   "log.loggedWith": "Registrado hoy · {flow}",
   "log.add": "Registrar sangrado de hoy",
-  "reminder.messageOverdue": "Tu período estaba previsto el {date}. ¿Ha comenzado?",
-  "reminder.messageUpcoming": "Tu período está previsto el {date}. ¿Ha comenzado?",
+  "reminder.question": "¿Ha comenzado tu período?",
   "reminder.dismiss": "Todavía no — recordármelo más tarde",
   "reminder.reassure": "Unos días de variación es normal.",
 

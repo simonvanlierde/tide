@@ -325,7 +325,7 @@ describe("TodayScreen", () => {
   it("prompts to log inside the reminder window", () => {
     renderToday("2026-04-28", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
-    expect(screen.getByText(/your period is expected/i)).toBeInTheDocument();
+    expect(screen.getByText(/has your period started/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /not yet/i })).toBeInTheDocument();
   });
@@ -333,7 +333,9 @@ describe("TodayScreen", () => {
   it("switches to overdue wording once the period is late", () => {
     renderToday("2026-05-01", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
-    expect(screen.getByText(/your period was expected/i)).toBeInTheDocument();
+    expect(screen.getByText(/has your period started/i)).toBeInTheDocument();
+    // The dial names today as late, never as a second expected date.
+    expect(screen.getByRole("slider").getAttribute("aria-valuetext")).toContain("Period late");
     // The reassurance line only appears once the period is late.
     expect(screen.getByText(/variation is common/i)).toBeInTheDocument();
     // The fact row stops claiming a "next" period in the past.
@@ -349,7 +351,7 @@ describe("TodayScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /not yet/i }));
 
-    expect(screen.queryByText(/your period is expected/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/has your period started/i)).not.toBeInTheDocument();
     // Dismissing hides the prompt but keeps the log action prominent — a period
     // is still expected, so logging should stay one easy orange tap away.
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveClass("primary-action");
@@ -361,7 +363,7 @@ describe("TodayScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
 
-    expect(screen.queryByText(/your period is expected/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/has your period started/i)).not.toBeInTheDocument();
     // Undoing a log is a quiet text action, not a loud orange CTA, and the
     // day ends on a confirmation rather than on "Remove".
     expect(screen.getByRole("button", { name: /remove bleeding log/i })).toHaveClass("text-action");
@@ -423,8 +425,7 @@ describe("TodayScreen", () => {
   it("keeps a calm log action and no prompt outside the window", () => {
     renderToday("2026-04-18");
 
-    expect(screen.queryByText(/your period is expected/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/your period was expected/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/has your period started/i)).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toBeInTheDocument();
   });
 });

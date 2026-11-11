@@ -55,10 +55,14 @@
     line-height: 1.2;
   }
 
-  /* The diary trigger sits under the full-width log button, so it centres with it. */
+  /* The diary trigger belongs to the log block above it: pulled up into that
+     group, with a full touch target. */
+  .today-screen__lead .daily-details {
+    margin-top: -10px;
+  }
+
   .today-screen__lead .daily-details__trigger {
-    display: block;
-    margin-inline: auto;
+    min-height: 44px;
   }
 
   .today-screen__note {
@@ -68,7 +72,36 @@
     line-height: 1.45;
   }
 
-  /* The privacy promise, stated where the data is made: one quiet line. */
+  /* The log prompt is part of the lead, not a card: question, button, way out. */
+  .log-prompt {
+    display: grid;
+    gap: 12px;
+  }
+
+  .log-prompt__question {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* Overdue is the highest-anxiety moment on the screen: one calm line,
+     quieter than the question, before the actions. */
+  .log-prompt__reassure {
+    margin: -8px 0 0;
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    line-height: 1.45;
+  }
+
+  .log-prompt__dismiss {
+    justify-self: start;
+    min-height: 44px;
+    margin-block: -6px -10px;
+    font-size: var(--text-md);
+  }
+
   .reminder-prompt {
     display: grid;
     gap: 14px;
@@ -78,29 +111,11 @@
     background: var(--tide-tint);
   }
 
-  .reminder-prompt__message {
-    margin: 0;
-    color: var(--tide-strong);
-    font-size: var(--text-lg);
-    line-height: 1.4;
-    text-align: center;
-  }
-
   .backup-reminder__title {
     margin: 0;
     color: var(--ink);
     font-size: var(--text-base);
     font-weight: 600;
-  }
-
-  /* Overdue is the highest-anxiety moment on the screen: one calm line,
-     quieter than the question, before the actions. */
-  .reminder-prompt__reassure {
-    margin: -6px 0 0;
-    color: var(--ink-soft);
-    font-size: var(--text-md);
-    line-height: 1.45;
-    text-align: center;
   }
 
   .reminder-prompt__dismiss {

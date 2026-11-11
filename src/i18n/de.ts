@@ -113,7 +113,7 @@ export const de: Dictionary = {
   "phaseLine.luteal": "Lutealphase",
   "phaseLine.learning": "Lernen",
   "phaseLine.between": "Zwischen den Perioden",
-  "phaseLine.late": "Periode erwartet",
+  "phaseLine.late": "Periode überfällig",
 
   "dial.overview": "Zyklusübersicht",
   "dial.days": "Zyklustage",
@@ -165,8 +165,7 @@ export const de: Dictionary = {
   "log.logged": "Heute protokolliert",
   "log.loggedWith": "Heute protokolliert · {flow}",
   "log.add": "Blutung heute erfassen",
-  "reminder.messageOverdue": "Deine Periode wurde am {date} erwartet. Angefangen?",
-  "reminder.messageUpcoming": "Deine Periode wird am {date} erwartet. Angefangen?",
+  "reminder.question": "Hat deine Periode angefangen?",
   "reminder.dismiss": "Noch nicht — später erinnern",
   "reminder.reassure": "Ein paar Tage Abweichung sind normal.",
 

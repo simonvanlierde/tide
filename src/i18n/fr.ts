@@ -113,7 +113,7 @@ export const fr: Dictionary = {
   "phaseLine.luteal": "Phase lutéale",
   "phaseLine.learning": "Apprentissage",
   "phaseLine.between": "Entre deux règles",
-  "phaseLine.late": "Règles attendues",
+  "phaseLine.late": "Règles en retard",
 
   "dial.overview": "Aperçu du cycle",
   "dial.days": "Jours du cycle",
@@ -165,8 +165,7 @@ export const fr: Dictionary = {
   "log.logged": "Enregistré aujourd’hui",
   "log.loggedWith": "Enregistré aujourd’hui · {flow}",
   "log.add": "Enregistrer le saignement du jour",
-  "reminder.messageOverdue": "Tes règles étaient prévues le {date}. Commencées ?",
-  "reminder.messageUpcoming": "Tes règles sont prévues le {date}. Commencées ?",
+  "reminder.question": "Tes règles ont-elles commencé ?",
   "reminder.dismiss": "Pas encore — me le rappeler plus tard",
   "reminder.reassure": "Quelques jours de variation, c’est courant.",
 
