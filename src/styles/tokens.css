@@ -41,15 +41,15 @@
     /* Cycle phases */
     --cycle-period: var(--bleed);
     --cycle-ovulation: #e8a24b;
-    --cycle-fertile: #ecd2f5;
+    --cycle-fertile: #e0e3f7;
     --cycle-idle: rgba(84, 123, 121, 0.4);
-    /* Estimates are dashed outlines, never fills. Lilac and amber are too pale
+    /* Estimates are dashed outlines, never fills. Periwinkle and amber are too pale
        for a line on the light ground, so their outlines take deeper shades:
        each clears 3.6:1 on the white card and 3.1:1 on the darkest ground. A
-       yellow that dark turns brown, so the fertile window is violet; ovulation
+       yellow that dark turns brown, so the fertile window is a cool periwinkle; ovulation
        is gold, apart from the coral period, with a thicker dash and a yellow wash. */
     --estimate-period: var(--bleed-strong);
-    --estimate-fertile: #b454d4;
+    --estimate-fertile: #5d68c4;
     /* How much of an estimate's colour washes its calendar day. */
     --estimate-tint: 10%;
     --estimate-ovulation: #b07d00;
@@ -135,10 +135,10 @@
     --flow-medium: #e2745c;
     --flow-heavy: #d95f45;
 
-    /* Fertile a pale lilac, ovulation a saturated amber: clearly apart from
+    /* Fertile a pale periwinkle, ovulation a saturated amber: clearly apart from
        each other and from coral on the dark ground. */
     --cycle-ovulation: #f2a63c;
-    --cycle-fertile: #ddabed;
+    --cycle-fertile: #a9b1f2;
     --cycle-idle: rgba(194, 238, 234, 0.3);
     /* On the dark ground the fills themselves are bright enough for a line. */
     --estimate-period: var(--bleed);

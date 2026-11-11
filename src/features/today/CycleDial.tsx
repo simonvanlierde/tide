@@ -422,7 +422,7 @@ export function CycleDial({
       <CycleLegend
         className="cycle-dial__legend"
         // The key only names colours the ring actually shows: no coral dot
-        // over an all-grey first-run ring, no lilac or amber without an
+        // over an all-grey first-run ring, no periwinkle or amber without an
         // ovulation estimate.
         showPeriod={Object.keys(intensityByDay).length > 0}
         showExpected={hasPrediction}
