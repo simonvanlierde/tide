@@ -20,7 +20,7 @@ export const de: Dictionary = {
   "history.chartDates": "Periodenbeginn, vom ältesten zum neuesten",
   "backup.title": "Bewahre eine Kopie deines Verlaufs auf",
   "backup.body":
-    "Dein Verlauf ist nur in diesem Browser gespeichert und geht verloren, wenn die Browserdaten gelöscht werden. Lade eine Sicherung herunter, um ihn wiederherzustellen.",
+    "Dein Verlauf ist nur in diesem Browser gespeichert und geht verloren, wenn du die Browserdaten löschst. Lade eine Sicherung herunter, um ihn wiederherzustellen.",
   "backup.download": "Sicherung erstellen",
   "backup.snooze": "In einer Woche erinnern",
   "backup.error": "Die Sicherung konnte nicht heruntergeladen werden. Versuch es erneut.",
@@ -60,7 +60,7 @@ export const de: Dictionary = {
   "app.skipToContent": "Zum Inhalt springen",
   "app.primaryNav": "Hauptnavigation",
   "app.newerData":
-    "Eine neuere Version von Tide hat deine Daten gespeichert. Lade neu, um zu aktualisieren. Änderungen, die du hier machst, werden nicht gespeichert.",
+    "Eine neuere Version von Tide hat deine Daten gespeichert. Lade die Seite neu, um zu aktualisieren. Änderungen, die du hier machst, werden nicht gespeichert.",
 
   "app.storageError":
     "Deine letzten Änderungen konnten nicht auf diesem Gerät gespeichert werden. Lass Tide geöffnet und exportiere eine Sicherung in den Einstellungen.",
@@ -77,10 +77,10 @@ export const de: Dictionary = {
   "today.inDays.other": "In {n} Tagen",
   "today.higherToday": "Im fruchtbaren Fenster",
   "today.lowerToday": "Nicht im fruchtbaren Fenster",
-  "today.notBirthControl": "Eine Schätzung. Nutze sie nicht als Verhütungsmethode.",
+  "today.notBirthControl": "Eine Schätzung. Nutze sie nicht zur Verhütung.",
   "fertilityAsk.title": "Fruchtbarkeits\u00adschätzungen anzeigen?",
   "fertilityAsk.body":
-    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist nur eine Schätzung, nutze sie also nicht als Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
+    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist nur eine Schätzung, also nutze sie nicht zur Verhütung. Du kannst das in den Einstellungen ändern.",
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.importPrompt": "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?",
@@ -95,7 +95,7 @@ export const de: Dictionary = {
   "today.ovulationToday": "Eisprung heute",
   "today.ovulationInDays.one": "Eisprung in {n} Tag",
   "today.ovulationInDays.other": "Eisprung in {n} Tagen",
-  "today.learningFallback": "Es wird ein typischer 28-Tage-Zyklus verwendet, bis Tide einige deiner Zyklen kennt.",
+  "today.learningFallback": "Tide rechnet mit einem typischen 28-Tage-Zyklus, bis es einige deiner Zyklen kennt.",
   "today.learningInsufficient": "Erfasse deine Periode, um eine Vorhersage zu sehen.",
 
   "phase.menstrual": "Menstruation",
@@ -125,7 +125,7 @@ export const de: Dictionary = {
   "insights.cycleLength": "Zyklus\u00adlänge",
   "insights.periodLength": "Perioden\u00addauer",
   "insights.cyclesTracked": "Verwendete Zyklen",
-  "insights.basedOn": "Es wird ein typischer Zyklus von {cycle} Tagen verwendet, bis du einen vollständigen hast.",
+  "insights.basedOn": "Tide rechnet mit einem typischen Zyklus von {cycle} Tagen, bis du einen vollständigen hast.",
   "insights.regularity": "Zyklusregelmäßigkeit",
   "insights.regularityAria": "Zyklusregelmäßigkeit: {label}",
   "regularity.none": "Noch nicht genügend Daten",
@@ -136,12 +136,12 @@ export const de: Dictionary = {
   "insights.how": "So funktionieren die Vorhersagen",
   "insights.how1": "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet.",
   "insights.howCycleStart":
-    "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Blutungstagen beginnt einen neuen Zyklus. Eine kürzere Lücke gehört zur selben Periode. Schmierblutungen zählen nicht mit.",
+    "Liegen {gap} oder mehr Tage zwischen zwei erfassten Blutungstagen, beginnt ein neuer Zyklus. Bei weniger Tagen gehört es zur selben Periode. Schmierblutungen zählen nicht mit.",
   "insights.how2":
     "Die Zykluslänge ist der Median deiner letzten {recent} vollständigen Zyklen. Unvollständige Zyklen zählen nicht mit. Ohne vollständige Zyklen wird ein typischer Zyklus von {cycle} Tagen verwendet.",
   "insights.how3": "Die geschätzte Periodendauer ist dein bisheriger Durchschnitt, begrenzt auf {min}–{max} Tage.",
   "insights.how4":
-    "Deine nächste Periode wird eine Zykluslänge nach dem Beginn deiner letzten Periode erwartet. Der Eisprung wird {luteal} Tage davor geschätzt.",
+    "Deine nächste Periode wird eine Zykluslänge nach dem Beginn deiner letzten Periode erwartet. Der Eisprung liegt schätzungsweise {luteal} Tage davor.",
   "insights.howNextPeriod":
     "Deine nächste Periode wird eine Zykluslänge nach dem Beginn deiner letzten Periode erwartet.",
   "insights.how5":
@@ -234,20 +234,20 @@ export const de: Dictionary = {
   "legal.inEnglish": "Auf Englisch",
   "settings.privacy": "Tide lädt deine Daten nicht hoch.",
   "settings.fertilityDisclaimer":
-    "Fruchtbarkeitsschätzungen dienen nur der Information. Nutze sie nicht als Verhütungsmethode.",
+    "Fruchtbarkeitsschätzungen dienen nur der Information. Nutze sie nicht zur Verhütung.",
   "settings.fertilityMethod":
     "Das fruchtbare Fenster sind die Tage rund um deinen erwarteten Eisprung, geschätzt anhand deiner letzten Zykluslängen.",
   "settings.sourceCode": "Quellcode, v{version}, öffnet in einem neuen Tab",
   "settings.data": "Daten",
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":
-    "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Eine Tide-Sicherung zu importieren ersetzt sie. Ein Import aus Clue oder Flo fügt Menstruationstage hinzu.",
+    "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Der Import einer Tide-Sicherung ersetzt sie. Ein Import aus Clue oder Flo fügt Menstruationstage hinzu.",
   "settings.importSources": "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.exportCalendar": "Zum Kalender",
   "settings.calendarHelp":
-    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Einmal hinzugefügt, sind es normale Kalendertermine: Das Konto deines Kalenders speichert und synchronisiert sie.",
+    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Einmal hinzugefügt, sind es normale Kalendertermine: Dein Kalenderkonto speichert und synchronisiert sie.",
   "settings.calendarFertility": "Fruchtbare Fenster einschließen",
   "settings.calendarSuccess": "Kalenderdatei in deinen Downloads gespeichert.",
   "settings.calendarError": "Die Kalenderdatei ließ sich nicht erstellen. Lade Tide neu und versuche es noch einmal.",
