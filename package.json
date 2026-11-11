@@ -16,6 +16,7 @@
   },
   "scripts": {
     "backtest": "node scripts/backtestPredictor.mjs",
+    "benchmark": "node scripts/benchmarkPredictor.mjs",
     "budget": "node scripts/checkBundleBudget.mjs",
     "build": "vite build",
     "check": "biome check && knip",

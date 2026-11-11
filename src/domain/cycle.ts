@@ -65,26 +65,32 @@ function getCycleStarts(periodDays: IsoDate[]) {
 // last period still counts. `periodDays` is expected spotting-filtered.
 export function getAveragePeriodLength(periodDays: IsoDate[], today: IsoDate): number {
   const sortedDays = [...periodDays].sort();
-  const starts = getCycleStarts(sortedDays);
-  if (starts.length === 0) {
+  let start = sortedDays[0];
+  if (start === undefined) {
     return DEFAULT_PERIOD_LENGTH;
   }
 
-  const lengths = starts.map((start, index) => {
-    const nextStart = starts[index + 1];
-    const runDays = sortedDays.filter((day) => day >= start && (nextStart === undefined || day < nextStart));
-    const lastDay = runDays.at(-1) ?? start;
-    return differenceInDays(lastDay, start) + 1;
-  });
-
-  const lastLoggedDay = sortedDays.at(-1);
-  const lastRunOngoing = lastLoggedDay !== undefined && differenceInDays(today, lastLoggedDay) < MIN_DAYS_SINCE_BLEED;
-  const completed = lastRunOngoing ? lengths.slice(0, -1) : lengths;
+  let previous = start;
+  let totalLength = 0;
+  let periodCount = 0;
+  for (let index = 1; index < sortedDays.length; index++) {
+    const day = sortedDays[index] as IsoDate;
+    if (differenceInDays(day, previous) >= NEW_CYCLE_MIN_GAP_DAYS) {
+      totalLength += differenceInDays(previous, start) + 1;
+      periodCount++;
+      start = day;
+    }
+    previous = day;
+  }
+  if (differenceInDays(today, previous) >= MIN_DAYS_SINCE_BLEED) {
+    totalLength += differenceInDays(previous, start) + 1;
+    periodCount++;
+  }
   // The only period so far may still be bleeding: nothing learned yet.
-  if (completed.length === 0) {
+  if (periodCount === 0) {
     return DEFAULT_PERIOD_LENGTH;
   }
-  const average = Math.round(completed.reduce((sum, value) => sum + value, 0) / completed.length);
+  const average = Math.round(totalLength / periodCount);
   return Math.min(MAX_PERIOD_LENGTH, Math.max(MIN_PERIOD_LENGTH, average));
 }
 
