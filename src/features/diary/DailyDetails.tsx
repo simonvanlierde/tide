@@ -213,7 +213,7 @@ export function DetailsForm({
           })}
           <button
             type="button"
-            className="diary-chip diary-chip--none"
+            className="diary-chip"
             aria-pressed={value.symptoms?.length === 0}
             onClick={() => save({ ...value, symptoms: value.symptoms?.length === 0 ? null : [] })}
           >
