@@ -124,8 +124,7 @@
 
   /* Estimates (fertile window, ovulation, the expected period) are a pale wash
      in the ring (--dial-wash-*). This layer draws their outline: the estimate colours, masked to
-     two thin rails at the band's inner and outer edge and cut into dashes,
-     the same dashed outline the calendar uses. */
+     two thin solid rails at the band's inner and outer edge, the same outline the calendar uses. */
   .cycle-dial__estimates {
     --band: min(30px, 11cqw);
     --rail: 2.5px;
@@ -133,26 +132,20 @@
     inset: 0;
     border-radius: 50%;
     pointer-events: none;
-    -webkit-mask:
-      radial-gradient(
-        circle closest-side,
-        transparent calc(100% - var(--band)),
-        #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
-        transparent calc(100% - var(--band) + var(--rail)) calc(100% - var(--rail)),
-        #000 calc(100% - var(--rail))
-      ),
-      repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 5deg);
-    -webkit-mask-composite: source-in;
-    mask:
-      radial-gradient(
-        circle closest-side,
-        transparent calc(100% - var(--band)),
-        #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
-        transparent calc(100% - var(--band) + var(--rail)) calc(100% - var(--rail)),
-        #000 calc(100% - var(--rail))
-      ),
-      repeating-conic-gradient(#000 0deg 3deg, transparent 3deg 5deg);
-    mask-composite: intersect;
+    -webkit-mask: radial-gradient(
+      circle closest-side,
+      transparent calc(100% - var(--band)),
+      #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
+      transparent calc(100% - var(--band) + var(--rail)) calc(100% - var(--rail)),
+      #000 calc(100% - var(--rail))
+    );
+    mask: radial-gradient(
+      circle closest-side,
+      transparent calc(100% - var(--band)),
+      #000 calc(100% - var(--band)) calc(100% - var(--band) + var(--rail)),
+      transparent calc(100% - var(--band) + var(--rail)) calc(100% - var(--rail)),
+      #000 calc(100% - var(--rail))
+    );
   }
 
   /* Day ticks live on their own layer, masked to a thin band at the outer rim
@@ -393,14 +386,14 @@
     background: var(--cycle-period);
   }
 
-  /* Estimates: dashed outlines, as on the ring and the calendar. */
+  /* Estimates: outlines, as on the ring and the calendar. */
   .cycle-view__dot--expected,
   .cycle-view__dot--fertile,
   .cycle-view__dot--ovulation {
     width: 11px;
     height: 11px;
     background: transparent;
-    border: 1.5px dashed var(--estimate-period);
+    border: 1.5px solid var(--estimate-period);
   }
 
   .cycle-view__dot--fertile {
@@ -573,14 +566,12 @@
     background: var(--bleed);
   }
 
-  /* A 2 px dash only fits three segments on a swatch this small, which reads
-     as a broken ring; thinner keeps the dashed-square pattern of the day. */
   .calendar-legend__swatch--predicted,
   .calendar-legend__swatch--fertile,
   .calendar-legend__swatch--ovulation {
     --estimate: var(--estimate-period);
     background: color-mix(in srgb, var(--estimate) var(--estimate-tint), transparent);
-    border: 1.5px dashed var(--estimate);
+    border: 1.5px solid var(--estimate);
   }
 
   .calendar-legend__swatch--fertile {

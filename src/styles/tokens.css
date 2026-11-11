@@ -43,11 +43,11 @@
     --cycle-ovulation: #e8a24b;
     --cycle-fertile: #e0e3f7;
     --cycle-idle: rgba(84, 123, 121, 0.4);
-    /* Estimates are dashed outlines, never fills. Periwinkle and amber are too pale
+    /* Estimates are outlines over a faint wash, never full fills. Periwinkle and amber are too pale
        for a line on the light ground, so their outlines take deeper shades:
        each clears 3.6:1 on the white card and 3.1:1 on the darkest ground. A
        yellow that dark turns brown, so the fertile window is a cool periwinkle; ovulation
-       is gold, apart from the coral period, with a thicker dash and a yellow wash. */
+       is gold, apart from the coral period, with a thicker line and a yellow wash. */
     --estimate-period: var(--bleed-strong);
     --estimate-fertile: #5d68c4;
     /* How much of an estimate's colour washes its calendar day. */
@@ -147,7 +147,7 @@
     --estimate-fertile: var(--cycle-fertile);
     --estimate-ovulation: var(--cycle-ovulation);
     /* Amber over the dark ground turns brown, so ovulation keeps the fertile
-       wash here and only its dashed rails are amber. */
+       wash here and only its rails are amber. */
     --dial-wash-period: color-mix(in srgb, var(--estimate-period) 20%, var(--surface));
     --dial-wash-fertile: color-mix(in srgb, var(--estimate-fertile) 20%, var(--surface));
     --dial-wash-ovulation: var(--dial-wash-fertile);

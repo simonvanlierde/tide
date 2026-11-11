@@ -61,9 +61,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   number sits small inside the day's corner instead of in a bubble, with its own legend entry.
 - The fertile window is periwinkle instead of olive, and ovulation gold, on the dial and the
   calendar, so neither looks brown and ovulation no longer looks like the expected period.
-  The ovulation day also has a heavier dash.
-- Estimated calendar days use a finer dash and, in light mode, a faint wash of their
-  colour, so the fertile window reads as one band instead of a row of boxes.
+  The ovulation day also has a heavier line.
+- Estimates are no longer dashed. Expected, fertile and ovulation days have a thin solid
+  outline and, in light mode, a faint wash of their colour, on the dial, the calendar and the
+  legends, so the fertile window reads as one band instead of a row of boxes.
 - Under the calendar, "Log a past period" and the day's details are two buttons in one
   group, and the "Tap a day" hint shows only until your first log.
 - "Add details" on the calendar names its day, and adds details for the day you last picked.

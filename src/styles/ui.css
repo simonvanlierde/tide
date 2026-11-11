@@ -1293,8 +1293,8 @@
     opacity: 0.7;
   }
 
-  /* Estimates: a dashed outline in the estimate's colour and no fill, so no
-     estimate reads as a logged day. The outline is the only cue: the day
+  /* Estimates: an outline in the estimate's colour over a faint wash, never a
+     logged day's full fill, so no estimate reads as a logged day. The outline is the only cue: the day
      number keeps its own colour, as on every other estimate. Placed after
      the future/disabled rules, and at full opacity, so the outline keeps its
      3:1 contrast. */
@@ -1302,14 +1302,13 @@
   .calendar-grid__day.is-ovulation,
   .calendar-grid__day.is-predicted-period {
     --estimate: var(--estimate-fertile);
-    /* A faint wash groups the window into a band; the fine dash keeps it an
-       estimate, never a logged day's solid fill. */
+    /* A faint wash groups the window into a band. */
     background: color-mix(in srgb, var(--estimate) var(--estimate-tint), transparent);
-    border: 1.5px dashed var(--estimate);
+    border: 1.5px solid var(--estimate);
     opacity: 1;
   }
 
-  /* One peak day: a heavier dash and a wash of the amber fill, so it differs
+  /* One peak day: a heavier line and a wash of the amber fill, so it differs
      from the period estimate in weight as well as hue. */
   .calendar-grid__day.is-ovulation {
     --estimate: var(--estimate-ovulation);
