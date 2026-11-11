@@ -5,32 +5,166 @@
   .daily-details__trigger {
     min-height: 44px;
   }
+  /* Today's Details: a quiet companion to the log button, same height. The
+     dot marks a day that already has details. */
+  .details-button {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    align-self: stretch;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-button);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    font-weight: 500;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+  .details-button:hover,
+  .details-button[aria-expanded="true"] {
+    border-color: var(--tide);
+    color: var(--tide-strong);
+    background: var(--tide-tint);
+  }
+  .details-button:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+  /* On a narrow line the log label needs the room: Details keeps its icon,
+     and its aria-label still names it. */
+  @container (max-width: 21em) {
+    .details-button {
+      padding: 0 14px;
+    }
+    .details-button__label {
+      display: none;
+    }
+  }
+  .details-button__dot {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-pill);
+    background: var(--tide);
+  }
+
+  /* The panel opens under the log line as an inset, not a form page: chips
+     save on tap, so there is nothing to submit. */
   .diary-form {
     display: grid;
-    gap: 14px;
-    margin-top: 12px;
+    gap: 18px;
+    padding: 18px;
+    border-radius: var(--radius-button);
+    background: var(--surface-soft);
     text-align: start;
   }
-  .diary-form__fields,
-  .diary-form__symptoms {
+  .diary-form__group {
+    display: grid;
+    gap: 10px;
     min-width: 0;
     margin: 0;
     padding: 0;
     border: 0;
   }
-  .diary-form__fields {
-    display: grid;
-    gap: 14px;
-  }
-  .diary-form__symptoms legend,
+  .diary-form__group legend,
   .diary-form__field {
     color: var(--ink);
+    font-size: var(--text-md);
     font-weight: 600;
   }
-  .diary-form__choices {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 12px;
+  .diary-form__group legend {
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  .diary-form__chips,
+  .diary-form__moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .diary-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+  .diary-chip:hover:not(:disabled) {
+    border-color: var(--tide);
+    color: var(--tide-strong);
+  }
+  .diary-chip[aria-pressed="true"] {
+    border-color: var(--tide);
+    background: var(--tide-tint);
+    color: var(--tide-strong);
+    font-weight: 600;
+  }
+  .diary-chip:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+  .diary-chip:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+  .diary-chip__icon {
+    width: 16px;
+    height: 16px;
+  }
+  /* "No symptoms" is the other answer, not one more symptom. */
+  .diary-chip--none {
+    border-style: dashed;
+  }
+  .diary-chip--none[aria-pressed="true"] {
+    border-style: solid;
+  }
+  /* Three moods share the row evenly, each with its weather. */
+  .diary-chip--mood {
+    flex: 1 1 0;
+    justify-content: center;
+    min-width: max-content;
+  }
+  .diary-chip__mood-icon {
+    width: 18px;
+    height: 18px;
+  }
+  .diary-form__hint {
+    margin: -10px 0 0;
+    font-size: var(--text-sm);
+  }
+  .diary-form__status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    /* Stays in the layout when empty: a live region that appears from
+       display: none may not be announced. */
+    margin: -8px 0;
+    gap: 6px;
+    color: var(--ink-muted);
+    font-size: var(--text-sm);
+  }
+  .diary-form .diary-form__done {
+    width: auto;
+    padding: 10px 22px;
   }
   .diary-form__field {
     display: grid;
@@ -65,9 +199,6 @@
     opacity: 0.65;
     cursor: not-allowed;
   }
-  .diary-form__fields:disabled {
-    opacity: 0.65;
-  }
   .diary-form__actions {
     display: flex;
     flex-wrap: wrap;
@@ -88,10 +219,5 @@
   }
   .daily-details__history .text-action {
     min-height: 44px;
-  }
-  @media (max-width: 360px) {
-    .diary-form__choices {
-      grid-template-columns: 1fr;
-    }
   }
 }

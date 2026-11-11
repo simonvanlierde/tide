@@ -48,13 +48,13 @@ describe("CycleInsights", () => {
     expect(screen.getByText("29")).toBeInTheDocument(); // cycleLength
     expect(screen.getByText("Period length")).toBeInTheDocument();
     // No "learn a full cycle" note once at least one cycle is tracked.
-    expect(screen.queryByText(/while no complete cycles/i)).toBeNull();
+    expect(screen.queryByText(/until you have a complete one/i)).toBeNull();
   });
 
   it("notes the fallback until a full cycle is logged", () => {
     renderInsights({ cyclesTracked: 0, variabilityDays: null });
 
-    expect(screen.getByText(/while no complete cycles/i)).toBeInTheDocument();
+    expect(screen.getByText(/until you have a complete one/i)).toBeInTheDocument();
   });
 
   it.each([

@@ -7,7 +7,8 @@ import { FIXED_NOW, seedAppState } from "./seed";
 
 test("keyboard date edits keep the selected day segment and load its details", async ({ page }) => {
   await page.clock.setFixedTime(new Date("2026-11-11T12:00:00Z"));
-  await page.goto("/");
+  // Only the Calendar's details pick a date; Today's are for today.
+  await page.goto("/calendar");
   await page.getByRole("button", { name: en["diary.addDetails"], exact: true }).click();
   const date = page.getByLabel(en["diary.date"], { exact: true });
   await expect(date).toHaveValue("2026-11-11");
@@ -17,7 +18,7 @@ test("keyboard date edits keep the selected day segment and load its details", a
   await date.press("ArrowDown");
   await expect(date).toHaveValue("2026-11-09");
   await page.getByRole("textbox", { name: en["diary.note"], exact: true }).fill("A quiet day.");
-  await page.getByRole("button", { name: en["diary.save"], exact: true }).click();
+  await expect(page.getByText(en["diary.saved"], { exact: true })).toBeVisible();
   await date.fill("2026-11-08");
   await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("");
   await expect(page.getByText(en["diary.saved"], { exact: true })).not.toBeVisible();
@@ -34,6 +35,11 @@ for (const language of SUPPORTED_LANGUAGES) {
         await seedAppState(page, language, {}, {});
         await page.goto("/");
         await page.getByRole("button", { name: translate(language, "diary.addDetails"), exact: true }).click();
+        // Pressed chips and the saved status are the states most likely to overflow.
+        await page
+          .getByRole("button", { name: translate(language, "diary.symptom.breastTenderness"), exact: true })
+          .click();
+        await page.getByRole("button", { name: translate(language, "diary.mood.okay"), exact: true }).click();
         await expect(page.getByRole("textbox", { name: translate(language, "diary.note"), exact: true })).toBeVisible();
         expect(await findOverflow(page)).toEqual([]);
         const { violations } = await new AxeBuilder({ page })
@@ -52,19 +58,20 @@ test("diary-only history survives reload, calendar viewing and backup restore", 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.goto("/");
   await page.getByRole("button", { name: en["diary.addDetails"], exact: true }).click();
-  await page.getByRole("checkbox", { name: en["diary.noSymptoms"], exact: true }).check();
-  await page.getByRole("combobox", { name: en["diary.mood"], exact: true }).selectOption("good");
+  await page.getByRole("button", { name: en["diary.noSymptoms"], exact: true }).click();
+  await page.getByRole("button", { name: en["diary.mood.good"], exact: true }).click();
   await page.getByRole("textbox", { name: en["diary.note"], exact: true }).fill("A walk helped.");
-  await expect(page.getByLabel(en["diary.date"], { exact: true })).toBeDisabled();
-  await page.getByRole("button", { name: en["diary.save"], exact: true }).click();
   await expect(page.getByText(en["diary.saved"], { exact: true })).toBeVisible();
   await page.reload();
   await page.getByRole("button", { name: en["diary.editDetails"], exact: true }).click();
   await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A walk helped.");
-  await page.getByRole("button", { name: en["diary.cancel"], exact: true }).click();
+  await page.getByRole("button", { name: en["diary.done"], exact: true }).click();
   await page.getByRole("link", { name: en["nav.calendar"], exact: true }).click();
   await page.getByRole("button", { name: /view details for/i }).click();
-  await expect(page.getByRole("checkbox", { name: en["diary.noSymptoms"], exact: true })).toBeChecked();
+  await expect(page.getByRole("button", { name: en["diary.noSymptoms"], exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
   await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A walk helped.");
   await page.getByRole("link", { name: en["nav.settings"], exact: true }).click();
   const download = page.waitForEvent("download");

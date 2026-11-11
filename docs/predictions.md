@@ -31,9 +31,9 @@ what you log. The code is in `src/domain/cycle.ts`.
 If the expected start is more than **10 days** overdue with no new period logged, Tide stops showing
 the current forecast. Your history stays saved. Log a period when it starts to get a new estimate.
 
-On Today, **How was this worked out?** shows these steps with your own numbers. **Cycle insights**
-shows the latest 12 completed intervals in a chart and table, oldest first. Tick **Incomplete**
-when a cycle is missing logs. Its days stay in the calendar, but its length does not count toward
+On Today, **Cycle insights** includes **How was this worked out?**: these steps with your own
+numbers. It also shows the latest 12 completed intervals in a chart and table, oldest first.
+Tick **Incomplete** when a cycle is missing logs. Its days stay in the calendar, but its length does not count toward
 the next-period estimate, regularity or the date range. Its past fertility estimates are hidden.
 The average period length still uses recorded bleeding days. Untick it to include the cycle again.
 Changing an interval's start or end clears its marker, so an old choice cannot attach to a different

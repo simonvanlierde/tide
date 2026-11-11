@@ -28,24 +28,15 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 test("logging today persists across reload", async ({ page }) => {
   await page.goto("/");
 
-  const actionButton = page.getByRole("button", {
-    name: /log bleeding today|remove bleeding log/i,
-  });
-  await expect(actionButton).toBeVisible();
+  await page.getByRole("button", { name: /log bleeding today/i }).click();
+  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
 
-  const startedLogged = await page
-    .getByRole("button", { name: /remove bleeding log/i })
-    .isVisible()
-    .catch(() => false);
-  await actionButton.click();
-
-  const expectedActionLabel = startedLogged ? /log bleeding today/i : /remove bleeding log/i;
-
-  await expect(page.getByRole("button", { name: expectedActionLabel })).toBeVisible();
-
+  // A later visit folds the log into its one line, which opens Remove again.
   await page.reload();
-
-  await expect(page.getByRole("button", { name: expectedActionLabel })).toBeVisible();
+  const summary = page.getByRole("button", { name: /logged today/i });
+  await expect(summary).not.toHaveAttribute("aria-expanded");
+  await summary.click();
+  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
 });
 
 test("deep links reload correctly for the static app paths", async ({ page }) => {
@@ -137,7 +128,7 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
 test("Today's import link lands on the Import button", async ({ page }) => {
   // A first run: nothing stored, so Today shows the empty state.
   await page.goto("/");
-  await expect(page.getByText(en["today.learningInsufficient"])).toBeVisible();
+  await expect(page.getByRole("slider").getByText(en["today.learningInsufficient"])).toBeVisible();
 
   await page.getByRole("link", { name: en["today.importLink"] }).click();
   await expect(page).toHaveURL(/\/settings#import$/);
@@ -156,11 +147,12 @@ test("Today explains how the next period was worked out", async ({ page }) => {
   await seedAppState(page, "en");
   await page.goto("/");
 
-  await page.getByRole("button", { name: en["today.howWorkedOut"] }).click();
-  const sheet = page.getByRole("dialog", { name: en["today.howWorkedOut"] });
+  await page.getByRole("button", { name: en["today.cycleInsights"] }).click();
+  const sums = page.getByRole("region", { name: en["today.howWorkedOut"] });
+  const sheet = page.getByRole("dialog");
   // The seed has one period start, so the 28-day default stands in.
-  await expect(sheet).toContainText("typical 28-day cycle");
-  await expect(sheet).toContainText(en["today.notBirthControl"]);
+  await expect(sums).toContainText("typical 28-day cycle");
+  await expect(sums).toContainText(en["today.notBirthControl"]);
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
 });

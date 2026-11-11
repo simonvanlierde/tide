@@ -1,5 +1,4 @@
-import { X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useId } from "react";
 import type { ForecastExplanation } from "../../domain/cycle";
 import type { IsoDate } from "../../domain/types";
 import { interpolate, plural } from "../../i18n";
@@ -9,14 +8,13 @@ import { EXPLAIN_MESSAGES } from "./explainMessages";
 
 interface ForecastExplainerProps {
   explanation: ForecastExplanation;
-  onClose: () => void;
 }
 
-// The actual inputs behind the next-period date, step by step. Every number
-// comes from explainForecast; this only words them. Same native-dialog
-// handling as CycleInsights.
-export function ForecastExplainer({ explanation: e, onClose }: ForecastExplainerProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+// The actual inputs behind the next-period date, step by step, as a section of
+// the Cycle insights sheet. Every number comes from explainForecast; this only
+// words them. Its own chunk, so the words stay out of the main bundle.
+export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
+  const titleId = useId();
   const t = useT();
   const locale = useLocale();
   const date = (day: IsoDate) => formatShortDate(day, locale);
@@ -26,34 +24,13 @@ export function ForecastExplainer({ explanation: e, onClose }: ForecastExplainer
     // A date abbreviated with a dot ("Apr." in German) can end a sentence.
     interpolate(messages[key], vars).replaceAll("..", ".");
 
-  useEffect(() => {
-    dialogRef.current?.showModal();
-  }, []);
-
-  const requestClose = () => dialogRef.current?.close();
   const f = e.fertility;
 
   return (
-    // biome-ignore lint/a11y/useKeyWithClickEvents: Esc closes the dialog for keyboard users, this click only dismisses on the backdrop
-    <dialog
-      ref={dialogRef}
-      className="insights"
-      aria-labelledby="explain-title"
-      onClose={onClose}
-      onClick={(event) => {
-        if (event.target === dialogRef.current) {
-          requestClose();
-        }
-      }}
-    >
-      <div className="insights__head">
-        <h2 id="explain-title" className="insights__title">
-          {t("today.howWorkedOut")}
-        </h2>
-        <button type="button" className="icon-close" aria-label={t("common.close")} onClick={requestClose}>
-          <X aria-hidden="true" size={18} />
-        </button>
-      </div>
+    <section className="insights__sums" aria-labelledby={titleId}>
+      <h3 id={titleId} className="cycle-history__title">
+        {t("today.howWorkedOut")}
+      </h3>
       <ol className="insights__how-list">
         {e.median === null ? (
           <li>{x("explain.fallback", { cycle: e.cycleLength })}</li>
@@ -102,11 +79,11 @@ export function ForecastExplainer({ explanation: e, onClose }: ForecastExplainer
                 to: date(f.to),
               })}
               {f.widening > 0 ? ` ${x(plural("explain.widened", f.widening, locale), { n: f.widening })}` : null}{" "}
-              {t("today.notBirthControl")}.
+              {t("today.notBirthControl")}
             </li>
           </>
         ) : null}
       </ol>
-    </dialog>
+    </section>
   );
 }

@@ -42,11 +42,11 @@ for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`accessibility (${colorScheme})`, () => {
     test.use({ colorScheme });
 
-    test("the forecast explainer has no WCAG A or AA or best-practice violations", async ({ page }) => {
+    test("cycle insights with its sums has no WCAG A or AA or best-practice violations", async ({ page }) => {
       await seedAppState(page);
       await page.goto("/");
-      await page.locator(".fact-list__more").nth(1).click();
-      await expect(page.getByRole("dialog")).toBeVisible();
+      await page.getByRole("button", { name: "Cycle insights" }).click();
+      await expect(page.getByRole("region", { name: "How was this worked out?" })).toBeVisible();
 
       await expectNoViolations(page);
     });

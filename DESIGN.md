@@ -141,8 +141,8 @@ wide, soft shadows. Only one warm colour breaks the calm: coral, for the body's 
 and nothing else. Sand and amber sit next to it, for the fertile window and ovulation.
 
 Nothing is in a hurry: big rounded corners, 160 ms transitions, and one expressive element,
-the cycle dial on Today. Everything else stays in the background so the eye lands there
-first. Dark mode is the same pool at night, tuned again rather than inverted.
+the cycle dial on Today. The dial leads and carries the next-period estimate in its
+centre; the log block sits under it, in thumb reach. Dark mode is the same pool at night, tuned again rather than inverted.
 
 **Key Characteristics:**
 
@@ -161,7 +161,7 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
   at the 10% tint.
 - **Deep Tide** (`tide-deep`): the wordmark, the dial's phase line, link text, selected
   chips. White text on it passes AA in both themes.
-- **Tide Soft** / **Tide Tint**: the reminder prompt, and hover and active washes.
+- **Tide Soft** / **Tide Tint**: the backup reminder, and hover and active washes.
 
 ### Secondary
 
@@ -254,7 +254,8 @@ The shell is a size container, so layout changes follow the shell, not the viewp
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
 letter (screen readers get the full name), and trims the card's side padding below 350 px.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
-reads as the list going on. The dial is `min(17.5rem, 64vw, 100%)` and is a
+reads as the list going on. The dial is `min(17rem, 70vw, 34dvh, 100%)`, capped by height so the log block stays
+above the tab bar on a short phone, and is a
 container itself. So are the fact rows: below 22em each label sits above its value. A
 switch row keeps its switch beside the label's first line and lets the label wrap.
 
@@ -291,7 +292,7 @@ Everything is rounded, every radius is a token, and bigger blocks get bigger cor
 - **Field** (12 px): selects and inputs.
 - **Segment** (14 px): the segmented track, tab items.
 - **Button** (16 px): buttons and inset panels.
-- **Prompt** (18 px): the reminder prompt.
+- **Prompt** (18 px): the backup reminder.
 - **Card** (20–22 px): the fact list, utility cards.
 
 The dial is a circle. Calendar days are rounded squares. A day that has happened shows its
@@ -307,7 +308,7 @@ The values are in the front matter. This section says what each component is *fo
 - **Primary**: coral, with the coral glow. It has one job: logging bleeding when a bleed is
   plausible.
 - **Quiet / Secondary**: surface and hairline, with a tide-tint wash on hover. The log
-  button switches to this once the day is logged. A pair of equal card actions (Export,
+  button uses it when no bleed is expected. A pair of equal card actions (Export,
   Import) uses it in two columns, which stack when the words stop fitting.
 - **Commit**: solid deep tide, for the confirming action in a dialog. Never coral: coral
   means bleeding, not "this button matters".
@@ -316,6 +317,26 @@ The values are in the front matter. This section says what each component is *fo
   target.
 - Every interactive element gets a `2px solid tide` focus ring at 2 px offset and a 160 ms
   ease.
+
+### Log block
+
+Under the dial comes one log block, in the same slot in every state, with no card. When a
+period is expected or late, the question "Has your period started?" sits above the log
+button and "Not yet" below it. The dial already names the date, so the question doesn't
+repeat it. Right after a log, the block is one status line with Remove
+beside it and the flow gauge under it: nothing asks for another step. On a later visit it
+folds into that one line as a button, ending in "Add flow" (or "Change") as the nudge,
+which opens the gauge and Remove again. It folds on the next visit, never on a timer, so
+nothing moves under a finger. Logging gets the screen's one moment: the droplet scales in
+with a coral ring, like a newly logged calendar day, and simply appears under reduced motion.
+
+**Details** shares the log line: a quiet button the log button's height, at the end of the
+button, the folded line or the status row. On a line narrower than 21em it keeps only its
+icon. A tide dot marks a day that has details. It opens an inset panel under the line:
+symptoms and mood are pill chips that save on tap (mood with its weather: rain, cloud,
+sun), the note saves as you type, and Done closes it. There is no Save button and no
+draft to lose. Clearing is the one destructive step, so it offers Undo. Only the
+Calendar's panel has a date field.
 
 ### Chips
 
@@ -340,7 +361,9 @@ drilling in at the end.
 - **Switch**: muted-ink border and thumb on soft surface when off; deep-tide fill and
   white thumb when on.
 - **Flow gauge**: four radio steps, spotting to heavy, coloured from the flow ramp.
-  Keep two equal columns so long labels and enlarged text fit.
+  Two equal columns, so long labels and enlarged text fit. On Today the four sit in one
+  row while the longest label fits at the current text size, and the legend is for
+  screen readers only.
 
 ### Navigation
 
@@ -352,12 +375,25 @@ tracked eyebrow. A teal skip link appears top-left on keyboard focus.
 
 An open circular gauge. A conic ring fills logged days in coral at their logged intensity,
 and the ordinary days in sea-idle. Estimated days (fertile window, ovulation, the expected
-next period) stay hollow: a second layer draws them as dashed rails along the inner and
-outer edge of the band. That is the dial's version of the calendar's dashed outline.
-Small per-day ticks sit in a thin band at the rim. A white inner disc holds the eyebrow,
-numeral, phase and date. An ink marker circles today, and a teal ghost dot follows your
+next period) fill the same band with a pale wash of their colour, mixed with the card
+colour so it stays a clean pastel, and a second layer draws dashed rails along the band's
+inner and outer edge. That is the dial's version of the calendar's dashed outline. The band
+stays one continuous ring; small ticks at the rim count the days. In dark mode ovulation
+keeps the fertile wash under its amber rails, because amber over the dark ground turns brown.
+Small per-day ticks sit in a thin band at the rim. A white inner disc holds, at rest, the
+estimate: an eyebrow ("Next period", or "Period" when late), "In 19 days" as the screen's
+headline, the date, and a small "Day 10 · Between periods" line (only the day when late).
+Before any history it holds the first-run sentence instead. While you scrub it shows the
+previewed day: eyebrow, numeral, phase and date. Text inside the slider is not read out, so
+the same estimate sits in a visually hidden line before it. An ink marker circles today, and a teal ghost dot follows your
 finger while you scrub. Scrubbing previews any day and changes nothing. The legend only
 names the colours the ring is actually showing.
+
+Three motions, each tied to something you do, and none under reduced motion: on the first
+view of the day the band fills clockwise from the top (600 ms), then its ticks, rails and
+marker fade in; after a scrub the ghost dot glides back to today (300 ms); logging today
+sends one thin ring out from the marker (450 ms). The sweep is remembered in memory only,
+so it adds nothing to what Tide stores.
 
 ### Calendar grid
 
@@ -373,14 +409,16 @@ comes next.
 
 ### Backup reminder
 
-Reuse the teal-tinted reminder prompt on Today, with a plain heading and supporting text.
+A teal-tinted prompt card on Today, with a plain heading and supporting text.
 The download action uses the secondary button; snooze uses the quiet dismiss action.
 Keep backup actions free of coral. A failed download shows an alert below the actions.
 
 ### Cycle history
 
 Inside Cycle insights, separate history with a hairline rather than another card.
-Show up to twelve completed cycles as a quiet chart above a two-column table.
+"How was this worked out?" comes first, under its own hairline: the personal sums behind
+the next-period date, loaded with the sheet. Then show up to twelve completed cycles as a
+quiet chart above a two-column table.
 Use teal dots for ordinary cycles and ink crosses for cycles marked incomplete, with a
 matching legend. The chart gives the overview; the table supplies every date and length
 and remains available to screen readers. Put the incomplete checkbox below each start

@@ -131,6 +131,12 @@
     transition: color 160ms ease;
   }
 
+  /* With fertility off the card has no rows, so its first button sits on the
+     card's own edge and a divider would draw a second outline. */
+  .fact-list__more:first-child {
+    border-top: 0;
+  }
+
   .fact-list__more:hover {
     color: var(--tide);
   }
@@ -527,13 +533,33 @@
     gap: 14px;
   }
 
-  /* The logged state is a card: confirmation on top, gauge, then the undo. */
+  /* Logged: one line with its undo, then the optional flow row. No card, so
+     the calm view under it stays on the first screen. */
   .log-action--logged {
-    padding: 18px;
-    border-radius: var(--radius-card);
-    background: var(--surface);
-    border: 1px solid var(--surface-border);
-    box-shadow: var(--shadow-card);
+    gap: 10px;
+    container-type: inline-size;
+  }
+
+  /* The log button (or the folded logged line) and Details share one line:
+     two actions for the same day. The log action takes the width. */
+  .log-action--line {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    container-type: inline-size;
+  }
+
+  .log-action--line > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .log-action__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    column-gap: 16px;
   }
 
   .log-action__status {
@@ -546,6 +572,43 @@
     font-weight: 500;
   }
 
+  /* A later visit: the whole logged line is one button that opens the flow
+     row and Remove again. The hint on the right is the nudge to add a level. */
+  .log-action__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    min-height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    text-align: start;
+  }
+
+  .log-action__hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-inline-start: auto;
+    color: var(--tide-strong);
+    font-size: var(--text-md);
+    transition: color 160ms ease;
+  }
+
+  .log-action__summary:hover .log-action__hint {
+    color: var(--tide);
+  }
+
+  .log-action__summary:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+    border-radius: var(--radius-control);
+  }
+
   .log-action__status-icon {
     width: 18px;
     height: 18px;
@@ -554,8 +617,32 @@
   }
 
   .log-action__remove {
-    align-self: flex-start;
+    min-height: 44px;
     color: var(--ink-soft);
+    font-size: var(--text-md);
+  }
+
+  /* The one moment when today is logged: the droplet takes a breath, ringed
+     like a newly logged calendar day. Motion off means it simply appears. */
+  @media (prefers-reduced-motion: no-preference) {
+    .log-action--logged[data-just-logged] .log-action__status-icon {
+      border-radius: var(--radius-pill);
+      animation: log-droplet 450ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+  }
+
+  @keyframes log-droplet {
+    from {
+      transform: scale(0.6);
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--bleed) 50%, transparent);
+    }
+    60% {
+      transform: scale(1.15);
+    }
+    to {
+      transform: scale(1);
+      box-shadow: 0 0 0 8px transparent;
+    }
   }
 
   .log-action__remove:hover {
@@ -655,6 +742,15 @@
   .flow-gauge__level:has(input:focus-visible) .flow-gauge__swatch {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
+  }
+
+  /* Four swatches in a row while the longest label ("Gemiddeld") fits, two
+     otherwise. In em, so larger text falls back to two columns. */
+  @container (min-width: 21.5em) {
+    .log-action--logged .flow-gauge__levels {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px;
+    }
   }
 
   /* Per-day flow picker on the calendar */

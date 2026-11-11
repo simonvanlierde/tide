@@ -20,7 +20,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   security problem, and link previews show Tide's name, description and icon.
 - With JavaScript turned off, Tide now says it needs JavaScript and gives an
   email address to report a problem, instead of showing a blank page.
-- "How was this worked out?" on Today shows the sums behind your next-period
+- "How was this worked out?" in Cycle insights shows the sums behind your next-period
   date: the recent cycle lengths it used, their median, how much your cycles
   vary and the range that gives, or the 28-day default while there is too
   little history. With fertility estimates on, it also shows how the ovulation
@@ -57,8 +57,28 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The dial's fertile window, ovulation and expected period fill its band with a pale wash
+  of their colour, so the ring reads as one band. The ring fills in on the first look of the
+  day, the scrub dot glides home when you let go, and logging today sends one ring out from
+  the marker. Reduced motion turns all three off.
+- Plainer wording across the app in all five languages. The fertility note now reads "An
+  estimate. Don't use it as birth control." on Today, in the one-time question and in
+  Settings; the calendar, backup and import texts say exactly what is stored where.
+- Today is simpler: the cycle dial shows the next-period estimate in its centre, and
+  logging sits right under it. Logging is one line once done: "Logged today", Remove,
+  and an optional row of flow levels. Later the same day it folds
+  into that one line, which offers to add or change the flow. When a period is due, Today
+  asks "Has your period started?" without repeating the date, and a late period no
+  longer reads as "Period expected" on the dial. The "Stored only on this device" line is gone.
+- Daily details open from a **Details** button beside the log button. Symptoms and mood
+  are chips that save on tap, the note saves as you type, and clearing offers Undo, so
+  there is no Save button to forget. Today's details are always for today.
+- The fertility line on Today drops "(estimate)" so it fits on one line; the line under it
+  now reads "An estimate. Don't use it as birth control."
 - Settings says Tide does not upload your data, instead of saying it never leaves the
   device: backups and calendar exports do leave it when you ask.
+- The privacy statement says the same: Tide does not upload what you log, and it leaves
+  the browser only in a backup or calendar file you save.
 - Prediction explanations distinguish recent variation from a guaranteed date range.
   The backtest now reports large errors, range coverage and a synthetic missing-log check.
 - The privacy statement names Cloudflare as the host without naming the product,
@@ -69,11 +89,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   switch still changes the answer.
 - Every estimate looks like an estimate: the expected period, the fertile
   window and ovulation are dashed outlines on both the dial and the calendar,
-  and in both legends. Only logged days are filled. The outline is the only
+  and in both legends. Only logged days are solid. The outline is the main
   cue: an expected period day no longer also turns its number coral, so it
   looks no more certain than a fertile day.
-- The Today fertility line says "In the fertile window (estimate)" or "Outside
-  the fertile window (estimate)", with "Not birth control" right under it. It
+- The Today fertility line says "In the fertile window" or "Outside
+  the fertile window", with the birth-control note right under it. It
   names the same fertile window as the legends, and no longer says a day is
   "less likely", which could read as a safe day.
 - The calendar legend uses the same words as the Today legend: Period,
