@@ -79,7 +79,7 @@ export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
                 to: date(f.to),
               })}
               {f.widening > 0 ? ` ${x(plural("explain.widened", f.widening, locale), { n: f.widening })}` : null}{" "}
-              {t("today.notBirthControl")}.
+              {t("today.notBirthControl")}
             </li>
           </>
         ) : null}

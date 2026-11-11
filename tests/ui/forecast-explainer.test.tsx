@@ -34,7 +34,7 @@ describe("ForecastExplainer", () => {
 
     expect(dialog.getByText(/14 days before that: Thu, Apr 16/i)).toBeInTheDocument();
     expect(dialog.getByText(/5 days before to 1 after it: Sat, Apr 11 to Fri, Apr 17/i)).toHaveTextContent(
-      /not birth control/i,
+      /don't use it as birth control/i,
     );
   });
 

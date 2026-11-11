@@ -57,6 +57,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Plainer wording across the app in all five languages. The fertility note now reads "An
+  estimate. Don't use it as birth control." on Today, in the one-time question and in
+  Settings; the calendar, backup and import texts say exactly what is stored where.
 - Today is simpler: the cycle dial shows the next-period estimate in its centre, and
   logging sits right under it. Logging is one line once done: "Logged today", Remove,
   and an optional row of flow levels. Later the same day it folds

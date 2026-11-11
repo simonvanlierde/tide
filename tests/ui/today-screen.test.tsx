@@ -191,7 +191,7 @@ describe("TodayScreen", () => {
 
     await user.click(screen.getByLabelText(/how fertility is estimated/i));
 
-    expect(screen.getByText(/for information only\. they are not birth control/i)).toBeInTheDocument();
+    expect(screen.getByText(/for information only\. don't use them as birth control/i)).toBeInTheDocument();
   });
 
   it("hides the fertility fact when fertility estimates are turned off", () => {
@@ -215,7 +215,7 @@ describe("TodayScreen", () => {
     const question = screen.getByRole("region", {
       name: "Show fertility estimates?",
     });
-    expect(question).toHaveTextContent(/an estimate, not birth control/i);
+    expect(question).toHaveTextContent(/only an estimate, so don't use it as birth control/i);
     // The answer is not final, and the card says where to change it.
     expect(question).toHaveTextContent(/change this in settings/i);
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
@@ -225,7 +225,7 @@ describe("TodayScreen", () => {
 
     expect(question).not.toBeInTheDocument();
     expect(screen.getByText("Fertility")).toBeInTheDocument();
-    expect(screen.getByText(/^an estimate, not birth control$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^an estimate\. don't use it as birth control\.$/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /cycle insights/i })).toHaveFocus();
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings.showFertility).toBe(true);
   });
@@ -321,7 +321,7 @@ describe("TodayScreen", () => {
   it("shows a learning-state note when fallback predictions are in use", () => {
     renderToday("2026-04-21", createLearningCycleState());
 
-    expect(screen.getByText(/using a typical 28-day cycle until we learn/i)).toBeInTheDocument();
+    expect(screen.getByText(/using a typical 28-day cycle until tide has seen/i)).toBeInTheDocument();
   });
 
   it("prompts to log inside the reminder window", () => {
@@ -512,7 +512,7 @@ describe("TodayScreen before the fertility opt-in", () => {
     await user.click(screen.getByRole("button", { name: /cycle insights/i }));
 
     expect(screen.getByRole("dialog").textContent).not.toMatch(OVULATION_WORDS);
-    expect(screen.getByText(/last start plus that cycle length/i)).toBeInTheDocument();
+    expect(screen.getByText(/one cycle length after your last period started/i)).toBeInTheDocument();
   });
 
   it("keeps the ovulation phases on the dial once fertility is on", () => {

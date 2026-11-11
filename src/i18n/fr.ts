@@ -4,9 +4,9 @@ export const fr: Dictionary = {
   // History and local backups
   "history.title": "Historique des cycles",
   "history.description.one":
-    "Cycles terminés, du début d'une période de règles à la suivante. Le dernier cycle est affiché.",
+    "Cycles terminés, du début d’une période de règles à la suivante. Le dernier cycle est affiché.",
   "history.description.other":
-    "Cycles terminés, du début d'une période de règles à la suivante. Les {n} derniers sont affichés.",
+    "Cycles terminés, du début d’une période de règles à la suivante. Les {n} derniers sont affichés.",
   "history.empty": "Note le début de tes prochaines règles pour voir tes cycles terminés.",
   "history.days": "Jours",
   "history.start": "Début des règles",
@@ -14,15 +14,15 @@ export const fr: Dictionary = {
   "history.incomplete": "Incomplet",
   "history.incompleteFor": "Cycle incomplet commençant le {date}",
   "history.help":
-    "Les jours notés sont conservés. Les cycles incomplets ne comptent pas pour estimer la durée des cycles.",
+    "Les cycles incomplets gardent leurs jours enregistrés, mais ne comptent pas pour estimer la durée du cycle.",
   "history.excluded": "Incomplet ; exclu des estimations",
   "history.chartDates": "Débuts des règles, du plus ancien au plus récent",
   "backup.title": "Garde une copie de ton historique",
   "backup.body":
-    "Ton historique reste dans ce navigateur. Télécharge une sauvegarde pour le restaurer si les données sont effacées.",
+    "Ton historique n’est enregistré que dans ce navigateur et disparaît si ses données sont effacées. Télécharge une sauvegarde pour pouvoir le restaurer.",
   "backup.download": "Sauvegarder les données",
   "backup.snooze": "Me rappeler dans une semaine",
-  "backup.error": "La sauvegarde n'a pas pu être téléchargée. Réessaie.",
+  "backup.error": "La sauvegarde n’a pas pu être téléchargée. Réessaie.",
 
   // Optional daily details
   "diary.addDetails": "Ajouter des détails",
@@ -58,7 +58,7 @@ export const fr: Dictionary = {
   "app.skipToContent": "Aller au contenu",
   "app.primaryNav": "Navigation principale",
   "app.newerData":
-    "Une version plus récente de Tide a enregistré tes données. Recharge pour mettre à jour ; les modifications faites ici ne sont pas enregistrées.",
+    "Une version plus récente de Tide a enregistré tes données. Recharge pour mettre à jour. Les modifications faites ici ne sont pas enregistrées.",
 
   "app.storageError":
     "Tes dernières modifications n’ont pas pu être enregistrées sur cet appareil. Garde Tide ouvert et exporte une sauvegarde dans les réglages.",
@@ -75,10 +75,10 @@ export const fr: Dictionary = {
   "today.inDays.other": "Dans {n} jours",
   "today.higherToday": "Dans la fenêtre de fertilité",
   "today.lowerToday": "Hors de la fenêtre de fertilité",
-  "today.notBirthControl": "Une estimation, pas une contraception",
+  "today.notBirthControl": "Une estimation. Ne l’utilise pas comme contraception.",
   "fertilityAsk.title": "Afficher les estimations de fertilité ?",
   "fertilityAsk.body":
-    "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. C’est une estimation, pas une contraception. Tu pourras changer d’avis dans les Réglages.",
+    "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. Ce n’est qu’une estimation, ne l’utilise donc pas comme contraception. Tu pourras changer d’avis dans les Réglages.",
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
   "today.importPrompt": "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?",
@@ -87,13 +87,14 @@ export const fr: Dictionary = {
   "today.periodLate": "Règles",
   "today.daysLate.one": "{n} jour de retard",
   "today.daysLate.other": "{n} jours de retard",
-  "today.expectedOn": "Attendues {date}",
+  "today.expectedOn": "Prévues {date}",
   "today.ovulationDaysAgo.one": "Ovulation il y a {n} jour",
   "today.ovulationDaysAgo.other": "Ovulation il y a {n} jours",
   "today.ovulationToday": "Ovulation aujourd’hui",
   "today.ovulationInDays.one": "Ovulation dans {n} jour",
   "today.ovulationInDays.other": "Ovulation dans {n} jours",
-  "today.learningFallback": "Un cycle type de 28 jours est utilisé jusqu’à ce que nous apprenions ton rythme.",
+  "today.learningFallback":
+    "Un cycle type de 28 jours est utilisé jusqu’à ce que Tide connaisse quelques-uns de tes cycles.",
   "today.learningInsufficient": "Enregistre tes règles pour voir une prévision.",
 
   "phase.menstrual": "Menstruelle",
@@ -123,7 +124,7 @@ export const fr: Dictionary = {
   "insights.cycleLength": "Durée du cycle",
   "insights.periodLength": "Durée des règles",
   "insights.cyclesTracked": "Cycles utilisés",
-  "insights.basedOn": "Basé sur un cycle type de {cycle} jours tant qu'aucun cycle complet n'est disponible.",
+  "insights.basedOn": "Un cycle type de {cycle} jours est utilisé tant que tu n’as pas de cycle complet.",
   "insights.regularity": "Régularité du cycle",
   "insights.regularityAria": "Régularité du cycle : {label}",
   "regularity.none": "Pas encore assez de données",
@@ -134,16 +135,16 @@ export const fr: Dictionary = {
   "insights.how": "Comment les prévisions fonctionnent",
   "insights.how1": "Tout est calculé sur ton appareil à partir des jours que tu enregistres.",
   "insights.howCycleStart":
-    "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle ; les écarts plus courts font partie des mêmes règles.",
+    "Un écart de {gap} jours ou plus entre deux jours enregistrés marque le début d’un nouveau cycle. Un écart plus court fait partie des mêmes règles.",
   "insights.how2":
     "La durée du cycle est la médiane de tes {recent} derniers cycles complets. Les cycles incomplets sont exclus. Sans cycle complet, un cycle type de {cycle} jours est utilisé.",
   "insights.how3": "La durée des règles est ta moyenne récente, limitée à une normale de {min} à {max} jours.",
   "insights.how4":
-    "Tes prochaines règles correspondent au début de tes dernières règles plus cette durée de cycle ; l’ovulation est estimée {luteal} jours avant.",
+    "Tes prochaines règles sont prévues une durée de cycle après le début de tes dernières règles. L’ovulation est estimée {luteal} jours avant.",
   "insights.howNextPeriod":
-    "Tes prochaines règles correspondent au début de tes dernières règles plus cette durée de cycle.",
+    "Tes prochaines règles sont prévues une durée de cycle après le début de tes dernières règles.",
   "insights.how5":
-    "La fenêtre de fertilité s’étend de {before} jours avant à {after} jour après l’ovulation, et s’élargit quand tes cycles varient davantage.",
+    "La fenêtre de fertilité commence {before} jours avant l’ovulation et se termine {after} jour après. Elle s’élargit quand tes cycles varient davantage.",
 
   "legend.period": "Règles",
   "legend.expected": "Règles prévues",
@@ -163,7 +164,7 @@ export const fr: Dictionary = {
   "log.changeFlow": "Modifier",
   "log.add": "Enregistrer le saignement du jour",
   "reminder.question": "Tes règles ont-elles commencé ?",
-  "reminder.dismiss": "Pas encore — me le rappeler plus tard",
+  "reminder.dismiss": "Pas encore, me le rappeler plus tard",
   "reminder.reassure": "Quelques jours de variation, c’est courant.",
 
   "calendar.title": "Calendrier",
@@ -181,7 +182,7 @@ export const fr: Dictionary = {
   "calendar.logRange": "Enregistrer des règles passées",
   "calendar.rangePickFirst": "Choisis le premier jour des règles.",
   "calendar.rangePickLast": "À partir du {date} : choisis le dernier jour, {max} jours au plus.",
-  "calendar.rangeTooLong": "Plus de {max} jours. Choisis un dernier jour plus proche.",
+  "calendar.rangeTooLong": "Cela fait plus de {max} jours. Choisis un dernier jour plus tôt.",
   "calendar.emptyHelp": "Touche un jour passé pour enregistrer ton premier jour de saignement.",
   "calendar.futureHelp": "Les jours à venir ne peuvent pas encore être enregistrés.",
   "calendar.log": "Enregistrer",
@@ -224,33 +225,34 @@ export const fr: Dictionary = {
   "settings.showCycleNumbers": "Afficher les numéros de jour du cycle",
   "settings.cycleNumbersInfo": "À propos des numéros de jour du cycle",
   "settings.cycleNumbersHelp":
-    "Numérote les jours de ton cycle actuel (1, 2, 3, ...) sur le calendrier, jusqu’à tes prochaines règles prévues.",
+    "Affiche le jour de ton cycle (1, 2, 3, ...) sur le calendrier, jusqu’à tes prochaines règles prévues.",
   "settings.about": "À propos",
   "legal.privacy": "Déclaration de confidentialité",
   "legal.accessibility": "Déclaration d’accessibilité",
   "legal.inEnglish": "En anglais",
   "settings.privacy": "Tes données ne quittent jamais cet appareil.",
   "settings.fertilityDisclaimer":
-    "Les estimations de fertilité sont données à titre indicatif. Elles ne sont pas une contraception.",
+    "Les estimations de fertilité sont données à titre indicatif. Ne les utilise pas comme contraception.",
   "settings.fertilityMethod":
     "La fenêtre de fertilité, ce sont les jours autour de ton ovulation prévue, estimée à partir de tes durées de cycle récentes.",
   "settings.sourceCode": "Code source, v{version}, s’ouvre dans un nouvel onglet",
   "settings.data": "Données",
   "settings.dataInfo": "À propos de l’import et de l’export",
   "settings.dataHelp":
-    "L’export enregistre ton historique de règles et tes détails quotidiens dans un fichier. L’import les remplace à partir d’une sauvegarde Tide, ou ajoute des jours de règles depuis Clue ou Flo.",
+    "L’export enregistre ton historique de règles et tes détails quotidiens dans un fichier. Importer une sauvegarde Tide les remplace. Importer depuis Clue ou Flo ajoute des jours de règles.",
   "settings.importSources": "Tu peux importer une sauvegarde Tide, ou un export de Clue ou Flo.",
   "settings.export": "Exporter",
   "settings.exportSuccess": "Sauvegarde enregistrée dans tes téléchargements.",
   "settings.exportCalendar": "Ajouter au calendrier",
   "settings.calendarHelp":
-    "Enregistre tes 3 prochaines règles prévues dans un fichier que ton agenda peut ouvrir. Une fois ajoutées, elles se synchronisent comme tes autres événements, donc le compte de l’agenda les garde aussi.",
+    "Enregistre tes 3 prochaines règles prévues dans un fichier que ton agenda peut ouvrir. Une fois ajoutées, ce sont des événements ordinaires, que le compte de ton agenda enregistre et synchronise.",
   "settings.calendarFertility": "Inclure les fenêtres de fertilité",
   "settings.calendarSuccess": "Fichier de calendrier enregistré dans tes téléchargements.",
   "settings.calendarError": "Impossible de créer le fichier de calendrier. Recharge Tide et réessaie.",
   "settings.import": "Importer",
   "settings.importFile": "Importer un fichier de données",
-  "settings.importError": "Ce fichier n’est ni une sauvegarde Tide, ni un export Clue ou Flo.",
+  "settings.importError":
+    "Ce fichier n’est ni une sauvegarde Tide, ni un export Clue ou Flo. Choisis un autre fichier.",
   "settings.importUnavailable": "L’importation n’a pas pu s’ouvrir. Recharge la page et réessaie.",
   "settings.importSuccess.one": "{n} jour enregistré importé.",
   "settings.importSuccess.other": "{n} jours enregistrés importés.",

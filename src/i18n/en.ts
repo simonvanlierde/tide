@@ -14,11 +14,12 @@ export const en = {
   "history.length": "Length",
   "history.incomplete": "Incomplete",
   "history.incompleteFor": "Incomplete cycle starting {date}",
-  "history.help": "Keep logged days. Leave incomplete cycles out of cycle-length estimates.",
+  "history.help": "Incomplete cycles keep their logged days but don't count toward cycle-length estimates.",
   "history.excluded": "Incomplete; excluded from estimates",
   "history.chartDates": "Period starts, oldest to newest",
   "backup.title": "Keep a copy of your history",
-  "backup.body": "Your history stays in this browser. Download a backup you can restore if its data is cleared.",
+  "backup.body":
+    "Your history is stored only in this browser, and clearing the browser's data erases it. Download a backup so you can restore it.",
   "backup.download": "Back up data",
   "backup.snooze": "Remind me in a week",
   "backup.error": "The backup couldn't be downloaded. Try again.",
@@ -56,7 +57,7 @@ export const en = {
   "nav.settings": "Settings",
   "app.skipToContent": "Skip to content",
   "app.primaryNav": "Primary navigation",
-  "app.newerData": "A newer version of Tide saved your data. Reload to update; changes made here are not saved.",
+  "app.newerData": "A newer version of Tide saved your data. Reload to update. Changes made here aren't saved.",
   "app.storageError":
     "Your latest changes couldn't be saved on this device. Keep Tide open and export a backup from Settings.",
 
@@ -73,10 +74,10 @@ export const en = {
   "today.inDays.other": "In {n} days",
   "today.higherToday": "In the fertile window",
   "today.lowerToday": "Outside the fertile window",
-  "today.notBirthControl": "An estimate, not birth control",
+  "today.notBirthControl": "An estimate. Don't use it as birth control.",
   "fertilityAsk.title": "Show fertility estimates?",
   "fertilityAsk.body":
-    "Tide can mark the days you are most likely to be fertile, worked out from the periods you log. It is an estimate, not birth control. You can change this in Settings.",
+    "Tide can mark the days you're most likely to be fertile, worked out from the periods you log. It's only an estimate, so don't use it as birth control. You can change this in Settings.",
   "fertilityAsk.show": "Show",
   "fertilityAsk.hide": "Don't show",
   "today.importPrompt": "Have a Tide backup, or history in Clue or Flo?",
@@ -91,7 +92,7 @@ export const en = {
   "today.ovulationToday": "Ovulation today",
   "today.ovulationInDays.one": "Ovulation in {n} day",
   "today.ovulationInDays.other": "Ovulation in {n} days",
-  "today.learningFallback": "Using a typical 28-day cycle until we learn your pattern.",
+  "today.learningFallback": "Using a typical 28-day cycle until Tide has seen a few of your cycles.",
   "today.learningInsufficient": "Log your period to see a forecast.",
 
   // Cycle phases: word form (heading) and line form ("X phase")
@@ -124,7 +125,7 @@ export const en = {
   "insights.cycleLength": "Cycle length",
   "insights.periodLength": "Period length",
   "insights.cyclesTracked": "Cycles used",
-  "insights.basedOn": "Based on a typical {cycle}-day cycle while no complete cycles are available.",
+  "insights.basedOn": "Using a typical {cycle}-day cycle until you have a complete one.",
   "insights.regularity": "Cycle regularity",
   "insights.regularityAria": "Cycle regularity: {label}",
   "regularity.none": "Not enough data yet",
@@ -135,15 +136,15 @@ export const en = {
   "insights.how": "How predictions work",
   "insights.how1": "Everything is worked out on your device from the days you log.",
   "insights.howCycleStart":
-    "A gap of {gap} days or more between logged days starts a new cycle; shorter gaps are the same period.",
+    "A gap of {gap} days or more between logged days starts a new cycle. A shorter gap counts as the same period.",
   "insights.how2":
     "Cycle length is the median of your last {recent} complete cycles. Incomplete cycles are left out. With no complete cycles, a typical {cycle}-day cycle is used.",
   "insights.how3": "Period length is your recent average, kept to a normal {min}–{max} days.",
   "insights.how4":
-    "Your next period is your last start plus that cycle length; ovulation is estimated {luteal} days before it.",
-  "insights.howNextPeriod": "Your next period is your last start plus that cycle length.",
+    "Your next period is expected one cycle length after your last period started. Ovulation is estimated {luteal} days before that.",
+  "insights.howNextPeriod": "Your next period is expected one cycle length after your last period started.",
   "insights.how5":
-    "The fertile window runs {before} days before to {after} day after ovulation, and widens when your cycles vary more.",
+    "The fertile window starts {before} days before ovulation and ends {after} day after it. It widens when your cycles vary more.",
 
   // Marker legend, shared by the Today dial and the calendar
   "legend.period": "Period",
@@ -166,7 +167,7 @@ export const en = {
   "log.changeFlow": "Change",
   "log.add": "Log bleeding today",
   "reminder.question": "Has your period started?",
-  "reminder.dismiss": "Not yet — remind me later",
+  "reminder.dismiss": "Not yet, remind me later",
   "reminder.reassure": "A few days of variation is common.",
 
   // Calendar
@@ -185,7 +186,7 @@ export const en = {
   "calendar.logRange": "Log a past period",
   "calendar.rangePickFirst": "Pick the first day of the period.",
   "calendar.rangePickLast": "From {date}: now pick the last day, up to {max} days.",
-  "calendar.rangeTooLong": "More than {max} days. Pick a closer last day.",
+  "calendar.rangeTooLong": "That's more than {max} days. Pick an earlier last day.",
   "calendar.emptyHelp": "Tap a past day to log your first bleeding day.",
   "calendar.futureHelp": "Future days can't be logged yet.",
   "calendar.log": "Log",
@@ -230,32 +231,32 @@ export const en = {
   "settings.showCycleNumbers": "Show cycle day numbers",
   "settings.cycleNumbersInfo": "About cycle day numbers",
   "settings.cycleNumbersHelp":
-    "Numbers the days of your current cycle (1, 2, 3, ...) on the calendar, up to your next expected period.",
+    "Shows the day of your cycle (1, 2, 3, ...) on the calendar, up to your next expected period.",
   "settings.about": "About",
   "legal.privacy": "Privacy statement",
   "legal.accessibility": "Accessibility statement",
   "legal.inEnglish": "In English",
   "settings.privacy": "Your data never leaves this device.",
-  "settings.fertilityDisclaimer": "Fertility estimates are for information only. They are not birth control.",
+  "settings.fertilityDisclaimer": "Fertility estimates are for information only. Don't use them as birth control.",
   "settings.fertilityMethod":
     "The fertile window is the days around your expected ovulation, estimated from your recent cycle lengths.",
   "settings.sourceCode": "Source code, v{version}, opens in a new tab",
   "settings.data": "Data",
   "settings.dataInfo": "About import and export",
   "settings.dataHelp":
-    "Export saves your period history and daily details to a file. Import replaces them from a Tide backup, or adds period days from Clue or Flo.",
+    "Export saves your period history and daily details to a file. Importing a Tide backup replaces them. Importing from Clue or Flo adds period days.",
   "settings.importSources": "You can import a Tide backup, or an export from Clue or Flo.",
   "settings.export": "Export",
   "settings.exportSuccess": "Backup saved to your downloads.",
   "settings.exportCalendar": "Add to calendar",
   "settings.calendarHelp":
-    "Saves your next 3 expected periods as a file your calendar app can open. Once added, they sync like your other events, so the calendar's account holds them too.",
+    "Saves your next 3 expected periods as a file your calendar app can open. Once added, they become normal calendar events, so your calendar account stores and syncs them.",
   "settings.calendarFertility": "Include fertile windows",
   "settings.calendarSuccess": "Calendar file saved to your downloads.",
   "settings.calendarError": "The calendar file couldn't be made. Reload Tide and try again.",
   "settings.import": "Import",
   "settings.importFile": "Import data file",
-  "settings.importError": "That file isn't a Tide backup or a Clue or Flo export.",
+  "settings.importError": "That file isn't a Tide backup or a Clue or Flo export. Choose another file.",
   "settings.importUnavailable": "Import couldn't be opened. Reload and try again.",
   "settings.importSuccess.one": "Imported {n} logged day.",
   "settings.importSuccess.other": "Imported {n} logged days.",

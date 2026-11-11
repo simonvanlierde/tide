@@ -15,12 +15,12 @@ export const de: Dictionary = {
   "history.incomplete": "Unvollständig",
   "history.incompleteFor": "Unvollständiger Zyklus ab {date}",
   "history.help":
-    "Eingetragene Tage bleiben erhalten. Unvollständige Zyklen zählen nicht für die Schätzung der Zykluslänge.",
+    "Unvollständige Zyklen behalten ihre erfassten Tage, zählen aber nicht für die Schätzung der Zykluslänge.",
   "history.excluded": "Unvollständig; nicht für Schätzungen verwendet",
   "history.chartDates": "Periodenbeginn, vom ältesten zum neuesten",
   "backup.title": "Bewahre eine Kopie deines Verlaufs auf",
   "backup.body":
-    "Dein Verlauf bleibt in diesem Browser. Lade eine Sicherung herunter, damit du gelöschte Daten wiederherstellen kannst.",
+    "Dein Verlauf ist nur in diesem Browser gespeichert und geht verloren, wenn die Browserdaten gelöscht werden. Lade eine Sicherung herunter, um ihn wiederherzustellen.",
   "backup.download": "Sicherung erstellen",
   "backup.snooze": "In einer Woche erinnern",
   "backup.error": "Die Sicherung konnte nicht heruntergeladen werden. Versuch es erneut.",
@@ -58,7 +58,7 @@ export const de: Dictionary = {
   "app.skipToContent": "Zum Inhalt springen",
   "app.primaryNav": "Hauptnavigation",
   "app.newerData":
-    "Eine neuere Version von Tide hat deine Daten gespeichert. Lade neu, um zu aktualisieren; Änderungen hier werden nicht gespeichert.",
+    "Eine neuere Version von Tide hat deine Daten gespeichert. Lade neu, um zu aktualisieren. Änderungen, die du hier machst, werden nicht gespeichert.",
 
   "app.storageError":
     "Deine letzten Änderungen konnten nicht auf diesem Gerät gespeichert werden. Lass Tide geöffnet und exportiere eine Sicherung in den Einstellungen.",
@@ -75,10 +75,10 @@ export const de: Dictionary = {
   "today.inDays.other": "In {n} Tagen",
   "today.higherToday": "Im fruchtbaren Fenster",
   "today.lowerToday": "Außerhalb des fruchtbaren Fensters",
-  "today.notBirthControl": "Eine Schätzung, keine Verhütungsmethode",
+  "today.notBirthControl": "Eine Schätzung. Nutze sie nicht als Verhütungsmethode.",
   "fertilityAsk.title": "Fruchtbarkeits\u00adschätzungen anzeigen?",
   "fertilityAsk.body":
-    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist eine Schätzung, keine Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
+    "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist nur eine Schätzung, nutze sie also nicht als Verhütungsmethode. Du kannst das in den Einstellungen ändern.",
   "fertilityAsk.show": "Anzeigen",
   "fertilityAsk.hide": "Nicht anzeigen",
   "today.importPrompt": "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?",
@@ -93,7 +93,7 @@ export const de: Dictionary = {
   "today.ovulationToday": "Eisprung heute",
   "today.ovulationInDays.one": "Eisprung in {n} Tag",
   "today.ovulationInDays.other": "Eisprung in {n} Tagen",
-  "today.learningFallback": "Wir gehen von einem typischen 28-Tage-Zyklus aus, bis wir dein Muster kennen.",
+  "today.learningFallback": "Es wird ein typischer 28-Tage-Zyklus verwendet, bis Tide einige deiner Zyklen kennt.",
   "today.learningInsufficient": "Erfasse deine Periode, um eine Vorhersage zu sehen.",
 
   "phase.menstrual": "Menstruation",
@@ -123,8 +123,7 @@ export const de: Dictionary = {
   "insights.cycleLength": "Zyklus\u00adlänge",
   "insights.periodLength": "Perioden\u00addauer",
   "insights.cyclesTracked": "Verwendete Zyklen",
-  "insights.basedOn":
-    "Solange keine vollständigen Zyklen vorliegen, wird ein typischer Zyklus von {cycle} Tagen verwendet.",
+  "insights.basedOn": "Es wird ein typischer Zyklus von {cycle} Tagen verwendet, bis du einen vollständigen hast.",
   "insights.regularity": "Zyklusregelmäßigkeit",
   "insights.regularityAria": "Zyklusregelmäßigkeit: {label}",
   "regularity.none": "Noch nicht genügend Daten",
@@ -135,15 +134,16 @@ export const de: Dictionary = {
   "insights.how": "So funktionieren die Vorhersagen",
   "insights.how1": "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet.",
   "insights.howCycleStart":
-    "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Tagen beginnt einen neuen Zyklus; kürzere Lücken gehören zur selben Periode.",
+    "Eine Lücke von {gap} Tagen oder mehr zwischen erfassten Tagen beginnt einen neuen Zyklus. Eine kürzere Lücke gehört zur selben Periode.",
   "insights.how2":
     "Die Zykluslänge ist der Median deiner letzten {recent} vollständigen Zyklen. Unvollständige Zyklen zählen nicht mit. Ohne vollständige Zyklen wird ein typischer Zyklus von {cycle} Tagen verwendet.",
   "insights.how3": "Die Periodendauer ist dein aktueller Durchschnitt, begrenzt auf normale {min}–{max} Tage.",
   "insights.how4":
-    "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge; der Eisprung wird {luteal} Tage davor geschätzt.",
-  "insights.howNextPeriod": "Deine nächste Periode ist der Beginn deiner letzten Periode plus diese Zykluslänge.",
+    "Deine nächste Periode wird eine Zykluslänge nach dem Beginn deiner letzten Periode erwartet. Der Eisprung wird {luteal} Tage davor geschätzt.",
+  "insights.howNextPeriod":
+    "Deine nächste Periode wird eine Zykluslänge nach dem Beginn deiner letzten Periode erwartet.",
   "insights.how5":
-    "Das fruchtbare Fenster reicht von {before} Tagen vor bis {after} Tag nach dem Eisprung und wird breiter, wenn deine Zyklen stärker schwanken.",
+    "Das fruchtbare Fenster beginnt {before} Tage vor dem Eisprung und endet {after} Tag danach. Es wird breiter, wenn deine Zyklen stärker schwanken.",
 
   "legend.period": "Periode",
   "legend.expected": "Erwartete Periode",
@@ -157,13 +157,13 @@ export const de: Dictionary = {
   "flow.heavy": "Stark",
 
   "log.remove": "Blutungseintrag entfernen",
-  "log.logged": "Heute protokolliert",
-  "log.loggedWith": "Heute protokolliert · {flow}",
+  "log.logged": "Heute erfasst",
+  "log.loggedWith": "Heute erfasst · {flow}",
   "log.addFlow": "Stärke wählen",
   "log.changeFlow": "Ändern",
   "log.add": "Blutung heute erfassen",
   "reminder.question": "Hat deine Periode angefangen?",
-  "reminder.dismiss": "Noch nicht — später erinnern",
+  "reminder.dismiss": "Noch nicht, später erinnern",
   "reminder.reassure": "Ein paar Tage Abweichung sind normal.",
 
   "calendar.title": "Kalender",
@@ -181,7 +181,7 @@ export const de: Dictionary = {
   "calendar.logRange": "Vergangene Periode erfassen",
   "calendar.rangePickFirst": "Wähle den ersten Tag der Periode.",
   "calendar.rangePickLast": "Ab {date}: Wähle jetzt den letzten Tag, höchstens {max} Tage.",
-  "calendar.rangeTooLong": "Mehr als {max} Tage. Wähle einen näheren letzten Tag.",
+  "calendar.rangeTooLong": "Das sind mehr als {max} Tage. Wähle einen früheren letzten Tag.",
   "calendar.emptyHelp": "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen.",
   "calendar.futureHelp": "Zukünftige Tage lassen sich noch nicht erfassen.",
   "calendar.log": "Erfassen",
@@ -223,36 +223,37 @@ export const de: Dictionary = {
   "settings.showCycleNumbers": "Zyklustag\u00adnummern anzeigen",
   "settings.cycleNumbersInfo": "Über Zyklustagnummern",
   "settings.cycleNumbersHelp":
-    "Nummeriert die Tage deines aktuellen Zyklus (1, 2, 3, ...) im Kalender, bis zu deiner nächsten erwarteten Periode.",
+    "Zeigt im Kalender den Tag deines Zyklus (1, 2, 3, ...) an, bis zu deiner nächsten erwarteten Periode.",
   "settings.about": "Über",
   "legal.privacy": "Datenschutz\u00aderklärung",
   "legal.accessibility": "Erklärung zur Barrierefreiheit",
   "legal.inEnglish": "Auf Englisch",
   "settings.privacy": "Deine Daten verlassen dieses Gerät nie.",
   "settings.fertilityDisclaimer":
-    "Fruchtbarkeitsschätzungen dienen nur der Information. Sie sind keine Verhütungsmethode.",
+    "Fruchtbarkeitsschätzungen dienen nur der Information. Nutze sie nicht als Verhütungsmethode.",
   "settings.fertilityMethod":
     "Das fruchtbare Fenster sind die Tage rund um deinen erwarteten Eisprung, geschätzt anhand deiner letzten Zykluslängen.",
   "settings.sourceCode": "Quellcode, v{version}, öffnet in einem neuen Tab",
   "settings.data": "Daten",
   "settings.dataInfo": "Über Import und Export",
   "settings.dataHelp":
-    "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Der Import ersetzt sie aus einer Tide-Sicherung oder fügt Menstruationstage aus Clue oder Flo hinzu.",
+    "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Eine Tide-Sicherung zu importieren ersetzt sie. Ein Import aus Clue oder Flo fügt Menstruationstage hinzu.",
   "settings.importSources": "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo.",
   "settings.export": "Exportieren",
   "settings.exportSuccess": "Sicherung in deinen Downloads gespeichert.",
   "settings.exportCalendar": "Zum Kalender",
   "settings.calendarHelp":
-    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Dort werden sie wie deine anderen Termine synchronisiert, liegen also auch im Konto des Kalenders.",
+    "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Einmal hinzugefügt, sind es normale Kalendertermine: Das Konto deines Kalenders speichert und synchronisiert sie.",
   "settings.calendarFertility": "Fruchtbare Fenster einschließen",
   "settings.calendarSuccess": "Kalenderdatei in deinen Downloads gespeichert.",
   "settings.calendarError": "Die Kalenderdatei ließ sich nicht erstellen. Lade Tide neu und versuche es noch einmal.",
   "settings.import": "Importieren",
   "settings.importFile": "Datendatei importieren",
-  "settings.importError": "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export.",
+  "settings.importError":
+    "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export. Wähle eine andere Datei.",
   "settings.importUnavailable": "Der Import konnte nicht geöffnet werden. Lade die Seite neu und versuche es erneut.",
-  "settings.importSuccess.one": "{n} protokollierter Tag importiert.",
-  "settings.importSuccess.other": "{n} protokollierte Tage importiert.",
+  "settings.importSuccess.one": "{n} erfasster Tag importiert.",
+  "settings.importSuccess.other": "{n} erfasste Tage importiert.",
   "settings.importConfirmTitle": "Deine Daten ersetzen?",
   "settings.importConfirmAction": "Ersetzen",
   "settings.importFileDays.one": "Diese Datei enthält {n} erfassten Tag.",
