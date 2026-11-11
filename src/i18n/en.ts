@@ -166,6 +166,8 @@ export const en = {
   "log.remove": "Remove bleeding log",
   "log.logged": "Logged today",
   "log.loggedWith": "Logged today · {flow}",
+  "log.addFlow": "Add flow",
+  "log.changeFlow": "Change",
   "log.add": "Log bleeding today",
   "reminder.question": "Has your period started?",
   "reminder.dismiss": "Not yet — remind me later",

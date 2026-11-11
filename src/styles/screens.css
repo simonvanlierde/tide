@@ -57,8 +57,17 @@
 
   /* The diary trigger belongs to the log block above it: pulled up into that
      group, with a full touch target. */
+  /* -6px, not more: the 44px boxes of "Not yet" and this trigger must not overlap. */
   .today-screen__lead .daily-details {
-    margin-top: -10px;
+    margin-top: -6px;
+  }
+
+  /* The way into the sums sits under the number it explains. */
+  .today-forecast__how {
+    justify-self: start;
+    min-height: 44px;
+    margin-block: -10px -12px;
+    font-size: var(--text-md);
   }
 
   .today-screen__lead .daily-details__trigger {

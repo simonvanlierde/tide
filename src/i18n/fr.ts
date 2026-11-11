@@ -164,6 +164,8 @@ export const fr: Dictionary = {
   "log.remove": "Supprimer le saignement",
   "log.logged": "Enregistré aujourd’hui",
   "log.loggedWith": "Enregistré aujourd’hui · {flow}",
+  "log.addFlow": "Préciser le flux",
+  "log.changeFlow": "Modifier",
   "log.add": "Enregistrer le saignement du jour",
   "reminder.question": "Tes règles ont-elles commencé ?",
   "reminder.dismiss": "Pas encore — me le rappeler plus tard",

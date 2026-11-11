@@ -1,4 +1,4 @@
-import { DropletOff, Droplets } from "lucide-react";
+import { ChevronDown, DropletOff, Droplets } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { FlowIntensity, LoggedFlow } from "../../domain/types";
 import { useT } from "../../state/provider";
@@ -74,19 +74,37 @@ interface LoggedTodayProps {
   justLogged: boolean;
 }
 
-// Logged: one line that confirms, with the undo beside it, and the optional
-// flow as a single row of swatches. Nothing here asks for another step.
+// Logged: a fresh log opens on the optional flow row with its undo; on a
+// later visit the block is one line that opens them again. No timer: nothing
+// moves while a finger or screen reader is on it.
 function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: LoggedTodayProps) {
   const t = useT();
-  // The parent's flag lasts one render; keep it so the one-time moment can finish.
-  const [pop] = useState(justLogged);
+  // How the row came to be open. The parent's flag lasts one render; this
+  // keeps it so the one-time moment can finish.
+  const [open, setOpen] = useState<"fresh" | "tapped" | null>(justLogged ? "fresh" : null);
+  const summary = intensity ? t("log.loggedWith", { flow: t(`flow.${intensity}`) }) : t("log.logged");
+
+  if (!open) {
+    return (
+      <div className="log-action log-action--logged">
+        <button type="button" className="log-action__summary" aria-expanded={false} onClick={() => setOpen("tapped")}>
+          <AppIcon icon={Droplets} className="log-action__status-icon" />
+          <span>{summary}</span>
+          <span className="log-action__hint">
+            {t(intensity ? "log.changeFlow" : "log.addFlow")}
+            <AppIcon icon={ChevronDown} className="text-action__icon" />
+          </span>
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <div className="log-action log-action--logged" data-just-logged={pop || undefined}>
+    <div className="log-action log-action--logged" data-just-logged={open === "fresh" || undefined}>
       <div className="log-action__row">
         <p className="log-action__status" role="status">
           <AppIcon icon={Droplets} className="log-action__status-icon" />
-          <span>{intensity ? t("log.loggedWith", { flow: t(`flow.${intensity}`) }) : t("log.logged")}</span>
+          <span>{summary}</span>
         </p>
         <button type="button" className="text-action log-action__remove" onClick={onRemove}>
           <AppIcon icon={DropletOff} className="text-action__icon" />
@@ -94,7 +112,13 @@ function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: Log
         </button>
       </div>
       {onSelectIntensity ? (
-        <FlowGauge selected={intensity} onSelect={onSelectIntensity} autoFocus={justLogged} hideLegend />
+        // Opened from the summary line, which unmounts: focus continues here.
+        <FlowGauge
+          selected={intensity}
+          onSelect={onSelectIntensity}
+          autoFocus={justLogged || open === "tapped"}
+          hideLegend
+        />
       ) : null}
     </div>
   );

@@ -371,6 +371,21 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
   });
 
+  it("folds a log from an earlier visit into one line that opens flow and Remove", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18", createAppState({ periodDays: ["2026-04-18"] }));
+
+    // Flow and Remove wait behind the one line, which offers to change the level.
+    const summary = screen.getByRole("button", { name: /logged today · medium.*change/i });
+    expect(summary).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("radio")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /remove bleeding log/i })).not.toBeInTheDocument();
+
+    await user.click(summary);
+    expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
+  });
+
   it("moves focus to the gauge after a log and back to Log after a remove", async () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");

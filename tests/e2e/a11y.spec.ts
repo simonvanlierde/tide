@@ -45,7 +45,7 @@ for (const colorScheme of ["light", "dark"] as const) {
     test("the forecast explainer has no WCAG A or AA or best-practice violations", async ({ page }) => {
       await seedAppState(page);
       await page.goto("/");
-      await page.locator(".fact-list__more").nth(1).click();
+      await page.locator(".today-forecast__how").click();
       await expect(page.getByRole("dialog")).toBeVisible();
 
       await expectNoViolations(page);

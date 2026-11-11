@@ -164,6 +164,8 @@ export const nl: Dictionary = {
   "log.remove": "Bloedverlies verwijderen",
   "log.logged": "Vandaag gelogd",
   "log.loggedWith": "Vandaag gelogd · {flow}",
+  "log.addFlow": "Hoeveelheid kiezen",
+  "log.changeFlow": "Wijzigen",
   "log.add": "Bloedverlies registreren",
   "reminder.question": "Is je menstruatie begonnen?",
   "reminder.dismiss": "Nog niet — herinner me later",

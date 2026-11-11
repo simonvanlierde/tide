@@ -322,9 +322,12 @@ The values are in the front matter. This section says what each component is *fo
 Today's lead is the forecast, then one log block in the same slot in every state, with no
 card. When a period is expected or late, the question "Has your period started?" sits
 above the log button and "Not yet" below it. The forecast already names the date, so the
-question doesn't repeat it. Once today is logged, the block is one status line with
-Remove beside it and the flow gauge under it: nothing asks for another step. "Add
-details" closes the block as a text action. Logging gets the screen's one moment: the
+question doesn't repeat it. Right after a log, the block is one status line with Remove
+beside it and the flow gauge under it: nothing asks for another step. On a later visit it
+folds into that one line as a button, ending in "Add flow" (or "Change") as the nudge,
+which opens the gauge and Remove again. It folds on the next visit, never on a timer, so
+nothing moves under a finger. "Add details" closes the block as a text action, and "How
+was this worked out?" sits under the forecast it explains. Logging gets the screen's one moment: the
 droplet scales in with a coral ring, like a newly logged calendar day, and simply appears
 under reduced motion.
 

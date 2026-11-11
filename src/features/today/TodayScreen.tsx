@@ -125,6 +125,12 @@ export function TodayScreen(props: TodayScreenProps) {
         {forecast.estimateMode !== "insufficient" && learningNote ? (
           <p className="today-screen__note">{learningNote}</p>
         ) : null}
+        {explanation ? (
+          <button type="button" className="text-action today-forecast__how" onClick={openExplainer}>
+            {t("today.howWorkedOut")}
+            <AppIcon icon={ChevronRight} className="text-action__icon" />
+          </button>
+        ) : null}
         {reminderState.shouldPrompt ? (
           <ReminderPrompt
             isOverdue={reminderState.isOverdue}
@@ -200,12 +206,6 @@ export function TodayScreen(props: TodayScreenProps) {
           {t("today.cycleInsights")}
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
-        {explanation ? (
-          <button type="button" className="fact-list__more" onClick={openExplainer}>
-            {t("today.howWorkedOut")}
-            <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
-          </button>
-        ) : null}
       </div>
 
       {askFertility ? (

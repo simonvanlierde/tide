@@ -29,7 +29,7 @@ async function openInsights(page: Page) {
 const VARIED_CYCLES = medium(["2026-01-10", "2026-02-12", "2026-03-11", "2026-04-11"]);
 
 async function openExplainer(page: Page) {
-  await page.locator(".fact-list__more").nth(1).click();
+  await page.locator(".today-forecast__how").click();
   await page.getByRole("dialog").waitFor();
 }
 

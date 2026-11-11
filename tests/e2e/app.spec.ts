@@ -28,24 +28,15 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 test("logging today persists across reload", async ({ page }) => {
   await page.goto("/");
 
-  const actionButton = page.getByRole("button", {
-    name: /log bleeding today|remove bleeding log/i,
-  });
-  await expect(actionButton).toBeVisible();
+  await page.getByRole("button", { name: /log bleeding today/i }).click();
+  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
 
-  const startedLogged = await page
-    .getByRole("button", { name: /remove bleeding log/i })
-    .isVisible()
-    .catch(() => false);
-  await actionButton.click();
-
-  const expectedActionLabel = startedLogged ? /log bleeding today/i : /remove bleeding log/i;
-
-  await expect(page.getByRole("button", { name: expectedActionLabel })).toBeVisible();
-
+  // A later visit folds the log into its one line, which opens Remove again.
   await page.reload();
-
-  await expect(page.getByRole("button", { name: expectedActionLabel })).toBeVisible();
+  const summary = page.getByRole("button", { name: /logged today/i });
+  await expect(summary).toHaveAttribute("aria-expanded", "false");
+  await summary.click();
+  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
 });
 
 test("deep links reload correctly for the static app paths", async ({ page }) => {

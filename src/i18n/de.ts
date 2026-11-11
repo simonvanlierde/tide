@@ -164,6 +164,8 @@ export const de: Dictionary = {
   "log.remove": "Blutungseintrag entfernen",
   "log.logged": "Heute protokolliert",
   "log.loggedWith": "Heute protokolliert · {flow}",
+  "log.addFlow": "Stärke wählen",
+  "log.changeFlow": "Ändern",
   "log.add": "Blutung heute erfassen",
   "reminder.question": "Hat deine Periode angefangen?",
   "reminder.dismiss": "Noch nicht — später erinnern",
