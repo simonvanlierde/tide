@@ -1,4 +1,5 @@
 import type { LanguagePreference } from "../i18n";
+import type { DailyDetails } from "./diary";
 
 export type { LanguagePreference } from "../i18n";
 export type IsoDate = `${number}-${number}-${number}`;
@@ -110,6 +111,7 @@ export interface AppState {
    * null (no flow level). Derive the sorted day list with getPeriodDays().
    */
   intensityByDay: Record<IsoDate, LoggedFlow>;
+  detailsByDay: Record<IsoDate, DailyDetails>;
   /** Completed intervals excluded from estimates, identified by their start. */
   incompleteCycleStarts: IsoDate[];
   settings: AppSettings;

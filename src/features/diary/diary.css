@@ -1,0 +1,97 @@
+@layer ui {
+  .daily-details {
+    width: 100%;
+  }
+  .daily-details__trigger {
+    min-height: 44px;
+  }
+  .diary-form {
+    display: grid;
+    gap: 14px;
+    margin-top: 12px;
+    text-align: start;
+  }
+  .diary-form__fields,
+  .diary-form__symptoms {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .diary-form__fields {
+    display: grid;
+    gap: 14px;
+  }
+  .diary-form__symptoms legend,
+  .diary-form__field {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .diary-form__choices {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 12px;
+  }
+  .diary-form__field {
+    display: grid;
+    gap: 8px;
+  }
+  .diary-form__field input,
+  .diary-form__field select,
+  .diary-form__field textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid var(--ink-muted);
+    border-radius: var(--radius-field);
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-weight: 400;
+    caret-color: var(--tide-strong);
+  }
+  @supports (resize: vertical) {
+    .diary-form__field textarea {
+      resize: vertical;
+    }
+  }
+  .diary-form__field :focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+  .diary-form__field :disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+  }
+  .diary-form__fields:disabled {
+    opacity: 0.65;
+  }
+  .diary-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  .daily-details__history {
+    margin-top: 20px;
+    text-align: start;
+  }
+  .daily-details__history ul {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 18px;
+  }
+  .daily-details__history .text-action {
+    min-height: 44px;
+  }
+  @media (max-width: 360px) {
+    .diary-form__choices {
+      grid-template-columns: 1fr;
+    }
+  }
+}

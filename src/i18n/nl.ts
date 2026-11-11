@@ -25,6 +25,38 @@ export const nl: Dictionary = {
   "backup.snooze": "Herinner me over een week",
   "backup.error": "De reservekopie kon niet worden gedownload. Probeer het opnieuw.",
 
+  // Optional daily details
+  "diary.addDetails": "Details toevoegen",
+  "diary.editDetails": "Details bewerken",
+  "diary.finishEditing": "Sla je wijzigingen op of annuleer ze voordat je een andere datum kiest.",
+  "diary.date": "Datum",
+  "diary.symptoms": "Klachten",
+  "diary.symptomsHelp": "Laat leeg als je geen klachten hebt geregistreerd.",
+  "diary.noSymptoms": "Geen klachten",
+  "diary.mood": "Stemming",
+  "diary.moodUnlogged": "Niet geregistreerd",
+  "diary.note": "Notitie (optioneel)",
+  "diary.noteHint": "Maximaal {max} tekens. Details blijven op dit apparaat en worden opgenomen in reservekopieën.",
+  "diary.saveHelp": "Sla je details op voordat je dit scherm verlaat.",
+  "diary.save": "Details opslaan",
+  "diary.saved": "Details opgeslagen.",
+  "diary.removed": "Details gewist.",
+  "diary.clear": "Details wissen",
+  "diary.cancel": "Annuleren",
+  "diary.history": "Dagelijkse details",
+  "diary.openDay": "Details bekijken voor {date}",
+  "diary.conflict":
+    "Deze dag is gewijzigd in een ander tabblad. Sluit de details en open ze opnieuw voordat je opslaat.",
+  "diary.symptom.cramps": "Krampen",
+  "diary.symptom.headache": "Hoofdpijn",
+  "diary.symptom.bloating": "Opgeblazen gevoel",
+  "diary.symptom.breastTenderness": "Gevoelige borsten",
+  "diary.symptom.fatigue": "Vermoeidheid",
+  "diary.mood.low": "Somber",
+  "diary.mood.okay": "Gaat wel",
+  "diary.mood.good": "Goed",
+  "settings.importReplacesDetails": "Je huidige menstruatiegeschiedenis en dagelijkse details worden vervangen.",
+
   "nav.today": "Vandaag",
   "nav.calendar": "Kalender",
   "nav.settings": "Instellingen",
@@ -174,7 +206,7 @@ export const nl: Dictionary = {
 
   // Crash screen
   "error.title": "Er ging iets mis",
-  "error.body": "Je gelogde dagen staan nog steeds op dit apparaat.",
+  "error.body": "Je gegevens staan nog steeds op dit apparaat.",
   "error.downloadRaw": "Ruwe gegevens downloaden",
 
   "settings.title": "Instellingen",
@@ -209,7 +241,7 @@ export const nl: Dictionary = {
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
-    "Exporteren slaat je dagen op in een bestand. Importeren vervangt ze vanuit een Tide-back-up, of voegt dagen toe uit Clue of Flo.",
+    "Exporteren bewaart je menstruatiegeschiedenis en dagelijkse details in een bestand. Importeren vervangt ze vanuit een Tide-reservekopie, of voegt menstruatiedagen toe uit Clue of Flo.",
   "settings.importSources": "Je kunt een Tide-back-up importeren, of een export uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
@@ -240,5 +272,5 @@ export const nl: Dictionary = {
   "settings.resetTitle": "Alle gegevens verwijderen?",
   "settings.resetAction": "Verwijderen",
   "settings.resetConfirm":
-    "Elke gelogde dag en instelling op dit apparaat wordt gewist. Dit kan niet ongedaan worden gemaakt.",
+    "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt.",
 };

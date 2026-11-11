@@ -106,6 +106,7 @@ describe("SettingsScreen", () => {
     expect(JSON.parse(await blob.text())).toEqual({
       schemaVersion: SCHEMA_VERSION,
       days: { "2026-04-02": "medium" },
+      detailsByDay: {},
       incompleteCycleStarts: [],
       settings: {
         showFertility: null,
@@ -252,6 +253,26 @@ describe("SettingsScreen", () => {
       "2026-04-02": "heavy",
     });
     expect(screen.getByRole("status")).toHaveTextContent(/imported 1 logged day\./i);
+  });
+
+  it("asks before replacing diary-only history with an older backup", async () => {
+    const user = userEvent.setup();
+    renderSettings(
+      createAppState({
+        detailsByDay: {
+          "2026-04-12": { symptoms: null, mood: "low", note: "Keep this until confirmed." },
+        },
+      }),
+    );
+    await user.upload(
+      screen.getByLabelText(/import data file/i),
+      new File([JSON.stringify({ days: {}, schemaVersion: 3 })], "old.json", { type: "application/json" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveTextContent("Your current period history and daily details will be replaced.");
+    expect(loadStoredState().state.detailsByDay["2026-04-12"]?.note).toBe("Keep this until confirmed.");
+    await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
+    expect(loadStoredState().state.detailsByDay["2026-04-12"]?.note).toBe("Keep this until confirmed.");
   });
 
   it("keeps this device's backup dates when a backup is imported", async () => {
@@ -502,9 +523,14 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("button", { name: /delete all data/i })).toBeDisabled();
   });
 
-  it.each([SCHEMA_VERSION, SCHEMA_VERSION + 1])(
-    "checks current data after reading a backup (schema %s)",
-    async (schemaVersion) => {
+  it.each([
+    { schemaVersion: SCHEMA_VERSION, diaryOnly: false },
+    { schemaVersion: SCHEMA_VERSION, diaryOnly: true },
+    { schemaVersion: SCHEMA_VERSION + 1, diaryOnly: false },
+    { schemaVersion: SCHEMA_VERSION + 1, diaryOnly: true },
+  ])(
+    "checks current data after reading a backup (schema $schemaVersion, diary-only $diaryOnly)",
+    async ({ schemaVersion, diaryOnly }) => {
       const user = userEvent.setup();
       renderSettings();
       let finishReading!: (text: string) => void;
@@ -515,7 +541,10 @@ describe("SettingsScreen", () => {
         }),
       );
       await user.upload(screen.getByLabelText(/import data file/i), file);
-      const raw = JSON.stringify({ schemaVersion, ...createAppState({ periodDays: ["2026-03-01"] }) });
+      const history = diaryOnly
+        ? createAppState({ detailsByDay: { "2026-03-01": { symptoms: [], mood: "good", note: "" } } })
+        : createAppState({ periodDays: ["2026-03-01"] });
+      const raw = JSON.stringify({ schemaVersion, ...history });
       window.localStorage.setItem(STORAGE_KEY, raw);
       act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
 
@@ -524,7 +553,9 @@ describe("SettingsScreen", () => {
       expect(window.localStorage.getItem(STORAGE_KEY)).toBe(raw);
       expect(screen.queryByRole("status")).not.toBeInTheDocument();
       expect(screen.queryByRole("dialog")?.textContent ?? null).toEqual(
-        schemaVersion === SCHEMA_VERSION ? expect.stringMatching(/replaces the 1 day/i) : null,
+        schemaVersion === SCHEMA_VERSION
+          ? expect.stringMatching(diaryOnly ? /daily details will be replaced/i : /replaces the 1 day/i)
+          : null,
       );
     },
   );

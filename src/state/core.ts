@@ -1,5 +1,6 @@
-import { updateLoggedDays } from "../data/schema";
+import { isIsoDate, updateLoggedDays } from "../data/schema";
 import { forecast, getCycleHistory } from "../domain/cycle";
+import { type DailyDetails, hasDailyDetails, normalizeDailyDetails } from "../domain/diary";
 import { getPeriodRange, getPredictionDays } from "../domain/flow";
 import type { AppSettings, AppState, FlowIntensity, IsoDate } from "../domain/types";
 
@@ -13,6 +14,7 @@ type SetSettingAction = {
 }[keyof AppSettings];
 
 export type AppStateAction =
+  | { type: "setDayDetails"; day: IsoDate; details: DailyDetails; today: IsoDate }
   | { type: "togglePeriodDay"; day: IsoDate; today: IsoDate }
   | {
       type: "setDayIntensity";
@@ -28,6 +30,14 @@ export type AppStateAction =
 
 export function appStateReducer(state: AppState, action: AppStateAction): AppState {
   switch (action.type) {
+    case "setDayDetails": {
+      const details = normalizeDailyDetails(action.details);
+      if (!isIsoDate(action.day) || action.day > action.today || !details) return state;
+      const detailsByDay = { ...state.detailsByDay };
+      if (hasDailyDetails(details)) detailsByDay[action.day] = details;
+      else delete detailsByDay[action.day];
+      return { ...state, detailsByDay };
+    }
     case "togglePeriodDay": {
       const hasLoggedDay = action.day in state.intensityByDay;
 
@@ -108,7 +118,10 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
   }
 }
 
-export function selectForecast(state: AppState, today: IsoDate) {
+export function selectForecast(
+  state: Pick<AppState, "intensityByDay" | "incompleteCycleStarts"> & { settings: Pick<AppSettings, "showFertility"> },
+  today: IsoDate,
+) {
   return forecast({
     today,
     incompleteCycleStarts: state.incompleteCycleStarts,

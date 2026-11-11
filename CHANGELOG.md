@@ -8,6 +8,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Record optional symptoms, a mood and a short note for today or a past day, independently
+  of bleeding. [Daily details](README.md#daily-details) are included in Tide backups and
+  do not affect predictions.
 - [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles as a chart
   and a table. Mark incomplete cycles to leave their lengths out of estimates
   without deleting logged days.
@@ -81,6 +84,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Opening daily details selects today after midnight. Keyboard date edits keep the
+  selected date segment, so repeated day changes do not change the month instead.
 - If device storage is full or blocked, Tide now warns that changes have not
   been saved. Keep the app open and export a backup from Settings.
 - A pending delete cannot erase data saved by a newer version in another tab.

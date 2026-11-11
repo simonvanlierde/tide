@@ -80,10 +80,8 @@ describe("app state", () => {
     expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(/^2026-04-09$/);
     // Writing a different value would fire this event in the other tab and
     // start a ping-pong; an identical rewrite is harmless.
-    for (const [key, value] of setItem.mock.calls) {
-      if (key === STORAGE_KEY) {
-        expect(value).toBe(otherTabValue);
-      }
+    for (const [, value] of setItem.mock.calls.filter(([key]) => key === STORAGE_KEY)) {
+      expect(value).toBe(otherTabValue);
     }
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(otherTabValue);
   });
@@ -173,6 +171,7 @@ describe("app state", () => {
     const initial = createAppState({
       periodDays: ["2026-01-01", "2026-01-29"],
       incompleteCycleStarts: ["2026-01-01"],
+      detailsByDay: { "2026-04-02": { symptoms: [], mood: "good", note: "A note" } },
       settings: { lastBackupOn: "2026-04-01", backupReminderDismissedOn: "2026-04-20" },
     });
     const { result } = renderHook(() => ({ state: useAppState(), actions: useAppStateActions() }), {
@@ -180,6 +179,28 @@ describe("app state", () => {
     });
     act(() => result.current.actions.resetState());
     expect(result.current.state).toEqual(defaultAppState);
+  });
+
+  it("persists diary-only history, requests durable storage, and shares it across tabs", () => {
+    const persist = vi.fn().mockResolvedValue(true);
+    Object.defineProperty(navigator, "storage", { value: { persist }, configurable: true });
+    try {
+      const { result } = renderHook(() => ({ state: useAppState(), actions: useAppStateActions() }), {
+        wrapper: ({ children }) => <AppStateProvider initialState={createAppState()}>{children}</AppStateProvider>,
+      });
+      expect(persist).not.toHaveBeenCalled();
+      const details = { symptoms: [], mood: "good" as const, note: "A note" };
+      act(() => result.current.actions.setDayDetails("2026-04-02", details, "2026-04-02"));
+      expect(result.current.state.detailsByDay).toEqual({ "2026-04-02": details });
+      expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "").detailsByDay).toEqual({ "2026-04-02": details });
+      expect(persist).toHaveBeenCalledOnce();
+      saveAppState(createAppState({ detailsByDay: { "2026-04-03": details } }));
+      act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+      expect(result.current.state.detailsByDay).toEqual({ "2026-04-03": details });
+      expect(persist).toHaveBeenCalledOnce();
+    } finally {
+      Reflect.deleteProperty(navigator, "storage");
+    }
   });
 
   it.each([true, false])("never deletes newer data, even before its storage event (notified: %s)", (notified) => {
@@ -204,6 +225,22 @@ describe("app state", () => {
     });
 
     expect(result.current.cycleDay).toBe(17);
+  });
+
+  it("keeps the forecast stable across diary edits and rebuilds after bleeding changes", () => {
+    const { result } = renderHook(() => ({ forecast: useForecast("2026-04-18"), actions: useAppStateActions() }), {
+      wrapper: ({ children }) => (
+        <AppStateProvider initialState={createLearnedCycleState()}>{children}</AppStateProvider>
+      ),
+    });
+    const initial = result.current.forecast;
+    act(() =>
+      result.current.actions.setDayDetails("2026-04-18", { symptoms: [], mood: "good", note: "Rested" }, "2026-04-18"),
+    );
+    expect(result.current.forecast).toBe(initial);
+    act(() => result.current.actions.togglePeriodDay("2026-04-18", "2026-04-18"));
+    expect(result.current.forecast).not.toBe(initial);
+    expect(result.current.forecast.cycleDay).toBe(1);
   });
 });
 

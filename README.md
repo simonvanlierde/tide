@@ -27,6 +27,8 @@ Once installed, it works offline, and all data stays on your device.
 ## Features
 
 - Log bleeding days with one tap, or a whole past period at once.
+- Add optional symptoms, a mood and a short note for today or a past day, whether or not
+  you logged bleeding. These details stay in your diary and do not affect predictions.
 - A cycle dial shows today's cycle day and phase. Drag along it to preview other days.
 - Next-period estimates, and if you choose to see them, an approximate fertile window and
   ovulation estimate. Every prediction is a dashed outline, so it never looks like a logged day.
@@ -36,12 +38,21 @@ Once installed, it works offline, and all data stays on your device.
   Mark a cycle incomplete to leave it out of cycle-length estimates while keeping its logged days.
 - A calendar with cycle day numbers.
 - Back up to a JSON file, restore it on any device, or delete everything in one go.
+  Backups include your daily details as well as your bleeding history and settings.
   A local reminder appears after 30 days; you can snooze it for a week.
 - Import a Clue export (`measurements.json` from the export zip, or an older `.cluedata` backup)
   or a Flo export from Settings → Data → Import. It adds to the days you already logged; a Tide
-  backup replaces your data instead.
+  backup replaces your data instead. Clue and Flo imports bring in bleeding days only.
 
 The estimates are for information only. They are not a form of birth control.
+
+### Daily details
+
+Choose **Add details** to record cramps, a headache, bloating, breast tenderness or fatigue.
+You can choose **No symptoms** to record that you had none; leaving symptoms blank means
+you did not record them. Mood and a note of up to 1,000 characters are optional too.
+Choose **Save details** before leaving the screen. On Calendar, use the dated links under
+**Daily details** to revisit entries for that month. You can also choose a date in the editor.
 
 ## Development
 
