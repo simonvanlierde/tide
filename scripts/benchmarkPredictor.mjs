@@ -2,6 +2,7 @@
 // argument: another Tide source tree, for a matched before/after comparison.
 import { cpus } from "node:os";
 import { resolve } from "node:path";
+import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { runnerImport } from "vite";
 
@@ -32,8 +33,8 @@ console.log(JSON.stringify({ node: process.version, cpu: cpus()[0]?.model, batch
 const today = "2026-11-11";
 for (const years of [1, 5, 20]) {
   const cycles = Math.floor((years * 365.25) / 28);
-  const periodDays = Array.from({ length: cycles }, (_, cycle) =>
-    Array.from({ length: 5 }, (_, day) => addDays(today, -(cycles - cycle) * 28 + day)),
+  const periodDays = Array.from({ length: cycles }, (_cycle, cycle) =>
+    Array.from({ length: 5 }, (_day, day) => addDays(today, -(cycles - cycle) * 28 + day)),
   ).flat();
   const state = { ...defaultAppState, intensityByDay: Object.fromEntries(periodDays.map((day) => [day, null])) };
   const input = { today, periodDays, fertility: true };
