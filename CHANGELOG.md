@@ -61,6 +61,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   number sits small inside the day's corner instead of in a bubble, with its own legend entry.
 - The fertile window is violet instead of olive, and ovulation a brighter orange, on the
   dial and the calendar, so the two no longer look alike or brown.
+- Estimated calendar days use a finer dash and, in light mode, a faint wash of their
+  colour, so the fertile window reads as one band instead of a row of boxes.
+- Under the calendar, "Log a past period" and the day's details are two buttons in one
+  group, and the "Tap a day" hint shows only until your first log.
 - "Add details" on the calendar names its day, and adds details for the day you last picked.
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.

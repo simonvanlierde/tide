@@ -49,6 +49,8 @@
        yellow that dark turns brown, so the fertile window is violet. */
     --estimate-period: var(--bleed-strong);
     --estimate-fertile: #b454d4;
+    /* How much of an estimate's colour washes its calendar day. */
+    --estimate-tint: 10%;
     --estimate-ovulation: #d45d00;
     /* Text on the warm cycle fills — they stay light in both themes, so this
        stays near-black in both themes (not overridden in the dark block) to
@@ -134,6 +136,8 @@
     --cycle-idle: rgba(194, 238, 234, 0.3);
     /* On the dark ground the fills themselves are bright enough for a line. */
     --estimate-period: var(--bleed);
+    /* No wash at night: amber over the dark ground turns brown. */
+    --estimate-tint: 0%;
     --estimate-fertile: var(--cycle-fertile);
     --estimate-ovulation: var(--cycle-ovulation);
 

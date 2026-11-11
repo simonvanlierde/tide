@@ -324,16 +324,63 @@
     hyphens: manual;
   }
 
-  .calendar__today,
-  .calendar__range {
+  .calendar__today {
     width: fit-content;
     max-width: 100%;
     justify-self: center;
   }
 
-  /* A text action standing alone, so it takes a full 44px touch target. */
-  .calendar__range {
+  /* The two things to do besides tapping a day, side by side: log a range,
+     and details for the picked day. They stack when the line is too narrow.
+     The details panel and history inside the row take a whole line. */
+  .calendar__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .calendar__actions .daily-details {
+    display: contents;
+  }
+
+  .calendar__actions .daily-details > :not(button) {
+    flex: 1 0 100%;
+  }
+
+  .calendar__action {
+    display: inline-flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--surface-border);
+    border-radius: var(--radius-button);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: var(--text-md);
+    font-weight: 500;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .calendar__action:hover:not(:disabled),
+  .calendar__action[aria-expanded="true"] {
+    border-color: var(--tide);
+    background: var(--tide-tint);
+    color: var(--tide-strong);
+  }
+
+  .calendar__action:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
+  .calendar__action:disabled {
+    cursor: default;
   }
 
   .calendar__picker {
@@ -401,16 +448,17 @@
   .calendar-legend__swatch--predicted,
   .calendar-legend__swatch--fertile,
   .calendar-legend__swatch--ovulation {
-    background: transparent;
-    border: 1.5px dashed var(--estimate-period);
+    --estimate: var(--estimate-period);
+    background: color-mix(in srgb, var(--estimate) var(--estimate-tint), transparent);
+    border: 1.5px dashed var(--estimate);
   }
 
   .calendar-legend__swatch--fertile {
-    border-color: var(--estimate-fertile);
+    --estimate: var(--estimate-fertile);
   }
 
   .calendar-legend__swatch--ovulation {
-    border-color: var(--estimate-ovulation);
+    --estimate: var(--estimate-ovulation);
   }
 
   .calendar-grid__weekday-narrow {

@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarRange, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef, useState } from "react";
 import { MAX_PERIOD_RANGE_DAYS } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
@@ -208,19 +208,10 @@ export function CalendarScreen(props: CalendarScreenProps) {
               {t("calendar.undo")}
             </button>
           </p>
-        ) : (
+        ) : helpKey === "calendar.tapHelp" ? null : (
+          // Once something is logged, tapping a day is known; only first use
+          // and future months need the hint.
           <p className="supporting-note calendar__help">{t(helpKey)}</p>
-        )}
-        {log.selectedDay ? null : (
-          // One button that turns into Cancel, so focus stays put when a
-          // pick is cancelled.
-          <button
-            type="button"
-            className="text-action calendar__range"
-            onClick={log.rangePick ? log.cancelRangePick : handleStartRange}
-          >
-            {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
-          </button>
         )}
         {month.isCurrent ? null : (
           <button
@@ -232,7 +223,21 @@ export function CalendarScreen(props: CalendarScreenProps) {
             {t("calendar.today")}
           </button>
         )}
-        <DailyDetails today={today} day={detailsDay} month={month.visibleMonth} />
+        <div className="calendar__actions">
+          {log.selectedDay ? null : (
+            // One button that turns into Cancel, so focus stays put when a
+            // pick is cancelled.
+            <button
+              type="button"
+              className="calendar__action"
+              onClick={log.rangePick ? log.cancelRangePick : handleStartRange}
+            >
+              {log.rangePick ? null : <CalendarRange aria-hidden="true" size={18} strokeWidth={1.8} />}
+              {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
+            </button>
+          )}
+          <DailyDetails today={today} day={detailsDay} month={month.visibleMonth} />
+        </div>
       </article>
     </section>
   );

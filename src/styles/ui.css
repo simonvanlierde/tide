@@ -1205,17 +1205,20 @@
   .calendar-grid__day.is-fertile,
   .calendar-grid__day.is-ovulation,
   .calendar-grid__day.is-predicted-period {
-    background: transparent;
-    border: 2px dashed var(--estimate-fertile);
+    --estimate: var(--estimate-fertile);
+    /* A faint wash groups the window into a band; the fine dash keeps it an
+       estimate, never a logged day's solid fill. */
+    background: color-mix(in srgb, var(--estimate) var(--estimate-tint), transparent);
+    border: 1.5px dashed var(--estimate);
     opacity: 1;
   }
 
   .calendar-grid__day.is-ovulation {
-    border-color: var(--estimate-ovulation);
+    --estimate: var(--estimate-ovulation);
   }
 
   .calendar-grid__day.is-predicted-period {
-    border-color: var(--estimate-period);
+    --estimate: var(--estimate-period);
   }
 
   .calendar-grid__day.is-logged {

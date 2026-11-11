@@ -109,7 +109,7 @@ const SCREENS: {
   {
     name: "calendar past period",
     path: "/calendar",
-    open: (page) => page.locator(".calendar__range").click(),
+    open: (page) => page.locator(".calendar__actions > .calendar__action").click(),
   },
   { name: "settings", path: "/settings" },
   {

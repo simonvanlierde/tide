@@ -198,9 +198,11 @@ first. Dark mode is the same pool at night, tuned again rather than inverted.
 **The One Warm Voice Rule.** Coral means bleeding. Never use it for a button, badge or
 accent that isn't about the period.
 
-**The Outline Rule.** Every estimate is a dashed outline in its colour, with no fill: the
-expected period, the fertile window and ovulation, on the dial, the calendar and both
-legends, in both themes. Only logged days get a fill. The outline is the whole encoding:
+**The Outline Rule.** Every estimate is a dashed outline in its colour, never a solid fill:
+the expected period, the fertile window and ovulation, on the dial, the calendar and both
+legends, in both themes. Only logged days get a fill. On the light calendar an estimated
+day also takes a 10% wash of its colour (`--estimate-tint`), so a window reads as one band;
+dark mode has none, because amber over the dark ground turns brown. The outline is the whole encoding:
 an estimated day's number keeps its ordinary colour, so the expected period looks no more
 certain than the fertile window. Each outline passes 3:1 against the card and the page
 ground.
@@ -298,7 +300,7 @@ Everything is rounded, every radius is a token, and bigger blocks get bigger cor
 The dial is a circle. A calendar day with nothing on it is a bare number; only logged,
 estimated and selected days get a rounded square. A day that has happened shows its
 cycle-day number small and muted inside the top corner, with no bubble, so it never reads as
-an unread count. An estimated day gets a 2 px dashed outline with no fill. Borders are 1 px hairlines at 9% ink.
+an unread count. An estimated day gets a 1.5 px dashed outline and, in light mode, a faint wash. Borders are 1 px hairlines at 9% ink.
 
 ## Components
 
@@ -364,14 +366,16 @@ names the colours the ring is actually showing.
 ### Calendar grid
 
 Seven columns of rounded-square day buttons. Logged days fill with their flow-ramp colour.
-Expected, fertile and ovulation days are dashed outlines in coral, violet and amber, with no
-fill. Logged days from the next or previous month keep a lighter fill. Their estimates keep
+Expected, fertile and ovulation days are fine dashed outlines in coral, violet and amber,
+washed at 10% in light mode. Logged days from the next or previous month keep a lighter fill. Their estimates keep
 the full outline, because a lighter one would drop below 3:1. Today gets a short underscore
 in `currentColor`, and the selected day a teal ring. A newly logged day pulses once, unless
 the user asked for reduced motion. The grid is one tab stop, and you move through it with
 the arrow keys. Logging a past period uses the same grid: the first day you pick keeps the
 selection ring until you pick the last day, and a status line under the grid says what
-comes next.
+comes next. Under the legend, "Log a past period" and the picked day's details are two
+quiet buttons in one group, side by side when they fit. The "Tap a day" hint shows only
+until the first log, and for future months.
 
 ### Backup reminder
 

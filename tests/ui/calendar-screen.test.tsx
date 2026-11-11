@@ -35,6 +35,17 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /april 2026/i })).toBeInTheDocument();
   });
 
+  it("drops the tap hint once something is logged, and keeps both actions on one row", () => {
+    const { container } = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+
+    expect(screen.queryByText(/tap a day to log or edit bleeding/i)).not.toBeInTheDocument();
+    const row = container.querySelector(".calendar__actions");
+    expect(row).toContainElement(screen.getByRole("button", { name: /log a past period/i }));
+    expect(row).toContainElement(screen.getByRole("button", { name: /add details for/i }));
+  });
+
   it("lays the month out as a table with a weekday header per column", () => {
     renderWithAppState(<CalendarScreen today="2026-04-18" />);
 

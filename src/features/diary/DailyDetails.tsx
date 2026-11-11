@@ -1,3 +1,4 @@
+import { NotebookPen } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { isIsoDate } from "../../data/schema";
 import { type DailyDetails as Details, MAX_NOTE_LENGTH, MOODS, SYMPTOMS } from "../../domain/diary";
@@ -36,7 +37,7 @@ export function DailyDetails({ today, day: target, month }: { today: IsoDate; da
       <button
         ref={trigger}
         type="button"
-        className="text-action daily-details__trigger"
+        className={target ? "calendar__action daily-details__trigger" : "text-action daily-details__trigger"}
         disabled={open}
         aria-expanded={open}
         aria-controls={id}
@@ -45,6 +46,7 @@ export function DailyDetails({ today, day: target, month }: { today: IsoDate; da
           setOpen(true);
         }}
       >
+        {target ? <NotebookPen aria-hidden="true" size={18} strokeWidth={1.8} /> : null}
         {target
           ? t(state.detailsByDay[target] ? "diary.editDetailsFor" : "diary.addDetailsFor", {
               date: formatShortDate(target, locale),
