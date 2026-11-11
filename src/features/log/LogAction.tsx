@@ -93,7 +93,7 @@ function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged, aside
   if (!open) {
     return (
       <div className="log-action log-action--logged log-action--line">
-        <button type="button" className="log-action__summary" aria-expanded={false} onClick={() => setOpen("tapped")}>
+        <button type="button" className="log-action__summary" onClick={() => setOpen("tapped")}>
           <AppIcon icon={Droplets} className="log-action__status-icon" />
           <span>{summary}</span>
           <span className="log-action__hint">

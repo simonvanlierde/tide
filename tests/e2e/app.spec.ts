@@ -34,7 +34,7 @@ test("logging today persists across reload", async ({ page }) => {
   // A later visit folds the log into its one line, which opens Remove again.
   await page.reload();
   const summary = page.getByRole("button", { name: /logged today/i });
-  await expect(summary).toHaveAttribute("aria-expanded", "false");
+  await expect(summary).not.toHaveAttribute("aria-expanded");
   await summary.click();
   await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
 });

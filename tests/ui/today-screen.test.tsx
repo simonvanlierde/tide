@@ -381,13 +381,19 @@ describe("TodayScreen", () => {
 
     // Flow and Remove wait behind the one line, which offers to change the level.
     const summary = screen.getByRole("button", { name: /logged today · medium.*change/i });
-    expect(summary).toHaveAttribute("aria-expanded", "false");
+    // It opens once and goes away, so it is a plain button, not a toggle.
+    expect(summary).not.toHaveAttribute("aria-expanded");
     expect(screen.queryByRole("radio")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /remove bleeding log/i })).not.toBeInTheDocument();
 
     await user.click(summary);
     expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
     expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
+  });
+
+  it("nudges a plain log from an earlier visit to add its flow", () => {
+    renderToday("2026-04-18", { ...createAppState(), intensityByDay: { "2026-04-18": null } });
+    expect(screen.getByRole("button", { name: /^logged today.*add flow/i })).toBeInTheDocument();
   });
 
   it("moves focus to the gauge after a log and back to Log after a remove", async () => {

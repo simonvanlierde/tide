@@ -223,7 +223,7 @@ export function DetailsForm({
               aria-pressed={value.mood === mood}
               onClick={() => save({ ...value, mood: value.mood === mood ? null : mood })}
             >
-              <AppIcon icon={MOOD_ICONS[mood]} className="diary-chip__mood-icon" />
+              <AppIcon icon={value.mood === mood ? Check : MOOD_ICONS[mood]} className="diary-chip__mood-icon" />
               {t(`diary.mood.${mood}`)}
             </button>
           ))}

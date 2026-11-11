@@ -1,10 +1,10 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY } from "../../src/data/storage";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
-import { DailyDetails } from "../../src/features/diary/DailyDetails";
+import { DailyDetails, DetailsForm } from "../../src/features/diary/DailyDetails";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
 import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -126,6 +126,67 @@ describe("optional daily details", () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(other));
     act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
     expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("Other tab");
+  });
+
+  it("drops a pending Undo when the day changes under an open panel", async () => {
+    const user = userEvent.setup();
+    const state = {
+      ...createAppState(),
+      detailsByDay: { "2026-04-18": { symptoms: ["cramps" as const], mood: null, note: "" } },
+    };
+    const view = render(
+      <AppStateProvider initialState={state}>
+        <TodayScreen today="2026-04-18" />
+      </AppStateProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "Edit details" }));
+    await user.click(screen.getByRole("button", { name: "Clear details" }));
+    expect(screen.getByRole("button", { name: "Undo" })).toBeInTheDocument();
+
+    view.rerender(
+      <AppStateProvider initialState={state}>
+        <TodayScreen today="2026-04-19" />
+      </AppStateProvider>,
+    );
+    expect(screen.queryByRole("button", { name: "Undo" })).not.toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    expect(stored().detailsByDay).toEqual({});
+  });
+
+  it("writes nothing while read-only or for a future day", async () => {
+    const user = userEvent.setup();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...createAppState(), schemaVersion: SCHEMA_VERSION + 1 }));
+    const view = render(
+      <AppStateProvider>
+        <TodayScreen today="2026-04-18" />
+      </AppStateProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: /note/i })).toBeDisabled();
+    view.unmount();
+    localStorage.clear();
+
+    render(
+      <AppStateProvider initialState={createAppState()}>
+        <DetailsForm day="2026-04-20" today="2026-04-18" onClose={() => {}} />
+      </AppStateProvider>,
+    );
+    expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
+  });
+
+  it("clears the saved note when the Calendar's date moves to another day", async () => {
+    const user = userEvent.setup();
+    render(
+      <AppStateProvider initialState={createAppState()}>
+        <DailyDetails today="2026-04-18" month="2026-04-01" />
+      </AppStateProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    await user.click(screen.getByRole("button", { name: "Cramps" }));
+    expect(screen.getByRole("status")).toHaveTextContent("Details saved.");
+    fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-04-12" } });
+    expect(screen.getByRole("status")).toBeEmptyDOMElement();
   });
 
   it("lets calendar readers revisit a detail-only day without logging bleeding", async () => {

@@ -172,6 +172,8 @@ export function TodayScreen(props: TodayScreenProps) {
         <div id={detailsId}>
           {detailsOpen ? (
             <DetailsForm
+              // A new day is a new form: an Undo or "saved" from yesterday must not carry over.
+              key={today}
               day={today}
               today={today}
               onClose={() => {
