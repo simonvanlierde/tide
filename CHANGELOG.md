@@ -14,7 +14,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles as a chart
   and a table. Mark incomplete cycles to leave their lengths out of estimates
   without deleting logged days.
-- Today reminds you to download a backup after 30 days, with a one-week snooze.
+- Today reminds you to download a backup after 60 days, with a one-week snooze.
   The reminder dates stay on this device and are left out of exported backups.
 - The site now has a `/.well-known/security.txt` that says where to report a
   security problem, and link previews show Tide's name, description and icon.

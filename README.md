@@ -39,7 +39,7 @@ Once installed, it works offline, and all data stays on your device.
 - A calendar with cycle day numbers.
 - Back up to a JSON file, restore it on any device, or delete everything in one go.
   Backups include your daily details as well as your bleeding history and settings.
-  A local reminder appears after 30 days; you can snooze it for a week.
+  A local reminder appears after 60 days; you can snooze it for a week.
 - Import a Clue export (`measurements.json` from the export zip, or an older `.cluedata` backup)
   or a Flo export from Settings → Data → Import. It adds to the days you already logged; a Tide
   backup replaces your data instead. Clue and Flo imports bring in bleeding days only.
