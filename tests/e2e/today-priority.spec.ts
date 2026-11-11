@@ -37,7 +37,9 @@ for (const language of SUPPORTED_LANGUAGES) {
       const detailsBox = await page
         .getByRole("button", { name: translate(language, "diary.addDetails") })
         .boundingBox();
-      expect(detailsBox?.y).toBeGreaterThan(logBox?.y ?? 0);
+      // Details shares the log line: same row, after the log button.
+      expect(detailsBox?.x).toBeGreaterThan(logBox?.x ?? 0);
+      expect(Math.abs((detailsBox?.y ?? 0) - (logBox?.y ?? 0))).toBeLessThan(2);
       expect((logBox?.y ?? 0) + (logBox?.height ?? 0)).toBeLessThan(tabs?.y ?? 0);
       await log.click();
       await expect(page.getByRole("radio").first()).toBeFocused();
@@ -52,6 +54,10 @@ test("the flow levels are one Tab stop after a fresh log", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Log bleeding today", exact: true }).click();
   await expect(page.getByRole("radio", { name: "Spotting" })).toBeFocused();
+  // One Tab leaves the group; Details sits on the line above it, one Shift+Tab back.
   await page.keyboard.press("Tab");
+  expect(await page.evaluate(() => document.activeElement?.closest('[role="radiogroup"]') ?? null)).toBeNull();
+  await page.keyboard.press("Shift+Tab");
+  await page.keyboard.press("Shift+Tab");
   await expect(page.getByRole("button", { name: "Add details" })).toBeFocused();
 });

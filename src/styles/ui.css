@@ -540,6 +540,20 @@
     container-type: inline-size;
   }
 
+  /* The log button (or the folded logged line) and Details share one line:
+     two actions for the same day. The log action takes the width. */
+  .log-action--line {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    container-type: inline-size;
+  }
+
+  .log-action--line > :first-child {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
   .log-action__row {
     display: flex;
     flex-wrap: wrap;

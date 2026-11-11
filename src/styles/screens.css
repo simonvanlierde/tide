@@ -13,13 +13,6 @@
     gap: 16px;
   }
 
-  /* The diary trigger belongs to the log block above it: pulled up into that
-     group, with a full touch target. */
-  /* -6px, not more: the 44px boxes of "Not yet" and this trigger must not overlap. */
-  .today-screen__lead .daily-details {
-    margin-top: -6px;
-  }
-
   .today-screen__note {
     margin: 0;
     color: var(--ink-muted);

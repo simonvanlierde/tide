@@ -1,5 +1,5 @@
 import { ChevronDown, DropletOff, Droplets } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { FlowIntensity, LoggedFlow } from "../../domain/types";
 import { useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
@@ -18,6 +18,8 @@ interface LogActionProps {
    *  log, the log button after a remove. Set only for an action taken here,
    *  never for a page load or a change from another tab. */
   autoFocus?: boolean;
+  /** A second, smaller action that sits on the same line as the log button or logged summary. */
+  aside?: ReactNode;
 }
 
 export function LogAction({
@@ -27,6 +29,7 @@ export function LogAction({
   onSelectIntensity,
   variant = "primary",
   autoFocus = false,
+  aside,
 }: LogActionProps) {
   const t = useT();
   const logButton = useRef<HTMLButtonElement>(null);
@@ -46,12 +49,13 @@ export function LogAction({
         onRemove={onToggle}
         onSelectIntensity={onSelectIntensity}
         justLogged={autoFocus}
+        aside={aside}
       />
     );
   }
 
   return (
-    <div className="log-action">
+    <div className="log-action log-action--line">
       <button
         ref={logButton}
         type="button"
@@ -63,6 +67,7 @@ export function LogAction({
           <span>{t("log.add")}</span>
         </span>
       </button>
+      {aside}
     </div>
   );
 }
@@ -72,12 +77,13 @@ interface LoggedTodayProps {
   onRemove: () => void;
   onSelectIntensity?: (intensity: FlowIntensity) => void;
   justLogged: boolean;
+  aside?: ReactNode;
 }
 
 // Logged: a fresh log opens on the optional flow row with its undo; on a
 // later visit the block is one line that opens them again. No timer: nothing
 // moves while a finger or screen reader is on it.
-function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: LoggedTodayProps) {
+function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged, aside }: LoggedTodayProps) {
   const t = useT();
   // How the row came to be open. The parent's flag lasts one render; this
   // keeps it so the one-time moment can finish.
@@ -86,7 +92,7 @@ function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: Log
 
   if (!open) {
     return (
-      <div className="log-action log-action--logged">
+      <div className="log-action log-action--logged log-action--line">
         <button type="button" className="log-action__summary" aria-expanded={false} onClick={() => setOpen("tapped")}>
           <AppIcon icon={Droplets} className="log-action__status-icon" />
           <span>{summary}</span>
@@ -95,6 +101,7 @@ function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: Log
             <AppIcon icon={ChevronDown} className="text-action__icon" />
           </span>
         </button>
+        {aside}
       </div>
     );
   }
@@ -110,6 +117,7 @@ function LoggedToday({ intensity, onRemove, onSelectIntensity, justLogged }: Log
           <AppIcon icon={DropletOff} className="text-action__icon" />
           {t("log.remove")}
         </button>
+        {aside}
       </div>
       {onSelectIntensity ? (
         // Opened from the summary line, which unmounts: focus continues here.

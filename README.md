@@ -48,11 +48,12 @@ The estimates are for information only. They are not a form of birth control.
 
 ### Daily details
 
-Choose **Add details** to record cramps, a headache, bloating, breast tenderness or fatigue.
-You can choose **No symptoms** to record that you had none; leaving symptoms blank means
-you did not record them. Mood and a note of up to 1,000 characters are optional too.
-Choose **Save details** before leaving the screen. On Calendar, use the dated links under
-**Daily details** to revisit entries for that month. You can also choose a date in the editor.
+Choose **Details**, next to the log button on Today, to record cramps, a headache, bloating,
+breast tenderness or fatigue. You can choose **No symptoms** to record that you had none;
+leaving symptoms blank means you did not record them. Mood and a note of up to 1,000
+characters are optional too. Each choice saves as you make it; **Clear details** offers
+Undo. On Calendar, use the dated links under **Daily details** to revisit entries for that
+month, or choose a date in the editor.
 
 ## Development
 

@@ -62,8 +62,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and an optional row of flow levels. Later the same day it folds
   into that one line, which offers to add or change the flow. When a period is due, Today
   asks "Has your period started?" without repeating the date, and a late period no
-  longer reads as "Period expected" on the dial. "Add details" sits under the log
-  button. The "Stored only on this device" line is gone.
+  longer reads as "Period expected" on the dial. The "Stored only on this device" line is gone.
+- Daily details open from a **Details** button beside the log button. Symptoms and mood
+  are chips that save on tap, the note saves as you type, and clearing offers Undo, so
+  there is no Save button to forget. Today's details are always for today.
+- The fertility line on Today drops "(estimate)" so it fits on one line; the line under it
+  now reads "An estimate, not birth control".
 - The privacy statement names Cloudflare as the host without naming the product,
   since the app moves from Cloudflare Pages to a Cloudflare Worker.
 - Tide asks once whether to show fertility estimates, and hides them until you

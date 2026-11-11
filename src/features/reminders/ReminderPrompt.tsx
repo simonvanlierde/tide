@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useT } from "../../state/provider";
 import { LogAction } from "../log/LogAction";
 
@@ -7,18 +8,20 @@ interface ReminderPromptProps {
   onDismiss: () => void;
   /** Passed on to the log button; see LogAction. */
   autoFocus?: boolean;
+  /** Passed on to LogAction. */
+  aside?: ReactNode;
 }
 
 // Part of Today's lead, not a card: the forecast above it already names the
 // date, so the prompt only asks the question.
-export function ReminderPrompt({ isOverdue, onLog, onDismiss, autoFocus }: ReminderPromptProps) {
+export function ReminderPrompt({ isOverdue, onLog, onDismiss, autoFocus, aside }: ReminderPromptProps) {
   const t = useT();
 
   return (
     <div className="log-prompt">
       <p className="log-prompt__question">{t("reminder.question")}</p>
       {isOverdue ? <p className="log-prompt__reassure">{t("reminder.reassure")}</p> : null}
-      <LogAction isLogged={false} onToggle={onLog} autoFocus={autoFocus} />
+      <LogAction isLogged={false} onToggle={onLog} autoFocus={autoFocus} aside={aside} />
       <button type="button" className="text-action log-prompt__dismiss" onClick={onDismiss}>
         {t("reminder.dismiss")}
       </button>

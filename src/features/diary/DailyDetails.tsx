@@ -1,15 +1,53 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { Check, Cloud, CloudRain, NotebookPen, Sun } from "lucide-react";
+import { type Ref, useEffect, useId, useRef, useState } from "react";
 import { isIsoDate } from "../../data/schema";
 import { type DailyDetails as Details, MAX_NOTE_LENGTH, MOODS, SYMPTOMS } from "../../domain/diary";
 import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useIsReadOnly, useLocale, useT } from "../../state/provider";
+import { AppIcon } from "../../ui/icons";
 import { formatLongDate, formatShortDate } from "../../utils/date";
 import "./diary.css";
 
 const EMPTY: Details = { symptoms: null, mood: null, note: "" };
 const sameDetails = (a: Details, b: Details) => JSON.stringify(a) === JSON.stringify(b);
+const MOOD_ICONS = { low: CloudRain, okay: Cloud, good: Sun } as const;
 
-export function DailyDetails({ today, month }: { today: IsoDate; month?: IsoDate }) {
+/** Today's compact trigger, beside the log button. A dot marks a day that has details. */
+export function DetailsButton({
+  ref,
+  day,
+  open,
+  controls,
+  onOpen,
+}: {
+  ref?: Ref<HTMLButtonElement>;
+  day: IsoDate;
+  open: boolean;
+  controls: string;
+  onOpen: () => void;
+}) {
+  const state = useAppState();
+  const t = useT();
+  const hasDetails = day in state.detailsByDay;
+  return (
+    <button
+      ref={ref}
+      type="button"
+      className="details-button"
+      aria-label={t(hasDetails ? "diary.editDetails" : "diary.addDetails")}
+      aria-expanded={open}
+      aria-controls={controls}
+      onClick={onOpen}
+    >
+      <AppIcon icon={NotebookPen} className="button-icon" />
+      <span className="details-button__label">{t("diary.details")}</span>
+      {hasDetails ? <span className="details-button__dot" aria-hidden="true" /> : null}
+    </button>
+  );
+}
+
+/** The Calendar's details: a trigger for the shown day and the month's detail-only days. */
+export function DailyDetails({ today, month }: { today: IsoDate; month: IsoDate }) {
   const state = useAppState();
   const t = useT();
   const locale = useLocale();
@@ -17,12 +55,10 @@ export function DailyDetails({ today, month }: { today: IsoDate; month?: IsoDate
   const [open, setOpen] = useState(false);
   const trigger = useRef<HTMLButtonElement>(null);
   const id = useId();
-  const entries = month
-    ? Object.keys(state.detailsByDay)
-        .filter((date) => date.startsWith(month.slice(0, 7)))
-        .sort()
-        .reverse()
-    : [];
+  const entries = Object.keys(state.detailsByDay)
+    .filter((date) => date.startsWith(month.slice(0, 7)))
+    .sort()
+    .reverse();
 
   function close() {
     setOpen(false);
@@ -74,7 +110,12 @@ export function DailyDetails({ today, month }: { today: IsoDate; month?: IsoDate
   );
 }
 
-function DetailsForm({
+/**
+ * Every tap saves: there is no draft to lose and no Save button to remember.
+ * Clearing is the one destructive step, so it offers Undo until the next change.
+ * `onDayChange` shows a date field (the Calendar); without it the form is for `day`.
+ */
+export function DetailsForm({
   day,
   today,
   onDayChange,
@@ -82,7 +123,7 @@ function DetailsForm({
 }: {
   day: IsoDate;
   today: IsoDate;
-  onDayChange: (day: IsoDate) => void;
+  onDayChange?: (day: IsoDate) => void;
   onClose: () => void;
 }) {
   const state = useAppState();
@@ -90,147 +131,162 @@ function DetailsForm({
   const readOnly = useIsReadOnly();
   const t = useT();
   const id = useId();
-  const dateInput = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    dateInput.current?.focus();
-  }, []);
+  const first = useRef<HTMLElement>(null);
   const value = state.detailsByDay[day] ?? EMPTY;
-  const [original, setOriginal] = useState(value);
-  const [draft, setDraft] = useState(value);
-  const [saved, setSaved] = useState(false);
-  const [draftDay, setDraftDay] = useState(day);
-  if (draftDay !== day) {
-    setDraftDay(day);
-    setOriginal(value);
-    setDraft(value);
-    setSaved(false);
-  }
-  const dirty = !sameDetails(draft, original);
-  const conflict = !sameDetails(value, original);
+  const [status, setStatus] = useState<"saved" | { cleared: Details } | null>(null);
+  const editable = !readOnly && day <= today;
 
-  function change(next: Details) {
-    setDraft(next);
-    setSaved(false);
+  useEffect(() => {
+    first.current?.focus();
+  }, []);
+  // Clear and Undo replace each other under the finger; focus follows.
+  const clearButton = useRef<HTMLButtonElement>(null);
+  const undoButton = useRef<HTMLButtonElement>(null);
+  const [refocus, setRefocus] = useState<"clear" | "undo" | null>(null);
+  useEffect(() => {
+    if (refocus) {
+      (refocus === "clear" ? clearButton : undoButton).current?.focus();
+      setRefocus(null);
+    }
+  }, [refocus]);
+
+  function save(next: Details) {
+    if (!editable) return;
+    actions.setDayDetails(day, next, today);
+    setStatus("saved");
   }
+
+  const symptoms = value.symptoms ?? [];
 
   return (
-    <form
-      className="diary-form"
-      onSubmit={(event) => {
-        event.preventDefault();
-        if (readOnly || conflict || day > today) return;
-        actions.setDayDetails(day, draft, today);
-        setOriginal(draft);
-        setSaved(true);
-      }}
-    >
-      <p className="supporting-note">{t("diary.saveHelp")}</p>
-      <label className="diary-form__field" htmlFor={`${id}-date`}>
-        {t("diary.date")}
-        <input
-          ref={dateInput}
-          id={`${id}-date`}
-          type="date"
-          value={day}
-          max={today}
-          required
-          disabled={dirty}
-          aria-describedby={dirty ? `${id}-date-help` : undefined}
-          onChange={(event) => {
-            if (isIsoDate(event.target.value) && event.target.value <= today) onDayChange(event.target.value);
-          }}
-        />
-      </label>
-      {dirty ? (
-        <p id={`${id}-date-help`} className="supporting-note">
-          {t("diary.finishEditing")}
-        </p>
-      ) : null}
-      {conflict ? (
-        <p className="supporting-note" role="alert">
-          {t("diary.conflict")}
-        </p>
-      ) : null}
-      <fieldset className="diary-form__fields" disabled={readOnly || conflict}>
-        <fieldset className="diary-form__symptoms" aria-describedby={`${id}-symptom-help`}>
-          <legend>{t("diary.symptoms")}</legend>
-          <p id={`${id}-symptom-help`} className="supporting-note">
-            {t("diary.symptomsHelp")}
-          </p>
-          <div className="diary-form__choices">
-            <label className="checkbox-row">
-              <input
-                type="checkbox"
-                checked={draft.symptoms?.length === 0}
-                onChange={(event) => change({ ...draft, symptoms: event.target.checked ? [] : null })}
-              />
-              {t("diary.noSymptoms")}
-            </label>
-            {SYMPTOMS.map((symptom) => (
-              <label key={symptom} className="checkbox-row">
-                <input
-                  type="checkbox"
-                  checked={draft.symptoms?.includes(symptom) ?? false}
-                  onChange={(event) => {
-                    const symptoms = event.target.checked
-                      ? [...(draft.symptoms ?? []), symptom]
-                      : (draft.symptoms ?? []).filter((entry) => entry !== symptom);
-                    change({ ...draft, symptoms: symptoms.length ? symptoms : null });
-                  }}
-                />
-                {t(`diary.symptom.${symptom}`)}
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <label className="diary-form__field" htmlFor={`${id}-mood`}>
-          {t("diary.mood")}
-          <select
-            id={`${id}-mood`}
-            value={draft.mood ?? ""}
-            onChange={(event) =>
-              change({ ...draft, mood: event.target.value ? (event.target.value as Details["mood"]) : null })
-            }
-          >
-            <option value="">{t("diary.moodUnlogged")}</option>
-            {MOODS.map((mood) => (
-              <option key={mood} value={mood}>
-                {t(`diary.mood.${mood}`)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="diary-form__field" htmlFor={`${id}-note`}>
-          {t("diary.note")}
-          <textarea
-            id={`${id}-note`}
-            rows={3}
-            maxLength={MAX_NOTE_LENGTH}
-            value={draft.note}
-            aria-describedby={`${id}-note-help`}
-            onChange={(event) => change({ ...draft, note: event.target.value })}
+    <section className="diary-form" aria-label={t("diary.details")}>
+      {onDayChange ? (
+        <label className="diary-form__field" htmlFor={`${id}-date`}>
+          {t("diary.date")}
+          <input
+            ref={first as React.RefObject<HTMLInputElement>}
+            id={`${id}-date`}
+            type="date"
+            value={day}
+            max={today}
+            required
+            onChange={(event) => {
+              if (isIsoDate(event.target.value) && event.target.value <= today) {
+                setStatus(null);
+                onDayChange(event.target.value);
+              }
+            }}
           />
         </label>
-        <p id={`${id}-note-help`} className="supporting-note">
-          {t("diary.noteHint", { max: MAX_NOTE_LENGTH })}
-        </p>
-        <div className="diary-form__actions">
-          <button type="submit" className="commit-action">
-            {t("diary.save")}
-          </button>
-          <button type="button" className="text-action" onClick={() => change(EMPTY)}>
-            {t("diary.clear")}
+      ) : null}
+      <fieldset className="diary-form__group" disabled={!editable}>
+        <legend>{t("diary.symptoms")}</legend>
+        <div className="diary-form__chips">
+          {SYMPTOMS.map((symptom, index) => {
+            const pressed = symptoms.includes(symptom);
+            return (
+              <button
+                key={symptom}
+                ref={index === 0 && !onDayChange ? (first as React.RefObject<HTMLButtonElement>) : undefined}
+                type="button"
+                className="diary-chip"
+                aria-pressed={pressed}
+                onClick={() => {
+                  const next = pressed ? symptoms.filter((entry) => entry !== symptom) : [...symptoms, symptom];
+                  save({ ...value, symptoms: next.length ? next : null });
+                }}
+              >
+                {pressed ? <AppIcon icon={Check} className="diary-chip__icon" /> : null}
+                {t(`diary.symptom.${symptom}`)}
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            className="diary-chip diary-chip--none"
+            aria-pressed={value.symptoms?.length === 0}
+            onClick={() => save({ ...value, symptoms: value.symptoms?.length === 0 ? null : [] })}
+          >
+            {value.symptoms?.length === 0 ? <AppIcon icon={Check} className="diary-chip__icon" /> : null}
+            {t("diary.noSymptoms")}
           </button>
         </div>
       </fieldset>
-      <button type="button" className="text-action" onClick={onClose}>
-        {t("diary.cancel")}
-      </button>
-      {saved ? (
-        <p className="supporting-note" role="status">
-          {t(sameDetails(draft, EMPTY) ? "diary.removed" : "diary.saved")}
-        </p>
-      ) : null}
-    </form>
+      <fieldset className="diary-form__group" disabled={!editable}>
+        <legend>{t("diary.mood")}</legend>
+        <div className="diary-form__moods">
+          {MOODS.map((mood) => (
+            <button
+              key={mood}
+              type="button"
+              className="diary-chip diary-chip--mood"
+              aria-pressed={value.mood === mood}
+              onClick={() => save({ ...value, mood: value.mood === mood ? null : mood })}
+            >
+              <AppIcon icon={MOOD_ICONS[mood]} className="diary-chip__mood-icon" />
+              {t(`diary.mood.${mood}`)}
+            </button>
+          ))}
+        </div>
+      </fieldset>
+      <label className="diary-form__field" htmlFor={`${id}-note`}>
+        {t("diary.note")}
+        <textarea
+          id={`${id}-note`}
+          rows={2}
+          maxLength={MAX_NOTE_LENGTH}
+          value={value.note}
+          disabled={!editable}
+          aria-describedby={`${id}-note-help`}
+          onChange={(event) => save({ ...value, note: event.target.value })}
+        />
+      </label>
+      <p id={`${id}-note-help`} className="supporting-note diary-form__hint">
+        {t("diary.noteHint", { max: MAX_NOTE_LENGTH })}
+      </p>
+      <p className="diary-form__status" role="status">
+        {status === "saved" ? (
+          <>
+            <AppIcon icon={Check} className="text-action__icon" />
+            {t("diary.saved")}
+          </>
+        ) : status ? (
+          <>
+            {t("diary.removed")}{" "}
+            <button
+              ref={undoButton}
+              type="button"
+              className="text-action"
+              onClick={() => {
+                save(status.cleared);
+                setRefocus("clear");
+              }}
+            >
+              {t("diary.undo")}
+            </button>
+          </>
+        ) : null}
+      </p>
+      <div className="diary-form__actions">
+        <button type="button" className="secondary-action diary-form__done" onClick={onClose}>
+          {t("diary.done")}
+        </button>
+        {editable && !sameDetails(value, EMPTY) ? (
+          <button
+            ref={clearButton}
+            type="button"
+            className="text-action"
+            onClick={() => {
+              const cleared = value;
+              actions.setDayDetails(day, EMPTY, today);
+              setStatus({ cleared });
+              setRefocus("undo");
+            }}
+          >
+            {t("diary.clear")}
+          </button>
+        ) : null}
+      </div>
+    </section>
   );
 }

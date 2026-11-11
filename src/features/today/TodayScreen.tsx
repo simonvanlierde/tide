@@ -1,5 +1,5 @@
 import { ChevronRight } from "lucide-react";
-import { type MouseEvent, useEffect, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useId, useRef, useState } from "react";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
@@ -16,7 +16,7 @@ import {
 import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
 import { differenceInDays, formatShortDate } from "../../utils/date";
-import { DailyDetails } from "../diary/DailyDetails";
+import { DetailsButton, DetailsForm } from "../diary/DailyDetails";
 import { LogAction } from "../log/LogAction";
 import { BackupReminder } from "../reminders/BackupReminder";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
@@ -54,6 +54,9 @@ export function TodayScreen(props: TodayScreenProps) {
     }
   };
   const insightsButton = useRef<HTMLButtonElement>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const detailsId = useId();
+  const detailsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
   const showFertility = state.settings.showFertility === true;
@@ -99,6 +102,15 @@ export function TodayScreen(props: TodayScreenProps) {
         };
   // Explain only an estimate the dial shows.
   const explanation = estimate ? explainForecast(forecast) : null;
+  const details = (
+    <DetailsButton
+      ref={detailsButton}
+      day={today}
+      open={detailsOpen}
+      controls={detailsId}
+      onOpen={() => setDetailsOpen(!detailsOpen)}
+    />
+  );
   const logVariant =
     !isTodayLogged &&
     (forecast.phaseLabel === "menstrual" || reminderState.isExpectedSoon || forecast.estimateMode === "insufficient")
@@ -144,6 +156,7 @@ export function TodayScreen(props: TodayScreenProps) {
               actions.dismissReminder(today);
             }}
             autoFocus={focusPending}
+            aside={details}
           />
         ) : (
           <LogAction
@@ -153,9 +166,21 @@ export function TodayScreen(props: TodayScreenProps) {
             onToggle={toggleToday}
             onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
             autoFocus={focusPending}
+            aside={details}
           />
         )}
-        <DailyDetails today={today} />
+        <div id={detailsId}>
+          {detailsOpen ? (
+            <DetailsForm
+              day={today}
+              today={today}
+              onClose={() => {
+                setDetailsOpen(false);
+                requestAnimationFrame(() => detailsButton.current?.focus());
+              }}
+            />
+          ) : null}
+        </div>
       </div>
 
       {/* Import is disabled while read-only, so the link would lead nowhere. */}

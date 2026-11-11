@@ -327,9 +327,16 @@ repeat it. Right after a log, the block is one status line with Remove
 beside it and the flow gauge under it: nothing asks for another step. On a later visit it
 folds into that one line as a button, ending in "Add flow" (or "Change") as the nudge,
 which opens the gauge and Remove again. It folds on the next visit, never on a timer, so
-nothing moves under a finger. "Add details" closes the block as a text action. Logging gets the screen's one moment: the
-droplet scales in with a coral ring, like a newly logged calendar day, and simply appears
-under reduced motion.
+nothing moves under a finger. Logging gets the screen's one moment: the droplet scales in
+with a coral ring, like a newly logged calendar day, and simply appears under reduced motion.
+
+**Details** shares the log line: a quiet button the log button's height, at the end of the
+button, the folded line or the status row. On a line narrower than 21em it keeps only its
+icon. A tide dot marks a day that has details. It opens an inset panel under the line:
+symptoms and mood are pill chips that save on tap (mood with its weather: rain, cloud,
+sun), the note saves as you type, and Done closes it. There is no Save button and no
+draft to lose. Clearing is the one destructive step, so it offers Undo. Only the
+Calendar's panel has a date field.
 
 ### Chips
 

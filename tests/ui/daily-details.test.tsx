@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
@@ -19,54 +19,39 @@ describe("optional daily details", () => {
     const state = createAppState();
     const view = render(
       <AppStateProvider initialState={state}>
-        <DailyDetails today="2026-04-18" />
+        <DailyDetails today="2026-04-18" month="2026-04-01" />
       </AppStateProvider>,
     );
     if (opened) {
       await user.click(screen.getByRole("button", { name: "Add details" }));
-      await user.click(screen.getByRole("button", { name: "Cancel" }));
+      await user.click(screen.getByRole("button", { name: "Done" }));
     }
     view.rerender(
       <AppStateProvider initialState={state}>
-        <DailyDetails today="2026-04-19" />
+        <DailyDetails today="2026-04-19" month="2026-04-01" />
       </AppStateProvider>,
     );
     await user.click(screen.getByRole("button", { name: "Add details" }));
     expect(screen.getByLabelText("Date")).toHaveValue("2026-04-19");
     await user.type(screen.getByRole("textbox", { name: /note/i }), "A new day.");
-    await user.click(screen.getByRole("button", { name: "Save details" }));
     expect(Object.keys(stored().detailsByDay)).toEqual(["2026-04-19"]);
   });
 
-  it("preserves an open draft's date across midnight", async () => {
-    const user = userEvent.setup();
-    const state = createAppState();
-    const view = render(
-      <AppStateProvider initialState={state}>
-        <DailyDetails today="2026-04-18" />
-      </AppStateProvider>,
-    );
-    await user.click(screen.getByRole("button", { name: "Add details" }));
-    await user.type(screen.getByRole("textbox", { name: /note/i }), "Before midnight.");
-    view.rerender(
-      <AppStateProvider initialState={state}>
-        <DailyDetails today="2026-04-19" />
-      </AppStateProvider>,
-    );
-    expect(screen.getByLabelText("Date")).toHaveValue("2026-04-18");
-    await user.click(screen.getByRole("button", { name: "Save details" }));
-    expect(stored().detailsByDay["2026-04-18"].note).toBe("Before midnight.");
-  });
-
-  it("saves symptoms, mood and a note without logging bleeding", async () => {
+  it("saves symptoms, mood and a note as they are tapped, without logging bleeding", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
     expect(screen.queryByRole("textbox", { name: /note/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Add details" }));
-    await user.click(screen.getByRole("checkbox", { name: "Cramps" }));
-    await user.selectOptions(screen.getByRole("combobox", { name: "Mood" }), "low");
+
+    // Opens on the first symptom, with no date to pick: Today's details are today's.
+    expect(screen.getByRole("button", { name: "Cramps" })).toHaveFocus();
+    expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Cramps" }));
+    await user.click(screen.getByRole("button", { name: "Low" }));
     await user.type(screen.getByRole("textbox", { name: /note/i }), "Rest helped.");
-    await user.click(screen.getByRole("button", { name: "Save details" }));
+
+    expect(screen.getByRole("button", { name: "Cramps" })).toHaveAttribute("aria-pressed", "true");
     expect(stored().detailsByDay["2026-04-18"]).toEqual({
       symptoms: ["cramps"],
       mood: "low",
@@ -76,35 +61,63 @@ describe("optional daily details", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Details saved.");
   });
 
-  it("keeps no symptoms distinct from unlogged and makes clearing explicit", async () => {
+  it("keeps no symptoms distinct from unlogged, and a second tap undoes a choice", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
     await user.click(screen.getByRole("button", { name: "Add details" }));
-    await user.click(screen.getByRole("checkbox", { name: "No symptoms" }));
-    await user.click(screen.getByRole("button", { name: "Save details" }));
+    await user.click(screen.getByRole("button", { name: "No symptoms" }));
     expect(stored().detailsByDay["2026-04-18"].symptoms).toEqual([]);
+
+    await user.click(screen.getByRole("button", { name: "No symptoms" }));
+    expect(stored().detailsByDay).toEqual({});
+
+    await user.click(screen.getByRole("button", { name: "Good" }));
+    await user.click(screen.getByRole("button", { name: "Good" }));
+    expect(stored().detailsByDay).toEqual({});
+  });
+
+  it("offers Undo after clearing and keeps focus on the swapped control", async () => {
+    const user = userEvent.setup();
+    const state = {
+      ...createAppState(),
+      detailsByDay: { "2026-04-18": { symptoms: ["fatigue" as const], mood: null, note: "Long day." } },
+    };
+    renderWithAppState(<TodayScreen today="2026-04-18" />, { state });
+    await user.click(screen.getByRole("button", { name: "Edit details" }));
+
     await user.click(screen.getByRole("button", { name: "Clear details" }));
-    expect(stored().detailsByDay["2026-04-18"].symptoms).toEqual([]);
-    await user.click(screen.getByRole("button", { name: "Save details" }));
     expect(stored().detailsByDay).toEqual({});
+    expect(screen.getByRole("button", { name: "Undo" })).toHaveFocus();
+
+    await user.click(screen.getByRole("button", { name: "Undo" }));
+    expect(stored().detailsByDay["2026-04-18"].note).toBe("Long day.");
+    expect(screen.getByRole("button", { name: "Clear details" })).toHaveFocus();
   });
 
-  it("keeps a dirty draft on its date and cancel leaves storage untouched", async () => {
+  it("sits beside the log button and takes focus back when done", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
+    const details = screen.getByRole("button", { name: "Add details" });
+    const log = screen.getByRole("button", { name: /log bleeding today/i });
+    expect(details.parentElement).toBe(log.parentElement);
+    expect(details).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(details);
+    expect(details).toHaveAttribute("aria-expanded", "true");
+    await user.click(screen.getByRole("button", { name: "Cramps" }));
+    await user.click(screen.getByRole("button", { name: "Done" }));
+
+    expect(screen.queryByRole("button", { name: "Cramps" })).not.toBeInTheDocument();
+    const edit = screen.getByRole("button", { name: "Edit details" });
+    await act(() => new Promise(requestAnimationFrame));
+    expect(edit).toHaveFocus();
+  });
+
+  it("shows another tab's change to the same day instead of overwriting it", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
     await user.click(screen.getByRole("button", { name: "Add details" }));
-    fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-04-12" } });
-    await user.type(screen.getByRole("textbox", { name: /note/i }), "Draft");
-    expect(screen.getByLabelText("Date")).toBeDisabled();
-    await user.click(screen.getByRole("button", { name: "Cancel" }));
-    expect(stored().detailsByDay).toEqual({});
-  });
-
-  it("does not overwrite another tab's changes to the same day", async () => {
-    const user = userEvent.setup();
-    renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
-    await user.click(screen.getByRole("button", { name: "Add details" }));
-    await user.type(screen.getByRole("textbox", { name: /note/i }), "My draft");
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "Mine");
     const other = {
       ...stored(),
       schemaVersion: SCHEMA_VERSION,
@@ -112,9 +125,7 @@ describe("optional daily details", () => {
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(other));
     act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
-    expect(screen.getByRole("alert")).toHaveTextContent("changed in another tab");
-    expect(screen.getByRole("button", { name: "Save details" })).toBeDisabled();
-    expect(stored().detailsByDay["2026-04-18"].note).toBe("Other tab");
+    expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("Other tab");
   });
 
   it("lets calendar readers revisit a detail-only day without logging bleeding", async () => {
@@ -128,6 +139,7 @@ describe("optional daily details", () => {
     renderWithAppState(<CalendarScreen today="2026-04-18" />, { state });
     await user.click(screen.getByRole("button", { name: /view details for .*12/i }));
     expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("A walk helped.");
+    expect(screen.getByRole("button", { name: "Good" })).toHaveAttribute("aria-pressed", "true");
     expect(stored().intensityByDay).toEqual({});
   });
 });

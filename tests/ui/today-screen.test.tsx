@@ -26,7 +26,7 @@ describe("TodayScreen", () => {
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
     expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^day 17 · luteal phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/outside the fertile window \(estimate\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/^outside the fertile window$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/how fertility is estimated/i)).toBeInTheDocument();
   });
 
@@ -182,7 +182,7 @@ describe("TodayScreen", () => {
     renderToday("2026-04-15");
 
     expect(screen.getByText(/· ovulation phase$/i)).toBeInTheDocument();
-    expect(screen.getByText(/^in the fertile window \(estimate\)$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^in the fertile window$/i)).toBeInTheDocument();
   });
 
   it("shows the fertility disclaimer in an info popover", async () => {
@@ -204,7 +204,7 @@ describe("TodayScreen", () => {
     );
 
     expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(screen.queryByText(/fertile window \(estimate\)/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^(in|outside) the fertile window$/i)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/how fertility is estimated/i)).not.toBeInTheDocument();
   });
 
@@ -225,7 +225,7 @@ describe("TodayScreen", () => {
 
     expect(question).not.toBeInTheDocument();
     expect(screen.getByText("Fertility")).toBeInTheDocument();
-    expect(screen.getByText(/^not birth control$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^an estimate, not birth control$/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /cycle insights/i })).toHaveFocus();
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings.showFertility).toBe(true);
   });
@@ -291,7 +291,7 @@ describe("TodayScreen", () => {
     expect(screen.queryByText("--")).not.toBeInTheDocument();
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/not enough data/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/outside the fertile window \(estimate\)/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/^outside the fertile window$/i)).not.toBeInTheDocument();
     // No ovulation estimate, so the ring has no sand or amber to explain.
     expect(screen.queryByText(/fertile window/i)).not.toBeInTheDocument();
     // With nothing logged, logging is the one thing to do: keep it prominent.
