@@ -33,6 +33,9 @@ export const nl: Dictionary = {
   "app.newerData":
     "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Laad opnieuw om bij te werken; wijzigingen hier worden niet opgeslagen.",
 
+  "app.storageError":
+    "Je laatste wijzigingen konden niet op dit apparaat worden opgeslagen. Houd Tide open en exporteer een reservekopie via Instellingen.",
+
   "today.srCycleDay": "Cyclusdag {day}, {phase}",
   "today.nextPeriod": "Volgende menstruatie",
   "today.fertility": "Vruchtbaarheid",
@@ -219,6 +222,7 @@ export const nl: Dictionary = {
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
   "settings.importError": "Dat bestand is geen Tide-back-up en geen export van Clue of Flo.",
+  "settings.importUnavailable": "Importeren kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
   "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
   "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",
   "settings.importConfirmTitle": "Je gegevens vervangen?",

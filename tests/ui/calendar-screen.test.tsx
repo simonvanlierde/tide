@@ -145,6 +145,97 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /log april 2, 2026/i })).not.toHaveClass("is-logged");
   });
 
+  it("returns keyboard focus to the edited day after removing it", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02"] }),
+    });
+    const day = screen.getByRole("button", { name: /edit april 2, 2026/i });
+    day.focus();
+    await user.keyboard("{Enter}");
+    await user.tab();
+    expect(screen.getByRole("button", { name: /not bleeding/i })).toHaveFocus();
+    await user.keyboard("{Enter}");
+
+    expect(day).toHaveAccessibleName(/log april 2, 2026/i);
+    expect(day).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("button", { name: /april 3, 2026/i })).toHaveFocus();
+  });
+
+  it("returns keyboard focus to a single day after undo", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />);
+    const day = screen.getByRole("button", { name: /log april 18, 2026/i });
+    day.focus();
+    await user.keyboard("{Enter}");
+    await user.tab();
+    expect(screen.getByRole("button", { name: /^undo$/i })).toHaveFocus();
+    await user.keyboard("{Enter}");
+
+    expect(day).not.toHaveClass("is-logged");
+    expect(day).toHaveFocus();
+  });
+
+  it("returns focus to the current day after removing an imported future day", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-20"] }),
+    });
+    screen.getByRole("button", { name: /edit april 20, 2026/i }).focus();
+    await user.keyboard("{Enter}");
+    await user.tab();
+    await user.keyboard("{Enter}");
+
+    expect(screen.getByRole("button", { name: /log april 20, 2026/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /log april 18, 2026/i })).toHaveFocus();
+  });
+
+  it("restores the new opener when switching between logged days", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
+    });
+    await user.click(screen.getByRole("button", { name: /edit april 2, 2026/i }));
+    const day = screen.getByRole("button", { name: /edit april 3, 2026/i });
+    await user.click(day);
+    screen.getByRole("button", { name: /^close$/i }).focus();
+    await user.keyboard("{Escape}");
+
+    expect(day).toHaveFocus();
+  });
+
+  it("keeps focus on navigation when removing the only loggable day in a future month", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-05-20"] }),
+    });
+    await user.click(screen.getByRole("button", { name: /next month/i }));
+    screen.getByRole("button", { name: /edit may 20, 2026/i }).focus();
+    await user.keyboard("{Enter}");
+    await user.tab();
+    await user.keyboard("{Enter}");
+
+    expect(screen.getByRole("button", { name: /log may 20, 2026/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /previous month/i })).toHaveFocus();
+  });
+
+  it("returns keyboard focus to the first day of a range after undo", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />);
+    screen.getByRole("button", { name: /log a past period/i }).focus();
+    await user.keyboard("{Enter}{ArrowLeft}{ArrowLeft}{Enter}{ArrowRight}{Enter}");
+    await user.tab();
+    expect(screen.getByRole("button", { name: /^undo$/i })).toHaveFocus();
+    await user.keyboard("{Enter}");
+
+    const first = screen.getByRole("button", { name: /log april 16, 2026/i });
+    expect(first).not.toHaveClass("is-logged");
+    expect(first).toHaveFocus();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("button", { name: /log april 17, 2026/i })).toHaveFocus();
+  });
+
   it("closes an open picker when another day is logged", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
