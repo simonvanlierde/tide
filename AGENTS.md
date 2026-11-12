@@ -14,7 +14,8 @@ Run `just check` before you call a change done. It runs what CI runs for each st
 
 ## Docs
 
-`README.md` says how to set up, run and release the project. Record user-facing changes
+`README.md` says what the app does and how to set it up. `docs/development.md` has the
+other commands, translations and deploys. Record user-facing changes
 under `[Unreleased]` in `CHANGELOG.md`.
 Read `docs/adr/` before changing a recorded choice.
 `.github/CONTRIBUTING.md` has the commit and sign-off rules.
