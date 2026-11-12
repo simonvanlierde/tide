@@ -27,7 +27,7 @@ Other datasets considered:
 
 | Dataset | Size | Licence | Why not |
 |---|---|---|---|
-| [Marquette NFP "Menstrual Cycle Data"](https://epublications.marquette.edu/data_nfp/7/) (Fehring, 2012) | Not stated on the page; the file download returned HTTP 403 to a script | None stated. Only: "Data reuse agreed to by subjects in consent form." | No licence, so publishing results on it is unclear |
+| [Marquette NFP "Menstrual Cycle Data"](https://epublications.marquette.edu/data_nfp/7/) (Fehring, 2012) | 159 women, 1,665 cycle rows, with an estimated ovulation day. The file download returned HTTP 403 to a script | None stated. Only: "Data reuse agreed to by subjects in consent form." A [Kaggle copy](https://www.kaggle.com/datasets/nikitabisht/menstrual-cycle-data) lists its licence as "Unknown"; a re-upload cannot add one | No licence, so publishing results on it is unclear |
 | [mcPHASES](https://physionet.org/content/mcphases/1.0.0/) (PhysioNet) | 42 people; 20 returned for a second 3-month window about two years later | PhysioNet Restricted Health Data License 1.5.0 | Files are no longer available; registration and a signed agreement alone cannot provide access |
 | [Fertili](https://www.stat.unipd.it/ricerca/basi-di-dati) (University of Padova) | Multiple historical fertility-awareness cohorts | Department owns the copyright | Access requires a research proposal; an application form and technical report are available |
 | Clue app study ([Li et al.](https://arxiv.org/abs/1909.11211)) | 378,000 users | Raw data not released | Not available |
