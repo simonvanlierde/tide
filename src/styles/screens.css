@@ -177,6 +177,9 @@
     width: min(17rem, 70vw, 34dvh, 100%);
     aspect-ratio: 1;
     border-radius: 50%;
+    /* On the frame, not the ring: the ring's sweep mask would clip a shadow
+       to its square border box. */
+    box-shadow: var(--shadow-soft);
     touch-action: none;
     cursor: pointer;
   }
@@ -192,7 +195,6 @@
     border-radius: 50%;
     padding: min(30px, 11cqw);
     box-sizing: border-box;
-    box-shadow: var(--shadow-soft);
   }
 
   /* Estimates (fertile window, ovulation, the expected period) are a pale wash
@@ -392,21 +394,19 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    /* The band fills clockwise from the top; the centre disc and the shadow
-       outside the ring stay unmasked, so only the band moves. */
+    /* The band fills clockwise from the top, its rails and ticks with it (they
+       sit inside the ring); the centre disc stays unmasked. */
     .is-sweeping .cycle-dial__ring {
       --band: min(30px, 11cqw);
       -webkit-mask:
-        radial-gradient(circle closest-side, #000 calc(100% - var(--band)), transparent 0 100%, #000 100%),
+        radial-gradient(circle closest-side, #000 calc(100% - var(--band)), transparent 0),
         conic-gradient(#000 var(--dial-sweep), transparent 0);
       mask:
-        radial-gradient(circle closest-side, #000 calc(100% - var(--band)), transparent 0 100%, #000 100%),
+        radial-gradient(circle closest-side, #000 calc(100% - var(--band)), transparent 0),
         conic-gradient(#000 var(--dial-sweep), transparent 0);
       animation: dial-sweep 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
     }
 
-    .is-sweeping .cycle-dial__estimates,
-    .is-sweeping .cycle-dial__ticks,
     .is-sweeping .cycle-dial__marker {
       animation: dial-settle-in 200ms ease-out 520ms both;
     }

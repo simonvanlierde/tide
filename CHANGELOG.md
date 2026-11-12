@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Today: the dial no longer shows a faint square behind it after it draws in.
+- Today: the dial's outline rails and day ticks now draw in with the ring
+  instead of appearing after it.
+
 ## [0.5.0] - 2026-11-12
 
 Existing installations copy their data into separate browser storage automatically.
