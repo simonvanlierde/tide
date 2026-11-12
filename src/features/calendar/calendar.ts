@@ -1,4 +1,4 @@
-import type { DayEstimate, Forecast, IsoDate, LoggedFlow } from "../../domain/types";
+import type { AppState, DayEstimate, Forecast, IsoDate, LoggedFlow } from "../../domain/types";
 import { addDays, addMonths, differenceInDays, parseIsoDate } from "../../utils/date";
 
 export interface CalendarDay {
@@ -41,6 +41,7 @@ export interface CalendarCell extends CalendarDay {
   flow: LoggedFlow;
   estimate: DayEstimate | null;
   cycleDay: number | null;
+  hasDetails: boolean;
 }
 
 // What the grid shows on each day. A logged day shows its flow and nothing
@@ -53,6 +54,7 @@ export function buildCalendarCells(
   forecast: Forecast,
   intensityByDay: Record<IsoDate, LoggedFlow>,
   showCycleDayNumbers: boolean,
+  detailsByDay: AppState["detailsByDay"],
 ): CalendarCell[] {
   return monthDays.map((day) => {
     const isLogged = day.value in intensityByDay;
@@ -63,6 +65,7 @@ export function buildCalendarCells(
       flow: isLogged ? (intensityByDay[day.value] ?? null) : null,
       estimate: isLogged ? null : estimate,
       cycleDay: showCycleDayNumbers && !isLogged && !day.isFuture ? cycleDay : null,
+      hasDetails: day.value in detailsByDay,
     };
   });
 }

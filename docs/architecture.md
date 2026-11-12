@@ -52,6 +52,8 @@ Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
 1. On start, `AppStateProvider` (`src/state/provider.tsx`) loads the saved state through
    `loadStoredState` in `src/data/storage.ts`. `normalizeAppState` in `src/data/schema.ts` checks
    every field and fills defaults. A blob it had to change is kept under a backup key first.
+   If that backup cannot be saved, the recovery screen offers the original data as a download
+   and prevents a normalized save from overwriting it.
 2. Screens dispatch actions to `appStateReducer` in `src/state/core.ts`. Each change is saved back
    to `localStorage`. A state written by a newer build is shown read-only and never saved over.
 3. `selectForecast` passes the logged days to `forecast` in `src/domain/cycle.ts`, which works out
@@ -71,12 +73,19 @@ recorded no symptoms; a null value means symptoms were not recorded.
 `DayEditor` is the shared dated editing surface for Today and Calendar. It reuses
 `FlowGauge` and `DiaryFields`; bleeding and diary actions remain independent. Calendar
 owns the selected date, so the editor has no separate date input. Optional diary fields
-sit in a native disclosure, opened directly when the user chooses Details. While the
-editor is open, grid activation changes its date without writing bleeding data and keeps
-the disclosure state. Closing it restores one-tap bleeding logging on empty grid days.
+sit in a native disclosure, opened directly from Today's Details button or a Calendar
+day with diary-only records. Every available Calendar day opens the editor without writing
+bleeding data; logging is explicit inside it. While open, date changes keep the disclosure
+state. Notebook icons identify saved details, replacing a separate date-history list.
+The close button and Escape dismiss the editor; changes save as they happen.
 Diary fields remount by date to clear saved/Undo feedback independently of the disclosure.
+On portrait phone viewports, the editor floats above the measured tab bar without blocking
+the Calendar. Its header stays visible while its body scrolls. Resize and visual-viewport
+events keep it within the available space; the Calendar reveals the selected day above it.
+Larger screens and short landscape windows retain the inline layout. Escape also closes the
+editor after focus returns to the surrounding screen.
 
-Calendar captures the forecast date before dispatching a bleeding log and derives its
+Calendar captures the forecast date before dispatching a range log and derives its
 confirmation in the same render. Its in-memory receipt expires after ten seconds without
 changing saved data. Pointer hover or focus inside the receipt pauses the timer; leaving
 both starts a new ten-second interval.

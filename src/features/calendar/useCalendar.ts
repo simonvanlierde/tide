@@ -16,8 +16,15 @@ export function useCalendar(today: IsoDate) {
 
   const { showCycleDayNumbers } = state.settings;
   const days = useMemo(
-    () => buildCalendarCells(buildMonthDays(visibleMonth, today), forecast, state.intensityByDay, showCycleDayNumbers),
-    [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers],
+    () =>
+      buildCalendarCells(
+        buildMonthDays(visibleMonth, today),
+        forecast,
+        state.intensityByDay,
+        showCycleDayNumbers,
+        state.detailsByDay,
+      ),
+    [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers, state.detailsByDay],
   );
   const helpKey: string =
     (days[0]?.value ?? visibleMonth) > today
@@ -74,7 +81,11 @@ function useMonth(today: IsoDate, onChange: () => void) {
       isPickerOpen,
       year: Number(visibleMonth.slice(0, 4)),
       monthIndex: Number(visibleMonth.slice(5, 7)) - 1,
-      years: buildYearOptions(Object.keys(state.intensityByDay) as IsoDate[], today, visibleMonth),
+      years: buildYearOptions(
+        [...Object.keys(state.intensityByDay), ...Object.keys(state.detailsByDay)] as IsoDate[],
+        today,
+        visibleMonth,
+      ),
       onSelect(year: number, monthIndex: number) {
         const month = String(monthIndex + 1).padStart(2, "0");
         setMonth(`${year}-${month}-01` as IsoDate, true);
@@ -87,8 +98,6 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
   const state = useAppState();
   const actions = useAppStateActions();
   const [selectedDay, setSelectedDay] = useState<IsoDate | null>(null);
-  // The day just logged by a one-tap; drives its one-shot "tap to edit" pulse.
-  const [justLoggedDay, setJustLoggedDay] = useState<IsoDate | null>(null);
   // Logging a past period in one go: null when not picking, else the first
   // day picked so far (null until tapped) and whether the last tap ran past
   // the cap.
@@ -107,23 +116,21 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
   // Compare within the same render as the new log, so the receipt never
   // briefly shows the old forecast status before adding its explanation.
   const [forecastBeforeLog, setForecastBeforeLog] = useState(nextPeriodDate);
-  const forecastMoved = Boolean(justLoggedDay || justLoggedRange) && forecastBeforeLog !== nextPeriodDate;
+  const forecastMoved = Boolean(justLoggedRange) && forecastBeforeLog !== nextPeriodDate;
   const [feedbackPaused, setFeedbackPaused] = useState(false);
 
   useEffect(() => {
-    if (feedbackPaused || (!justLoggedDay && !justLoggedRange)) return;
+    if (feedbackPaused || !justLoggedRange) return;
     const timer = window.setTimeout(() => {
-      setJustLoggedDay(null);
       setJustLoggedRange(null);
     }, 10000);
     return () => window.clearTimeout(timer);
-  }, [feedbackPaused, justLoggedDay, justLoggedRange]);
+  }, [feedbackPaused, justLoggedRange]);
 
   // Drops the open flow picker and the just-logged status line. A range pick
   // stays open: a period can run across the month boundary.
   function clear() {
     setSelectedDay(null);
-    setJustLoggedDay(null);
     setJustLoggedRange(null);
     setFeedbackPaused(false);
   }
@@ -153,35 +160,15 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
 
   return {
     selectedDay,
-    justLoggedDay,
     forecastMoved,
     setFeedbackPaused,
     rangePick,
     justLoggedRange,
     clear,
-    // Empty day → one-tap log with no flow level. Logged day → open
-    // its picker to change the flow or remove it; tapping the open day closes.
-    selectDay(day: IsoDate) {
-      if (day > today && (rangePick || !isLogged(day))) return;
+    selectRangeDay(day: IsoDate) {
+      if (!rangePick || day > today) return;
       setJustLoggedRange(null);
-      if (rangePick) {
-        setJustLoggedDay(null);
-        setFeedbackPaused(false);
-        pickRangeDay(rangePick.from, day);
-        return;
-      }
-      if (!isLogged(day)) {
-        setForecastBeforeLog(nextPeriodDate);
-        actions.togglePeriodDay(day, today);
-        actions.setSetting("calendarHelpDismissed", true);
-        setJustLoggedDay(day);
-        // Selection follows the tap: close any picker left open on another day.
-        setSelectedDay(null);
-        return;
-      }
-      setJustLoggedDay(null);
-      setFeedbackPaused(false);
-      setSelectedDay((current) => (current === day ? null : day));
+      pickRangeDay(rangePick.from, day);
     },
     startRangePick() {
       setRangePick({ from: null, tooLong: false });
@@ -191,6 +178,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       setRangePick(null);
     },
     openDay(day: IsoDate) {
+      if (day > today && !isLogged(day) && !state.detailsByDay[day]) return;
       clear();
       setRangePick(null);
       setSelectedDay(day);
@@ -199,9 +187,6 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       setSelectedDay(null);
     },
     undoJustLogged() {
-      if (justLoggedDay && isLogged(justLoggedDay)) {
-        actions.togglePeriodDay(justLoggedDay, today);
-      }
       // One undo for the whole range: only the days it added, so days that
       // were logged before keep their flow.
       for (const day of justLoggedRange?.added ?? []) {
@@ -209,7 +194,6 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
           actions.togglePeriodDay(day, today);
         }
       }
-      setJustLoggedDay(null);
       setJustLoggedRange(null);
       setFeedbackPaused(false);
     },
@@ -221,14 +205,14 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
 const YEAR_BUFFER = 1;
 
 // Years offered by the jump-to-month picker. The span always covers every logged
-// year, the current year, the month currently on screen, and the years between
+// or diary year, the current year, the month currently on screen, and the years between
 // them; YEAR_BUFFER pads each end. So an old backup spanning 2022–2024 in 2026
 // yields 2021–2027.
-function buildYearOptions(periodDays: IsoDate[], today: IsoDate, visibleMonth: IsoDate): number[] {
+function buildYearOptions(savedDays: IsoDate[], today: IsoDate, visibleMonth: IsoDate): number[] {
   const years = [
     Number(today.slice(0, 4)),
     Number(visibleMonth.slice(0, 4)),
-    ...periodDays.map((day) => Number(day.slice(0, 4))),
+    ...savedDays.map((day) => Number(day.slice(0, 4))),
   ];
   const min = Math.min(...years) - YEAR_BUFFER;
   const max = Math.max(...years) + YEAR_BUFFER;

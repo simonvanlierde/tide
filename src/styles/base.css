@@ -1,7 +1,22 @@
 @layer base {
   html {
+    background-color: var(--bg-bottom);
     /* Keep keyboard-focused controls above the fixed navigation. */
     scroll-padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+  }
+  @media (min-width: 601px) {
+    html {
+      scrollbar-gutter: stable;
+    }
+  }
+  /* Keep the themed ground independent of each screen's document height. */
+  html::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: inherit;
+    pointer-events: none;
   }
   * {
     box-sizing: border-box;

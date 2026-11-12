@@ -1133,6 +1133,7 @@
   }
 
   .calendar-grid__cell {
+    position: relative;
     display: grid;
     min-width: 0;
     padding: 0;
@@ -1167,6 +1168,7 @@
   /* Running cycle-day count, inside the tile's corner and quieter than the
      day number. No disc: a disc on the corner reads as an unread count. */
   .calendar-grid__period-day {
+    pointer-events: none;
     position: absolute;
     top: 3px;
     right: 4px;
@@ -1174,6 +1176,21 @@
     font-size: var(--text-xs);
     line-height: 1;
     font-variant-numeric: tabular-nums;
+  }
+
+  .calendar-grid__details-marker {
+    position: absolute;
+    bottom: 3px;
+    left: 4px;
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+  }
+
+  .calendar-legend__details {
+    width: 13px;
+    height: 13px;
+    flex: none;
   }
 
   /* Today: a quiet "you are here" underscore centered under the number. Drawn
@@ -1272,27 +1289,6 @@
   .calendar-grid__day.is-selected {
     outline: 2px solid var(--tide);
     outline-offset: 2px;
-  }
-
-  /* One-shot ring pulse the moment a day is logged — a soft nudge that the
-     new coral chip is tappable to refine or remove. Runs once, then rests. */
-  @keyframes calendar-day-logged {
-    from {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--bleed) 50%, transparent);
-    }
-    to {
-      box-shadow: 0 0 0 6px transparent;
-    }
-  }
-
-  .calendar-grid__day.is-just-logged {
-    animation: calendar-day-logged 450ms ease-out;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .calendar-grid__day.is-just-logged {
-      animation: none;
-    }
   }
 
   .calendar__nav,

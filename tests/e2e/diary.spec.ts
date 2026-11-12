@@ -28,18 +28,22 @@ test("Calendar selection keeps bleeding and details on the same day", async ({ p
   await expect(page.getByRole("radio", { name: translate("en", "flow.light"), exact: true })).toBeChecked();
   await expect(note).toBeVisible();
   await expect(note).toHaveValue("A quiet day.");
+  await page.getByRole("button", { name: translate("en", "common.close"), exact: true }).click();
+  await page.getByRole("button", { name: /^Edit April 11, 2026/ }).click();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.light"), exact: true })).toBeChecked();
+  await expect(note).not.toBeVisible();
 });
 
-test("Calendar can add past details without logging bleeding and keeps closed-grid one-tap logging", async ({
-  page,
-}) => {
+test("Calendar opens saved note icons and logs bleeding only through the dated editor", async ({ page }) => {
   await seedAppState(page, "en", {}, {});
   await page.goto("/calendar");
-  await page.getByRole("button", { name: /^Add details for / }).click();
-  await page.getByRole("button", { name: /^Edit April 12, 2026/ }).click();
+  await expect(page.getByRole("button", { name: /^Add details for / })).toHaveCount(0);
+  await expect(page.getByText("Daily details", { exact: true })).toHaveCount(0);
+  const day = page.getByRole("button", { name: /^Edit April 12, 2026/ });
+  await day.click();
   await expect(page.getByRole("heading", { name: formatLongDate("2026-04-12", "en"), exact: true })).toBeVisible();
+  await page.getByText(translate("en", "dayEditor.moreDetails"), { exact: true }).click();
   const note = page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true });
-  await expect(note).toBeVisible();
   await note.fill("A quiet afternoon.");
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
   expect(
@@ -48,9 +52,31 @@ test("Calendar can add past details without logging bleeding and keeps closed-gr
       return { bleeding: state.intensityByDay, note: state.detailsByDay["2026-04-12"]?.note };
     }),
   ).toEqual({ bleeding: {}, note: "A quiet afternoon." });
-  await page.getByRole("button", { name: translate("en", "diary.done"), exact: true }).click();
-  await page.getByRole("button", { name: /^Log April 13, 2026/ }).click();
-  await expect(page.locator(".calendar__help[role=status]")).toContainText("Logged Mon, Apr 13.");
+  await expect(day).toHaveAccessibleName(/Details/);
+  await expect(day.locator("svg")).toBeVisible();
+  const textarea = await note.boundingBox();
+  const footer = await page.locator(".diary-form__footer").boundingBox();
+  expect(textarea).not.toBeNull();
+  expect(footer).not.toBeNull();
+  expect((footer?.y ?? Infinity) - ((textarea?.y ?? 0) + (textarea?.height ?? 0))).toBeLessThan(25);
+  await expect(page.getByRole("button", { name: "Done", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: translate("en", "common.close"), exact: true }).click();
+  await expect(day).toBeFocused();
+  await day.click();
+  await expect(note).toBeVisible();
+  await expect(note).toHaveValue("A quiet afternoon.");
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(0);
+  await page.getByRole("button", { name: translate("en", "common.close"), exact: true }).click();
+  const emptyDay = page.getByRole("button", { name: /^Edit April 13, 2026/ });
+  await emptyDay.click();
+  await expect(note).not.toBeVisible();
+  await day.click();
+  await expect(note).toBeVisible();
+  await expect(note).toHaveValue("A quiet afternoon.");
+  await emptyDay.click();
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(0);
+  await page.getByRole("button", { name: translate("en", "dayEditor.logBleeding"), exact: true }).click();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.medium"), exact: true })).toBeVisible();
   expect(
     await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
   ).toEqual({ "2026-04-13": null });
@@ -97,9 +123,9 @@ test("diary-only history survives reload, calendar viewing and backup restore", 
   await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
     "A walk helped.",
   );
-  await page.getByRole("button", { name: translate("en", "diary.done"), exact: true }).click();
+  await page.getByRole("button", { name: translate("en", "common.close"), exact: true }).click();
   await page.getByRole("link", { name: translate("en", "nav.calendar"), exact: true }).click();
-  await page.getByRole("button", { name: /view details for/i }).click();
+  await page.getByRole("button", { name: /^Edit April 15, 2026/ }).click();
   await expect(page.getByRole("button", { name: translate("en", "diary.noSymptoms"), exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",

@@ -248,6 +248,8 @@ keeps 0.06em.
 **The Whole Word Rule.** Headings, labels and buttons never hyphenate. A long compound
 carries soft hyphens between its parts in the dictionary, and breaks only there. Running
 text (paragraphs, list items, fact values) hyphenates as usual.
+Bottom navigation permits emergency wrapping when enlarged text cannot fit a whole label,
+so every destination remains visible and usable on a narrow screen.
 
 ## Layout
 
@@ -343,15 +345,25 @@ Both actions remain above the tabs on a short phone during first use.
 narrower than 23em it keeps only its icon. A tide dot marks a day that has details.
 It opens the same editor with **More details** expanded, without logging bleeding.
 
-The editor replaces Today's log line and opens below Calendar's legend. One heading
+On larger screens the editor replaces Today's log line and opens below Calendar's legend. One heading
 names the date; flow comes first, with "Not bleeding that day" to remove a log.
 Symptoms, mood and notes sit under a native **More details** disclosure. Chips save on
-tap and notes save as you type. Clearing details offers Undo. Done, Close and Escape
+tap and notes save as you type. Clearing details offers Undo. The top-right × and Escape
 close the panel; it stays open while editing or removing bleeding. Calendar's grid owns
 the date, with no competing date field. While the editor is open, a grid tap changes its
-date and preserves the disclosure without logging bleeding; tapping the selected day
-closes it. With the editor closed, empty-day taps still log bleeding in one tap.
-Both screens use the same inset surface and controls.
+date and preserves the disclosure without logging bleeding. Selecting a diary-only date
+opens its saved details; tapping the selected day keeps the panel open. With the editor
+closed, any available day opens it without recording bleeding.
+Logging is explicit inside the panel. A notebook icon marks a day with saved details;
+diary-only days open with their details expanded. The note counter and save status share
+one compact footer row; no empty action rows reserve space.
+Both screens use the same controls. On phone viewports up to 600 px wide and at least 480 px
+high, the editor floats above the tab bar as a nonmodal sheet. Its dated header and × stay
+visible while expanded details scroll inside the body. Calendar days remain tappable, with
+the selected week revealed above the sheet. The sheet accounts for the tab bar's actual
+height, safe areas and the visual viewport when the keyboard opens. Larger screens and very
+short landscape windows retain the inset panel. Enlarged text may require inner scrolling;
+controls stay reachable rather than being compressed to fit.
 
 ### Chips
 
@@ -423,13 +435,13 @@ Seven columns of rounded-square day buttons. Logged days fill with their flow-ra
 Expected, fertile and ovulation days are fine outlines in coral, periwinkle and amber,
 washed at 10% in light mode. Logged days from the next or previous month keep a lighter fill. Their estimates keep
 the full outline, because a lighter one would drop below 3:1. Today gets a short underscore
-in `currentColor`, and the selected day a teal ring. A newly logged day pulses once, unless
-the user asked for reduced motion. The grid is one tab stop, and you move through it with
+in `currentColor`, and the selected day a teal ring. The grid is one tab stop, and you move through it with
 the arrow keys. Logging a past period uses the same grid: the first day you pick keeps the
 selection ring until you pick the last day, and a status line under the grid says what
-comes next. Under the legend, "Log a past period" and the picked day's details are two
-quiet buttons in one group, side by side when they fit. The first-use hint lasts until a bleeding day or range is logged on Calendar. Future
-months keep their separate hint. A completed log shows one confirmation with Undo,
+comes next. Under the legend, "Log a past period" starts range logging. Every day opens
+the dated editor, so no separate Details button or date-history list is needed.
+The first-use hint lasts until a bleeding day or range is logged on Calendar. Future
+months keep their separate hint. A completed range shows one confirmation with Undo,
 including any forecast update in its first render. It clears after ten seconds, pausing
 while hovered or while Undo has focus; the saved log remains.
 

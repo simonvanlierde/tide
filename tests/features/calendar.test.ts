@@ -80,6 +80,7 @@ describe("calendar helpers", () => {
       learned(showFertility),
       intensityByDay,
       numbers,
+      {},
     );
     return (date: IsoDate) => all.find((cell) => cell.value === date);
   }

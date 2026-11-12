@@ -6,250 +6,74 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-12
+
 ### Added
 
-- Today and Calendar share one dated editor for bleeding flow and optional daily
-  details. Choosing another date while editing does not log bleeding. Calendar
-  confirmations clear after ten seconds and pause while hovered or
-  focused. First-use guidance links to Calendar for periods that started earlier.
-- A skippable introduction covers privacy, importing history, fertility choices and
-  keeping backups, while leaving the first log in reach. Calendar shows a hint until
-  your first bleeding log there. Existing installations skip the introduction.
-- [Sparse-history stress results](docs/sparse-history.md) show how missing logs, long cycles
-  and little history affect the existing estimates. The prediction rule is unchanged.
-- [JSON backup guide](docs/backups.md) documents the saved fields and safe restore steps, with a tested example.
-- Record optional symptoms, a mood and a short note for today or a past day, independently
-  of bleeding. [Daily details](README.md#daily-details) are included in Tide backups and
-  do not affect predictions.
-- [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles as a chart
-  and a table. Mark incomplete cycles to leave their lengths out of estimates
-  without deleting logged days.
+- Record optional symptoms, mood and a short note for today or a past day,
+  independently of bleeding. [Daily details](README.md#daily-details) are included in backups
+  and do not affect predictions.
+- Today and Calendar share a dated editor for flow and optional daily details.
+  Selecting a Calendar day opens it without logging bleeding. Notebook icons mark saved
+  details, including diary-only days. Calendar also logs a whole period of up to 14 days at once, with Undo.
+- A skippable introduction explains on-device storage, importing history, fertility choices
+  and backups. It links to Calendar for periods that started earlier. Existing installations skip it.
+- Import bleeding history from Clue or Flo without replacing days already logged in Tide.
+  Settings previews the count and asks before adding the days.
+- Save the next three expected periods as a calendar file, with optional fertile windows.
+  Events are private; the calendar account you add them to can store and sync them.
+- [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles in a chart and table.
+  Mark incomplete cycles to exclude their lengths from estimates without deleting logged days.
+- “How was this worked out?” explains the next-period date, recent variation and fertility estimates.
+  [Backtest](docs/backtest.md) and [sparse-history results](docs/sparse-history.md) document the model’s limits.
 - Today reminds you to download a backup after 60 days, with a one-week snooze.
-  The reminder dates stay on this device and are left out of exported backups.
-- The site now has a `/.well-known/security.txt` that says where to report a
-  security problem, and link previews show Tide's name, description and icon.
-- With JavaScript turned off, Tide now says it needs JavaScript and gives an
-  email address to report a problem, instead of showing a blank page.
-- "How was this worked out?" in Cycle insights shows the sums behind your next-period
-  date: the recent cycle lengths it used, their median, how much your cycles
-  vary and the range that gives, or the 28-day default while there is too
-  little history. With fertility estimates on, it also shows how the ovulation
-  estimate and fertile window follow from it.
-- Settings → Data → Add to calendar saves your next 3 expected periods as a
-  calendar file (.ics) your calendar app can open. The file is made on your
-  device. With fertility estimates on, you can tick a box to add the fertile
-  windows too. The events are marked private, and carry a random id from
-  your device rather than any date from your history. Importing a newer file
-  moves the events instead of adding copies, also on a new device restored
-  from a backup. After importing older history or deleting all data, the next
-  file adds new events instead.
-- Import your history from Clue or Flo: pick the export in Settings → Data →
-  Import, the same button as for a Tide backup. Tide shows how many days the
-  file holds and asks before adding them. Days you already logged in Tide stay
-  as they are. From Clue, use `measurements.json` from the export zip or an
-  older `.cluedata` backup. Days where Clue recorded a period of "none" are
-  skipped, not imported as period days.
-- Log a past period in one go from the Calendar: pick its first and last day,
-  up to 14 days, and every day between is logged. Set each day's flow after,
-  or undo the whole range with one tap.
-- Before anything is logged, Today asks "Have a Tide backup, or history in Clue
-  or Flo?" Its "Import it" link opens Settings at the Import button.
-- Settings → Data says under the buttons that Import takes a Tide backup or an
-  export from Clue or Flo, so you don't have to open the info button to find out.
-- The fertility question on Today says you can change your answer in Settings.
-- A backtest of the next-period estimate on a public cycle dataset, with the
-  results and their limits in [docs/backtest.md](docs/backtest.md). Run it with
-  `pnpm backtest`.
-- Once a day is logged, Tide asks the browser to keep its stored data rather
-  than clear it to free space. Firefox shows its own prompt for this.
-- The crash screen can download your stored data as a file, exactly as saved,
-  and speaks your language instead of always English.
+  Reminder dates stay on this device and are omitted from backups.
+- Privacy and accessibility pages work offline. A [backup guide](docs/backups.md) explains safe restores
+  and the JSON format. The site also publishes security-contact details and link previews.
 
 ### Changed
 
-- Fertility disclaimers sit in their info popovers on Today and Settings. Daily notes show
-  a character count instead of repeating privacy and backup guidance. Import, backup and
-  fertility-choice explanations are shorter, and overdue prompts omit generic reassurance.
-- Translations now use [PO catalogs](README.md#translations), keeping the same wording
-  and offline language switching in all five languages.
-- The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
-  number sits small inside the day's corner instead of in a bubble, with its own legend entry.
-- The fertile window is periwinkle instead of olive, and ovulation gold, on the dial and the
-  calendar, so neither looks brown and ovulation no longer looks like the expected period.
-  The ovulation day also has a heavier line.
-- Estimates are no longer dashed. Expected, fertile and ovulation days have a thin solid
-  outline and, in light mode, a faint wash of their colour, on the dial, the calendar and the
-  legends, so the fertile window reads as one band instead of a row of boxes.
-- Under the calendar, "Log a past period" and the day's details are two buttons in one
-  group, and the "Tap a day" hint shows only until your first log.
-- "Add details" on the calendar names its day, and adds details for the day you last picked.
-- The German and French fertility line on Today is shorter, so it fits on one line on a phone.
-- The legend under the dial sits in two even rows instead of three items and one on its own.
-- In Dutch, German, French and Spanish, a long dial headline shrinks to one line and a long
-  label above it wraps instead of touching the ring, and the logged line keeps its icon beside
-  the text. Details shows only its icon until the screen is wide enough for the label.
-- Plainer Dutch, German, French and Spanish wording in the cycle insights, backup, import,
-  export and calendar texts.
-- The "No symptoms" chip is no longer dashed.
-- The dial's fertile window, ovulation and expected period fill its band with a pale wash
-  of their colour, so the ring reads as one band. The ring fills in on the first look of the
-  day, the scrub dot glides home when you let go, and logging today sends one ring out from
-  the marker. Reduced motion turns all three off.
-- Plainer wording across the app in all five languages. The fertility note now reads "An
-  estimate. Don't use it as birth control." on Today, in the one-time question and in
-  Settings; the calendar, backup and import texts say exactly what is stored where.
-- Today is simpler: the cycle dial shows the next-period estimate in its centre, and
-  logging sits right under it. One tap logs bleeding and opens the dated editor. Later
-  the same day, a compact logged line opens it to add or change flow. When a period is due, Today
-  asks "Has your period started?" without repeating the date, and a late period no
-  longer reads as "Period expected" on the dial. The "Stored only on this device" line is gone.
-- Daily details open from a **Details** button beside the log button. Symptoms and mood
-  are chips that save on tap, the note saves as you type, and clearing offers Undo, so
-  there is no Save button to forget. Today's details are always for today.
-- The fertility line on Today drops "(estimate)" so it fits on one line; the line under it
-  now reads "An estimate. Don't use it as birth control."
-- Settings says Tide does not upload your data, instead of saying it never leaves the
-  device: backups and calendar exports do leave it when you ask.
-- The privacy statement says the same: Tide does not upload what you log, and it leaves
-  the browser only in a backup or calendar file you save.
-- Prediction explanations distinguish recent variation from a guaranteed date range.
-  The backtest now reports large errors, range coverage and a synthetic missing-log check.
-- The privacy statement names Cloudflare as the host without naming the product,
-  since the app moves from Cloudflare Pages to a Cloudflare Worker.
-- Tide asks once whether to show fertility estimates, and hides them until you
-  answer. This includes current users, who had them on without being asked.
-  If you had turned them off in Settings, that choice stays. The Settings
-  switch still changes the answer.
-- Every estimate looks like an estimate: the expected period, the fertile
-  window and ovulation are dashed outlines on both the dial and the calendar,
-  and in both legends. Only logged days are solid. The outline is the main
-  cue: an expected period day no longer also turns its number coral, so it
-  looks no more certain than a fertile day.
-- The Today fertility line says "In the fertile window" or "Outside
-  the fertile window", with the birth-control note right under it. It
-  names the same fertile window as the legends, and no longer says a day is
-  "less likely", which could read as a safe day.
-- The calendar legend uses the same words as the Today legend: Period,
-  Expected period, Fertile, Ovulation. "Fertile" is short for the fertile window,
-  so the calendar legend fits on one line on most phones.
-- One word for every forecast in all five languages: "expected" (the expected
-  period, expected ovulation), where some screens said "predicted" or "likely".
-  Settings explains the fertile window in those words and says the estimates
-  are for information only and not birth control.
-- German and Spanish use one word for a Tide backup everywhere.
-- Before the first log, Today shows one line, "Log your period to see a
-  forecast", instead of a "--" cycle day and two "Not enough data yet" rows.
+- Today puts the next-period estimate and logging first. Fertility estimates stay hidden
+  until you choose to see them; their info popovers explain that they are not birth control.
+- Logged days and estimates have distinct colours and outlines on the dial, calendar and legends.
+  Fertile days are periwinkle and ovulation is gold. Optional dial motion respects reduced motion.
+- Daily details save as you edit. Notes show a character count; optional symptoms and mood
+  sit under “More details”. One close control replaces Done and ×; empty footer rows are removed.
+  On phones, Today and Calendar use a bottom sheet with a visible date and close control;
+  expanded details scroll inside it while the Calendar remains interactive.
+  Range-log confirmations expire after ten seconds, pausing on hover or focus.
+- All five languages use [Lingui PO catalogs](README.md#translations) bundled for offline switching.
+  Wording and narrow-screen layouts are clearer in Dutch, German, French and Spanish.
+- Calculating period duration for a twenty-year synthetic history fell from 4.47 to 1.33 ms
+  against 0.4.0. [Predictor benchmarks](docs/performance.md) also record the added range-logging cost
+  and measurement limits; the next-period prediction rule is unchanged.
+- Tide requests persistent browser storage after a bleeding log. The crash screen can download
+  the stored data exactly as saved, and reports errors in your chosen language.
 
 ### Fixed
 
-- Calendar dismisses its first-use hint when you log bleeding in the daily editor.
-- Opening daily details selects today after midnight. Calendar uses its grid to select
-  the date for both bleeding and diary details.
-- If device storage is full or blocked, Tide now warns that changes have not
-  been saved. Keep the app open and export a backup from Settings.
-- A pending delete cannot erase data saved by a newer version in another tab.
-  Imports also recheck the current history after reading a file, so another
-  tab's new logs are not replaced without confirmation.
-- When the import reader cannot load, Tide shows an error with a way to retry
-  instead of leaving the import unanswered.
-- Editing older cycle starts gives calendar exports new event IDs, so IDs
-  cannot move between different cycles. As with importing older history,
-  remove the previous events from your calendar by hand.
-- Keyboard focus returns to the affected calendar day after removing a log
-  or undoing a single-day or range log.
-- Off switches have a contrasting thumb and border in both themes. At 200% text,
-  the Today dial stays within its column and flow labels get enough room.
-- Keyboard focus scrolls controls above the fixed bottom navigation.
-- Screen readers name the source-code link in Settings "Source code, v0.4.0,
-  opens in a new tab", so the version you see on it is part of its name and
-  voice control can find it.
-- French now addresses you with the informal "tu" throughout.
-- More translation fixes after a second review in Dutch, French, German and Spanish, mostly how the next period is explained in Cycle insights.
-- Translation fixes after a review in Dutch, French, German and
-  Spanish. "In 3 days" on Today now starts with a capital in French, German
-  and Spanish, as it does in English and Dutch.
-- On narrow phones (320px wide), the four flow levels sit two by two, so
-  "Schmierblutung" and a bold "Medium" fit whole instead of breaking mid-word.
-  The calendar's day picker does the same on most phones.
-- Cycle insights fit on narrow phones: the three numbers no longer push past
-  the sheet, and the regularity line wraps under its label.
-- The language menu in Settings no longer runs past the card on very narrow
-  screens.
-- Until you turn on fertility estimates, the cycle dial no longer names an
-  ovulation, follicular or luteal phase, on screen or to a screen reader. It
-  shows the period and "Between periods", and Cycle insights leaves out how
-  ovulation is estimated.
-- The theme picker in Settings no longer cuts "Système" or "Systeem" short on
-  phones about 390px wide when the system font runs wide, as DejaVu Sans does
-  on many Linux setups.
-- When a newer version of Tide saved your data, Settings showed the notice
-  twice. It now shows once, at the top, with the Reload button.
-- Screen readers now announce that notice when another tab saves newer data.
-  Before, it appeared already filled in, so many screen readers stayed silent.
-- An app left open overnight now moves to the new day, so logging today no
-  longer logs yesterday.
-- Importing a JSON file that is not a Tide backup now shows an error instead of
-  replacing your history with an empty one.
-- Tide starts normally when the browser blocks site storage, instead of showing
-  the error screen.
-- Future-dated days left by an import or a clock change no longer count in the
-  cycle insights or the calendar's past fertile windows.
-- Backup files are named after your local date, not the UTC date.
-- Screen readers no longer read the info button's label as part of the
-  fertility and cycle-number switch names.
-- Screen readers now hear which weekday each calendar day falls on: the month
-  is a table with a header per weekday column.
-- The install icon is listed separately for plain and masked use, so Android
-  launchers that apply a mask shape use it as intended.
-- On a 320 px screen, the flow levels no longer run into each other, the theme
-  options stack instead of shrinking to "Sy…", and Export and Import stack
-  instead of splitting their words. German, French, Dutch and Spanish all fit.
-- Logging today moves keyboard focus to the flow levels, and removing the log
-  or dismissing the reminder moves it to the log button, instead of dropping
-  it to the top of the page.
-- A tab still running an older version no longer strips data that a newer
-  version saved. It shows that data, asks you to reload, and saves nothing
-  until you do. Import and "Delete all data" are disabled meanwhile.
-- Tide keeps a copy of the stored data whenever loading it would drop
-  anything, not only when the data is unreadable.
-- On phones, the Today facts put each label above its value, so "Fertilité"
-  and "Fruchtbarkeit" no longer break into syllables and the value gets the
-  full width.
-- The switches in Settings stay beside the first line of their label. A long
-  label such as "Fruchtbarkeitsschätzungen anzeigen" wraps next to the switch,
-  instead of pushing the switch and the info button onto lines of their own.
-- Cycle insights dims the screen behind it the same way as the other dialogs,
-  without a blur.
-- On phones up to about 400 px wide, the calendar's weekday headers show one
-  letter ("M", "T") instead of splitting a short name like "MON" over two
-  lines. Screen readers still hear the full day name.
-- "How predictions work" in Cycle insights opens with the same chevron as the
-  rest of the app, turning down when open, instead of the browser's triangle.
-- Headings, labels and buttons no longer break words at random syllables
-  ("an-zeigen", "Abun-dante"). Long German and Dutch compounds break only
-  between their parts ("Fruchtbarkeits-schätzungen"), and only when they don't
-  fit. Running text still hyphenates.
-- On phones, the flow levels sit two by two and the Cycle insights numbers
-  stack as rows, so "Gemiddeld", "Abundante" and "Menstruatieduur" fit whole.
-- On large phones (430px), the theme picker in Settings sits under its label,
-  so "Système" and "Systeem" are no longer cut short.
+- Older tabs cannot overwrite state saved by a newer build. Delete and import recheck concurrent
+  changes; loading incomplete or unreadable data preserves a recovery copy.
+- Blocked or full storage produces a warning with a way to export a backup.
+  A failed import-reader download offers a retry instead of leaving the import unanswered.
+- Calendar exports reset event identities when historical edits renumber cycles, so an existing
+  event cannot move to another cycle. After changing older history, remove old calendar events manually.
+- If a recovery backup cannot be saved, Tide preserves the original stored data and offers
+  a raw download instead of overwriting it with an incomplete copy.
+- An app left open overnight logs the current day. Future-dated logs do not affect estimates,
+  history or past fertile windows. Backup filenames use your local date.
+- Keyboard focus returns to the affected control after logging, removing and undoing days.
+  Screen readers hear weekday names, notices and complete control labels.
+- Calendar includes visible cycle-day counts in accessible names. Enlarged navigation labels
+  wrap instead of pushing destinations offscreen on narrow phones.
+- Switches have sufficient contrast in both themes. Flow levels, theme choices, insights and
+  translated labels fit narrow phones and enlarged text without hiding behind the tabs.
+- The background stays anchored to the viewport when switching between short and long screens.
 
 ### Security
 
-- The Content-Security-Policy no longer allows inline styles, or any inline
-  script: the saved theme is applied before first paint from a separate file.
-- Other sites can no longer embed Tide's files (Cross-Origin-Resource-Policy).
-- Browsers are told to reach tide.duinlab.nl over HTTPS only, for a year at a
-  time (Strict-Transport-Security).
-
-### Tested
-
-- A criterion-by-criterion [accessibility self-assessment](docs/accessibility-assessment.md)
-  records browser evidence for all 55 WCAG 2.2 level A and AA criteria. Added
-  keyboard, enlarged-text, text-spacing, target-size and new-feature checks.
-- Every screen is checked against WCAG 2.2 level AA and axe's best-practice
-  rules, fails on any finding however minor, and must not scroll sideways at
-  320 px wide. CI also checks the shipped dependencies for known advisories.
+- The Content-Security-Policy blocks inline styles and scripts. Other sites cannot embed Tide’s files,
+  and browsers receive HTTPS-only instructions. Tide does not upload logged data.
 
 ## [0.4.0] - 2026-08-24
 
@@ -396,7 +220,8 @@ First tagged release. Core cycle tracking is implemented, tested, and live at
 - Architecture decision record for the local-first, no-backend design
   ([docs/adr/0001-local-first-no-backend.md](docs/adr/0001-local-first-no-backend.md)).
 
-[Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/simonvanlierde/tide/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/simonvanlierde/tide/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/simonvanlierde/tide/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/simonvanlierde/tide/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/simonvanlierde/tide/compare/v0.2.0...v0.2.1
