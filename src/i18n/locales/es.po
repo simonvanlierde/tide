@@ -59,17 +59,8 @@ msgstr "Añadir detalles"
 msgid "diary.editDetails"
 msgstr "Editar detalles"
 
-msgid "diary.addDetailsFor"
-msgstr "Añadir detalles del {date}"
-
 msgid "diary.details"
 msgstr "Detalles"
-
-msgid "diary.done"
-msgstr "Listo"
-
-msgid "diary.editDetailsFor"
-msgstr "Editar detalles del {date}"
 
 msgid "diary.undo"
 msgstr "Deshacer"
@@ -97,12 +88,6 @@ msgstr "Detalles borrados."
 
 msgid "diary.clear"
 msgstr "Borrar detalles"
-
-msgid "diary.history"
-msgstr "Detalles diarios"
-
-msgid "diary.openDay"
-msgstr "Ver detalles del {date}"
 
 msgid "diary.symptom.cramps"
 msgstr "Cólicos"
@@ -423,7 +408,7 @@ msgid "calendar.year"
 msgstr "Año"
 
 msgid "calendar.tapHelp"
-msgstr "Toca un día para registrar o editar el sangrado."
+msgstr "Toca un día para verlo o editarlo."
 
 msgid "calendar.today"
 msgstr "Hoy"
@@ -454,9 +439,6 @@ msgstr "Son más de {max} días. Elige un último día anterior."
 
 msgid "calendar.futureHelp"
 msgstr "Los días futuros aún no se pueden registrar."
-
-msgid "calendar.log"
-msgstr "Registrar"
 
 msgid "calendar.edit"
 msgstr "Editar"
@@ -681,7 +663,7 @@ msgid "onboarding.dismiss"
 msgstr "Saltar introducción"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Toca un día para registrarlo o cambiarlo, o elige Registrar un período pasado para varios días."
+msgstr "Toca un día para verlo o editarlo. Elige Registrar un período pasado para varios días."
 
 msgid "dayEditor.title"
 msgstr "{date}"

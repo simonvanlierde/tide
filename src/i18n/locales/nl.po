@@ -59,17 +59,8 @@ msgstr "Details toevoegen"
 msgid "diary.editDetails"
 msgstr "Details bewerken"
 
-msgid "diary.addDetailsFor"
-msgstr "Details voor {date} toevoegen"
-
 msgid "diary.details"
 msgstr "Details"
-
-msgid "diary.done"
-msgstr "Klaar"
-
-msgid "diary.editDetailsFor"
-msgstr "Details voor {date} bewerken"
 
 msgid "diary.undo"
 msgstr "Ongedaan maken"
@@ -97,12 +88,6 @@ msgstr "Details gewist."
 
 msgid "diary.clear"
 msgstr "Details wissen"
-
-msgid "diary.history"
-msgstr "Dagelijkse details"
-
-msgid "diary.openDay"
-msgstr "Details bekijken voor {date}"
 
 msgid "diary.symptom.cramps"
 msgstr "Krampen"
@@ -423,7 +408,7 @@ msgid "calendar.year"
 msgstr "Jaar"
 
 msgid "calendar.tapHelp"
-msgstr "Tik op een dag om bloedverlies te registreren of te wijzigen."
+msgstr "Tik op een dag om die te bekijken of te wijzigen."
 
 msgid "calendar.today"
 msgstr "Vandaag"
@@ -454,9 +439,6 @@ msgstr "Dat is meer dan {max} dagen. Kies een eerdere laatste dag."
 
 msgid "calendar.futureHelp"
 msgstr "Toekomstige dagen kun je nog niet loggen."
-
-msgid "calendar.log"
-msgstr "Registreren"
 
 msgid "calendar.edit"
 msgstr "Wijzigen"
@@ -681,7 +663,7 @@ msgid "onboarding.dismiss"
 msgstr "Introductie overslaan"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Tik op een dag om die te loggen of te wijzigen, of kies Eerdere menstruatie loggen voor meerdere dagen."
+msgstr "Tik op een dag om die te bekijken of te wijzigen. Kies Eerdere menstruatie loggen voor meerdere dagen."
 
 msgid "dayEditor.title"
 msgstr "{date}"

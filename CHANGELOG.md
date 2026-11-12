@@ -14,7 +14,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   independently of bleeding. [Daily details](README.md#daily-details) are included in backups
   and do not affect predictions.
 - Today and Calendar share a dated editor for flow and optional daily details.
-  Calendar also logs a whole period of up to 14 days at once, with Undo.
+  Selecting a Calendar day opens it without logging bleeding. Notebook icons mark saved
+  details, including diary-only days. Calendar also logs a whole period of up to 14 days at once, with Undo.
 - A skippable introduction explains on-device storage, importing history, fertility choices
   and backups. It links to Calendar for periods that started earlier. Existing installations skip it.
 - Import bleeding history from Clue or Flo without replacing days already logged in Tide.
@@ -37,7 +38,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Logged days and estimates have distinct colours and outlines on the dial, calendar and legends.
   Fertile days are periwinkle and ovulation is gold. Optional dial motion respects reduced motion.
 - Daily details save as you edit. Notes show a character count; optional symptoms and mood
-  sit under “More details”. Calendar confirmations expire after ten seconds, pausing on hover or focus.
+  sit under “More details”. One close control replaces Done and ×; empty footer rows are removed.
+  Range-log confirmations expire after ten seconds, pausing on hover or focus.
 - All five languages use [Lingui PO catalogs](README.md#translations) bundled for offline switching.
   Wording and narrow-screen layouts are clearer in Dutch, German, French and Spanish.
 - Calculating period duration for a twenty-year synthetic history fell from 4.47 to 1.33 ms

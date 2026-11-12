@@ -59,17 +59,8 @@ msgstr "Add details"
 msgid "diary.editDetails"
 msgstr "Edit details"
 
-msgid "diary.addDetailsFor"
-msgstr "Add details for {date}"
-
 msgid "diary.details"
 msgstr "Details"
-
-msgid "diary.done"
-msgstr "Done"
-
-msgid "diary.editDetailsFor"
-msgstr "Edit details for {date}"
 
 msgid "diary.undo"
 msgstr "Undo"
@@ -97,12 +88,6 @@ msgstr "Details cleared."
 
 msgid "diary.clear"
 msgstr "Clear details"
-
-msgid "diary.history"
-msgstr "Daily details"
-
-msgid "diary.openDay"
-msgstr "View details for {date}"
 
 msgid "diary.symptom.cramps"
 msgstr "Cramps"
@@ -423,7 +408,7 @@ msgid "calendar.year"
 msgstr "Year"
 
 msgid "calendar.tapHelp"
-msgstr "Tap a day to log or edit bleeding."
+msgstr "Tap a day to view or edit it."
 
 msgid "calendar.today"
 msgstr "Today"
@@ -454,9 +439,6 @@ msgstr "That''s more than {max} days. Pick an earlier last day."
 
 msgid "calendar.futureHelp"
 msgstr "Future days can''t be logged yet."
-
-msgid "calendar.log"
-msgstr "Log"
 
 msgid "calendar.edit"
 msgstr "Edit"
@@ -681,7 +663,7 @@ msgid "onboarding.dismiss"
 msgstr "Skip introduction"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Tap a day to log or change it, or use Log a past period for a range."
+msgstr "Tap a day to view or edit it. Use Log a past period for a range."
 
 msgid "dayEditor.title"
 msgstr "{date}"

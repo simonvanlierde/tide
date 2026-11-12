@@ -348,11 +348,15 @@ It opens the same editor with **More details** expanded, without logging bleedin
 The editor replaces Today's log line and opens below Calendar's legend. One heading
 names the date; flow comes first, with "Not bleeding that day" to remove a log.
 Symptoms, mood and notes sit under a native **More details** disclosure. Chips save on
-tap and notes save as you type. Clearing details offers Undo. Done, Close and Escape
+tap and notes save as you type. Clearing details offers Undo. The top-right × and Escape
 close the panel; it stays open while editing or removing bleeding. Calendar's grid owns
 the date, with no competing date field. While the editor is open, a grid tap changes its
-date and preserves the disclosure without logging bleeding; tapping the selected day
-closes it. With the editor closed, empty-day taps still log bleeding in one tap.
+date and preserves the disclosure without logging bleeding. Selecting a diary-only date
+opens its saved details; tapping the selected day keeps the panel open. With the editor
+closed, any available day opens it without recording bleeding.
+Logging is explicit inside the panel. A notebook icon marks a day with saved details;
+diary-only days open with their details expanded. The note counter and save status share
+one compact footer row; no empty action rows reserve space.
 Both screens use the same inset surface and controls.
 
 ### Chips
@@ -425,13 +429,13 @@ Seven columns of rounded-square day buttons. Logged days fill with their flow-ra
 Expected, fertile and ovulation days are fine outlines in coral, periwinkle and amber,
 washed at 10% in light mode. Logged days from the next or previous month keep a lighter fill. Their estimates keep
 the full outline, because a lighter one would drop below 3:1. Today gets a short underscore
-in `currentColor`, and the selected day a teal ring. A newly logged day pulses once, unless
-the user asked for reduced motion. The grid is one tab stop, and you move through it with
+in `currentColor`, and the selected day a teal ring. The grid is one tab stop, and you move through it with
 the arrow keys. Logging a past period uses the same grid: the first day you pick keeps the
 selection ring until you pick the last day, and a status line under the grid says what
-comes next. Under the legend, "Log a past period" and the picked day's details are two
-quiet buttons in one group, side by side when they fit. The first-use hint lasts until a bleeding day or range is logged on Calendar. Future
-months keep their separate hint. A completed log shows one confirmation with Undo,
+comes next. Under the legend, "Log a past period" starts range logging. Every day opens
+the dated editor, so no separate Details button or date-history list is needed.
+The first-use hint lasts until a bleeding day or range is logged on Calendar. Future
+months keep their separate hint. A completed range shows one confirmation with Undo,
 including any forecast update in its first render. It clears after ten seconds, pausing
 while hovered or while Undo has focus; the saved log remains.
 

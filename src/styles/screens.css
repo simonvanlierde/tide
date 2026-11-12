@@ -526,21 +526,10 @@
     justify-self: center;
   }
 
-  /* The two things to do besides tapping a day, side by side: log a range,
-     and details for the picked day. They stack when the line is too narrow.
-     The details panel and history inside the row take a whole line. */
   .calendar__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-  }
-
-  .calendar__actions .daily-details {
-    display: contents;
-  }
-
-  .calendar__actions .daily-details > :not(button) {
-    flex: 1 0 100%;
   }
 
   .calendar__action {

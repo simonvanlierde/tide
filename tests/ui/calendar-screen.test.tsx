@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { loadStoredState } from "../../src/data/storage";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
-import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, createLearnedCycleState, renderWithAppState } from "../support/app";
 
 const originalAnimate = HTMLElement.prototype.animate;
@@ -37,7 +36,77 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /april 2026/i })).toBeInTheDocument();
   });
 
-  it("drops the tap hint once something is logged, and keeps both actions on one row", () => {
+  it("marks saved diary entries without showing them as bleeding", () => {
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        detailsByDay: { "2026-04-12": { symptoms: null, mood: null, note: "A quiet day." } },
+      }),
+    });
+    const day = screen.getByRole("button", { name: /april 12, 2026/i });
+    expect(day).toHaveAccessibleName(/details/i);
+    expect(day.querySelector(".calendar-grid__details-marker")).not.toBeNull();
+    expect(day).not.toHaveClass("is-logged");
+  });
+
+  it("opens a saved diary-only day without logging bleeding", async () => {
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        detailsByDay: { "2026-04-12": { symptoms: null, mood: null, note: "A quiet day." } },
+      }),
+    });
+    await userEvent.setup().click(screen.getByRole("button", { name: /april 12, 2026/i }));
+    expect(loadStoredState().state.intensityByDay).toEqual({});
+    expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("A quiet day.");
+  });
+
+  it("keeps the editor open when its selected date is activated again", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />);
+    const day = screen.getByRole("button", { name: /edit april 12, 2026/i });
+    await user.click(day);
+    await user.click(day);
+    expect(screen.getByRole("heading", { name: "April 12, 2026" })).toBeInTheDocument();
+    expect(day).toHaveAttribute("aria-pressed", "true");
+    expect(loadStoredState().state.intensityByDay).toEqual({});
+  });
+
+  it("reveals saved diary details from another date and after the disclosure was closed", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        detailsByDay: {
+          "2026-04-12": { symptoms: null, mood: null, note: "First saved note" },
+          "2026-04-13": { symptoms: null, mood: null, note: "Second saved note" },
+        },
+      }),
+    });
+    await user.click(screen.getByRole("button", { name: /edit april 10, 2026/i }));
+    expect(screen.getByText("More details", { selector: "summary" }).parentElement).not.toHaveAttribute("open");
+    await user.click(screen.getByRole("button", { name: /edit april 12, 2026/i }));
+    expect(screen.getByText("More details", { selector: "summary" }).parentElement).toHaveAttribute("open");
+    expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("First saved note");
+    await user.click(screen.getByText("More details", { selector: "summary" }));
+    expect(screen.getByText("More details", { selector: "summary" }).parentElement).not.toHaveAttribute("open");
+    await user.click(screen.getByRole("button", { name: /edit april 13, 2026/i }));
+    expect(screen.getByText("More details", { selector: "summary" }).parentElement).toHaveAttribute("open");
+    expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("Second saved note");
+    expect(loadStoredState().state.intensityByDay).toEqual({});
+  });
+
+  it("returns focus to a saved future diary day when its editor closes", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        detailsByDay: { "2026-04-20": { symptoms: null, mood: null, note: "Saved before a clock change" } },
+      }),
+    });
+    const day = screen.getByRole("button", { name: /edit april 20, 2026/i });
+    await user.click(day);
+    await user.click(screen.getByRole("button", { name: "Close" }));
+    expect(day).toHaveFocus();
+  });
+
+  it("offers the range action without a duplicate details action", () => {
     const { container } = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),
     });
@@ -45,7 +114,7 @@ describe("CalendarScreen", () => {
     expect(screen.queryByText(/tap a day to log or edit bleeding/i)).not.toBeInTheDocument();
     const row = container.querySelector(".calendar__actions");
     expect(row).toContainElement(screen.getByRole("button", { name: /log a past period/i }));
-    expect(row).toContainElement(screen.getByRole("button", { name: /add details for/i }));
+    expect(screen.queryByRole("button", { name: /add details for/i })).not.toBeInTheDocument();
   });
 
   it("lays the month out as a table with a weekday header per column", () => {
@@ -107,28 +176,25 @@ describe("CalendarScreen", () => {
     expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
-  it("logs a day without choosing a flow level with a single tap", async () => {
+  it("opens an empty day without writing and logs bleeding only on explicit request", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
-      state: createAppState({
-        periodDays: ["2026-04-02", "2026-04-12", "2026-04-20"],
-      }),
+      state: createAppState({ periodDays: ["2026-04-02"] }),
     });
-
-    // One tap on an empty day logs bleeding without opening the editor.
-    await user.click(screen.getByRole("button", { name: /log april 5, 2026/i }));
-
-    expect(screen.getByRole("button", { name: /edit april 5, 2026/i })).toHaveClass("is-logged");
-    // One tap records the day, not a flow level it never asked about.
-    expect(screen.getByRole("button", { name: /edit april 5, 2026/i }).className).not.toMatch(/is-flow-/);
-    // The tap wrote data: say so, and offer a one-tap undo.
-    expect(screen.getByRole("status")).toHaveTextContent(/logged .*apr 5/i);
-    await user.click(screen.getByRole("button", { name: /^undo$/i }));
-    expect(screen.getByRole("button", { name: /log april 5, 2026/i })).not.toHaveClass("is-logged");
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    const day = screen.getByRole("button", { name: /edit april 5, 2026/i });
+    await user.click(day);
+    expect(screen.getByRole("heading", { name: "April 5, 2026" })).toBeInTheDocument();
+    expect(day).not.toHaveClass("is-logged");
+    expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-02": "medium" });
+    await user.click(screen.getByRole("button", { name: "Log bleeding" }));
+    expect(day).toHaveClass("is-logged");
+    expect(day.className).not.toMatch(/is-flow-/);
+    expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-02": "medium", "2026-04-05": null });
+    await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+    expect(day).not.toHaveClass("is-logged");
   });
 
-  it("refines a logged day's flow from the picker on a second tap", async () => {
+  it("refines a logged day's flow from the editor directly", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({
@@ -154,13 +220,13 @@ describe("CalendarScreen", () => {
     await user.click(screen.getByRole("button", { name: /edit april 2, 2026/i }));
     await user.click(screen.getByRole("button", { name: /not bleeding/i }));
 
-    // An open editor selects days; Done returns the grid to one-tap logging.
+    // Removing bleeding keeps the dated editor open.
     expect(screen.getByRole("button", { name: /edit april 2, 2026/i })).not.toHaveClass("is-logged");
-    await user.click(screen.getByRole("button", { name: "Done" }));
-    expect(screen.getByRole("button", { name: /log april 2, 2026/i })).not.toHaveClass("is-logged");
+    await user.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.getByRole("button", { name: /edit april 2, 2026/i })).not.toHaveClass("is-logged");
   });
 
-  it("keeps removal in the editor and returns grid focus when Done", async () => {
+  it("keeps removal in the editor and returns grid focus when closed", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),
@@ -174,22 +240,20 @@ describe("CalendarScreen", () => {
 
     expect(day).toHaveAccessibleName(/edit april 2, 2026/i);
     expect(screen.getByRole("button", { name: /^log bleeding$/i })).toHaveFocus();
-    await user.click(screen.getByRole("button", { name: "Done" }));
+    await user.click(screen.getByRole("button", { name: "Close" }));
     expect(day).toHaveFocus();
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("button", { name: /april 3, 2026/i })).toHaveFocus();
   });
 
-  it("returns keyboard focus to a single day after undo", async () => {
+  it("returns keyboard focus to an unlogged day when its editor closes", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />);
-    const day = screen.getByRole("button", { name: /log april 18, 2026/i });
+    const day = screen.getByRole("button", { name: /edit april 18, 2026/i });
     day.focus();
     await user.keyboard("{Enter}");
-    await user.tab();
-    expect(screen.getByRole("button", { name: /^undo$/i })).toHaveFocus();
-    await user.keyboard("{Enter}");
-
+    expect(screen.getByRole("button", { name: "Log bleeding" })).toHaveFocus();
+    await user.keyboard("{Escape}");
     expect(day).not.toHaveClass("is-logged");
     expect(day).toHaveFocus();
   });
@@ -208,7 +272,7 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /^log bleeding$/i })).toBeDisabled();
     expect(screen.getByRole("button", { name: /^close$/i })).toHaveFocus();
     await user.keyboard("{Enter}");
-    expect(screen.getByRole("button", { name: /log april 18, 2026/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /edit april 18, 2026/i })).toHaveFocus();
   });
 
   it("restores the new opener when switching between logged days", async () => {
@@ -251,11 +315,11 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /^undo$/i })).toHaveFocus();
     await user.keyboard("{Enter}");
 
-    const first = screen.getByRole("button", { name: /log april 16, 2026/i });
+    const first = screen.getByRole("button", { name: /edit april 16, 2026/i });
     expect(first).not.toHaveClass("is-logged");
     expect(first).toHaveFocus();
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("button", { name: /log april 17, 2026/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /edit april 17, 2026/i })).toHaveFocus();
   });
 
   it("selects an unlogged day without writing while the editor is open", async () => {
@@ -273,8 +337,10 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /^close$/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /edit april 5, 2026/i })).not.toHaveClass("is-logged");
     expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-02": "medium" });
-    await user.click(screen.getByRole("button", { name: "Done" }));
-    await user.click(screen.getByRole("button", { name: /log april 5, 2026/i }));
+    await user.click(screen.getByRole("button", { name: "Close" }));
+    await user.click(screen.getByRole("button", { name: /edit april 5, 2026/i }));
+    expect(screen.getByRole("button", { name: /edit april 5, 2026/i })).not.toHaveClass("is-logged");
+    await user.click(screen.getByRole("button", { name: "Log bleeding" }));
     expect(screen.getByRole("button", { name: /edit april 5, 2026/i })).toHaveClass("is-logged");
   });
 
@@ -477,7 +543,7 @@ describe("CalendarScreen", () => {
       state: createAppState(),
     });
 
-    expect(screen.getByRole("button", { name: /log march 30, 2026/i })).toHaveClass("is-outside-month");
+    expect(screen.getByRole("button", { name: /edit march 30, 2026/i })).toHaveClass("is-outside-month");
   });
 
   it("renders the calendar with the new header controls", () => {
@@ -501,7 +567,7 @@ describe("CalendarScreen", () => {
     await user.click(screen.getByRole("button", { name: /previous month/i }));
 
     const grid = screen.getByLabelText(/calendar/i);
-    const helper = screen.getByText(/tap a day to log or change it/i);
+    const helper = screen.getByText(/tap a day to view or edit it/i);
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
     });
@@ -517,7 +583,7 @@ describe("CalendarScreen", () => {
     });
     expect(withNumbers.container.querySelectorAll(".calendar-grid__period-day")).not.toHaveLength(0);
     expect(withNumbers.container.querySelector(".calendar-legend")).toHaveTextContent(/cycle day/i);
-    expect(screen.getByRole("button", { name: /log april 4, 2026/i })).toHaveAccessibleName(/cycle day 3/i);
+    expect(screen.getByRole("button", { name: /edit april 4, 2026/i })).toHaveAccessibleName(/cycle day 3/i);
     withNumbers.unmount();
 
     const hidden = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
@@ -528,16 +594,16 @@ describe("CalendarScreen", () => {
     });
     expect(hidden.container.querySelectorAll(".calendar-grid__period-day")).toHaveLength(0);
     expect(hidden.container.querySelector(".calendar-legend")).not.toHaveTextContent(/cycle day/i);
-    expect(screen.getByRole("button", { name: /log april 4, 2026/i })).not.toHaveAccessibleName(/cycle day/i);
+    expect(screen.getByRole("button", { name: /edit april 4, 2026/i })).not.toHaveAccessibleName(/cycle day/i);
   });
 
-  it("adds details for the selected day, today until one is picked", async () => {
+  it("opens optional details for the selected calendar date", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }),
     });
 
-    expect(screen.getByRole("button", { name: /add details for sat, apr 18/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /add details for/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /april 2, 2026/i }));
     expect(screen.queryByRole("button", { name: /add details for/i })).not.toBeInTheDocument();
     await user.click(screen.getByText("More details", { selector: "summary" }));
@@ -562,24 +628,24 @@ describe("CalendarScreen", () => {
     await user.click(screen.getByText("More details", { selector: "summary" }));
     expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
     expect(screen.getByRole("textbox", { name: /note/i })).toBeDisabled();
-    await user.click(screen.getByRole("button", { name: "Done" }));
-    expect(screen.getByRole("button", { name: /add details for thu, apr 2/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Close" }));
+    expect(screen.getByRole("button", { name: /edit april 20, 2026/i })).toHaveFocus();
   });
 
-  it("names Edit for a day with details, and moves to the new today at midnight", () => {
-    const state = {
-      ...createAppState({ periodDays: ["2026-04-02"] }),
-      detailsByDay: { "2026-04-18": { symptoms: null, mood: "good" as const, note: "" } },
-    };
-    const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, { state });
-    expect(screen.getByRole("button", { name: /edit details for sat, apr 18/i })).toBeInTheDocument();
-
-    view.rerender(
-      <AppStateProvider initialState={state}>
-        <CalendarScreen today="2026-04-19" />
-      </AppStateProvider>,
-    );
-    expect(screen.getByRole("button", { name: /add details for sun, apr 19/i })).toBeInTheDocument();
+  it("keeps saved future diary entries viewable without allowing edits", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({
+        detailsByDay: { "2026-04-20": { symptoms: null, mood: "good", note: "Saved before the clock changed" } },
+      }),
+    });
+    const day = screen.getByRole("button", { name: /edit april 20, 2026/i });
+    expect(day).not.toBeDisabled();
+    await user.click(day);
+    expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("Saved before the clock changed");
+    expect(screen.getByRole("textbox", { name: /note/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Log bleeding" })).toBeDisabled();
+    expect(loadStoredState().state.intensityByDay).toEqual({});
   });
 
   it("tells a first-timer what to tap, and shows no legend for markers that aren't there", () => {
@@ -587,9 +653,7 @@ describe("CalendarScreen", () => {
       state: createAppState({ periodDays: [], settings: { calendarHelpDismissed: false } }),
     });
 
-    expect(
-      screen.getByText(/tap a day to log or change it, or use log a past period for a range/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/tap a day to view or edit it\. use log a past period for a range/i)).toBeInTheDocument();
     expect(container.querySelector(".calendar-legend")).toBeNull();
   });
 
@@ -613,9 +677,9 @@ describe("CalendarScreen", () => {
     });
 
     // Only today carries the tab stop; every other day is skipped by Tab.
-    const today = screen.getByRole("button", { name: /log april 18, 2026/i });
+    const today = screen.getByRole("button", { name: /edit april 18, 2026/i });
     const neighbour = screen.getByRole("button", {
-      name: /log april 17, 2026/i,
+      name: /edit april 17, 2026/i,
     });
     expect(today).toHaveAttribute("tabindex", "0");
     expect(neighbour).toHaveAttribute("tabindex", "-1");
@@ -624,12 +688,12 @@ describe("CalendarScreen", () => {
     await user.keyboard("{ArrowLeft}");
     expect(neighbour).toHaveFocus();
     await user.keyboard("{ArrowUp}");
-    expect(screen.getByRole("button", { name: /log april 10, 2026/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /edit april 10, 2026/i })).toHaveFocus();
 
     // Arrows refuse to walk into days that can't be logged yet.
-    screen.getByRole("button", { name: /log april 18, 2026/i }).focus();
+    screen.getByRole("button", { name: /edit april 18, 2026/i }).focus();
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("button", { name: /log april 18, 2026/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /edit april 18, 2026/i })).toHaveFocus();
   });
 
   it("explains that a fully future month can't be logged", async () => {
@@ -669,7 +733,7 @@ describe("CalendarScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /^undo$/i }));
     for (const day of [5, 6, 8, 9]) {
-      expect(screen.getByRole("button", { name: new RegExp(`^Log April ${day}, 2026`) })).not.toHaveClass("is-logged");
+      expect(screen.getByRole("button", { name: new RegExp(`^Edit April ${day}, 2026`) })).not.toHaveClass("is-logged");
     }
     expect(screen.getByRole("button", { name: /edit april 7, 2026.*heavy/i })).toHaveClass("is-flow-heavy");
   });
@@ -708,21 +772,23 @@ describe("CalendarScreen", () => {
   });
 });
 
-it("remembers Calendar help after a successful day log, even when undone", async () => {
+it("remembers Calendar help after a successful day log, even after removal", async () => {
   const user = userEvent.setup();
   const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
     state: createAppState({ settings: { calendarHelpDismissed: false } }),
   });
-  expect(screen.getByText(/tap a day to log or change it/i)).toBeInTheDocument();
+  expect(screen.getByText(/tap a day to view or edit it/i)).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /april 19, 2026 unavailable/i }));
-  expect(screen.getByText(/tap a day to log or change it/i)).toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: /log april 17, 2026/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: /^undo$/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.getByText(/tap a day to view or edit it/i)).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /edit april 17, 2026/i }));
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
+  await user.click(screen.getByRole("button", { name: "Log bleeding" }));
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
   view.unmount();
   renderWithAppState(<CalendarScreen today="2026-04-18" />);
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
 });
 
 it("dismisses Calendar help after logging bleeding in the shared editor", async () => {
@@ -730,18 +796,19 @@ it("dismisses Calendar help after logging bleeding in the shared editor", async 
   const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
     state: createAppState({ settings: { calendarHelpDismissed: false } }),
   });
-  await user.click(screen.getByRole("button", { name: /add details for/i }));
+  await user.click(screen.getByRole("button", { name: /edit april 18, 2026/i }));
+  await user.click(screen.getByText("More details", { selector: "summary" }));
   await user.click(screen.getByRole("button", { name: "Cramps" }));
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
   await user.click(screen.getByRole("button", { name: "Log bleeding" }));
   expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-18": null });
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(true);
   await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
-  await user.click(screen.getByRole("button", { name: "Done" }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Close" }));
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
   view.unmount();
   renderWithAppState(<CalendarScreen today="2026-04-18" />);
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
 });
 
 it("keeps Calendar help until a valid range is completed", async () => {
@@ -759,7 +826,7 @@ it("keeps Calendar help until a valid range is completed", async () => {
   await user.click(screen.getByRole("button", { name: /april 1, 2026/i }));
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
   await user.click(screen.getByRole("button", { name: /april 3, 2026/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /^undo$/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
 });

@@ -390,7 +390,7 @@ describe("TodayScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /not bleeding/i }));
     expect(screen.getByRole("button", { name: /^log bleeding$/i })).toHaveFocus();
-    await user.click(screen.getByRole("button", { name: "Done" }));
+    await user.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveFocus();
   });
 

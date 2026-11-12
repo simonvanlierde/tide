@@ -17,7 +17,8 @@ describe("shared dated day editor", () => {
     expect(screen.getByRole("button", { name: "Log bleeding" })).toHaveFocus();
     expect(screen.getByText("More details").closest("details")).not.toHaveAttribute("open");
     expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
-    expect(screen.getAllByRole("button", { name: "Done" })).toHaveLength(1);
+    expect(screen.getAllByRole("button", { name: "Close" })).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
   });
 
   it("focuses the existing flow selection", () => {
@@ -82,7 +83,7 @@ describe("shared dated day editor", () => {
     );
     expect(screen.getByRole("radio", { name: "Heavy" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Not bleeding that day" })).toBeDisabled();
-    fireEvent.keyDown(screen.getByRole("button", { name: "Done" }), { key: "Escape" });
+    fireEvent.keyDown(screen.getByRole("button", { name: "Close" }), { key: "Escape" });
     expect(close).toHaveBeenCalledOnce();
     expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);
   });

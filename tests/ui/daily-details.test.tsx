@@ -1,11 +1,10 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY } from "../../src/data/storage";
 import { MAX_NOTE_LENGTH } from "../../src/domain/diary";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
-import { DailyDetails } from "../../src/features/diary/DailyDetails";
 import { DayEditor } from "../../src/features/log/DayEditor";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
 import { AppStateProvider } from "../../src/state/provider";
@@ -26,7 +25,7 @@ describe("optional daily details", () => {
     );
     if (opened) {
       await user.click(screen.getByRole("button", { name: "Add details" }));
-      await user.click(screen.getByRole("button", { name: "Done" }));
+      await user.click(screen.getByRole("button", { name: "Close" }));
     }
     view.rerender(
       <AppStateProvider initialState={state}>
@@ -96,7 +95,7 @@ describe("optional daily details", () => {
     expect(screen.getByRole("button", { name: "Clear details" })).toHaveFocus();
   });
 
-  it("sits beside the log button and takes focus back when done", async () => {
+  it("sits beside the log button and takes focus back when closed", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
     const details = screen.getByRole("button", { name: "Add details" });
@@ -109,7 +108,7 @@ describe("optional daily details", () => {
     expect(screen.getByRole("region", { name: "April 18, 2026" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /log bleeding today/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Cramps" }));
-    await user.click(screen.getByRole("button", { name: "Done" }));
+    await user.click(screen.getByRole("button", { name: "Close" }));
 
     expect(screen.queryByRole("button", { name: "Cramps" })).not.toBeInTheDocument();
     const edit = screen.getByRole("button", { name: "Edit details" });
@@ -182,8 +181,8 @@ describe("optional daily details", () => {
   it("chooses a past diary-only day from an open editor without logging bleeding", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, { state: createAppState() });
-    await user.click(screen.getByRole("button", { name: /add details for sat, apr 18/i }));
-    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026$/ }));
+    await user.click(screen.getByRole("button", { name: /April 12, 2026/ }));
+    await user.click(screen.getByText("More details", { selector: "summary" }));
 
     expect(screen.getByRole("heading", { name: "April 12, 2026" })).toBeInTheDocument();
     expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
@@ -238,22 +237,19 @@ describe("optional daily details", () => {
     expect(stored().detailsByDay["2026-04-18"].note).toBe("Other tab");
   });
 
-  it("lists only the shown month's detail days and opens their exact dates", async () => {
+  it("uses the calendar days without repeating history or separate details controls", async () => {
     const user = userEvent.setup();
-    const onOpenDay = vi.fn();
     const state = createAppState({
       detailsByDay: {
         "2026-03-30": { symptoms: null, mood: "low", note: "" },
         "2026-04-12": { symptoms: null, mood: "good", note: "" },
       },
     });
-    renderWithAppState(<DailyDetails today="2026-04-18" month="2026-04-01" onOpenDay={onOpenDay} />, { state });
-    expect(screen.getByRole("button", { name: /view details for .*12/i })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /view details for .*30/i })).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /view details for .*12/i }));
-    expect(onOpenDay).toHaveBeenLastCalledWith("2026-04-12");
-    await user.click(screen.getByRole("button", { name: "Add details" }));
-    expect(onOpenDay).toHaveBeenLastCalledWith("2026-04-18");
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, { state });
+    expect(screen.queryByRole("button", { name: /add details|edit details/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("list")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /April 12, 2026/ }));
+    expect(screen.getByRole("button", { name: "Good" })).toHaveAttribute("aria-pressed", "true");
     expect(stored().intensityByDay).toEqual({});
   });
 
@@ -279,7 +275,7 @@ describe("optional daily details", () => {
       },
     };
     renderWithAppState(<CalendarScreen today="2026-04-18" />, { state });
-    await user.click(screen.getByRole("button", { name: /view details for .*12/i }));
+    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026/i }));
     expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("A walk helped.");
     expect(screen.getByRole("button", { name: "Good" })).toHaveAttribute("aria-pressed", "true");
     expect(stored().intensityByDay).toEqual({});

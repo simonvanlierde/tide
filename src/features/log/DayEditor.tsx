@@ -33,6 +33,8 @@ export function DayEditor({
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: changing the date or entry section moves focus to the new fields.
   useEffect(() => {
+    const details = panel.current?.querySelector<HTMLDetailsElement>(".day-editor__details");
+    if (!logged && state.detailsByDay[day] && details) details.open = true;
     const target = panel.current?.querySelector(".day-editor__details[open]")
       ? panel.current?.querySelector<HTMLElement>(".diary-fields button:not(:disabled)")
       : (panel.current?.querySelector<HTMLElement>("input:checked:not(:disabled)") ??
@@ -121,9 +123,6 @@ export function DayEditor({
         <summary>{t("dayEditor.moreDetails")}</summary>
         <DiaryFields key={day} day={day} today={today} />
       </details>
-      <button type="button" className="secondary-action day-editor__done" onClick={onClose}>
-        {t("diary.done")}
-      </button>
     </section>
   );
 }

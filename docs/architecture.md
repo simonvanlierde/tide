@@ -73,12 +73,14 @@ recorded no symptoms; a null value means symptoms were not recorded.
 `DayEditor` is the shared dated editing surface for Today and Calendar. It reuses
 `FlowGauge` and `DiaryFields`; bleeding and diary actions remain independent. Calendar
 owns the selected date, so the editor has no separate date input. Optional diary fields
-sit in a native disclosure, opened directly when the user chooses Details. While the
-editor is open, grid activation changes its date without writing bleeding data and keeps
-the disclosure state. Closing it restores one-tap bleeding logging on empty grid days.
+sit in a native disclosure, opened directly from Today's Details button or a Calendar
+day with diary-only records. Every available Calendar day opens the editor without writing
+bleeding data; logging is explicit inside it. While open, date changes keep the disclosure
+state. Notebook icons identify saved details, replacing a separate date-history list.
+The close button and Escape dismiss the editor; changes save as they happen.
 Diary fields remount by date to clear saved/Undo feedback independently of the disclosure.
 
-Calendar captures the forecast date before dispatching a bleeding log and derives its
+Calendar captures the forecast date before dispatching a range log and derives its
 confirmation in the same render. Its in-memory receipt expires after ten seconds without
 changing saved data. Pointer hover or focus inside the receipt pauses the timer; leaving
 both starts a new ten-second interval.

@@ -1,10 +1,4 @@
 @layer ui {
-  .daily-details {
-    width: 100%;
-  }
-  .daily-details__trigger {
-    min-height: 44px;
-  }
   /* Today's Details: a quiet companion to the log button, same height. The
      dot marks a day that already has details. */
   .details-button {
@@ -130,19 +124,29 @@
     width: 18px;
     height: 18px;
   }
-  .diary-form__count {
+  .diary-form__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: center;
+    margin-top: -10px;
+  }
+  .diary-form__footer .diary-form__count {
+    flex: none;
     text-align: end;
     font-variant-numeric: tabular-nums;
-    margin: -10px 0 0;
+    margin: 0;
+    margin-inline-start: auto;
     font-size: var(--text-sm);
   }
   .diary-form__status {
+    flex: 1 1 auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     /* Stays in the layout when empty: a live region that appears from
        display: none may not be announced. */
-    margin: -8px 0;
+    margin: 0;
     gap: 6px;
     color: var(--ink-muted);
     font-size: var(--text-sm);
@@ -179,25 +183,11 @@
     cursor: not-allowed;
   }
   .diary-form__actions {
+    flex-basis: 100%;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 12px;
-  }
-  .daily-details__history {
-    margin-top: 20px;
-    text-align: start;
-  }
-  .daily-details__history ul {
-    list-style: none;
-    margin: 8px 0 0;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 18px;
-  }
-  .daily-details__history .text-action {
-    min-height: 44px;
   }
 }
 
@@ -234,6 +224,7 @@
     margin-top: -12px;
   }
   .day-editor__details {
+    min-width: 0;
     border-top: 1px solid var(--surface-border);
   }
   .day-editor__details summary {
@@ -249,11 +240,6 @@
   }
   .day-editor__details[open] summary {
     margin-bottom: 12px;
-  }
-  .day-editor .day-editor__done {
-    width: auto;
-    justify-self: start;
-    padding: 10px 22px;
   }
   .day-editor__bleeding:disabled,
   .day-editor button:disabled {

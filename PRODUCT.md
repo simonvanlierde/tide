@@ -48,6 +48,8 @@ out: import it to bring your history, export it to leave.
   Incomplete cycles keep their logged days but do not influence cycle-length estimates.
 - Optional daily details record symptoms, mood and a note, independently of bleeding.
   They are included in Tide backups and do not affect predictions.
+- Calendar dates open the shared editor without recording bleeding. Notebook icons mark saved
+  details, including diary-only days; logging bleeding is an explicit action inside the panel.
 - It runs at <https://tide.duinlab.nl> (Cloudflare; see `wrangler.jsonc`).
 
 ## Capabilities and Constraints

@@ -59,17 +59,8 @@ msgstr "Details hinzufügen"
 msgid "diary.editDetails"
 msgstr "Details bearbeiten"
 
-msgid "diary.addDetailsFor"
-msgstr "Details für {date} hinzufügen"
-
 msgid "diary.details"
 msgstr "Details"
-
-msgid "diary.done"
-msgstr "Fertig"
-
-msgid "diary.editDetailsFor"
-msgstr "Details für {date} bearbeiten"
 
 msgid "diary.undo"
 msgstr "Rückgängig"
@@ -97,12 +88,6 @@ msgstr "Details gelöscht."
 
 msgid "diary.clear"
 msgstr "Details löschen"
-
-msgid "diary.history"
-msgstr "Tägliche Details"
-
-msgid "diary.openDay"
-msgstr "Details für {date} ansehen"
 
 msgid "diary.symptom.cramps"
 msgstr "Krämpfe"
@@ -423,7 +408,7 @@ msgid "calendar.year"
 msgstr "Jahr"
 
 msgid "calendar.tapHelp"
-msgstr "Tippe auf einen Tag, um eine Blutung zu erfassen oder zu bearbeiten."
+msgstr "Tippe auf einen Tag, um ihn anzusehen oder zu bearbeiten."
 
 msgid "calendar.today"
 msgstr "Heute"
@@ -454,9 +439,6 @@ msgstr "Das sind mehr als {max} Tage. Wähle einen früheren letzten Tag."
 
 msgid "calendar.futureHelp"
 msgstr "Zukünftige Tage lassen sich noch nicht erfassen."
-
-msgid "calendar.log"
-msgstr "Erfassen"
 
 msgid "calendar.edit"
 msgstr "Bearbeiten"
@@ -681,7 +663,7 @@ msgid "onboarding.dismiss"
 msgstr "Einführung überspringen"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Tippe auf einen Tag, um ihn zu erfassen oder zu ändern, oder wähle Vergangene Periode erfassen für mehrere Tage."
+msgstr "Tippe auf einen Tag, um ihn anzusehen oder zu bearbeiten. Wähle Vergangene Periode erfassen für mehrere Tage."
 
 msgid "dayEditor.title"
 msgstr "{date}"

@@ -40,7 +40,7 @@ hint until you log a bleeding day or a past period there; Undo does not bring th
 
 ## Features
 
-- Log bleeding days with one tap, or a whole past period at once.
+- Log today with one tap, edit any calendar day, or record a whole past period at once.
 - Add optional symptoms, a mood and a short note for today or a past day, whether or not
   you logged bleeding. These details stay in your diary and do not affect predictions.
 - A cycle dial shows today's cycle day and phase. Drag along it to preview other days.
@@ -68,12 +68,11 @@ Choose **Details**, next to the log button on Today, to record cramps, a headach
 breast tenderness or fatigue. You can choose **No symptoms** to record that you had none;
 leaving symptoms blank means you did not record them. Mood and a note of up to 1,000
 characters are optional too. Each choice saves as you make it; **Clear details** offers
-Undo. On Calendar, use the dated links under **Daily details** to revisit entries for that
-month. The same dated panel handles bleeding flow and optional **More details** on Today
-and Calendar. For diary-only entries on past days, choose **Details** on Calendar, then
-pick a day on the grid. While the editor is open, grid taps change its date without logging
-bleeding. With it closed, a tap still logs a bleeding day. Calendar confirmations clear
-after ten seconds, pausing while you hover over them or focus Undo.
+Undo. Today and Calendar share the same dated panel for flow and optional **More details**.
+Tap a Calendar day to open it; choosing a date never logs bleeding. Use **Log bleeding**
+inside the panel when needed. A notebook icon marks saved details, including days without
+bleeding; those entries open their details directly. **×** or Escape closes the panel.
+Range-log confirmations clear after ten seconds, pausing on hover or when Undo has focus.
 
 ## Development
 
