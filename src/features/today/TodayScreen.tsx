@@ -217,7 +217,7 @@ export function TodayScreen(props: TodayScreenProps) {
                 {t("today.fertility")}
                 <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
                   <p>{t("settings.fertilityMethod")}</p>
-                  <p>{t("settings.fertilityDisclaimer")}</p>
+                  <p>{t("today.notBirthControl")}</p>
                 </InfoPopover>
               </dt>
               <dd className="fact__value">
@@ -231,7 +231,6 @@ export function TodayScreen(props: TodayScreenProps) {
                     <span className="fact__meta">
                       {getOvulationPhrase(t, differenceInDays(forecast.ovulationDate, today))}
                     </span>
-                    <span className="fact__meta">{t("today.notBirthControl")}</span>
                   </>
                 ) : null}
               </dd>

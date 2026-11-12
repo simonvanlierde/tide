@@ -195,9 +195,11 @@ describe("TodayScreen", () => {
     const user = userEvent.setup();
     renderToday("2026-04-18");
 
+    const disclaimer = screen.getByText("An estimate. Don't use it as birth control.");
+    expect(disclaimer).not.toBeVisible();
     await user.click(screen.getByLabelText(/how fertility is estimated/i));
-
-    expect(screen.getByText(/for information only\. don't use them as birth control/i)).toBeInTheDocument();
+    expect(disclaimer).toBeVisible();
+    expect(disclaimer.closest(".info-popover")).not.toBeNull();
   });
 
   it("hides the fertility fact when fertility estimates are turned off", () => {

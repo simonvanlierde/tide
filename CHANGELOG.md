@@ -65,6 +65,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Today shows the fertility disclaimer in its info popover instead of below the estimate.
 - Translations now use [PO catalogs](README.md#translations), keeping the same wording
   and offline language switching in all five languages.
 - The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
