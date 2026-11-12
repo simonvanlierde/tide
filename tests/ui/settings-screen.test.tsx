@@ -481,7 +481,7 @@ describe("SettingsScreen", () => {
 
   it("shows what is stored and when it was last backed up", () => {
     renderSettings(createAppState({ periodDays: ["2026-03-01", "2026-03-02"] }));
-    expect(screen.getByText(/2 logged days · No backup yet/)).toBeInTheDocument();
+    expect(document.querySelector(".data-summary")).toHaveTextContent("2 logged days · No backup yet");
   });
 
   it("shows nothing about stored days before anything is logged", () => {
