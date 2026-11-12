@@ -6,24 +6,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Changed
-
-- Settings → Data opens with one line saying how many days are logged and that they stay on
-  this device. Export shows when you last downloaded a backup and Import names the apps it
-  reads. Backup, calendar export and Delete all data sit in separate groups, with each
-  message under the action that caused it.
-- Add to calendar lets you pick 3, 6 or 12 expected periods right under the button, and
-  fertile windows are a switch beside the calendar legend's own swatch. The confirmation says what the file holds.
-- Delete all data and a replacing import now use a raspberry confirm button and offer
-  "Download a backup first" inside the dialog. After a delete, Settings says "All data
-  deleted."
-- Shorter text across the app. The Data info popover is gone. The calendar note, the
-  backup reminder, the Calendar first-visit hint and the cycle history description are
-  shorter. In Cycle insights, "How was this worked out?" is a closed disclosure that also
-  holds the prediction rules your own sums don't show, instead of a second list.
-- The import error names the file types it accepts. German: "Allgemein", "Darstellung"
-  and "Zum Kalender hinzufügen"; Dutch: "Aan agenda toevoegen".
-
 ## [0.5.0] - 2026-11-12
 
 ### Added
@@ -38,7 +20,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and backups. It links to Calendar for periods that started earlier. Existing installations skip it.
 - Import bleeding history from Clue or Flo without replacing days already logged in Tide.
   Settings previews the count and asks before adding the days.
-- Save the next three expected periods as a calendar file, with optional fertile windows.
+- Save the next 3, 6 or 12 expected periods as a calendar file, with optional fertile windows.
   Events are private; the calendar account you add them to can store and sync them.
 - [Cycle insights](docs/predictions.md) shows the latest 12 completed cycles in a chart and table.
   Mark incomplete cycles to exclude their lengths from estimates without deleting logged days.
@@ -72,6 +54,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   logged, "Period day 5" is the headline, with how long your periods usually last under it.
 - Daily details no longer offer a separate **No symptoms** choice: leaving symptoms blank says
   the same. Backups that hold it still import, as no symptoms logged.
+- Settings → Data opens with one line saying how many days are logged and that they stay on
+  this device. Export shows when you last downloaded a backup and Import names the apps it
+  reads. Each message appears under the action that caused it.
+- Delete all data and a replacing import use a raspberry confirm button and offer
+  "Download a backup first" inside the dialog. After a delete, Settings says "All data deleted."
+- Shorter text across the app; the Data info popover is gone. In Cycle insights, "How was this
+  worked out?" is a closed disclosure that also holds the prediction rules your sums don't show.
+- The import error names the file types it accepts. German: "Allgemein", "Darstellung"
+  and "Zum Kalender hinzufügen"; Dutch: "Aan agenda toevoegen".
 
 ### Fixed
 
