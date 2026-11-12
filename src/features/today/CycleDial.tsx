@@ -9,8 +9,9 @@ import { ARC_START_DEG, ARC_SWEEP_DEG, dayAngleDeg, dayIndexFromPoint, pointerAn
 interface CycleDialProps {
   forecast: Forecast;
   phaseLabel: string;
-  /** Shown in the centre while nothing is being scrubbed; null without an estimate. */
-  estimate?: { label: string; value: string; date: string } | null;
+  /** Shown in the centre while nothing is being scrubbed; null without an estimate.
+   * `value` names its own subject ("Period in 19 days"): the centre has no label. */
+  estimate?: { value: string; date: string } | null;
   /** Shown in the centre at rest when there is no estimate yet (first run). */
   prompt?: string | null;
   intensityByDay: Record<IsoDate, LoggedFlow>;
@@ -167,6 +168,18 @@ export function CycleDial({
     const key = getSegmentStatus(segment, forecast);
     return key ? t(key) : phaseLabel;
   };
+  const isLate = (forecast.nextPeriod.daysUntil ?? 0) < 0;
+  // Logged bleeding today is the only way into the menstrual phase.
+  const bleedingToday = forecast.phaseLabel === "menstrual" && forecast.cycleDay !== null;
+  const nowLine =
+    forecast.cycleDay === null
+      ? phaseLabel
+      : bleedingToday
+        ? t("dial.periodDay", { n: forecast.cycleDay })
+        : isLate
+          ? // Late: the headline already says so.
+            t("dial.day", { n: forecast.cycleDay })
+          : `${t("dial.day", { n: forecast.cycleDay })} · ${phaseLabel}`;
   const frameRef = useRef<HTMLDivElement>(null);
   // The cycle day being previewed while scrubbing (null: the live view) and
   // the exact pointer angle, so the ghost dot tracks the finger rather than
@@ -363,23 +376,44 @@ export function CycleDial({
       >
         <div className="cycle-dial__ring" style={dialStyle}>
           <div className="cycle-dial__inner">
-            {/* At rest the centre is the estimate, with today's cycle day under
-                it; scrubbing turns it into the previewed day. */}
+            {/* At rest the centre reads in time order: today, a rule, then what
+                comes next. While bleeding is logged today leads; otherwise the
+                next-period estimate is the headline. */}
             {estimate && previewIndex === null ? (
               <>
-                <span className="cycle-dial__eyebrow">{estimate.label}</span>
-                <strong className="cycle-dial__estimate" style={{ "--chars": estimate.value.length } as CSSProperties}>
-                  {estimate.value}
-                </strong>
-                <span className="cycle-dial__date">{estimate.date}</span>
-                <span className="cycle-dial__phase cycle-dial__phase--small">
-                  {/* Late: the estimate above already says so. */}
-                  {forecast.cycleDay === null
-                    ? phaseLabel
-                    : (forecast.nextPeriod.daysUntil ?? 0) < 0
-                      ? t("dial.day", { n: forecast.cycleDay })
-                      : `${t("dial.day", { n: forecast.cycleDay })} · ${phaseLabel}`}
-                </span>
+                {bleedingToday ? (
+                  <strong
+                    className="cycle-dial__estimate"
+                    style={{ "--chars": headlineChars(nowLine) } as CSSProperties}
+                  >
+                    {nowLine}
+                  </strong>
+                ) : (
+                  <span className="cycle-dial__phase cycle-dial__phase--small">{nowLine}</span>
+                )}
+                {bleedingToday ? (
+                  // While bleeding, how long it usually lasts beats a date weeks
+                  // away. Only a learned length: the fallback's would be a guess.
+                  forecast.estimateMode === "learned" ? (
+                    <>
+                      <span aria-hidden="true" className="cycle-dial__rule" />
+                      <span className="cycle-dial__next">
+                        {t("dial.usualPeriodLength", { n: forecast.periodLength })}
+                      </span>
+                    </>
+                  ) : null
+                ) : (
+                  <>
+                    <span aria-hidden="true" className="cycle-dial__rule" />
+                    <strong
+                      className="cycle-dial__estimate"
+                      style={{ "--chars": headlineChars(estimate.value) } as CSSProperties}
+                    >
+                      {estimate.value}
+                    </strong>
+                    <span className="cycle-dial__date cycle-dial__date--small">{estimate.date}</span>
+                  </>
+                )}
               </>
             ) : prompt && previewIndex === null ? (
               <span className="cycle-dial__prompt">{prompt}</span>
@@ -388,10 +422,11 @@ export function CycleDial({
                 {/* No cycle day yet: no numeral, rather than a "--" placeholder.
                     The learning note under the dial says what to do. */}
                 {centerDay === null ? null : (
-                  <>
-                    <span className="cycle-dial__eyebrow">{t("dial.cycleDay")}</span>
+                  // The label sits beside the numeral, so the numeral is the headline.
+                  <span className="cycle-dial__day-row">
+                    <span className="cycle-dial__day-label">{t("dial.cycleDay")}</span>
                     <strong className="cycle-dial__day">{centerDay}</strong>
-                  </>
+                  </span>
                 )}
                 <span className="cycle-dial__phase">{centerStatus}</span>
                 {centerDate ? <span className="cycle-dial__date">{formatShortDate(centerDate, locale)}</span> : null}
@@ -432,4 +467,10 @@ export function CycleDial({
       />
     </section>
   );
+}
+
+// The headline wraps to two balanced lines, so it is sized to a bit over half
+// its length, and never below its longest word, which can't break.
+function headlineChars(text: string) {
+  return Math.max(Math.ceil(text.length * 0.6), ...text.split(/\s+/).map((word) => word.length));
 }

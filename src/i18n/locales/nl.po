@@ -137,9 +137,6 @@ msgstr "Je laatste wijzigingen konden niet op dit apparaat worden opgeslagen. Ho
 msgid "today.srCycleDay"
 msgstr "Cyclusdag {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Volgende menstruatie"
-
 msgid "today.fertility"
 msgstr "Vruchtbaarheid"
 
@@ -155,11 +152,11 @@ msgstr "Hoe is dit berekend?"
 msgid "today.explainError"
 msgstr "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens."
 
-msgid "today.expectedToday"
-msgstr "Vandaag verwacht"
+msgid "today.periodExpectedToday"
+msgstr "Menstruatie vandaag verwacht"
 
-msgid "today.inDays"
-msgstr "{n, plural, one {Over {n} dag} other {Over {n} dagen}}"
+msgid "today.periodInDays"
+msgstr "{n, plural, one {Menstruatie over {n} dag} other {Menstruatie over {n} dagen}}"
 
 msgid "today.higherToday"
 msgstr "In de vruchtbare periode"
@@ -185,11 +182,8 @@ msgstr "Niet tonen"
 msgid "today.fertilityUnclear"
 msgstr "Onduidelijk bij vertraging"
 
-msgid "today.periodLate"
-msgstr "Menstruatie"
-
-msgid "today.daysLate"
-msgstr "{n, plural, one {{n} dag te laat} other {{n} dagen te laat}}"
+msgid "today.periodDaysLate"
+msgstr "{n, plural, one {Menstruatie {n} dag te laat} other {Menstruatie {n} dagen te laat}}"
 
 msgid "today.expectedOn"
 msgstr "Verwacht {date}"
@@ -259,6 +253,12 @@ msgstr "Cyclusdag"
 
 msgid "dial.day"
 msgstr "Dag {n}"
+
+msgid "dial.periodDay"
+msgstr "Menstruatiedag {n}"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Duurt meestal {n} dag} other {Duurt meestal {n} dagen}}"
 
 msgid "status.period"
 msgstr "Menstruatie"

@@ -1,7 +1,9 @@
 [default.extend-words]
-# A standard spelling, and the French word in a comment about the language picker.
+# A standard spelling, the French word in a comment about the language picker, and
+# German "Periode" in the plural tests.
 unparseable = "unparseable"
 appareil = "appareil"
+periode = "periode"
 
 [files]
 # Forecast translations contain all five languages.

@@ -234,7 +234,7 @@ the text scales with the disc when the text size setting goes up.
   message. Buttons use `base` at 600.
 - **Body**: supporting text. Notes and legends drop to `md`.
 - **Label**: section titles, fact labels, weekday headers. The screen title spaces wider,
-  at 0.16em. The dial eyebrow and tab labels use `xs`. Nothing visible goes below `xs`.
+  at 0.16em. Tab labels use `xs`. Nothing visible goes below `xs`.
 
 ### Named Rules
 
@@ -394,7 +394,7 @@ drilling in at the end.
 
 Three equal tabs, icon over label: muted ink when inactive, deep tide on tide-tint when
 active. The header has the wordmark on the left and the screen name on the right as a
-tracked eyebrow. A teal skip link appears top-left on keyboard focus.
+tracked eyebrow; on Today it adds the date ("Today · Thu, Nov 12"). A teal skip link appears top-left on keyboard focus.
 
 ### Cycle Dial (signature)
 
@@ -405,11 +405,15 @@ colour so it stays a clean pastel, and a second layer draws thin rails along the
 inner and outer edge. That is the dial's version of the calendar's outline. The band
 stays one continuous ring; small ticks at the rim count the days. In dark mode ovulation
 keeps the fertile wash under its amber rails, because amber over the dark ground turns brown.
-Small per-day ticks sit in a thin band at the rim. A white inner disc holds, at rest, the
-estimate: an eyebrow ("Next period", or "Period" when late), "In 19 days" as the screen's
-headline, the date, and a small "Day 10 · Between periods" line (only the day when late).
+Small per-day ticks sit in a thin band at the rim. A white inner disc holds, at rest, today
+and then the next period, in that order, split by a short hairline. Whichever is the news
+takes the headline, and the headline names its own subject, with no eyebrow above it.
+Between periods: a small "Day 10 · Follicular phase" line, then "Period in 19 days" and
+the date. Late: "Day 37", then "Period 8 days late" and "Expected Tue, Apr 7". With
+bleeding logged today: "Period day 5" as the headline, then a small "Usually lasts 5 days"
+from your own history. Before Tide has learned your length, the headline stands alone.
 After the introduction is dismissed, a dial without history holds its logging hint instead. While you scrub it shows the
-previewed day: eyebrow, numeral, phase and date. Text inside the slider is not read out, so
+previewed day: the numeral with a small "Cycle day" label beside it, then phase and date. Text inside the slider is not read out, so
 the same estimate sits in a visually hidden line before it. An ink marker circles today, and a teal ghost dot follows your
 finger while you scrub. Scrubbing previews any day and changes nothing. The legend only
 names the colours the ring is actually showing.

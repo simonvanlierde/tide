@@ -1,7 +1,9 @@
 import { CircleAlert } from "lucide-react";
 import { lazy, type MouseEvent, Suspense, startTransition, useEffect, useRef, useState } from "react";
-import { useIsReadOnly, useStorageError, useT } from "../state/provider";
+import { useIsReadOnly, useLocale, useStorageError, useT } from "../state/provider";
+import { useToday } from "../state/useToday";
 import { AppIcon } from "../ui/icons";
+import { formatShortDate } from "../utils/date";
 import { legalPage } from "./LegalPages";
 import { shouldHandleAppNavigation } from "./links";
 import { appScreens, getAppScreen } from "./navigation";
@@ -79,6 +81,8 @@ export function App() {
   // The legal pages open from Settings > About, so Settings stays the active tab.
   const activeScreen = getAppScreen(legal ? "/settings" : pathname);
   const t = useT();
+  const locale = useLocale();
+  const today = useToday();
   const mainRef = useRef<HTMLElement>(null);
   const isFirstRender = useRef(true);
   const readOnly = useIsReadOnly();
@@ -108,7 +112,16 @@ export function App() {
       </a>
       <header className="app-header">
         <span className="app-wordmark">tide</span>
-        <span className="app-header__title">{t(legal ? legal.labelKey : activeScreen.labelKey)}</span>
+        <span className="app-header__title">
+          {t(legal ? legal.labelKey : activeScreen.labelKey)}
+          {/* Today's estimates are dates, so the screen names the day they count from. */}
+          {!legal && activeScreen.path === "/" ? (
+            <>
+              {" · "}
+              <time dateTime={today}>{formatShortDate(today, locale)}</time>
+            </>
+          ) : null}
+        </span>
       </header>
       <main id="main" ref={mainRef} className="app-main" tabIndex={-1}>
         {/* Mounted empty from the start: screen readers announce text added to

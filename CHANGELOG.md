@@ -12,6 +12,15 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and nothing in Tide read the difference. Backups that hold it still import, as no symptoms
   logged.
 
+### Added
+
+- Today's header shows today's date, so the next-period date has a day to count from.
+
+### Changed
+
+- The dial reads in time order: today on top, then the next period. On a day with bleeding
+  logged, "Period day 5" is the headline, with how long your periods usually last under it.
+
 ## [0.5.0] - 2026-11-12
 
 ### Added

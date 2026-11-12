@@ -95,7 +95,6 @@ export function TodayScreen(props: TodayScreenProps) {
     forecast.estimateMode === "insufficient" || !forecast.nextPeriod.date
       ? null
       : {
-          label: t(isOverdue ? "today.periodLate" : "today.nextPeriod"),
           value: getNextPeriodPhrase(t, forecast.nextPeriod.daysUntil),
           date: isOverdue
             ? t("today.expectedOn", { date: formatShortDate(forecast.nextPeriod.date, locale) })
@@ -150,7 +149,7 @@ export function TodayScreen(props: TodayScreenProps) {
       {/* The dial shows the estimate, but a slider's content is not read out. */}
       <p className="visually-hidden">
         {estimate
-          ? `${estimate.label}: ${estimate.value}, ${estimate.date}`
+          ? `${estimate.value}, ${estimate.date}`
           : forecast.estimateMode === "insufficient"
             ? learningNote
             : null}
@@ -282,14 +281,14 @@ function getNextPeriodPhrase(t: Translate, daysUntil: CycleSummary["nextPeriod"]
 
   if (daysUntil < 0) {
     const daysLate = Math.abs(daysUntil);
-    return t("today.daysLate", { n: daysLate });
+    return t("today.periodDaysLate", { n: daysLate });
   }
 
   if (daysUntil === 0) {
-    return t("today.expectedToday");
+    return t("today.periodExpectedToday");
   }
 
-  return t("today.inDays", { n: daysUntil });
+  return t("today.periodInDays", { n: daysUntil });
 }
 
 function getPhaseWord(t: Translate, phaseLabel: CyclePhase) {
