@@ -111,10 +111,16 @@
   }
 
   .log-prompt__dismiss {
+    position: relative;
     justify-self: start;
-    min-height: 44px;
-    margin-block: -6px -10px;
     font-size: var(--text-md);
+  }
+
+  /* A 44px touch target that doesn't push the prompt taller than its text. */
+  .log-prompt__dismiss::before {
+    content: "";
+    position: absolute;
+    inset: -8px 0;
   }
 
   .reminder-prompt {
