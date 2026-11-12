@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { resolveLanguage, SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
+import { resolveLanguage, translate } from "../../src/i18n";
 
 describe("i18n", () => {
   it("resolves a concrete preference verbatim", () => {
@@ -31,8 +31,16 @@ describe("i18n", () => {
     expect(translate("fr", "today.inDays", { n: 1.5 })).toBe("Dans 1.5 jour");
     expect(translate("en", "today.inDays", { n: 1.5 })).toBe("In 1.5 days");
     expect(translate("es", "today.inDays", { n: 1_000_000 })).toBe("En 1000000 días");
-    for (const lang of SUPPORTED_LANGUAGES) {
-      expect(translate(lang, "today.inDays", { n: 1 })).not.toBe(translate(lang, "today.inDays", { n: 2 }));
-    }
+  });
+
+  it.each([
+    ["en", "In 1 day", "In 2 days"],
+    ["nl", "Over 1 dag", "Over 2 dagen"],
+    ["de", "In 1 Tag", "In 2 Tagen"],
+    ["fr", "Dans 1 jour", "Dans 2 jours"],
+    ["es", "En 1 día", "En 2 días"],
+  ] as const)("selects singular and plural forms in %s", (lang, singular, plural) => {
+    expect(translate(lang, "today.inDays", { n: 1 })).toBe(singular);
+    expect(translate(lang, "today.inDays", { n: 2 })).toBe(plural);
   });
 });

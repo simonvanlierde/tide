@@ -1,4 +1,3 @@
-import { I18nProvider, LinguiContext } from "@lingui/react";
 import {
   createContext,
   type Dispatch,
@@ -79,9 +78,7 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
         <ReadOnlyContext.Provider value={readOnly}>
-          <StorageErrorContext.Provider value={storageError}>
-            <I18nProvider i18n={translators[resolveLanguage(state.settings.language)]}>{children}</I18nProvider>
-          </StorageErrorContext.Provider>
+          <StorageErrorContext.Provider value={storageError}>{children}</StorageErrorContext.Provider>
         </ReadOnlyContext.Provider>
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
@@ -142,9 +139,8 @@ function useLanguage() {
 // Bound translator for the current language. Components call `const t = useT()`
 // then `t("settings.theme")`.
 export function useT(): Translate {
-  const lingui = useContext(LinguiContext);
   const language = useLanguage();
-  const i18n = lingui?.i18n ?? translators[resolveLanguage(language)];
+  const i18n = translators[resolveLanguage(language)];
   return useMemo(() => (key: string, vars?: Record<string, string | number>) => i18n._(key, vars), [i18n]);
 }
 

@@ -11,7 +11,8 @@ catalog tools can read, while Tide must keep every translation available offline
 
 ## Decision
 
-Use Lingui 6 for React with manually maintained PO catalogs and explicit IDs.
+Use Lingui 6 core with manually maintained PO catalogs and explicit IDs.
+The existing app state selects the translator through `useT()`.
 Keep ordinary IDs; map each `id.one` and `id.other` pair to one ICU plural at `id`.
 Compile with `lingui compile --strict` before builds and tests. Bundle all five main
 catalogs together, and keep forecast catalogs with the existing lazy forecast chunk.

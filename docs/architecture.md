@@ -34,8 +34,8 @@ flowchart TD
 ## Translations
 
 Lingui 6 renders explicit message IDs from five PO catalogs in `src/i18n/locales`.
-`src/state/provider.tsx` supplies the React `I18nProvider` and the bound `useT()`
-translator. Each locale has its own Lingui instance, so rendering another language cannot
+`src/state/provider.tsx` binds `useT()` to the language in the existing app state.
+Each locale has its own Lingui instance, so rendering another language cannot
 change the active screen. Plural messages use ICU `one` and `other` branches.
 Dates still use `Intl` with the resolved language preference.
 
