@@ -23,11 +23,14 @@ describe("daily details persistence", () => {
         "2026-04-03": { symptoms: null, mood: "low", note: "" },
         "2026-04-04": { symptoms: [], mood: null, note: "" },
         "2026-04-05": { symptoms: null, mood: null, note: "" },
+        "2026-04-06": { symptoms: [], mood: "good", note: "" },
       },
     });
     expect(state.detailsByDay).toEqual({
       [day]: { ...details, symptoms: ["cramps"] },
       "2026-04-03": { symptoms: null, mood: "low", note: "" },
+      // The mood survives; the empty list reads as none logged.
+      "2026-04-06": { symptoms: null, mood: "good", note: "" },
     });
     saveAppState(state);
     expect(loadStoredState().state).toEqual(state);

@@ -25,6 +25,25 @@ describe("useToday", () => {
     expect(result.current).toBe("2026-04-20");
   });
 
+  it("re-arms when the timer fires before the wall clock reaches midnight", () => {
+    vi.useFakeTimers({ toFake: ["Date", "setTimeout", "clearTimeout"] });
+    vi.setSystemTime(new Date(2026, 3, 18, 23, 59, 30));
+    const { result } = renderHook(() => useToday());
+
+    // The clock steps back 5 s (an NTP correction) before the timer fires.
+    vi.setSystemTime(new Date(2026, 3, 18, 23, 59, 25));
+    act(() => {
+      vi.advanceTimersByTime(30_000);
+    });
+    expect(result.current).toBe("2026-04-18");
+
+    // Still visible and focused: only a re-armed timer can roll the date over.
+    act(() => {
+      vi.advanceTimersByTime(10_000);
+    });
+    expect(result.current).toBe("2026-04-19");
+  });
+
   it("re-reads the date when a backgrounded app comes back", () => {
     vi.useFakeTimers({ toFake: ["Date"] });
     vi.setSystemTime(new Date(2026, 3, 18, 22, 0));
