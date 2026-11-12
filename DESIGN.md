@@ -334,20 +334,22 @@ The values are in the front matter. This section says what each component is *fo
 After the dial or first-use card comes one log block, in the same slot in every state, with no card. When a
 period is expected or late, the question "Has your period started?" sits above the log
 button and "Not yet" below it. The dial already names the date, so the question doesn't
-repeat it. Right after a log, the block is one status line with Remove
-beside it and the flow gauge under it: nothing asks for another step. On a later visit it
-folds into that one line as a button, ending in "Add flow" (or "Change") as the nudge,
-which opens the gauge and Remove again. It folds on the next visit, never on a timer, so
-nothing moves under a finger. Logging gets the screen's one moment: the droplet scales in
-with a coral ring, like a newly logged calendar day, and simply appears under reduced motion.
+repeat it. One tap logs bleeding and opens the shared dated editor. On a later visit,
+the compact logged line ends in "Add flow" or "Change" and opens that editor again.
+When no bleeding history exists, "Log a past period" below the log line opens Calendar.
+Both actions remain above the tabs on a short phone during first use.
 
-**Details** shares the log line: a quiet button the log button's height, at the end of the
-button, the folded line or the status row. On a line narrower than 23em it keeps only its
-icon. A tide dot marks a day that has details. It opens an inset panel under the line:
-symptoms and mood are pill chips that save on tap (mood with its weather: rain, cloud,
-sun), the note saves as you type, and Done closes it. There is no Save button and no
-draft to lose. Clearing is the one destructive step, so it offers Undo. Only the
-Calendar's panel has a date field.
+**Details** shares the compact log line: a quiet button of the same height. On a line
+narrower than 23em it keeps only its icon. A tide dot marks a day that has details.
+It opens the same editor with **More details** expanded, without logging bleeding.
+
+The editor replaces Today's log line and opens below Calendar's legend. One heading
+names the date; flow comes first, with "Not bleeding that day" to remove a log.
+Symptoms, mood and notes sit under a native **More details** disclosure. Chips save on
+tap and notes save as you type. Clearing details offers Undo. Done, Close and Escape
+close the panel; it stays open while editing or removing bleeding. Calendar's grid owns
+the date, with no competing date field. Both screens use the same inset surface and
+controls.
 
 ### Chips
 
@@ -372,9 +374,7 @@ drilling in at the end.
 - **Switch**: muted-ink border and thumb on soft surface when off; deep-tide fill and
   white thumb when on.
 - **Flow gauge**: four radio steps, spotting to heavy, coloured from the flow ramp.
-  Two equal columns, so long labels and enlarged text fit. On Today the four sit in one
-  row while the longest label fits at the current text size, and the legend is for
-  screen readers only.
+  Two equal columns keep long labels and enlarged text readable in the shared editor.
 
 ### Navigation
 
@@ -427,7 +427,9 @@ the arrow keys. Logging a past period uses the same grid: the first day you pick
 selection ring until you pick the last day, and a status line under the grid says what
 comes next. Under the legend, "Log a past period" and the picked day's details are two
 quiet buttons in one group, side by side when they fit. The first-use hint lasts until a bleeding day or range is logged on Calendar. Future
-months keep their separate hint.
+months keep their separate hint. A completed log shows one confirmation with Undo,
+including any forecast update in its first render. It clears after ten seconds, pausing
+while hovered or while Undo has focus; the saved log remains.
 
 ### Backup reminder
 

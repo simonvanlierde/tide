@@ -24,7 +24,7 @@ export function OnboardingCard({ onDismiss }: { onDismiss: () => void }) {
       </a>
       <p>{t("onboarding.backup")}</p>
       <details className="onboarding__fertility">
-        <summary>{t("fertilityAsk.title")}</summary>
+        <summary>{t("onboarding.fertilitySummary")}</summary>
         <FertilityQuestion
           value={state.settings.showFertility}
           onAnswer={(show) => actions.setSetting("showFertility", show)}

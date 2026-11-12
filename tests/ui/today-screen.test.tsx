@@ -19,6 +19,12 @@ function renderToday(today: IsoDate, state = createLearnedCycleState()) {
 }
 
 describe("TodayScreen", () => {
+  it("offers Calendar for a past period without logging today", () => {
+    renderToday("2026-04-18", createAppState({ periodDays: [] }));
+    expect(screen.getByRole("link", { name: "Log a past period" })).toHaveAttribute("href", "/calendar");
+    expect(screen.getByRole("button", { name: /^Log bleeding today$/ })).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}").intensityByDay).toEqual({});
+  });
   it("renders the cycle dial with the core cycle facts", () => {
     renderToday("2026-04-18");
 
@@ -214,10 +220,10 @@ describe("TodayScreen", () => {
   ] as const)("keeps fertility optional and saves %s", async (answer, enabled) => {
     const user = userEvent.setup();
     renderToday("2026-04-18", createAppState({ settings: { onboardingDismissed: false } }));
-    expect(
-      screen.getByText("Show fertility estimates?", { selector: "summary" }).closest("details"),
-    ).not.toHaveAttribute("open");
-    await user.click(screen.getByText("Show fertility estimates?", { selector: "summary" }));
+    expect(screen.getByText("Fertility estimates", { selector: "summary" }).closest("details")).not.toHaveAttribute(
+      "open",
+    );
+    await user.click(screen.getByText("Fertility estimates", { selector: "summary" }));
     expect(screen.getByText(/only an estimate, so don't use it as birth control/i)).toBeVisible();
     await user.click(screen.getByRole("button", { name: answer }));
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.showFertility).toBe(enabled);
@@ -235,7 +241,7 @@ describe("TodayScreen", () => {
     renderToday("2026-04-18");
 
     await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
-    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /not bleeding/i })).toBeInTheDocument();
 
     // A fresh one-tap log picks no level; the gauge appears to ask for one.
     for (const level of ["spotting", "light", "medium", "heavy"]) {
@@ -347,27 +353,27 @@ describe("TodayScreen", () => {
     await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
 
     expect(screen.queryByText(/has your period started/i)).not.toBeInTheDocument();
-    // Undoing a log is a quiet text action, not a loud orange CTA, and the
-    // day ends on a confirmation rather than on "Remove".
-    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toHaveClass("text-action");
-    // No level was chosen, so the confirmation claims none.
-    expect(screen.getByRole("status")).toHaveTextContent(/^logged today$/i);
+    // Removal stays a quiet action inside the dated editor.
+    expect(screen.getByRole("button", { name: /not bleeding/i })).toHaveClass("text-action");
+    // No flow level is invented by a one-tap log.
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}").intensityByDay["2026-04-28"]).toBeNull();
+    expect(screen.getByRole("heading", { name: "April 28, 2026" })).toBeInTheDocument();
   });
 
-  it("folds a log from an earlier visit into one line that opens flow and Remove", async () => {
+  it("folds a log from an earlier visit into one line that opens the shared dated flow editor", async () => {
     const user = userEvent.setup();
     renderToday("2026-04-18", createAppState({ periodDays: ["2026-04-18"] }));
 
-    // Flow and Remove wait behind the one line, which offers to change the level.
+    // Flow and removal wait behind the one line, which offers to change the level.
     const summary = screen.getByRole("button", { name: /logged today · medium.*change/i });
     // It opens once and goes away, so it is a plain button, not a toggle.
     expect(summary).not.toHaveAttribute("aria-expanded");
     expect(screen.queryByRole("radio")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /remove bleeding log/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /not bleeding/i })).not.toBeInTheDocument();
 
     await user.click(summary);
     expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
-    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /not bleeding/i })).toBeInTheDocument();
   });
 
   it("nudges a plain log from an earlier visit to add its flow", () => {
@@ -382,7 +388,9 @@ describe("TodayScreen", () => {
     await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
 
-    await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
+    await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+    expect(screen.getByRole("button", { name: /^log bleeding$/i })).toHaveFocus();
+    await user.click(screen.getByRole("button", { name: "Done" }));
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveFocus();
   });
 
@@ -510,7 +518,7 @@ it("shows a skippable first-run introduction without a forecast or fertility con
   const introduction = screen.getByRole("region", { name: "Your history stays here" });
   expect(introduction).toHaveTextContent("Tide does not upload what you log.");
   expect(introduction).toHaveTextContent("Download a backup every 60 days.");
-  expect(screen.getByRole("link", { name: /import a tide backup or a clue or flo export/i })).toHaveAttribute(
+  expect(screen.getByRole("link", { name: /import history from tide, clue or flo/i })).toHaveAttribute(
     "href",
     "/settings#import",
   );
@@ -530,7 +538,7 @@ it("finishes the introduction on a first log without restoring it on removal", a
   renderToday("2026-04-18", createAppState({ settings: { onboardingDismissed: false } }));
   await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
   expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
+  await user.click(screen.getByRole("button", { name: /not bleeding/i }));
   expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
   expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.showFertility).toBeNull();
 });

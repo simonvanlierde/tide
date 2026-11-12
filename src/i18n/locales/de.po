@@ -684,7 +684,7 @@ msgid "onboarding.privacy"
 msgstr "Tide lädt deine Einträge nicht hoch."
 
 msgid "onboarding.import"
-msgstr "Importiere eine Tide-Sicherung oder einen Export aus Clue oder Flo"
+msgstr "Verlauf aus Tide, Clue oder Flo importieren"
 
 msgid "onboarding.backup"
 msgstr "Füge Tide deinem Startbildschirm hinzu. Lade alle 60 Tage eine Sicherung herunter."
@@ -694,3 +694,15 @@ msgstr "Einführung überspringen"
 
 msgid "calendar.firstVisitHelp"
 msgstr "Tippe auf einen Tag, um ihn zu erfassen oder zu ändern, oder wähle Vergangene Periode erfassen für mehrere Tage."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Blutung eintragen"
+
+msgid "dayEditor.moreDetails"
+msgstr "Weitere Angaben"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Fruchtbarkeitsschätzungen"

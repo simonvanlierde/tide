@@ -107,7 +107,7 @@ describe("CalendarScreen", () => {
     expect(screen.queryByText(/remove 2026-04-02/i)).not.toBeInTheDocument();
   });
 
-  it("logs a day at medium flow with a single tap", async () => {
+  it("logs a day without choosing a flow level with a single tap", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({
@@ -115,7 +115,7 @@ describe("CalendarScreen", () => {
       }),
     });
 
-    // One tap on an empty day logs it at the default flow, no picker needed.
+    // One tap on an empty day logs bleeding without opening the editor.
     await user.click(screen.getByRole("button", { name: /log april 5, 2026/i }));
 
     expect(screen.getByRole("button", { name: /edit april 5, 2026/i })).toHaveClass("is-logged");
@@ -158,7 +158,7 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("button", { name: /log april 2, 2026/i })).not.toHaveClass("is-logged");
   });
 
-  it("returns keyboard focus to the edited day after removing it", async () => {
+  it("keeps removal in the editor and returns grid focus when Done", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),
@@ -171,6 +171,8 @@ describe("CalendarScreen", () => {
     await user.keyboard("{Enter}");
 
     expect(day).toHaveAccessibleName(/log april 2, 2026/i);
+    expect(screen.getByRole("button", { name: /^log bleeding$/i })).toHaveFocus();
+    await user.click(screen.getByRole("button", { name: "Done" }));
     expect(day).toHaveFocus();
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("button", { name: /april 3, 2026/i })).toHaveFocus();
@@ -201,6 +203,9 @@ describe("CalendarScreen", () => {
     await user.keyboard("{Enter}");
 
     expect(screen.getByRole("button", { name: /log april 20, 2026/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^log bleeding$/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^close$/i })).toHaveFocus();
+    await user.keyboard("{Enter}");
     expect(screen.getByRole("button", { name: /log april 18, 2026/i })).toHaveFocus();
   });
 
@@ -230,6 +235,8 @@ describe("CalendarScreen", () => {
     await user.keyboard("{Enter}");
 
     expect(screen.getByRole("button", { name: /log may 20, 2026/i })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /^close$/i })).toHaveFocus();
+    await user.keyboard("{Enter}");
     expect(screen.getByRole("button", { name: /previous month/i })).toHaveFocus();
   });
 
@@ -276,7 +283,7 @@ describe("CalendarScreen", () => {
     expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
   });
 
-  it("closes the picker when interacting outside it", async () => {
+  it("keeps the editor open on outside interaction until explicitly closed", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),
@@ -287,7 +294,10 @@ describe("CalendarScreen", () => {
 
     fireEvent.pointerDown(document.body);
 
+    expect(screen.getByRole("button", { name: /^close$/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /^close$/i }));
     expect(screen.queryByRole("button", { name: /^close$/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /edit april 2, 2026/i })).toHaveFocus();
   });
 
   it("changes month by swiping the calendar left and right", () => {
@@ -520,12 +530,16 @@ describe("CalendarScreen", () => {
 
     expect(screen.getByRole("button", { name: /add details for sat, apr 18/i })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /april 2, 2026/i }));
-    await user.click(screen.getByRole("button", { name: /add details for thu, apr 2/i }));
+    expect(screen.queryByRole("button", { name: /add details for/i })).not.toBeInTheDocument();
+    await user.click(screen.getByText("More details", { selector: "summary" }));
 
-    expect(screen.getByLabelText(/^date$/i)).toHaveValue("2026-04-02");
+    expect(screen.getByRole("heading", { name: "April 2, 2026" })).toBeInTheDocument();
+    expect(screen.queryByLabelText(/^date$/i)).not.toBeInTheDocument();
+    expect(screen.getByText("More details", { selector: "summary" })).toHaveFocus();
+    expect(screen.getByRole("button", { name: "Cramps" })).toBeVisible();
   });
 
-  it("keeps details on the last past day when a logged future day is picked", async () => {
+  it("keeps future-day details read-only in the same dated panel", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-02", "2026-04-20"] }),
@@ -534,6 +548,12 @@ describe("CalendarScreen", () => {
     // A picked day takes the place of the range action.
     expect(screen.queryByRole("button", { name: /log a past period/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /edit april 20, 2026/i }));
+    expect(screen.queryByRole("button", { name: /add details for/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "April 20, 2026" })).toBeInTheDocument();
+    await user.click(screen.getByText("More details", { selector: "summary" }));
+    expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: /note/i })).toBeDisabled();
+    await user.click(screen.getByRole("button", { name: "Done" }));
     expect(screen.getByRole("button", { name: /add details for thu, apr 2/i })).toBeInTheDocument();
   });
 

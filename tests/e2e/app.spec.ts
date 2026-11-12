@@ -29,14 +29,14 @@ test("logging today persists across reload", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: /log bleeding today/i }).click();
-  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: translate("en", "calendar.notBleeding"), exact: true })).toBeVisible();
 
   // A later visit folds the log into its one line, which opens Remove again.
   await page.reload();
   const summary = page.getByRole("button", { name: /logged today/i });
   await expect(summary).not.toHaveAttribute("aria-expanded");
   await summary.click();
-  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: translate("en", "calendar.notBleeding"), exact: true })).toBeVisible();
 });
 
 test("deep links reload correctly for the static app paths", async ({ page }) => {

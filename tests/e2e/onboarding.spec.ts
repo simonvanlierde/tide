@@ -16,6 +16,9 @@ for (const colorScheme of ["light", "dark"] as const) {
       await expect(card).toBeVisible();
       await expect(page.getByRole("slider")).toHaveCount(0);
       await expect(log).toBeInViewport({ ratio: 1 });
+      const past = page.getByRole("link", { name: translate(language, "calendar.logRange"), exact: true });
+      await expect(past).toBeInViewport({ ratio: 1 });
+      const pastBox = await past.boundingBox();
       const cardBox = await card.boundingBox();
       const logBox = await log.boundingBox();
       const tabsBox = await page.getByRole("navigation").boundingBox();
@@ -24,6 +27,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       expect(tabsBox).not.toBeNull();
       expect((cardBox?.y ?? 0) + (cardBox?.height ?? 0)).toBeLessThanOrEqual(logBox?.y ?? 0);
       expect((logBox?.y ?? 0) + (logBox?.height ?? 0)).toBeLessThan(tabsBox?.y ?? 0);
+      expect((pastBox?.y ?? 0) + (pastBox?.height ?? 0)).toBeLessThan(tabsBox?.y ?? 0);
       expect(await findOverflow(page)).toEqual([]);
       await log.click();
       await expect(card).toHaveCount(0);
@@ -54,7 +58,7 @@ test("a first log removes introduction across reload and later removal", async (
   await page.getByRole("button", { name: "Log bleeding today", exact: true }).click();
   await page.reload();
   await page.getByRole("button", { name: /logged today/i }).click();
-  await page.getByRole("button", { name: /remove bleeding log/i }).click();
+  await page.getByRole("button", { name: translate("en", "calendar.notBleeding"), exact: true }).click();
   await expect(page.getByRole("region", { name: "Your history stays here" })).toHaveCount(0);
 });
 
@@ -96,4 +100,35 @@ test("expanded fertility choice fits a narrow screen with enlarged text", async 
   await expect(card.getByRole("button", { name: "Show", exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: "Don't show", exact: true })).toBeVisible();
   expect(await findOverflow(page)).toEqual([]);
+});
+
+test("the past-period path opens Calendar without logging today", async ({ page }) => {
+  await page.clock.setFixedTime(FIXED_NOW);
+  await page.goto("/");
+  await page.getByRole("link", { name: "Log a past period", exact: true }).click();
+  await expect(page).toHaveURL(/\/calendar$/);
+  await expect(page.getByRole("table", { name: translate("en", "calendar.title") })).toBeVisible();
+  const days = await page.evaluate(
+    () => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay ?? {},
+  );
+  expect(days).toEqual({});
+});
+
+test("opening the day editor respects reduced motion", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.clock.setFixedTime(FIXED_NOW);
+  await page.addInitScript(() => {
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = function (options) {
+      if (this.classList.contains("day-editor"))
+        this.setAttribute("data-scroll-behavior", typeof options === "object" ? (options.behavior ?? "auto") : "auto");
+      original.call(this, options);
+    };
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Log bleeding today", exact: true }).click();
+  await expect(page.getByRole("region", { name: "April 15, 2026", exact: true })).toHaveAttribute(
+    "data-scroll-behavior",
+    "auto",
+  );
 });

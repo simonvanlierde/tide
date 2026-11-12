@@ -1,15 +1,15 @@
 import { CalendarRange, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { type KeyboardEvent, type TouchEvent, useEffect, useRef, useState } from "react";
+import { type KeyboardEvent, type ReactNode, type TouchEvent, useEffect, useRef, useState } from "react";
 import { MAX_PERIOD_RANGE_DAYS } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { useToday } from "../../state/useToday";
 import { formatShortDate } from "../../utils/date";
 import { DailyDetails } from "../diary/DailyDetails";
+import { DayEditor } from "../log/DayEditor";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarMonthPicker } from "./CalendarMonthPicker";
 import type { CalendarCell } from "./calendar";
-import { DayFlowPicker } from "./DayFlowPicker";
 import { useCalendar } from "./useCalendar";
 
 interface CalendarScreenProps {
@@ -25,14 +25,11 @@ export function CalendarScreen(props: CalendarScreenProps) {
   const articleRef = useRef<HTMLElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wantPinpoint = useRef(false);
-  // Details follow the last past day picked, and keep it once the picker
-  // closes: tapping "Add details" closes the picker on pointerdown, before the
-  // click lands.
-  // Null until a day is picked, so the default follows today past midnight.
+  const [editorSection, setEditorSection] = useState<"bleeding" | "details">("bleeding");
+  // Details follow the last logged or selected date; the default follows today.
   const [picked, setPicked] = useState<IsoDate | null>(null);
-  if (log.selectedDay && log.selectedDay <= today && log.selectedDay !== picked) {
-    setPicked(log.selectedDay);
-  }
+  const lastDay = log.selectedDay ?? log.justLoggedDay;
+  if (lastDay && lastDay <= today && lastDay !== picked) setPicked(lastDay);
 
   // Pop the today cell so people see exactly where they landed after "Today".
   // goToToday changes the month inside a transition, so wait for the current
@@ -168,23 +165,24 @@ export function CalendarScreen(props: CalendarScreenProps) {
             days={days}
             selectedDay={log.selectedDay ?? log.rangePick?.from ?? null}
             justLoggedDay={log.justLoggedDay}
-            onSelectDay={log.selectDay}
+            onSelectDay={(day) => {
+              setEditorSection("bleeding");
+              log.selectDay(day);
+            }}
           />
         </div>
         <CalendarLegend days={days} />
         {log.selectedDay ? (
-          <DayFlowPicker
+          <DayEditor
             key={log.selectedDay}
             day={log.selectedDay}
-            intensity={log.selectedIntensity}
-            isLogged={log.isSelectedLogged}
-            onSelect={(intensity) => log.setDayIntensity(log.selectedDay as IsoDate, intensity)}
-            onRemove={() => {
-              log.removeDay(log.selectedDay as IsoDate);
-              // An imported future day becomes disabled once removed.
-              focusDay((log.selectedDay as IsoDate) > today ? today : log.selectedDay);
+            today={today}
+            initialSection={editorSection}
+            onClose={() => {
+              const day = log.selectedDay;
+              log.closePicker();
+              focusDay(day && day > today ? today : day);
             }}
-            onClose={log.closePicker}
           />
         ) : log.rangePick ? (
           <p className="supporting-note calendar__help" role="status">
@@ -198,7 +196,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
         ) : log.justLoggedDay || log.justLoggedRange ? (
           // A one-tap log or a range wrote data; say what, and make undo one
           // tap too.
-          <p className="supporting-note calendar__help" role="status">
+          <CalendarFeedback onPause={log.setFeedbackPaused}>
             {t(log.forecastMoved ? "calendar.justLoggedForecast" : "calendar.justLogged", {
               date: log.justLoggedRange
                 ? `${formatShortDate(log.justLoggedRange.from, locale)} – ${formatShortDate(log.justLoggedRange.to, locale)}`
@@ -207,7 +205,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
             <button type="button" className="text-action calendar__undo" onClick={handleUndo}>
               {t("calendar.undo")}
             </button>
-          </p>
+          </CalendarFeedback>
         ) : helpKey === "calendar.tapHelp" ? null : (
           // First-use help lasts until a Calendar bleeding log; future months
           // keep their separate explanation.
@@ -236,10 +234,41 @@ export function CalendarScreen(props: CalendarScreenProps) {
               {t(log.rangePick ? "common.cancel" : "calendar.logRange")}
             </button>
           )}
-          <DailyDetails today={today} day={picked ?? today} month={month.visibleMonth} />
+          {log.selectedDay ? null : (
+            <DailyDetails
+              today={today}
+              day={picked ?? today}
+              month={month.visibleMonth}
+              onOpenDay={(day) => {
+                setEditorSection("details");
+                log.openDay(day);
+              }}
+            />
+          )}
         </div>
       </article>
     </section>
+  );
+}
+
+function CalendarFeedback({ children, onPause }: { children: ReactNode; onPause: (paused: boolean) => void }) {
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  useEffect(() => {
+    onPause(hovered || focused);
+    return () => onPause(false);
+  }, [hovered, focused, onPause]);
+  return (
+    <p
+      className="supporting-note calendar__help"
+      role="status"
+      onPointerEnter={(event) => event.pointerType === "mouse" && setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(event) => setFocused(event.currentTarget.contains(event.relatedTarget))}
+    >
+      {children}
+    </p>
   );
 }
 

@@ -684,7 +684,7 @@ msgid "onboarding.privacy"
 msgstr "Tide does not upload what you log."
 
 msgid "onboarding.import"
-msgstr "Import a Tide backup or a Clue or Flo export"
+msgstr "Import history from Tide, Clue or Flo"
 
 msgid "onboarding.backup"
 msgstr "Add Tide to your home screen. Download a backup every 60 days."
@@ -694,3 +694,15 @@ msgstr "Skip introduction"
 
 msgid "calendar.firstVisitHelp"
 msgstr "Tap a day to log or change it, or use Log a past period for a range."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Log bleeding"
+
+msgid "dayEditor.moreDetails"
+msgstr "More details"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Fertility estimates"

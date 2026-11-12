@@ -31,7 +31,8 @@ so you can restore it later. Installing Tide does not create a separate backup o
 The introduction sits above the log button. It explains on-device storage, offers an
 import from Tide, Clue or Flo, and suggests installing Tide and backing up every 60 days.
 Expand the fertility question to choose whether to show estimates, or skip the introduction
-without enabling them. Settings keeps the fertility switch and import controls available.
+without enabling them. If your period started earlier, choose **Log a past period** to open
+Calendar. Settings keeps the fertility switch and import controls available.
 
 The introduction disappears after you skip it, record your first bleeding day or daily
 details, or complete an import. Existing installations skip it. Calendar keeps its inline
@@ -68,7 +69,10 @@ breast tenderness or fatigue. You can choose **No symptoms** to record that you 
 leaving symptoms blank means you did not record them. Mood and a note of up to 1,000
 characters are optional too. Each choice saves as you make it; **Clear details** offers
 Undo. On Calendar, use the dated links under **Daily details** to revisit entries for that
-month, or choose a date in the editor.
+month. The same dated panel handles bleeding flow and optional **More details** on Today
+and Calendar. Pick days on the Calendar grid to change the date; adding diary details
+does not log bleeding. Calendar confirmations clear after ten seconds, pausing while
+you hover over them or focus Undo.
 
 ## Development
 

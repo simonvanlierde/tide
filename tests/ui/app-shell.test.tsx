@@ -99,7 +99,7 @@ describe("App shell", () => {
     const user = userEvent.setup();
     renderWithAppState(<App />, { state: createAppState({ settings: { onboardingDismissed: false } }) });
 
-    await user.click(screen.getByRole("link", { name: /import a tide backup or a clue or flo export/i }));
+    await user.click(screen.getByRole("link", { name: /import history from tide, clue or flo/i }));
 
     expect(window.location.pathname).toBe("/settings");
     expect(screen.getByRole("button", { name: /^import$/i })).toHaveFocus();

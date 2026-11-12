@@ -1,5 +1,6 @@
-import { ChevronRight } from "lucide-react";
+import { CalendarRange, ChevronRight } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
+import { followAppLink } from "../../app/links";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
@@ -15,7 +16,8 @@ import {
 import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
 import { differenceInDays, formatShortDate } from "../../utils/date";
-import { DetailsButton, DetailsForm } from "../diary/DailyDetails";
+import { DetailsButton } from "../diary/DailyDetails";
+import { DayEditor } from "../log/DayEditor";
 import { LogAction } from "../log/LogAction";
 import { BackupReminder } from "../reminders/BackupReminder";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
@@ -53,7 +55,7 @@ export function TodayScreen(props: TodayScreenProps) {
     }
   };
   const insightsButton = useRef<HTMLButtonElement>(null);
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editorSection, setEditorSection] = useState<"bleeding" | "details" | null>(null);
   const detailsId = useId();
   const detailsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
@@ -71,8 +73,8 @@ export function TodayScreen(props: TodayScreenProps) {
     }
   }, [focusPending]);
   const toggleToday = () => {
-    setFocusPending(true);
     actions.togglePeriodDay(today, today);
+    setEditorSection("bleeding");
   };
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
@@ -105,9 +107,9 @@ export function TodayScreen(props: TodayScreenProps) {
     <DetailsButton
       ref={detailsButton}
       day={today}
-      open={detailsOpen}
+      open={editorSection !== null}
       controls={detailsId}
-      onOpen={() => setDetailsOpen(!detailsOpen)}
+      onOpen={() => setEditorSection("details")}
     />
   );
   const logVariant =
@@ -157,38 +159,50 @@ export function TodayScreen(props: TodayScreenProps) {
       ) : null}
 
       <div className="today-screen__lead">
-        {reminderState.shouldPrompt ? (
-          <ReminderPrompt
-            isOverdue={reminderState.isOverdue}
-            onLog={toggleToday}
-            onDismiss={() => {
-              setFocusPending(true);
-              actions.dismissReminder(today);
-            }}
-            autoFocus={focusPending}
-            aside={details}
-          />
-        ) : (
-          <LogAction
-            isLogged={isTodayLogged}
-            intensity={state.intensityByDay[today]}
-            variant={logVariant}
-            onToggle={toggleToday}
-            onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
-            autoFocus={focusPending}
-            aside={details}
-          />
-        )}
+        {editorSection === null ? (
+          <div className="today-screen__logging">
+            {reminderState.shouldPrompt ? (
+              <ReminderPrompt
+                isOverdue={reminderState.isOverdue}
+                onLog={toggleToday}
+                onDismiss={() => {
+                  setFocusPending(true);
+                  actions.dismissReminder(today);
+                }}
+                autoFocus={focusPending}
+                aside={details}
+              />
+            ) : (
+              <LogAction
+                isLogged={isTodayLogged}
+                intensity={state.intensityByDay[today]}
+                variant={logVariant}
+                onToggle={toggleToday}
+                onEdit={() => setEditorSection("bleeding")}
+                autoFocus={focusPending}
+                aside={details}
+              />
+            )}
+            {!readOnly && Object.keys(state.intensityByDay).length === 0 ? (
+              <a className="text-action today-screen__past-period" href="/calendar" onClick={followAppLink}>
+                <AppIcon icon={CalendarRange} className="text-action__icon" />
+                {t("calendar.logRange")}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
         <div id={detailsId}>
-          {detailsOpen ? (
-            <DetailsForm
-              // A new day is a new form: an Undo or "saved" from yesterday must not carry over.
+          {editorSection !== null ? (
+            <DayEditor
               key={today}
               day={today}
               today={today}
+              initialSection={editorSection}
               onClose={() => {
-                setDetailsOpen(false);
-                requestAnimationFrame(() => detailsButton.current?.focus());
+                const fromDetails = editorSection === "details";
+                setEditorSection(null);
+                if (fromDetails) requestAnimationFrame(() => detailsButton.current?.focus());
+                else setFocusPending(true);
               }}
             />
           ) : null}

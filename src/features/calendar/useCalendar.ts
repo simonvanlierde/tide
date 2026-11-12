@@ -1,6 +1,6 @@
-import { startTransition, useEffect, useMemo, useRef, useState } from "react";
+import { startTransition, useEffect, useMemo, useState } from "react";
 import { getPeriodRange } from "../../domain/flow";
-import type { FlowIntensity, IsoDate } from "../../domain/types";
+import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useForecast, useLocale } from "../../state/provider";
 import { addMonths, formatMonthLabel } from "../../utils/date";
 import { buildCalendarCells, buildMonthDays } from "./calendar";
@@ -104,20 +104,20 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
   } | null>(null);
   const isLogged = (day: IsoDate) => day in state.intensityByDay;
 
-  // A log can move the next-period date (a big enough gap starts a new cycle),
-  // which repaints every forecast fill in the month. Say so rather than letting
-  // the grid change under the user's hand. No timer on the status line: it
-  // stands until the next tap, month change, or undo makes it stale, so Undo is
-  // never snatched away mid-read.
-  const previousForecast = useRef(nextPeriodDate);
-  const [forecastMoved, setForecastMoved] = useState(false);
+  // Compare within the same render as the new log, so the receipt never
+  // briefly shows the old forecast status before adding its explanation.
+  const [forecastBeforeLog, setForecastBeforeLog] = useState(nextPeriodDate);
+  const forecastMoved = Boolean(justLoggedDay || justLoggedRange) && forecastBeforeLog !== nextPeriodDate;
+  const [feedbackPaused, setFeedbackPaused] = useState(false);
+
   useEffect(() => {
-    const moved = previousForecast.current !== nextPeriodDate;
-    previousForecast.current = nextPeriodDate;
-    if (moved && (justLoggedDay || justLoggedRange)) {
-      setForecastMoved(true);
-    }
-  }, [nextPeriodDate, justLoggedDay, justLoggedRange]);
+    if (feedbackPaused || (!justLoggedDay && !justLoggedRange)) return;
+    const timer = window.setTimeout(() => {
+      setJustLoggedDay(null);
+      setJustLoggedRange(null);
+    }, 10000);
+    return () => window.clearTimeout(timer);
+  }, [feedbackPaused, justLoggedDay, justLoggedRange]);
 
   // Drops the open flow picker and the just-logged status line. A range pick
   // stays open: a period can run across the month boundary.
@@ -125,7 +125,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
     setSelectedDay(null);
     setJustLoggedDay(null);
     setJustLoggedRange(null);
-    setForecastMoved(false);
+    setFeedbackPaused(false);
   }
 
   function pickRangeDay(from: IsoDate | null, day: IsoDate) {
@@ -138,6 +138,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       setRangePick({ from, tooLong: true });
       return;
     }
+    setForecastBeforeLog(nextPeriodDate);
     actions.logPeriodRange(from, day, today);
     if (range.some((entry) => entry <= today && !isLogged(entry))) {
       actions.setSetting("calendarHelpDismissed", true);
@@ -154,10 +155,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
     selectedDay,
     justLoggedDay,
     forecastMoved,
-    // A day logged without a level leaves the gauge unselected: it is a
-    // question to answer, not a choice already made on the user's behalf.
-    selectedIntensity: selectedDay && isLogged(selectedDay) ? state.intensityByDay[selectedDay] : undefined,
-    isSelectedLogged: selectedDay ? isLogged(selectedDay) : false,
+    setFeedbackPaused,
     rangePick,
     justLoggedRange,
     clear,
@@ -168,21 +166,21 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       setJustLoggedRange(null);
       if (rangePick) {
         setJustLoggedDay(null);
-        setForecastMoved(false);
+        setFeedbackPaused(false);
         pickRangeDay(rangePick.from, day);
         return;
       }
       if (!isLogged(day)) {
+        setForecastBeforeLog(nextPeriodDate);
         actions.togglePeriodDay(day, today);
         actions.setSetting("calendarHelpDismissed", true);
         setJustLoggedDay(day);
-        setForecastMoved(false);
         // Selection follows the tap: close any picker left open on another day.
         setSelectedDay(null);
         return;
       }
       setJustLoggedDay(null);
-      setForecastMoved(false);
+      setFeedbackPaused(false);
       setSelectedDay((current) => (current === day ? null : day));
     },
     startRangePick() {
@@ -191,6 +189,11 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
     },
     cancelRangePick() {
       setRangePick(null);
+    },
+    openDay(day: IsoDate) {
+      clear();
+      setRangePick(null);
+      setSelectedDay(day);
     },
     closePicker() {
       setSelectedDay(null);
@@ -208,14 +211,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       }
       setJustLoggedDay(null);
       setJustLoggedRange(null);
-      setForecastMoved(false);
-    },
-    setDayIntensity(day: IsoDate, intensity: FlowIntensity) {
-      actions.setDayIntensity(day, intensity, today);
-    },
-    removeDay(day: IsoDate) {
-      actions.togglePeriodDay(day, today);
-      setSelectedDay(null);
+      setFeedbackPaused(false);
     },
   };
 }

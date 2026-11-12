@@ -684,7 +684,7 @@ msgid "onboarding.privacy"
 msgstr "Tide no sube lo que registras."
 
 msgid "onboarding.import"
-msgstr "Importa una copia de seguridad de Tide o una exportación de Clue o Flo"
+msgstr "Importar historial de Tide, Clue o Flo"
 
 msgid "onboarding.backup"
 msgstr "Añade Tide a tu pantalla de inicio. Descarga una copia de seguridad cada 60 días."
@@ -694,3 +694,15 @@ msgstr "Saltar introducción"
 
 msgid "calendar.firstVisitHelp"
 msgstr "Toca un día para registrarlo o cambiarlo, o elige Registrar un período pasado para varios días."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Registrar sangrado"
+
+msgid "dayEditor.moreDetails"
+msgstr "Más detalles"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Estimaciones de fertilidad"

@@ -68,6 +68,16 @@ Daily details are separate from bleeding logs. The forecast uses bleeding histor
 symptoms, mood and notes do not change estimates. An empty symptom list means the user
 recorded no symptoms; a null value means symptoms were not recorded.
 
+`DayEditor` is the shared dated editing surface for Today and Calendar. It reuses
+`FlowGauge` and `DiaryFields`; bleeding and diary actions remain independent. Calendar
+owns the selected date, so the editor has no separate date input. Optional diary fields
+sit in a native disclosure, opened directly when the user chooses Details.
+
+Calendar captures the forecast date before dispatching a bleeding log and derives its
+confirmation in the same render. Its in-memory receipt expires after ten seconds without
+changing saved data. Pointer hover or focus inside the receipt pauses the timer; leaving
+both starts a new ten-second interval.
+
 ## First-use guidance
 
 Schema 5 adds `onboardingDismissed` and `calendarHelpDismissed` to the existing local

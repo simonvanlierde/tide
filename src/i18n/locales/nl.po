@@ -684,7 +684,7 @@ msgid "onboarding.privacy"
 msgstr "Tide uploadt niet wat je logt."
 
 msgid "onboarding.import"
-msgstr "Importeer een Tide-reservekopie of een export uit Clue of Flo"
+msgstr "Importeer je geschiedenis uit Tide, Clue of Flo"
 
 msgid "onboarding.backup"
 msgstr "Voeg Tide toe aan je beginscherm. Download elke 60 dagen een reservekopie."
@@ -694,3 +694,15 @@ msgstr "Introductie overslaan"
 
 msgid "calendar.firstVisitHelp"
 msgstr "Tik op een dag om die te loggen of te wijzigen, of kies Eerdere menstruatie loggen voor meerdere dagen."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Bloeding loggen"
+
+msgid "dayEditor.moreDetails"
+msgstr "Meer details"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Vruchtbaarheidsschattingen"
