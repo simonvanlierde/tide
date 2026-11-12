@@ -6,21 +6,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Removed
-
-- The **No symptoms** choice in daily details. Leaving symptoms blank already says the same,
-  and nothing in Tide read the difference. Backups that hold it still import, as no symptoms
-  logged.
-
-### Added
-
-- Today's header shows today's date, so the next-period date has a day to count from.
-
-### Changed
-
-- The dial reads in time order: today on top, then the next period. On a day with bleeding
-  logged, "Period day 5" is the headline, with how long your periods usually last under it.
-
 ## [0.5.0] - 2026-11-12
 
 ### Added
@@ -45,6 +30,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Reminder dates stay on this device and are omitted from backups.
 - Privacy and accessibility pages work offline. A [backup guide](docs/backups.md) explains safe restores
   and the JSON format. The site also publishes security-contact details and link previews.
+- Today's header shows today's date, so the next-period date has a day to count from.
 
 ### Changed
 
@@ -84,6 +70,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Switches have sufficient contrast in both themes. Flow levels, theme choices, insights and
   translated labels fit narrow phones and enlarged text without hiding behind the tabs.
 - The background stays anchored to the viewport when switching between short and long screens.
+- The dial reads in time order: today on top, then the next period. On a day with bleeding
+  logged, "Period day 5" is the headline, with how long your periods usually last under it.
+- Daily details no longer offer a separate **No symptoms** choice: leaving symptoms blank says
+  the same. Backups that hold it still import, as no symptoms logged.
 
 ### Security
 
