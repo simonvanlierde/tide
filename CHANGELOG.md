@@ -11,7 +11,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Record optional symptoms, mood and a short note for today or a past day,
-  independently of bleeding. [Daily details](README.md#daily-details) are included in backups
+  independently of bleeding. Daily details are included in backups
   and do not affect predictions.
 - Today and Calendar share a dated editor for flow and optional daily details.
   Selecting a Calendar day opens it without logging bleeding. Notebook icons mark saved
@@ -43,7 +43,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   On phones, Today and Calendar use a bottom sheet with a visible date and close control;
   expanded details scroll inside it while the Calendar remains interactive.
   Range-log confirmations expire after ten seconds, pausing on hover or focus.
-- All five languages use [Lingui PO catalogs](README.md#translations) bundled for offline switching.
+- All five languages use [Lingui PO catalogs](docs/development.md#translations) bundled for offline switching.
   Wording and narrow-screen layouts are clearer in Dutch, German, French and Spanish.
 - Calculating period duration for a twenty-year synthetic history fell from 4.47 to 1.33 ms
   against 0.4.0. [Predictor benchmarks](docs/performance.md) also record the added range-logging cost

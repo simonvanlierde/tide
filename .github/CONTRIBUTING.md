@@ -22,10 +22,9 @@ request outside what the project sets out to do is closed with a link to this se
 
 ## Set up and check
 
-[Development](../CONTRIBUTING.md#development) in the root CONTRIBUTING.md installs the tools, the dependencies
-and the git hooks. `just check` runs the checks CI runs, and `just fmt` fixes and
-formats. It also has the architecture and the
-things that trip people up.
+The [README](../README.md#development) installs the tools, the dependencies and the git
+hooks. `just check` runs the checks CI runs, and `just fmt` fixes and formats.
+[Development](../docs/development.md) has the other commands and the things that trip people up.
 
 Each change comes with tests. Run a new regression test against the old code first and confirm that it fails for the intended reason.
 Follow the existing TypeScript style; Biome checks formatting and lint rules, and TypeScript checks types.

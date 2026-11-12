@@ -33,18 +33,11 @@ flowchart TD
 
 ## Translations
 
-Lingui 6 renders explicit message IDs from five PO catalogs in `src/i18n/locales`.
-`src/state/provider.tsx` binds `useT()` to the language in the existing app state.
-Each locale has its own Lingui instance, so rendering another language cannot
-change the active screen. Plural messages use ICU `one` and `other` branches.
-Dates still use `Intl` with the resolved language preference.
-
-The forecast explainer has a second catalog in `src/features/today/locales`, compiled
-into its lazy chunk. The service worker precaches that chunk along with the app.
-All five languages work offline; choosing a language makes no catalog request.
-`lingui compile --strict` runs before development, builds, type checks and tests.
-Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
-[translation workflow](../README.md#translations) describes the commands.
+`src/state/provider.tsx` binds `useT()` to the language saved in the app state. Each locale has
+its own Lingui instance, so rendering text in another language can't switch the active screen.
+Dates use `Intl` with the resolved language. The forecast explainer's catalogs compile into its
+lazy chunk, which the service worker precaches with the app, so every language works offline.
+[Development](development.md#translations) has the editing rules and commands, and
 [ADR 0002](adr/0002-lingui-catalogs.md) records the choice.
 
 ## Data flow
@@ -66,50 +59,29 @@ Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
 5. A `storage` event from another tab or the installed app replaces the state with that window's
    saved copy. Simultaneous edits are not merged; the last save wins.
 
-Daily details are separate from bleeding logs. The forecast uses bleeding history only;
-symptoms, mood and notes do not change estimates. A day without symptoms has none
-recorded (`null`); there is no separate "no symptoms" record.
+Daily details are separate from bleeding logs, and the forecast reads bleeding history only.
+A day without symptoms stores `null`; there is no separate "no symptoms" record.
 
-`DayEditor` is the shared dated editing surface for Today and Calendar. It reuses
-`FlowGauge` and `DiaryFields`; bleeding and diary actions remain independent. Calendar
-owns the selected date, so the editor has no separate date input. Optional diary fields
-sit in a native disclosure, opened directly from Today's Details button or a Calendar
-day with diary-only records. Every available Calendar day opens the editor without writing
-bleeding data; logging is explicit inside it. While open, date changes keep the disclosure
-state. Notebook icons identify saved details, replacing a separate date-history list.
-The close button and Escape dismiss the editor; changes save as they happen.
-Diary fields remount by date to clear saved/Undo feedback independently of the disclosure.
-On portrait phone viewports, the editor floats above the measured tab bar without blocking
-the Calendar. Its header stays visible while its body scrolls. Resize and visual-viewport
-events keep it within the available space; the Calendar reveals the selected day above it.
-Larger screens and short landscape windows retain the inline layout. Escape also closes the
-editor after focus returns to the surrounding screen.
+`DayEditor` is the dated editor that Today and Calendar share. It combines `FlowGauge` and
+`DiaryFields`, and bleeding and diary changes stay independent. Calendar owns the selected date,
+and opening a day never logs bleeding. Every change saves as it happens. On portrait phones the
+editor floats above the measured tab bar and keeps itself inside the visual viewport; larger
+screens and short landscape windows show it inline.
 
-Calendar captures the forecast date before dispatching a range log and derives its
-confirmation in the same render. Its in-memory receipt expires after ten seconds without
-changing saved data. Pointer hover or focus inside the receipt pauses the timer; leaving
-both starts a new ten-second interval.
+A range log keeps its confirmation in memory only. It expires after ten seconds, and hover or
+focus inside it pauses the timer.
 
 ## First-use guidance
 
-Schema 5 adds `onboardingDismissed` and `calendarHelpDismissed` to the existing local
-settings. A fresh installation starts both as false. Normalizing an existing saved state
-without valid flags treats both as dismissed, so an upgrade does not introduce a tour.
-The schema bump makes an older tab read the newer blob as read-only.
+Schema 5 adds two settings, `onboardingDismissed` and `calendarHelpDismissed`. A fresh install
+starts both as false. An existing saved state without them loads with both set to true, so an
+upgrade shows no introduction. The bump also makes an older tab open the newer state read-only.
 
-The first-use card is inline on Today. It temporarily replaces the empty dial, so the
-log button stays above the tabs on a short phone. Dismissal or the first successful new
-bleeding log, daily detail or import completes the introduction. Its optional fertility
-disclosure changes only `showFertility`; skipping it leaves estimates off.
+Today's introduction replaces the empty dial until the user skips it, or logs a first bleeding day,
+daily detail or import. Its fertility question changes only `showFertility`. The Calendar hint
+closes once a bleeding day or range is logged there. Undo brings neither back.
 
-The Calendar hint teaches bleeding-day and range logging. It disappears after either
-action adds a day there; diary entries, invalid selections and cancelled ranges leave it
-available. Undo does not restore either hint. The existing settings action saves these
-flags in the same storage blob; another tab adopts them with the rest of the state.
-
-Both flags are device-local and omitted from backups. An import preserves the local
-Calendar flag and completes Today’s introduction. Delete all data resets both flags along
-with the other settings. No storage key or request is added.
+Both flags stay on the device: backups omit them, and Delete all data resets them.
 
 ## Offline and hosting
 
@@ -118,8 +90,8 @@ precaches the build, so the app works offline and updates itself on the next vis
 The legal pages in `docs/` are Markdown, turned into HTML at build time by the `markdown` plugin
 in the same file.
 
-Cloudflare hosts `dist/` with the headers in `public/_headers`. The README
-[Deploy section](../README.md#deploy) describes the Worker deployment and pending custom-domain migration.
+Cloudflare hosts `dist/` with the headers in `public/_headers`.
+[Deploy](development.md#deploy) describes the Worker and the custom-domain move.
 The Content-Security-Policy limits app requests to this origin. Cloudflare can also instruct the browser
 to send network error reports, as the [privacy statement](privacy.md#what-our-host-sees) explains.
 

@@ -31,24 +31,28 @@ what you log. The code is in `src/domain/cycle.ts`.
 If the expected start is more than **10 days** overdue with no new period logged, Tide stops showing
 the current forecast. Your history stays saved. Log a period when it starts to get a new estimate.
 
-On Today, **Cycle insights** includes **How was this worked out?**: these steps with your own
-numbers. It also shows the latest 12 completed intervals in a chart and table, oldest first.
-Tick **Incomplete** when a cycle is missing logs. Its days stay in the calendar, but its length does not count toward
-the next-period estimate, regularity or the date range. Its past fertility estimates are hidden.
-The average period length still uses recorded bleeding days. Untick it to include the cycle again.
-Changing an interval's start or end clears its marker, so an old choice cannot attach to a different
-cycle. Tide backups keep these markers.
+## Cycle insights
 
-Settings → Data →
-**Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
-made on your device. The events are marked private and never mark you as busy. Visibility still depends on your
-calendar and sharing settings; the private flag does not encrypt them. Each event is identified by its cycle number and a random id this
-device makes on the first export, with no date in it, so importing a newer file moves the event
-instead of adding a copy, and two people's events in one calendar stay apart. The id travels with a
-backup, so a new device restored from one keeps updating the same events. Changing existing cycle
-starts, importing older history or deleting all data makes a new id. The next file adds new events;
-delete the old ones from your calendar by hand.
-Marking a cycle incomplete does not renumber calendar events.
+On Today, **Cycle insights** has **How was this worked out?**, which shows these steps with your
+own numbers. It also lists your latest 12 completed cycles as a chart and a table, oldest first.
+
+Tick **Incomplete** when a cycle is missing logs. Its days stay in the calendar, but its length
+no longer counts toward the next-period estimate, regularity or the range, and its past fertility
+estimates are hidden. Period length still uses its bleeding days. Changing the cycle's start or
+end clears the mark, so it can't move to a different cycle. Backups keep the marks.
+
+## Calendar file
+
+**Settings → Data → Add to calendar** saves your next 3 expected period starts as all-day
+events in an `.ics` file, made on your device. The events are marked private and don't show you
+as busy. The private flag doesn't encrypt them: who sees them depends on your calendar's sharing
+settings.
+
+Each event has an id built from its cycle number and a random value made on the first export.
+Import a newer file and the events move rather than duplicate. Marking a cycle incomplete doesn't renumber them. The random value travels in a
+backup, so a restored device keeps updating the same events. Changing existing cycle starts,
+importing older history or deleting all data makes a new value. The next file then adds new
+events, and you delete the old ones by hand.
 
 To see how close the next-period estimate lands on real cycle data, read
 [backtest.md](backtest.md).

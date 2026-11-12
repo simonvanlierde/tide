@@ -31,17 +31,15 @@ are retained without filtering, splitting or invented periods.
 
 Cutoffs advance to 4, 20 and 60 days after the current true onset. No further episodes
 are logged during this follow-up, even when a latent period has occurred. The target is
-always the first true onset strictly after the cutoff. Thus the later cutoffs also test
-cessation of tracking, rather than merely observing a complete cycle later.
+always the first true onset strictly after the cutoff. So the later cutoffs also test what
+happens when someone stops logging.
 
 Every mask and history window shares its history's truth, cutoff and target. Only observed
 bleeding days at or before the cutoff reach `forecast`; future truth is used only for
 scoring. `explainForecast` supplies the displayed range. No estimator is tuned or selected.
 
 There are 1,440 paired cases, with five histories per full scenario/history/mask/cutoff
-stratum. These cases are correlated; they are not 1,440 independent people. The earlier
-one-off sample is not reproduced here: its generator was unavailable for review. This
-maintained generator has its own explicit parameters and regression checks.
+stratum. These cases are correlated; they are not 1,440 independent people.
 
 ## Metrics
 
@@ -57,8 +55,7 @@ maintained generator has its own explicit parameters and regression checks.
 
 Run on 2026-11-12 against main at `f8483df`. Two complete JSON outputs were byte-identical.
 The command took about 0.32 seconds on the development machine, including module loading;
-this is not a phone-runtime benchmark. Evaluation code is outside the app bundle, and
-no production source or dependency changed.
+this is not a phone-runtime benchmark.
 
 | Cutoff after current onset | Cases | Declines | Returned dates already due |
 | --- | ---: | ---: | ---: |
@@ -86,8 +83,8 @@ from five histories. With zero prior cycles, one current bleeding episode is sti
 
 The full JSON reports errors, declines, range coverage and width for every mask and
 cutoff as well. Sparse long histories expose the default's limits; variable histories
-remain hard even with more observations. This is evidence to retain honest uncertainty,
-not evidence to promote an alternative estimator.
+remain hard even with more observations. The results argue for showing honest uncertainty,
+not for switching to another estimator.
 
 Reproduction hashes:
 

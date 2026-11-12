@@ -1,7 +1,7 @@
 name: Retire preview
 
 # Deletes the preview Worker of a pull request that closes or turns draft, and sweeps
-# daily for any that were missed. The README's "Pull request previews" has the rest.
+# daily for any that were missed. docs/development.md has the rest.
 on:
   pull_request:
     types: [closed, converted_to_draft]
