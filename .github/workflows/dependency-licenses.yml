@@ -29,7 +29,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: List licences, including development tools
         run: pnpm licenses list
-      - name: Check licences shipped in the browser
+      - name: Check dependency licences
         run: |-
-          pnpm licenses list --prod --json > "$RUNNER_TEMP/licenses.json"
+          pnpm licenses list --json > "$RUNNER_TEMP/licenses.json"
           node .github/scripts/check-dependency-licenses.mjs < "$RUNNER_TEMP/licenses.json"
