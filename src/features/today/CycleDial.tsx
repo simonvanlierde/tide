@@ -433,9 +433,11 @@ export function CycleDial({
               </>
             )}
           </div>
+          {/* Inside the ring so its sweep mask draws them in with the band;
+              positioned against the frame, so they still cover the whole disc. */}
+          <div className="cycle-dial__estimates" style={estimatesStyle} aria-hidden="true" />
+          <div className="cycle-dial__ticks" style={ticksStyle} aria-hidden="true" />
         </div>
-        <div className="cycle-dial__estimates" style={estimatesStyle} aria-hidden="true" />
-        <div className="cycle-dial__ticks" style={ticksStyle} aria-hidden="true" />
         <div className="cycle-dial__marker" style={{ transform: `rotate(${rotation}deg)` }}>
           <span aria-hidden="true" className="cycle-dial__marker-dot" />
           {ripples > 0 ? <span key={ripples} aria-hidden="true" className="cycle-dial__ripple" /> : null}

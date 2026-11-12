@@ -439,8 +439,8 @@ finger while you scrub. Scrubbing previews any day and changes nothing. The lege
 names the colours the ring is actually showing.
 
 Three motions, each tied to something you do, and none under reduced motion: on the first
-view of the day the band fills clockwise from the top (600 ms), then its ticks, rails and
-marker fade in; after a scrub the ghost dot glides back to today (300 ms); logging today
+view of the day the band fills clockwise from the top with its ticks and rails (600 ms),
+then the marker fades in; after a scrub the ghost dot glides back to today (300 ms); logging today
 sends one thin ring out from the marker (450 ms). The sweep is remembered in memory only,
 so it adds nothing to what Tide stores.
 
