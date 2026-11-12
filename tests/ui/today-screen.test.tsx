@@ -226,7 +226,7 @@ describe("TodayScreen", () => {
       "open",
     );
     await user.click(screen.getByText("Fertility estimates", { selector: "summary" }));
-    expect(screen.getByText(/only an estimate, so don't use it as birth control/i)).toBeVisible();
+    expect(screen.getByText(/estimates use your period history. don't use them as birth control/i)).toBeVisible();
     await user.click(screen.getByRole("button", { name: answer }));
     expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.showFertility).toBe(enabled);
     expect(screen.getByRole("region", { name: "Your history stays here" })).toBeInTheDocument();
@@ -325,8 +325,6 @@ describe("TodayScreen", () => {
     expect(screen.getByText(/has your period started/i)).toBeInTheDocument();
     // The dial names today as late, never as a second expected date.
     expect(screen.getByRole("slider").getAttribute("aria-valuetext")).toContain("Period late");
-    // The reassurance line only appears once the period is late.
-    expect(screen.getByText(/variation is common/i)).toBeInTheDocument();
     // The fact row stops claiming a "next" period in the past.
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
     expect(document.querySelector(".cycle-dial__eyebrow")).toHaveTextContent(/^period$/i);

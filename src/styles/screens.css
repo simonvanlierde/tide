@@ -110,15 +110,6 @@
     line-height: 1.4;
   }
 
-  /* Overdue is the highest-anxiety moment on the screen: one calm line,
-     quieter than the question, before the actions. */
-  .log-prompt__reassure {
-    margin: -8px 0 0;
-    color: var(--ink-soft);
-    font-size: var(--text-md);
-    line-height: 1.45;
-  }
-
   .log-prompt__dismiss {
     justify-self: start;
     min-height: 44px;

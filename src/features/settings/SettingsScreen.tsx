@@ -28,7 +28,7 @@ export function SettingsScreen(props: SettingsScreenProps) {
           <SwitchRow
             label={t("settings.showFertility")}
             infoLabel={t("settings.fertilityInfo")}
-            help={t("settings.fertilityHelp")}
+            help={`${t("settings.fertilityHelp")} ${t("settings.fertilityDisclaimer")}`}
             checked={settings.showFertility === true}
             onChange={(show) => actions.setSetting("showFertility", show)}
           />

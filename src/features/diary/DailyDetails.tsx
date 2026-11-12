@@ -200,8 +200,8 @@ export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
           onChange={(event) => save({ ...value, note: event.target.value })}
         />
       </label>
-      <p id={`${id}-note-help`} className="supporting-note diary-form__hint">
-        {t("diary.noteHint", { max: MAX_NOTE_LENGTH })}
+      <p id={`${id}-note-help`} className="supporting-note diary-form__count">
+        {t("diary.noteCount", { count: value.note.length, max: MAX_NOTE_LENGTH })}
       </p>
       <p className="diary-form__status" role="status">
         {status === "saved" ? (

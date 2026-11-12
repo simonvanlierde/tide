@@ -257,12 +257,17 @@ describe("optional daily details", () => {
     expect(stored().intensityByDay).toEqual({});
   });
 
-  it("caps the note without a second date picker", () => {
+  it("caps the note and shows its character count without a second date picker", async () => {
+    const user = userEvent.setup();
     renderWithAppState(<DayEditor day="2026-04-18" today="2026-04-18" initialSection="details" onClose={() => {}} />, {
       state: createAppState(),
     });
     expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
-    expect(screen.getByRole("textbox", { name: /note/i })).toHaveAttribute("maxLength", String(MAX_NOTE_LENGTH));
+    const note = screen.getByRole("textbox", { name: /note/i });
+    expect(note).toHaveAttribute("maxLength", String(MAX_NOTE_LENGTH));
+    expect(note).toHaveAccessibleDescription("0 / 1,000");
+    await user.type(note, "Rest helped.");
+    expect(note).toHaveAccessibleDescription("12 / 1,000");
   });
 
   it("lets calendar readers revisit a detail-only day without logging bleeding", async () => {

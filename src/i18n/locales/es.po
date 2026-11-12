@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Guarda una copia de tu historial"
 
 msgid "backup.body"
-msgstr "Tu historial solo se guarda en este navegador y desaparece si borras sus datos. Descarga una copia de seguridad para poder restaurarlo."
+msgstr "Borrar los datos del navegador elimina tu historial. Guarda una copia de seguridad."
 
 msgid "backup.download"
 msgstr "Crear copia de seguridad"
@@ -89,8 +89,8 @@ msgstr "Ánimo"
 msgid "diary.note"
 msgstr "Nota (opcional)"
 
-msgid "diary.noteHint"
-msgstr "Hasta {max} caracteres. Los detalles se quedan en este dispositivo y se incluyen en las copias de seguridad."
+msgid "diary.noteCount"
+msgstr "{count, number} / {max, number}"
 
 msgid "diary.saved"
 msgstr "Detalles guardados."
@@ -195,7 +195,7 @@ msgid "fertilityAsk.title"
 msgstr "¿Mostrar estimaciones de fertilidad?"
 
 msgid "fertilityAsk.body"
-msgstr "Tide puede marcar los días en que es más probable que seas fértil, calculados a partir de los períodos que registras. Es solo una estimación, así que no la uses como método anticonceptivo. Puedes cambiarlo en Ajustes."
+msgstr "Las estimaciones se basan en tu historial de períodos. No las uses como método anticonceptivo."
 
 msgid "fertilityAsk.show"
 msgstr "Mostrar"
@@ -410,9 +410,6 @@ msgstr "¿Ha comenzado tu período?"
 msgid "reminder.dismiss"
 msgstr "Todavía no, recordármelo más tarde"
 
-msgid "reminder.reassure"
-msgstr "Unos días de variación son normales."
-
 msgid "calendar.title"
 msgstr "Calendario"
 
@@ -606,7 +603,7 @@ msgid "settings.dataHelp"
 msgstr "Exportar guarda tu historial de menstruación y tus detalles diarios en un archivo. Importar una copia de seguridad de Tide los reemplaza. Importar desde Clue o Flo añade días de menstruación."
 
 msgid "settings.importSources"
-msgstr "Puedes importar una copia de seguridad de Tide o una exportación de Clue o Flo."
+msgstr "Copia de seguridad de Tide o exportación de Clue o Flo."
 
 msgid "settings.export"
 msgstr "Exportar"
@@ -618,7 +615,7 @@ msgid "settings.exportCalendar"
 msgstr "Añadir al calendario"
 
 msgid "settings.calendarHelp"
-msgstr "Guarda tus 3 próximos períodos previstos en un archivo que tu app de calendario puede abrir. Una vez añadidos, son eventos normales del calendario: la cuenta de tu calendario los guarda y los sincroniza."
+msgstr "Descarga un archivo con tus 3 próximos períodos previstos. Tu cuenta de calendario guarda y sincroniza los eventos que añades."
 
 msgid "settings.calendarFertility"
 msgstr "Incluir ventanas fértiles"

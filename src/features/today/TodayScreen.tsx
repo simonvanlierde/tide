@@ -163,7 +163,6 @@ export function TodayScreen(props: TodayScreenProps) {
           <div className="today-screen__logging">
             {reminderState.shouldPrompt ? (
               <ReminderPrompt
-                isOverdue={reminderState.isOverdue}
                 onLog={toggleToday}
                 onDismiss={() => {
                   setFocusPending(true);

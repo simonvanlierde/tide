@@ -44,10 +44,13 @@ describe("SettingsScreen", () => {
     expect(screen.queryByRole("button", { name: /snooze/i })).not.toBeInTheDocument();
   });
 
-  it("shows concise information guidance", () => {
+  it("keeps fertility guidance inside its information popover", async () => {
+    const user = userEvent.setup();
     renderSettings();
-
-    expect(screen.getByText(/fertility estimates are for information only/i)).toBeInTheDocument();
+    const warning = screen.getByText(/fertility estimates are for information only/i);
+    expect(warning).not.toBeVisible();
+    await user.click(screen.getByLabelText("About fertility estimates"));
+    expect(warning).toBeVisible();
   });
 
   it("answers the fertility question from the switch and remembers it", async () => {
