@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { defaultAppState, normalizeAppState, SCHEMA_VERSION } from "../../src/data/schema";
+import { defaultAppState, normalizeAppState } from "../../src/data/schema";
 import { BACKUP_KEY, clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { downloadAppState, parseImportedState } from "../../src/data/transfer";
 
@@ -8,11 +8,15 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("incomplete cycle persistence", () => {
   it("migrates v2 without losing history or fertility preference", () => {
-    expect(SCHEMA_VERSION).toBe(4);
     expect(normalizeAppState({ schemaVersion: 2, intensityByDay: days, settings: { showFertility: true } })).toEqual({
       ...defaultAppState,
       intensityByDay: days,
-      settings: { ...defaultAppState.settings, showFertility: true },
+      settings: {
+        ...defaultAppState.settings,
+        showFertility: true,
+        onboardingDismissed: true,
+        calendarHelpDismissed: true,
+      },
     });
   });
 

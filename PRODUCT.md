@@ -42,6 +42,8 @@ out: import it to bring your history, export it to leave.
 - Today asks you to log when a period is expected or overdue and the day isn't logged yet.
 - State lives in `localStorage` under `tide.period-tracker.state`. The theme is picked
   before the first paint, so the app never flashes the wrong one.
+- A skippable introduction covers on-device storage, import, optional fertility estimates,
+  home-screen installation and backups. Calendar has a hint until the first bleeding log there.
 - Today offers a local backup reminder, and Cycle insights has a history chart and table.
   Incomplete cycles keep their logged days but do not influence cycle-length estimates.
 - Optional daily details record symptoms, mood and a note, independently of bleeding.
@@ -52,8 +54,8 @@ out: import it to bring your history, export it to leave.
 
 - The cycle model is in `src/domain/cycle.ts`, and
   [docs/predictions.md](docs/predictions.md) explains it. Those two are the source of truth, so don't repeat their numbers here.
-- Every estimate is an estimate. Fertility estimates stay hidden until you answer a one-time
-  question on Today, and you can change the answer later with the Settings switch. The note
+- Every estimate is an estimate. Fertility estimates stay hidden until you choose to see them
+  in the introduction or Settings. The note
   that they are not birth control sits next to the fertility line, not only in Settings.
 - Five locales as typed dictionaries, with dates and plurals through `Intl`. German and
   French run long and still have to fit.

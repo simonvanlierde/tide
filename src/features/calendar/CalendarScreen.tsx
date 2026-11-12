@@ -210,8 +210,8 @@ export function CalendarScreen(props: CalendarScreenProps) {
             </button>
           </p>
         ) : helpKey === "calendar.tapHelp" ? null : (
-          // Once something is logged, tapping a day is known; only first use
-          // and future months need the hint.
+          // First-use help lasts until a Calendar bleeding log; future months
+          // keep their separate explanation.
           <p className="supporting-note calendar__help">{t(helpKey)}</p>
         )}
         {month.isCurrent ? null : (

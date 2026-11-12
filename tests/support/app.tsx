@@ -47,6 +47,8 @@ export function createAppState(overrides: AppStateOverrides = {}): AppState {
     incompleteCycleStarts,
     settings: {
       ...defaultAppState.settings,
+      onboardingDismissed: true,
+      calendarHelpDismissed: true,
       ...settings,
     },
   };

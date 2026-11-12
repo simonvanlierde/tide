@@ -52,6 +52,27 @@ Daily details are separate from bleeding logs. The forecast uses bleeding histor
 symptoms, mood and notes do not change estimates. An empty symptom list means the user
 recorded no symptoms; a null value means symptoms were not recorded.
 
+## First-use guidance
+
+Schema 5 adds `onboardingDismissed` and `calendarHelpDismissed` to the existing local
+settings. A fresh installation starts both as false. Normalizing an existing saved state
+without valid flags treats both as dismissed, so an upgrade does not introduce a tour.
+The schema bump makes an older tab read the newer blob as read-only.
+
+The first-use card is inline on Today. It temporarily replaces the empty dial, so the
+log button stays above the tabs on a short phone. Dismissal or the first successful new
+bleeding log, daily detail or import completes the introduction. Its optional fertility
+disclosure changes only `showFertility`; skipping it leaves estimates off.
+
+The Calendar hint teaches bleeding-day and range logging. It disappears after either
+action adds a day there; diary entries, invalid selections and cancelled ranges leave it
+available. Undo does not restore either hint. The existing settings action saves these
+flags in the same storage blob; another tab adopts them with the rest of the state.
+
+Both flags are device-local and omitted from backups. An import preserves the local
+Calendar flag and completes Today’s introduction. Delete all data resets both flags along
+with the other settings. No storage key or request is added.
+
 ## Offline and hosting
 
 `vite-plugin-pwa` (in `vite.config.ts`) writes the web app manifest and a service worker that

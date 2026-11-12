@@ -90,12 +90,11 @@ test("manifest and install assets are served", async ({ page }) => {
 });
 
 test("the fertility question is accessible and its answer is saved", async ({ page }) => {
-  await seedAppState(page, "en", { showFertility: null });
+  await seedAppState(page, "en", { showFertility: null, onboardingDismissed: false }, {});
   await page.goto("/");
 
-  const question = page.getByRole("region", {
-    name: en["fertilityAsk.title"],
-  });
+  const question = page.getByRole("region", { name: en["onboarding.title"] });
+  await question.locator("summary").click();
   await expect(question).toBeVisible();
   await expect(page.getByText(en["today.fertility"], { exact: true })).toHaveCount(0);
   const { violations } = await new AxeBuilder({ page })
@@ -105,8 +104,7 @@ test("the fertility question is accessible and its answer is saved", async ({ pa
   expect(violations.map((v) => v.id)).toEqual([]);
 
   await question.getByRole("button", { name: en["fertilityAsk.show"], exact: true }).click();
-  await expect(question).toHaveCount(0);
-  await expect(page.getByText(en["today.notBirthControl"], { exact: true })).toBeVisible();
+  await expect(question).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
   const saved = await page.evaluate(() => localStorage.getItem("tide.period-tracker.state"));
@@ -128,9 +126,9 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
 test("Today's import link lands on the Import button", async ({ page }) => {
   // A first run: nothing stored, so Today shows the empty state.
   await page.goto("/");
-  await expect(page.getByRole("slider").getByText(en["today.learningInsufficient"])).toBeVisible();
+  await expect(page.getByRole("region", { name: en["onboarding.title"] })).toBeVisible();
 
-  await page.getByRole("link", { name: en["today.importLink"] }).click();
+  await page.getByRole("link", { name: en["onboarding.import"] }).click();
   await expect(page).toHaveURL(/\/settings#import$/);
   const importButton = page.getByRole("button", {
     name: en["settings.import"],

@@ -31,13 +31,19 @@ describe("schema normalization at the storage trust boundary", () => {
         calendarId: "x\r\nBEGIN:VEVENT",
       },
     });
-    expect(state.settings).toEqual(defaultAppState.settings);
+    expect(state.settings).toEqual({
+      ...defaultAppState.settings,
+      onboardingDismissed: true,
+      calendarHelpDismissed: true,
+    });
   });
 
   it("keeps a calendar id of the shape crypto.randomUUID makes", () => {
     const calendarId = "3f2b8c1e-9a4d-4e7b-b6f0-2c5d8a1e7f93";
     expect(normalizeAppState({ settings: { calendarId } }).settings).toEqual({
       ...defaultAppState.settings,
+      onboardingDismissed: true,
+      calendarHelpDismissed: true,
       calendarId,
     });
   });
@@ -80,6 +86,8 @@ describe("normalizeAppState properties", () => {
   const settings = fc.record(
     {
       dismissedOn: fc.oneof(dayKey, fc.anything()),
+      onboardingDismissed: fc.oneof(fc.boolean(), fc.anything()),
+      calendarHelpDismissed: fc.oneof(fc.boolean(), fc.anything()),
       showFertility: fc.oneof(fc.boolean(), fc.constant(null), fc.anything()),
       showCycleDayNumbers: fc.oneof(fc.boolean(), fc.anything()),
       theme: fc.oneof(fc.constantFrom("system", "light", "dark"), fc.string()),
@@ -107,7 +115,7 @@ describe("normalizeAppState properties", () => {
   it("never throws", () => {
     fc.assert(
       fc.property(blob, (value) => {
-        normalizeAppState(value);
+        expect(() => normalizeAppState(value)).not.toThrow();
       }),
     );
   });

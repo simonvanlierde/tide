@@ -208,37 +208,20 @@ describe("TodayScreen", () => {
     expect(screen.queryByLabelText(/how fertility is estimated/i)).not.toBeInTheDocument();
   });
 
-  it("asks once about fertility estimates and hides them until answered", async () => {
+  it.each([
+    ["Show", true],
+    ["Don't show", false],
+  ] as const)("keeps fertility optional and saves %s", async (answer, enabled) => {
     const user = userEvent.setup();
-    renderToday("2026-04-18", createAppState({ periodDays: LEARNED_PERIOD_DAYS }));
-
-    const question = screen.getByRole("region", {
-      name: "Show fertility estimates?",
-    });
-    expect(question).toHaveTextContent(/only an estimate, so don't use it as birth control/i);
-    // The answer is not final, and the card says where to change it.
-    expect(question).toHaveTextContent(/change this in settings/i);
-    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(document.querySelector(".cycle-dial__estimates")?.getAttribute("style")).not.toContain("--estimate-fertile");
-
-    await user.click(screen.getByRole("button", { name: "Show" }));
-
-    expect(question).not.toBeInTheDocument();
-    expect(screen.getByText("Fertility")).toBeInTheDocument();
-    expect(screen.getByText(/^an estimate\. don't use it as birth control\.$/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /cycle insights/i })).toHaveFocus();
-    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings.showFertility).toBe(true);
-  });
-
-  it("keeps fertility estimates hidden when the answer is no", async () => {
-    const user = userEvent.setup();
-    renderToday("2026-04-18", createAppState({ periodDays: LEARNED_PERIOD_DAYS }));
-
-    await user.click(screen.getByRole("button", { name: "Don't show" }));
-
-    expect(screen.queryByRole("region", { name: "Show fertility estimates?" })).not.toBeInTheDocument();
-    expect(screen.queryByText("Fertility")).not.toBeInTheDocument();
-    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings.showFertility).toBe(false);
+    renderToday("2026-04-18", createAppState({ settings: { onboardingDismissed: false } }));
+    expect(
+      screen.getByText("Show fertility estimates?", { selector: "summary" }).closest("details"),
+    ).not.toHaveAttribute("open");
+    await user.click(screen.getByText("Show fertility estimates?", { selector: "summary" }));
+    expect(screen.getByText(/only an estimate, so don't use it as birth control/i)).toBeVisible();
+    await user.click(screen.getByRole("button", { name: answer }));
+    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.showFertility).toBe(enabled);
+    expect(screen.getByRole("region", { name: "Your history stays here" })).toBeInTheDocument();
   });
 
   it("does not ask about fertility before there is an estimate to show", () => {
@@ -263,22 +246,18 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("radio", { name: /medium/i })).not.toBeChecked();
   });
 
-  it("offers an import only before anything is logged", () => {
-    const empty = renderWithAppState(<TodayScreen today="2026-04-18" />, {
-      state: createAppState({ periodDays: [] }),
-    });
-    expect(screen.getByText(/have a tide backup, or history in clue or flo\?/i)).toBeVisible();
-    expect(screen.getByRole("link", { name: /^import it$/i })).toHaveAttribute("href", "/settings#import");
-    empty.unmount();
-
-    renderToday("2026-04-18");
-    expect(screen.queryByRole("link", { name: /^import it$/i })).not.toBeInTheDocument();
+  it("keeps first-run copy off Today after introduction was skipped", () => {
+    renderToday("2026-04-18", createAppState());
+    expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /import/i })).not.toBeInTheDocument();
+    expect(screen.queryByText("Show fertility estimates?")).not.toBeInTheDocument();
   });
 
-  it("hides the import link while a newer build owns the stored data", () => {
+  it("hides the introduction while a newer build owns the stored data", () => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, intensityByDay: {} }));
     renderWithAppState(<TodayScreen today="2026-04-18" />);
-    expect(screen.queryByRole("link", { name: /^import it$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /import/i })).not.toBeInTheDocument();
   });
 
   it("prompts for a first log when there is no cycle history at all", () => {
@@ -521,4 +500,48 @@ describe("TodayScreen before the fertility opt-in", () => {
     expect(screen.getByLabelText(/cycle overview/i)).toHaveTextContent(/luteal phase/i);
     expect(scrubAllDays().join(" ")).toMatch(/Ovulation expected/);
   });
+});
+
+it("shows a skippable first-run introduction without a forecast or fertility consent", async () => {
+  const user = userEvent.setup();
+  const first = renderWithAppState(<TodayScreen today="2026-04-18" />, {
+    state: createAppState({ settings: { onboardingDismissed: false, showFertility: null } }),
+  });
+  const introduction = screen.getByRole("region", { name: "Your history stays here" });
+  expect(introduction).toHaveTextContent("Tide does not upload what you log.");
+  expect(introduction).toHaveTextContent("Download a backup every 60 days.");
+  expect(screen.getByRole("link", { name: /import a tide backup or a clue or flo export/i })).toHaveAttribute(
+    "href",
+    "/settings#import",
+  );
+  expect(screen.queryByRole("slider")).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: "Skip introduction" }));
+  expect(introduction).not.toBeInTheDocument();
+  const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}");
+  expect(saved.settings.onboardingDismissed).toBe(true);
+  expect(saved.settings.showFertility).toBeNull();
+  first.unmount();
+  renderWithAppState(<TodayScreen today="2026-04-18" />);
+  expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
+});
+
+it("finishes the introduction on a first log without restoring it on removal", async () => {
+  const user = userEvent.setup();
+  renderToday("2026-04-18", createAppState({ settings: { onboardingDismissed: false } }));
+  await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
+  expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
+  expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
+  expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.showFertility).toBeNull();
+});
+
+it("keeps introduction open when the period reminder is answered Not yet", async () => {
+  const user = userEvent.setup();
+  renderToday(
+    "2026-04-28",
+    createAppState({ periodDays: ["2026-04-02", "2026-04-03"], settings: { onboardingDismissed: false } }),
+  );
+  await user.click(screen.getByRole("button", { name: /not yet/i }));
+  expect(screen.getByRole("region", { name: "Your history stays here" })).toBeInTheDocument();
+  expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.onboardingDismissed).toBe(false);
 });

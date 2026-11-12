@@ -26,6 +26,17 @@ Once installed, it works offline, and Tide does not upload what you log.
 Clearing this site's browser data removes your history. Keep a backup from Settings → Data → Export
 so you can restore it later. Installing Tide does not create a separate backup or sync devices.
 
+## First use
+
+The introduction sits above the log button. It explains on-device storage, offers an
+import from Tide, Clue or Flo, and suggests installing Tide and backing up every 60 days.
+Expand the fertility question to choose whether to show estimates, or skip the introduction
+without enabling them. Settings keeps the fertility switch and import controls available.
+
+The introduction disappears after you skip it, record your first bleeding day or daily
+details, or complete an import. Existing installations skip it. Calendar keeps its inline
+hint until you log a bleeding day or a past period there; Undo does not bring the hint back.
+
 ## Features
 
 - Log bleeding days with one tap, or a whole past period at once.

@@ -1,6 +1,7 @@
 import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { loadStoredState } from "../../src/data/storage";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
 import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, createLearnedCycleState, renderWithAppState } from "../support/app";
@@ -475,13 +476,15 @@ describe("CalendarScreen", () => {
 
   it("places helper copy and the today action below the calendar grid", async () => {
     const user = userEvent.setup();
-    renderWithAppState(<CalendarScreen today="2026-04-21" />);
+    renderWithAppState(<CalendarScreen today="2026-04-21" />, {
+      state: createAppState({ settings: { calendarHelpDismissed: false } }),
+    });
 
     // Leave the current month so the Today reset button is shown.
     await user.click(screen.getByRole("button", { name: /previous month/i }));
 
     const grid = screen.getByLabelText(/calendar/i);
-    const helper = screen.getByText(/tap a past day to log your first/i);
+    const helper = screen.getByText(/tap a day to log or change it/i);
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
     });
@@ -552,10 +555,12 @@ describe("CalendarScreen", () => {
 
   it("tells a first-timer what to tap, and shows no legend for markers that aren't there", () => {
     const { container } = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
-      state: createAppState({ periodDays: [] }),
+      state: createAppState({ periodDays: [], settings: { calendarHelpDismissed: false } }),
     });
 
-    expect(screen.getByText(/tap a past day to log your first bleeding day/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/tap a day to log or change it, or use log a past period for a range/i),
+    ).toBeInTheDocument();
     expect(container.querySelector(".calendar-legend")).toBeNull();
   });
 
@@ -672,4 +677,41 @@ describe("CalendarScreen", () => {
     expect(document.querySelectorAll(".is-logged")).toHaveLength(2);
     expect(screen.getByRole("button", { name: "Edit April 16, 2026" })).toHaveClass("is-logged");
   });
+});
+
+it("remembers Calendar help after a successful day log, even when undone", async () => {
+  const user = userEvent.setup();
+  const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+    state: createAppState({ settings: { calendarHelpDismissed: false } }),
+  });
+  expect(screen.getByText(/tap a day to log or change it/i)).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /april 19, 2026 unavailable/i }));
+  expect(screen.getByText(/tap a day to log or change it/i)).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /log april 17, 2026/i }));
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /^undo$/i }));
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  view.unmount();
+  renderWithAppState(<CalendarScreen today="2026-04-18" />);
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+});
+
+it("keeps Calendar help until a valid range is completed", async () => {
+  const user = userEvent.setup();
+  renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+    state: createAppState({ settings: { calendarHelpDismissed: false } }),
+  });
+  await user.click(screen.getByRole("button", { name: /log a past period/i }));
+  await user.click(screen.getByRole("button", { name: /april 1, 2026/i }));
+  await user.click(screen.getByRole("button", { name: /april 15, 2026/i }));
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
+  await user.keyboard("{Escape}");
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
+  await user.click(screen.getByRole("button", { name: /log a past period/i }));
+  await user.click(screen.getByRole("button", { name: /april 1, 2026/i }));
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
+  await user.click(screen.getByRole("button", { name: /april 3, 2026/i }));
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /^undo$/i }));
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
 });

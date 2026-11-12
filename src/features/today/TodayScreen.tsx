@@ -1,6 +1,5 @@
 import { ChevronRight } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
-import { followAppLink } from "../../app/links";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
@@ -25,7 +24,7 @@ import { InfoPopover } from "../settings/InfoPopover";
 import { CycleDial } from "./CycleDial";
 import { CycleHistory } from "./CycleHistory";
 import { CycleInsights } from "./CycleInsights";
-import { FertilityQuestion } from "./FertilityQuestion";
+import { OnboardingCard } from "./OnboardingCard";
 
 type Explainer = typeof import("./ForecastExplainer").ForecastExplainer;
 
@@ -61,7 +60,7 @@ export function TodayScreen(props: TodayScreenProps) {
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
   const showFertility = state.settings.showFertility === true;
-  const askFertility = state.settings.showFertility === null && forecast.nextPeriod.date !== null && !readOnly;
+  const showOnboarding = !state.settings.onboardingDismissed && !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
   // from another tab or a new day leaves focus where it is.
@@ -135,16 +134,27 @@ export function TodayScreen(props: TodayScreenProps) {
             : null}
       </p>
 
-      <CycleDial
-        forecast={forecast}
-        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
-        estimate={estimate}
-        prompt={forecast.estimateMode === "insufficient" ? learningNote : null}
-        intensityByDay={state.intensityByDay}
-        today={today}
-      />
+      {showOnboarding && forecast.estimateMode === "insufficient" ? null : (
+        <CycleDial
+          forecast={forecast}
+          phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
+          estimate={estimate}
+          prompt={forecast.estimateMode === "insufficient" ? learningNote : null}
+          intensityByDay={state.intensityByDay}
+          today={today}
+        />
+      )}
       {forecast.estimateMode !== "insufficient" && learningNote ? (
         <p className="today-screen__note">{learningNote}</p>
+      ) : null}
+
+      {showOnboarding ? (
+        <OnboardingCard
+          onDismiss={() => {
+            setFocusPending(true);
+            actions.setSetting("onboardingDismissed", true);
+          }}
+        />
       ) : null}
 
       <div className="today-screen__lead">
@@ -186,17 +196,6 @@ export function TodayScreen(props: TodayScreenProps) {
         </div>
       </div>
 
-      {/* Import is disabled while read-only, so the link would lead nowhere. */}
-      {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
-        <p className="today-screen__note">
-          {t("today.importPrompt")}{" "}
-          {/* biome-ignore lint/a11y/useValidAnchor: real page navigation with an href; the handler only keeps it client-side, like the tab bar */}
-          <a href="/settings#import" onClick={followAppLink}>
-            {t("today.importLink")}
-          </a>
-        </p>
-      ) : null}
-
       <div className="fact-list">
         {forecast.estimateMode === "insufficient" || !showFertility ? null : (
           <dl className="fact-list__rows">
@@ -232,17 +231,6 @@ export function TodayScreen(props: TodayScreenProps) {
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
       </div>
-
-      {askFertility ? (
-        <FertilityQuestion
-          onAnswer={(show) => {
-            actions.setSetting("showFertility", show);
-            // The card goes away under the user's focus; continue from the
-            // control just before it.
-            insightsButton.current?.focus();
-          }}
-        />
-      ) : null}
 
       {insightsOpen ? (
         <CycleInsights

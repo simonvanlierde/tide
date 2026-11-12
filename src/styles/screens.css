@@ -8,6 +8,72 @@
     gap: 16px;
   }
 
+  .onboarding.utility-card {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .onboarding__heading {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .onboarding__heading h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--text-lg);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .onboarding__heading .icon-close {
+    flex: none;
+  }
+
+  .onboarding.utility-card p,
+  .onboarding__import,
+  .onboarding__fertility {
+    font-size: var(--text-md);
+    line-height: 1.45;
+  }
+
+  .onboarding__import {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--tide-deep);
+    text-underline-offset: 0.2em;
+  }
+
+  .onboarding__fertility summary {
+    min-height: 44px;
+    padding-block: 10px;
+    color: var(--tide-deep);
+    cursor: pointer;
+  }
+
+  .onboarding__import:focus-visible,
+  .onboarding__fertility summary:focus-visible {
+    outline: 2px solid var(--tide);
+    outline-offset: 2px;
+  }
+
+  .onboarding__choices {
+    display: grid;
+    min-width: 0;
+    margin: 0;
+    padding: 8px 0 0;
+    border: 0;
+    gap: 12px;
+  }
+
+  .onboarding__choices button[aria-pressed="true"] {
+    background: var(--tide-deep);
+    color: var(--ink-on-solid);
+  }
+
   .today-screen__lead {
     display: grid;
     gap: 16px;

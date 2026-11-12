@@ -15,7 +15,12 @@ const SEED_STATE = {
     ["2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", FIXED_TODAY].map((day) => [day, "medium"]),
   ),
   // A user who said yes to fertility estimates, so every estimate shows.
-  settings: { ...defaultAppState.settings, showFertility: true },
+  settings: {
+    ...defaultAppState.settings,
+    showFertility: true,
+    onboardingDismissed: true,
+    calendarHelpDismissed: true,
+  },
 };
 
 export async function seedAppState(

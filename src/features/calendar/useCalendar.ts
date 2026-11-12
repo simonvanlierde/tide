@@ -21,10 +21,10 @@ export function useCalendar(today: IsoDate) {
     [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers],
   );
   const helpKey: MessageKey =
-    Object.keys(state.intensityByDay).length === 0
-      ? "calendar.emptyHelp"
-      : (days[0]?.value ?? visibleMonth) > today
-        ? "calendar.futureHelp"
+    (days[0]?.value ?? visibleMonth) > today
+      ? "calendar.futureHelp"
+      : !state.settings.calendarHelpDismissed
+        ? "calendar.firstVisitHelp"
         : "calendar.tapHelp";
 
   return { days, helpKey, month, log };
@@ -140,6 +140,9 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       return;
     }
     actions.logPeriodRange(from, day, today);
+    if (range.some((entry) => entry <= today && !isLogged(entry))) {
+      actions.setSetting("calendarHelpDismissed", true);
+    }
     setRangePick(null);
     setJustLoggedRange({
       from: range[0] as IsoDate,
@@ -162,6 +165,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
     // Empty day → one-tap log with no flow level. Logged day → open
     // its picker to change the flow or remove it; tapping the open day closes.
     selectDay(day: IsoDate) {
+      if (day > today && (rangePick || !isLogged(day))) return;
       setJustLoggedRange(null);
       if (rangePick) {
         setJustLoggedDay(null);
@@ -171,6 +175,7 @@ function useDayLog(today: IsoDate, nextPeriodDate: IsoDate | null) {
       }
       if (!isLogged(day)) {
         actions.togglePeriodDay(day, today);
+        actions.setSetting("calendarHelpDismissed", true);
         setJustLoggedDay(day);
         setForecastMoved(false);
         // Selection follows the tap: close any picker left open on another day.

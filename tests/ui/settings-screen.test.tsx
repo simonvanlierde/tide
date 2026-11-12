@@ -452,6 +452,8 @@ describe("SettingsScreen", () => {
       }),
     );
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([]);
+    expect(loadStoredState().state.settings.onboardingDismissed).toBe(false);
+    expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
   });
 
   it("confirms an export instead of letting the download happen in silence", async () => {
@@ -559,4 +561,17 @@ describe("SettingsScreen", () => {
       );
     },
   );
+});
+
+it("finishes introduction after import while keeping Calendar help local to the device", async () => {
+  const user = userEvent.setup();
+  renderSettings(createAppState({ settings: { onboardingDismissed: false, calendarHelpDismissed: false } }));
+  await user.upload(
+    screen.getByLabelText(/import data file/i),
+    new File([JSON.stringify(createAppState({ periodDays: ["2026-04-02"] }))], "tide.json", {
+      type: "application/json",
+    }),
+  );
+  expect(loadStoredState().state.settings.onboardingDismissed).toBe(true);
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
 });
