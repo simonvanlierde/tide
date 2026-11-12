@@ -5,6 +5,9 @@ public dataset. Run it yourself with `pnpm backtest`.
 
 Last run: 2026-11-11. The production predictor still uses the six-cycle median described below.
 
+For paired missing-log and cold-start stress cases, see the separate
+[sparse-history evaluation](sparse-history.md). Its synthetic results are not population accuracy.
+
 ## Dataset
 
 [Menstrual Cycles Length of Women in the USA and Canada, 1990-2013](https://doi.org/10.7278/S50d-4gxs-s4hj),
