@@ -29,6 +29,11 @@
     --bleed: #e26d5a;
     --bleed-strong: #cf5741;
 
+    /* Raspberry: only for erasing data. Cooler than coral so it never reads
+       as the bleeding signal; white text on it and the ink on surface pass AA. */
+    --danger: #a32347;
+    --danger-ink: #a32347;
+
     /* Flow-intensity ramp: a rising coral tide, spotting → heavy. Medium is
        the base coral; the ends bracket it lighter and deeper. */
     --flow-spotting: #f0c1b6;
@@ -124,6 +129,9 @@
 
     --bleed: #e8785f;
     --bleed-strong: #f0917a;
+
+    --danger: #b8324f;
+    --danger-ink: #f492aa;
 
     /* Same rising tide as light mode — pale rose to deep coral, spotting →
        heavy — retuned for the dark ground: every step stays light enough to

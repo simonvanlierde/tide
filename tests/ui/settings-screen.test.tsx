@@ -457,6 +457,36 @@ describe("SettingsScreen", () => {
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([]);
     expect(loadStoredState().state.settings.onboardingDismissed).toBe(false);
     expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
+    // The empty screen says what happened rather than nothing.
+    expect(screen.getByRole("status")).toHaveTextContent("All data deleted.");
+  });
+
+  it("offers a backup inside the delete dialog, and marks its confirm as destructive", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
+    renderSettings(createAppState({ periodDays: ["2026-03-01"] }));
+
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    const dialog = within(screen.getByRole("dialog"));
+    expect(dialog.getByRole("button", { name: /^delete$/i })).toHaveClass("commit-action--danger");
+    await user.click(dialog.getByRole("button", { name: "Download a backup first" }));
+
+    // The backup leaves the dialog open, so the delete is still one tap away.
+    expect(dialog.getByRole("status")).toHaveTextContent(/backup saved/i);
+    expect(loadStoredState().state.settings.lastBackupOn).not.toBeNull();
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-03-01"]);
+  });
+
+  it("shows what is stored and when it was last backed up", () => {
+    renderSettings(createAppState({ periodDays: ["2026-03-01", "2026-03-02"] }));
+    expect(screen.getByText(/2 logged days · No backup yet/)).toBeInTheDocument();
+  });
+
+  it("shows nothing about stored days before anything is logged", () => {
+    renderSettings(createAppState({ periodDays: [] }));
+    expect(screen.queryByText(/No backup yet/)).not.toBeInTheDocument();
   });
 
   it("confirms an export instead of letting the download happen in silence", async () => {

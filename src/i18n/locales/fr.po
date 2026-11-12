@@ -9,7 +9,7 @@ msgid "history.title"
 msgstr "Historique des cycles"
 
 msgid "history.description"
-msgstr "{n, plural, one {Cycles terminés, d’un début de règles au suivant. Le dernier cycle est affiché.} other {Cycles terminés, d’un début de règles au suivant. Les {n} derniers sont affichés.}}"
+msgstr "{n, plural, one {Ton dernier cycle terminé.} other {Tes {n} derniers cycles terminés.}}"
 
 msgid "history.empty"
 msgstr "Note le début de tes prochaines règles pour voir tes cycles terminés."
@@ -30,7 +30,7 @@ msgid "history.incompleteFor"
 msgstr "Cycle incomplet commençant le {date}"
 
 msgid "history.help"
-msgstr "Les cycles incomplets gardent leurs jours enregistrés, mais ne comptent pas pour estimer la durée du cycle."
+msgstr "Les cycles incomplets gardent leurs jours, mais ne comptent pas dans les estimations."
 
 msgid "history.excluded"
 msgstr "Incomplet ; exclu des estimations"
@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Garde une copie de ton historique"
 
 msgid "backup.body"
-msgstr "Effacer les données du navigateur supprime ton historique. Garde une sauvegarde."
+msgstr "Effacer les données du navigateur le supprime."
 
 msgid "backup.download"
 msgstr "Sauvegarder les données"
@@ -332,9 +332,6 @@ msgstr "Variable"
 msgid "insights.how"
 msgstr "Comment les prévisions fonctionnent"
 
-msgid "insights.how1"
-msgstr "Tout est calculé sur ton appareil à partir des jours que tu enregistres."
-
 msgid "insights.howCycleStart"
 msgstr "Un écart de {gap} jours ou plus entre deux jours de saignement enregistrés marque le début d’un nouveau cycle. Un écart plus court fait partie des mêmes règles. Le spotting ne compte pas."
 
@@ -596,12 +593,6 @@ msgstr "Code source, v{version}, s’ouvre dans un nouvel onglet"
 msgid "settings.data"
 msgstr "Données"
 
-msgid "settings.dataInfo"
-msgstr "À propos de l’import et de l’export"
-
-msgid "settings.dataHelp"
-msgstr "L’export enregistre ton historique de règles et tes détails quotidiens dans un fichier. Importer une sauvegarde Tide les remplace. Importer depuis Clue ou Flo ajoute des jours de règles."
-
 msgid "settings.importSources"
 msgstr "Sauvegarde Tide ou export de Clue ou Flo."
 
@@ -615,7 +606,7 @@ msgid "settings.exportCalendar"
 msgstr "Ajouter au calendrier"
 
 msgid "settings.calendarHelp"
-msgstr "Télécharge un fichier avec tes 3 prochaines règles prévues. Ton compte d’agenda enregistre et synchronise les événements que tu ajoutes."
+msgstr "Tes {n} prochaines règles prévues. Ton agenda peut les synchroniser en ligne."
 
 msgid "settings.calendarFertility"
 msgstr "Inclure les fenêtres de fertilité"
@@ -633,7 +624,7 @@ msgid "settings.importFile"
 msgstr "Importer un fichier de données"
 
 msgid "settings.importError"
-msgstr "Ce fichier n’est ni une sauvegarde Tide, ni un export Clue ou Flo. Choisis un autre fichier."
+msgstr "Ce fichier n’est ni une sauvegarde Tide, ni un export Clue ou Flo (.json ou .cluedata). Choisis un autre fichier."
 
 msgid "settings.importUnavailable"
 msgstr "L’importation n’a pas pu s’ouvrir. Recharge la page et réessaie."
@@ -674,6 +665,21 @@ msgstr "Supprimer"
 msgid "settings.resetConfirm"
 msgstr "Toutes les données et tous les réglages sur cet appareil sont effacés. Cette action est irréversible."
 
+msgid "settings.dataSummary"
+msgstr "{n, plural, one {{n} jour enregistré} other {{n} jours enregistrés}}"
+
+msgid "settings.lastBackup"
+msgstr "Dernière sauvegarde {date}"
+
+msgid "settings.noBackup"
+msgstr "Pas encore de sauvegarde"
+
+msgid "settings.backupFirst"
+msgstr "Télécharger d’abord une sauvegarde"
+
+msgid "settings.resetSuccess"
+msgstr "Toutes les données sont supprimées."
+
 msgid "onboarding.title"
 msgstr "Ton historique reste ici"
 
@@ -690,7 +696,7 @@ msgid "onboarding.dismiss"
 msgstr "Passer l’introduction"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Appuie sur un jour pour l’enregistrer ou le modifier, ou choisis Enregistrer des règles passées pour plusieurs jours."
+msgstr "Appuie sur un jour pour l’enregistrer."
 
 msgid "dayEditor.title"
 msgstr "{date}"

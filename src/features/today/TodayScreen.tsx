@@ -249,13 +249,17 @@ export function TodayScreen(props: TodayScreenProps) {
           stats={forecast.stats}
           showFertility={showFertility}
           onClose={() => setInsightsOpen(false)}
+          // Null while the explainer chunk loads, so the sheet doesn't swap headings.
+          explainer={
+            !explanation ? undefined : Explainer ? (
+              <Explainer explanation={explanation} />
+            ) : Explainer === false ? (
+              <p className="insights__note" role="alert">
+                {t("today.explainError")}
+              </p>
+            ) : null
+          }
         >
-          {explanation && Explainer ? <Explainer explanation={explanation} /> : null}
-          {explanation && Explainer === false ? (
-            <p className="insights__note" role="alert">
-              {t("today.explainError")}
-            </p>
-          ) : null}
           <CycleHistory today={today} />
         </CycleInsights>
       ) : null}

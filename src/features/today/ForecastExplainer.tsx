@@ -1,4 +1,3 @@
-import { useId } from "react";
 import type { ForecastExplanation } from "../../domain/cycle";
 import type { IsoDate } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
@@ -13,7 +12,6 @@ interface ForecastExplainerProps {
 // the Cycle insights sheet. Every number comes from explainForecast; this only
 // words them. Its own chunk, so the words stay out of the main bundle.
 export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
-  const titleId = useId();
   const t = useT();
   const locale = useLocale();
   const date = (day: IsoDate) => formatShortDate(day, locale);
@@ -26,10 +24,8 @@ export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
   const f = e.fertility;
 
   return (
-    <section className="insights__sums" aria-labelledby={titleId}>
-      <h3 id={titleId} className="cycle-history__title">
-        {t("today.howWorkedOut")}
-      </h3>
+    // The disclosure's summary is the visible title; the label keeps the region named.
+    <section className="insights__sums" aria-label={t("today.howWorkedOut")}>
       <ol className="insights__how-list">
         {e.median === null ? (
           <li>{x("explain.fallback", { cycle: e.cycleLength })}</li>

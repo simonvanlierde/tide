@@ -23,7 +23,7 @@ describe("i18n", () => {
 
   it("translates a known key per language", () => {
     expect(translate("en", "settings.theme")).toBe("Theme");
-    expect(translate("de", "settings.theme")).toBe("Design");
+    expect(translate("de", "settings.theme")).toBe("Darstellung");
     expect(translate("es", "settings.language")).toBe("Idioma");
   });
 

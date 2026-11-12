@@ -9,7 +9,7 @@ msgid "history.title"
 msgstr "Cyclusgeschiedenis"
 
 msgid "history.description"
-msgstr "{n, plural, one {Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste cyclus wordt getoond.} other {Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste {n} worden getoond.}}"
+msgstr "{n, plural, one {Je laatste voltooide cyclus.} other {Je laatste {n} voltooide cycli.}}"
 
 msgid "history.empty"
 msgstr "Registreer de start van een volgende menstruatie om je voltooide cycli te zien."
@@ -30,7 +30,7 @@ msgid "history.incompleteFor"
 msgstr "Onvolledige cyclus vanaf {date}"
 
 msgid "history.help"
-msgstr "Onvolledige cycli behouden hun gelogde dagen, maar tellen niet mee voor de geschatte cycluslengte."
+msgstr "Onvolledige cycli behouden hun dagen, maar tellen niet mee voor schattingen."
 
 msgid "history.excluded"
 msgstr "Onvolledig; telt niet mee voor schattingen"
@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Bewaar een kopie van je geschiedenis"
 
 msgid "backup.body"
-msgstr "Als je browsergegevens wist, verdwijnt je geschiedenis. Bewaar een reservekopie."
+msgstr "Als je browsergegevens wist, verdwijnt die."
 
 msgid "backup.download"
 msgstr "Reservekopie maken"
@@ -332,9 +332,6 @@ msgstr "Wisselend"
 msgid "insights.how"
 msgstr "Hoe voorspellingen werken"
 
-msgid "insights.how1"
-msgstr "Alles wordt op je apparaat berekend op basis van de dagen die je registreert."
-
 msgid "insights.howCycleStart"
 msgstr "Zitten er {gap} dagen of meer tussen twee gelogde bloedingsdagen, dan begint een nieuwe cyclus. Bij minder dagen hoort het bij dezelfde menstruatie. Spotting telt niet mee."
 
@@ -596,12 +593,6 @@ msgstr "Broncode, v{version}, opent in een nieuw tabblad"
 msgid "settings.data"
 msgstr "Gegevens"
 
-msgid "settings.dataInfo"
-msgstr "Over importeren en exporteren"
-
-msgid "settings.dataHelp"
-msgstr "Exporteren slaat je menstruatiegeschiedenis en dagelijkse details op in een bestand. Een Tide-reservekopie importeren vervangt ze. Importeren uit Clue of Flo voegt menstruatiedagen toe."
-
 msgid "settings.importSources"
 msgstr "Tide-reservekopie of export uit Clue of Flo."
 
@@ -612,10 +603,10 @@ msgid "settings.exportSuccess"
 msgstr "Back-up opgeslagen in je downloads."
 
 msgid "settings.exportCalendar"
-msgstr "Naar agenda"
+msgstr "Aan agenda toevoegen"
 
 msgid "settings.calendarHelp"
-msgstr "Downloadt een bestand met je volgende 3 verwachte menstruaties. Je agenda-account bewaart en synchroniseert afspraken die je toevoegt."
+msgstr "Je volgende {n} verwachte menstruaties. Je agenda kan ze online synchroniseren."
 
 msgid "settings.calendarFertility"
 msgstr "Vruchtbare periodes meenemen"
@@ -633,7 +624,7 @@ msgid "settings.importFile"
 msgstr "Gegevensbestand importeren"
 
 msgid "settings.importError"
-msgstr "Dit bestand is geen Tide-reservekopie of export uit Clue of Flo. Kies een ander bestand."
+msgstr "Dit bestand is geen Tide-back-up of export uit Clue of Flo (.json of .cluedata). Kies een ander bestand."
 
 msgid "settings.importUnavailable"
 msgstr "Importeren kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens."
@@ -674,6 +665,21 @@ msgstr "Verwijderen"
 msgid "settings.resetConfirm"
 msgstr "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt."
 
+msgid "settings.dataSummary"
+msgstr "{n, plural, one {{n} gelogde dag} other {{n} gelogde dagen}}"
+
+msgid "settings.lastBackup"
+msgstr "Laatste back-up {date}"
+
+msgid "settings.noBackup"
+msgstr "Nog geen back-up"
+
+msgid "settings.backupFirst"
+msgstr "Eerst een back-up downloaden"
+
+msgid "settings.resetSuccess"
+msgstr "Alle gegevens gewist."
+
 msgid "onboarding.title"
 msgstr "Je geschiedenis blijft hier"
 
@@ -690,7 +696,7 @@ msgid "onboarding.dismiss"
 msgstr "Introductie overslaan"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Tik op een dag om die te loggen of te wijzigen, of kies Eerdere menstruatie loggen voor meerdere dagen."
+msgstr "Tik op een dag om die te loggen."
 
 msgid "dayEditor.title"
 msgstr "{date}"

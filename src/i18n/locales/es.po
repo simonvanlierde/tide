@@ -9,7 +9,7 @@ msgid "history.title"
 msgstr "Historial de ciclos"
 
 msgid "history.description"
-msgstr "{n, plural, one {Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestra el último ciclo.} other {Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestran los últimos {n}.}}"
+msgstr "{n, plural, one {Tu último ciclo completado.} other {Tus últimos {n} ciclos completados.}}"
 
 msgid "history.empty"
 msgstr "Registra el inicio de otro período para ver tus ciclos completados."
@@ -30,7 +30,7 @@ msgid "history.incompleteFor"
 msgstr "Ciclo incompleto que empieza el {date}"
 
 msgid "history.help"
-msgstr "Los ciclos incompletos conservan sus días registrados, pero no cuentan para estimar la duración del ciclo."
+msgstr "Los ciclos incompletos conservan sus días, pero no cuentan para las estimaciones."
 
 msgid "history.excluded"
 msgstr "Incompleto; excluido de las estimaciones"
@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Guarda una copia de tu historial"
 
 msgid "backup.body"
-msgstr "Borrar los datos del navegador elimina tu historial. Guarda una copia de seguridad."
+msgstr "Borrar los datos del navegador lo elimina."
 
 msgid "backup.download"
 msgstr "Crear copia de seguridad"
@@ -332,9 +332,6 @@ msgstr "Variable"
 msgid "insights.how"
 msgstr "Cómo funcionan las predicciones"
 
-msgid "insights.how1"
-msgstr "Todo se calcula en tu dispositivo a partir de los días que registras."
-
 msgid "insights.howCycleStart"
 msgstr "Un intervalo de {gap} días o más entre días de sangrado registrados inicia un ciclo nuevo. Un intervalo menor cuenta como el mismo período. El manchado no cuenta."
 
@@ -596,12 +593,6 @@ msgstr "Código fuente, v{version}, se abre en una pestaña nueva"
 msgid "settings.data"
 msgstr "Datos"
 
-msgid "settings.dataInfo"
-msgstr "Acerca de importar y exportar"
-
-msgid "settings.dataHelp"
-msgstr "Exportar guarda tu historial de menstruación y tus detalles diarios en un archivo. Importar una copia de seguridad de Tide los reemplaza. Importar desde Clue o Flo añade días de menstruación."
-
 msgid "settings.importSources"
 msgstr "Copia de seguridad de Tide o exportación de Clue o Flo."
 
@@ -615,7 +606,7 @@ msgid "settings.exportCalendar"
 msgstr "Añadir al calendario"
 
 msgid "settings.calendarHelp"
-msgstr "Descarga un archivo con tus 3 próximos períodos previstos. Tu cuenta de calendario guarda y sincroniza los eventos que añades."
+msgstr "Tus {n} próximos períodos previstos. Tu calendario puede sincronizarlos en línea."
 
 msgid "settings.calendarFertility"
 msgstr "Incluir ventanas fértiles"
@@ -633,7 +624,7 @@ msgid "settings.importFile"
 msgstr "Importar archivo de datos"
 
 msgid "settings.importError"
-msgstr "Ese archivo no es una copia de seguridad de Tide ni una exportación de Clue o Flo. Elige otro archivo."
+msgstr "Ese archivo no es una copia de seguridad de Tide ni una exportación de Clue o Flo (.json o .cluedata). Elige otro archivo."
 
 msgid "settings.importUnavailable"
 msgstr "No se ha podido abrir la importación. Recarga la página e inténtalo de nuevo."
@@ -674,6 +665,21 @@ msgstr "Eliminar"
 msgid "settings.resetConfirm"
 msgstr "Se borran todos los datos y ajustes de este dispositivo. Esta acción no se puede deshacer."
 
+msgid "settings.dataSummary"
+msgstr "{n, plural, one {{n} día registrado} other {{n} días registrados}}"
+
+msgid "settings.lastBackup"
+msgstr "Última copia {date}"
+
+msgid "settings.noBackup"
+msgstr "Aún sin copia de seguridad"
+
+msgid "settings.backupFirst"
+msgstr "Descargar antes una copia"
+
+msgid "settings.resetSuccess"
+msgstr "Se borraron todos los datos."
+
 msgid "onboarding.title"
 msgstr "Tu historial se queda aquí"
 
@@ -690,7 +696,7 @@ msgid "onboarding.dismiss"
 msgstr "Saltar introducción"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Toca un día para registrarlo o cambiarlo, o elige Registrar un período pasado para varios días."
+msgstr "Toca un día para registrarlo."
 
 msgid "dayEditor.title"
 msgstr "{date}"

@@ -501,7 +501,7 @@ describe("CalendarScreen", () => {
     await user.click(screen.getByRole("button", { name: /previous month/i }));
 
     const grid = screen.getByLabelText(/calendar/i);
-    const helper = screen.getByText(/tap a day to log or change it/i);
+    const helper = screen.getByText(/tap a day to log it/i);
     const todayButton = screen.getByRole("button", {
       name: /go to current month/i,
     });
@@ -585,9 +585,7 @@ describe("CalendarScreen", () => {
       state: createAppState({ periodDays: [], settings: { calendarHelpDismissed: false } }),
     });
 
-    expect(
-      screen.getByText(/tap a day to log or change it, or use log a past period for a range/i),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/^tap a day to log it\.$/i)).toBeInTheDocument();
     expect(container.querySelector(".calendar-legend")).toBeNull();
   });
 
@@ -711,16 +709,16 @@ it("remembers Calendar help after a successful day log, even when undone", async
   const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
     state: createAppState({ settings: { calendarHelpDismissed: false } }),
   });
-  expect(screen.getByText(/tap a day to log or change it/i)).toBeInTheDocument();
+  expect(screen.getByText(/tap a day to log it/i)).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /april 19, 2026 unavailable/i }));
-  expect(screen.getByText(/tap a day to log or change it/i)).toBeInTheDocument();
+  expect(screen.getByText(/tap a day to log it/i)).toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /log april 17, 2026/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /^undo$/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
   view.unmount();
   renderWithAppState(<CalendarScreen today="2026-04-18" />);
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
 });
 
 it("dismisses Calendar help after logging bleeding in the shared editor", async () => {
@@ -736,10 +734,10 @@ it("dismisses Calendar help after logging bleeding in the shared editor", async 
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(true);
   await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
   await user.click(screen.getByRole("button", { name: "Done" }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
   view.unmount();
   renderWithAppState(<CalendarScreen today="2026-04-18" />);
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
 });
 
 it("keeps Calendar help until a valid range is completed", async () => {
@@ -757,7 +755,7 @@ it("keeps Calendar help until a valid range is completed", async () => {
   await user.click(screen.getByRole("button", { name: /april 1, 2026/i }));
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
   await user.click(screen.getByRole("button", { name: /april 3, 2026/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
   await user.click(screen.getByRole("button", { name: /^undo$/i }));
-  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  expect(screen.queryByText(/tap a day to log it/i)).not.toBeInTheDocument();
 });

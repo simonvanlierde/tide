@@ -62,8 +62,8 @@ for (const language of SUPPORTED_LANGUAGES) {
     expect(forecastRequests).toEqual([]);
     await context.setOffline(true);
     await page.getByRole("button", { name: translate(language, "today.cycleInsights"), exact: true }).click();
-    const explanation = page.locator(".insights__sums");
-    await expect(explanation.getByRole("heading")).toHaveText(translate(language, "today.howWorkedOut"));
+    await page.getByText(translate(language, "today.howWorkedOut")).click();
+    const explanation = page.getByRole("region", { name: translate(language, "today.howWorkedOut") });
     await expect(explanation.getByRole("listitem").first()).toHaveText(
       explainTranslators[language]._("explain.fallback", { cycle: 28 }),
     );

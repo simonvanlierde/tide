@@ -9,7 +9,7 @@ msgid "history.title"
 msgstr "Cycle history"
 
 msgid "history.description"
-msgstr "{n, plural, one {Completed cycles, from one period start to the next. Showing the latest cycle.} other {Completed cycles, from one period start to the next. Showing the latest {n}.}}"
+msgstr "{n, plural, one {Your latest completed cycle.} other {Your latest {n} completed cycles.}}"
 
 msgid "history.empty"
 msgstr "Log the start of another period to see your completed cycles."
@@ -30,7 +30,7 @@ msgid "history.incompleteFor"
 msgstr "Incomplete cycle starting {date}"
 
 msgid "history.help"
-msgstr "Incomplete cycles keep their logged days but don''t count toward cycle-length estimates."
+msgstr "Incomplete cycles keep their days but don''t count toward estimates."
 
 msgid "history.excluded"
 msgstr "Incomplete; excluded from estimates"
@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Keep a copy of your history"
 
 msgid "backup.body"
-msgstr "Clearing browser data erases your history. Keep a backup."
+msgstr "Clearing browser data erases it."
 
 msgid "backup.download"
 msgstr "Back up data"
@@ -332,9 +332,6 @@ msgstr "Variable"
 msgid "insights.how"
 msgstr "How predictions work"
 
-msgid "insights.how1"
-msgstr "Everything is worked out on your device from the days you log."
-
 msgid "insights.howCycleStart"
 msgstr "A gap of {gap} days or more between logged bleeding days starts a new cycle. A shorter gap counts as the same period. Spotting is left out."
 
@@ -596,12 +593,6 @@ msgstr "Source code, v{version}, opens in a new tab"
 msgid "settings.data"
 msgstr "Data"
 
-msgid "settings.dataInfo"
-msgstr "About import and export"
-
-msgid "settings.dataHelp"
-msgstr "Export saves your period history and daily details to a file. Importing a Tide backup replaces them. Importing from Clue or Flo adds period days."
-
 msgid "settings.importSources"
 msgstr "Tide backup, Clue or Flo export."
 
@@ -615,7 +606,7 @@ msgid "settings.exportCalendar"
 msgstr "Add to calendar"
 
 msgid "settings.calendarHelp"
-msgstr "Downloads a file with your next 3 expected periods. Your calendar account stores and syncs events you add."
+msgstr "Your next {n} expected periods. Your calendar may sync them online."
 
 msgid "settings.calendarFertility"
 msgstr "Include fertile windows"
@@ -633,7 +624,7 @@ msgid "settings.importFile"
 msgstr "Import data file"
 
 msgid "settings.importError"
-msgstr "That file isn''t a Tide backup or a Clue or Flo export. Choose another file."
+msgstr "That file isn''t a Tide backup or a Clue or Flo export (.json or .cluedata). Choose another file."
 
 msgid "settings.importUnavailable"
 msgstr "Import couldn''t be opened. Reload and try again."
@@ -674,6 +665,21 @@ msgstr "Delete"
 msgid "settings.resetConfirm"
 msgstr "All data and settings on this device are erased. This cannot be undone."
 
+msgid "settings.dataSummary"
+msgstr "{n, plural, one {{n} logged day} other {{n} logged days}}"
+
+msgid "settings.lastBackup"
+msgstr "Last backup {date}"
+
+msgid "settings.noBackup"
+msgstr "No backup yet"
+
+msgid "settings.backupFirst"
+msgstr "Download a backup first"
+
+msgid "settings.resetSuccess"
+msgstr "All data deleted."
+
 msgid "onboarding.title"
 msgstr "Your history stays here"
 
@@ -690,7 +696,7 @@ msgid "onboarding.dismiss"
 msgstr "Skip introduction"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Tap a day to log or change it, or use Log a past period for a range."
+msgstr "Tap a day to log it."
 
 msgid "dayEditor.title"
 msgstr "{date}"

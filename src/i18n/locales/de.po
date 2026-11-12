@@ -9,7 +9,7 @@ msgid "history.title"
 msgstr "Zyklusverlauf"
 
 msgid "history.description"
-msgstr "{n, plural, one {Abgeschlossene Zyklen, von einem Periodenbeginn zum nächsten. Der letzte Zyklus wird angezeigt.} other {Abgeschlossene Zyklen, von einem Periodenbeginn zum nächsten. Die letzten {n} werden angezeigt.}}"
+msgstr "{n, plural, one {Dein letzter abgeschlossener Zyklus.} other {Deine letzten {n} abgeschlossenen Zyklen.}}"
 
 msgid "history.empty"
 msgstr "Trage den Beginn einer weiteren Periode ein, um deine abgeschlossenen Zyklen zu sehen."
@@ -30,7 +30,7 @@ msgid "history.incompleteFor"
 msgstr "Unvollständiger Zyklus ab {date}"
 
 msgid "history.help"
-msgstr "Unvollständige Zyklen behalten ihre erfassten Tage, zählen aber nicht für die Schätzung der Zykluslänge."
+msgstr "Unvollständige Zyklen behalten ihre Tage, zählen aber nicht für Schätzungen."
 
 msgid "history.excluded"
 msgstr "Unvollständig; nicht für Schätzungen verwendet"
@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Bewahre eine Kopie deines Verlaufs auf"
 
 msgid "backup.body"
-msgstr "Wenn du Browserdaten löschst, geht dein Verlauf verloren. Bewahre eine Sicherung auf."
+msgstr "Wenn du Browserdaten löschst, geht er verloren."
 
 msgid "backup.download"
 msgstr "Sicherung erstellen"
@@ -332,9 +332,6 @@ msgstr "Schwankend"
 msgid "insights.how"
 msgstr "So funktionieren die Vorhersagen"
 
-msgid "insights.how1"
-msgstr "Alles wird auf deinem Gerät aus den von dir erfassten Tagen berechnet."
-
 msgid "insights.howCycleStart"
 msgstr "Liegen {gap} oder mehr Tage zwischen zwei erfassten Blutungstagen, beginnt ein neuer Zyklus. Bei weniger Tagen gehört es zur selben Periode. Schmierblutungen zählen nicht mit."
 
@@ -516,10 +513,10 @@ msgid "settings.title"
 msgstr "Einstellungen"
 
 msgid "settings.preferences"
-msgstr "Präferenzen"
+msgstr "Allgemein"
 
 msgid "settings.theme"
-msgstr "Design"
+msgstr "Darstellung"
 
 msgid "theme.system"
 msgstr "System"
@@ -596,12 +593,6 @@ msgstr "Quellcode, v{version}, öffnet in einem neuen Tab"
 msgid "settings.data"
 msgstr "Daten"
 
-msgid "settings.dataInfo"
-msgstr "Über Import und Export"
-
-msgid "settings.dataHelp"
-msgstr "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Der Import einer Tide-Sicherung ersetzt sie. Ein Import aus Clue oder Flo fügt Menstruationstage hinzu."
-
 msgid "settings.importSources"
 msgstr "Tide-Sicherung oder Export aus Clue oder Flo."
 
@@ -612,10 +603,10 @@ msgid "settings.exportSuccess"
 msgstr "Sicherung in deinen Downloads gespeichert."
 
 msgid "settings.exportCalendar"
-msgstr "Zum Kalender"
+msgstr "Zum Kalender hinzufügen"
 
 msgid "settings.calendarHelp"
-msgstr "Lädt eine Datei mit deinen nächsten 3 erwarteten Perioden herunter. Dein Kalenderkonto speichert und synchronisiert Termine, die du hinzufügst."
+msgstr "Deine nächsten {n} erwarteten Perioden. Dein Kalender synchronisiert sie eventuell online."
 
 msgid "settings.calendarFertility"
 msgstr "Fruchtbare Fenster einschließen"
@@ -633,7 +624,7 @@ msgid "settings.importFile"
 msgstr "Datendatei importieren"
 
 msgid "settings.importError"
-msgstr "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export. Wähle eine andere Datei."
+msgstr "Diese Datei ist weder eine Tide-Sicherung noch ein Clue- oder Flo-Export (.json oder .cluedata). Wähle eine andere Datei."
 
 msgid "settings.importUnavailable"
 msgstr "Der Import konnte nicht geöffnet werden. Lade die Seite neu und versuche es erneut."
@@ -674,6 +665,21 @@ msgstr "Löschen"
 msgid "settings.resetConfirm"
 msgstr "Alle Daten und Einstellungen auf diesem Gerät werden gelöscht. Das kann nicht rückgängig gemacht werden."
 
+msgid "settings.dataSummary"
+msgstr "{n, plural, one {{n} erfasster Tag} other {{n} erfasste Tage}}"
+
+msgid "settings.lastBackup"
+msgstr "Letzte Sicherung {date}"
+
+msgid "settings.noBackup"
+msgstr "Noch keine Sicherung"
+
+msgid "settings.backupFirst"
+msgstr "Vorher Sicherung herunterladen"
+
+msgid "settings.resetSuccess"
+msgstr "Alle Daten gelöscht."
+
 msgid "onboarding.title"
 msgstr "Dein Verlauf bleibt hier"
 
@@ -690,7 +696,7 @@ msgid "onboarding.dismiss"
 msgstr "Einführung überspringen"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Tippe auf einen Tag, um ihn zu erfassen oder zu ändern, oder wähle Vergangene Periode erfassen für mehrere Tage."
+msgstr "Tippe auf einen Tag, um ihn zu erfassen."
 
 msgid "dayEditor.title"
 msgstr "{date}"

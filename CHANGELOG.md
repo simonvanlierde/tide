@@ -67,6 +67,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Settings → Data now shows how many days are logged and when you last downloaded a
+  backup. Backup, calendar export and Delete all data sit in separate groups, and each
+  message appears under the action that caused it.
+- Delete all data and a replacing import now use a raspberry confirm button and offer
+  "Download a backup first" inside the dialog. After a delete, Settings says "All data
+  deleted."
+- Shorter text across the app. The Data info popover is gone. The calendar note, the
+  backup reminder, the Calendar first-visit hint and the cycle history description are
+  shorter. In Cycle insights, "How was this worked out?" is a closed disclosure that also
+  holds the prediction rules your own sums don't show, instead of a second list.
+- The import error names the file types it accepts. German: "Allgemein", "Darstellung" and "Zum Kalender
+  hinzufügen"; Dutch: "Aan agenda toevoegen".
 - Fertility disclaimers sit in their info popovers on Today and Settings. Daily notes show
   a character count instead of repeating privacy and backup guidance. Import, backup and
   fertility-choice explanations are shorter, and overdue prompts omit generic reassurance.

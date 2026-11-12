@@ -16,6 +16,7 @@ colors:
   amber-line: "#b07d00"
   periwinkle-line: "#5d68c4"
   sea-idle: "rgba(84, 123, 121, 0.4)"
+  danger: "#a32347"
   ink: "#14303a"
   ink-soft: "#486069"
   ink-muted: "#566d72"
@@ -194,6 +195,13 @@ centre; the log block sits under it, in thumb reach. Dark mode is the same pool 
 - **Surface** / **Soft Surface** / **Surface Border**: card white, inset panel, hairline.
 - **Ground**: the page gradient under a radial teal halo.
 
+### Danger
+
+- **Raspberry** (`danger`, `danger-ink`): erasing data, and nothing else. The Delete all
+  data link and the confirm button of a dialog that erases (Delete, a replacing import).
+  It is cooler than coral, so it never reads as bleeding. White text on the fill and the
+  ink on the card pass AA in both themes; dark uses a lighter ink.
+
 ### Named Rules
 
 **The One Warm Voice Rule.** Coral means bleeding. Never use it for a button, badge or
@@ -322,10 +330,12 @@ The values are in the front matter. This section says what each component is *fo
   button uses it when no bleed is expected. A pair of equal card actions (Export,
   Import) uses it in two columns, which stack when the words stop fitting.
 - **Commit**: solid deep tide, for the confirming action in a dialog. Never coral: coral
-  means bleeding, not "this button matters".
-- **Text action**: the quietest style, used for Remove, Undo, Delete all data and "Log a
-  past period" alike. When it stands alone under the calendar it keeps a 44 px touch
-  target.
+  means bleeding, not "this button matters". A confirm that erases data is raspberry, and
+  its dialog offers "Download a backup first" above the buttons.
+- **Text action**: the quietest style, used for Remove, Undo and "Log a past period"
+  alike. When it stands alone under the calendar it keeps a 44 px touch target. Delete all
+  data is the one text action in raspberry, alone under the Data card's last hairline,
+  at 44 px.
 - Every interactive element gets a `2px solid tide` focus ring at 2 px offset and a 160 ms
   ease.
 
@@ -365,6 +375,11 @@ with an eyebrow heading, optionally with an info button and a supporting line cl
 beneath it. The **fact list** is a variant: tracked label on the left (above, on phones),
 value on the right over a muted meta line, rows split by hairlines, and a chevron for
 drilling in at the end.
+
+The Settings **Data card** splits its jobs with hairlines, not extra cards: backup and
+import, then calendar export, then Delete all data. Each message appears under the action
+that caused it. Once days are logged, a muted line under the privacy sentence says how
+many there are and when the last backup was.
 
 ### Inputs / Fields
 
@@ -441,10 +456,12 @@ Keep backup actions free of coral. A failed download shows an alert below the ac
 
 ### Cycle history
 
-Inside Cycle insights, separate history with a hairline rather than another card.
-"How was this worked out?" comes first, under its own hairline: the personal sums behind
-the next-period date, loaded with the sheet. Then show up to twelve completed cycles as a
-quiet chart above a two-column table.
+Inside Cycle insights, separate history with a hairline rather than another card: up to
+twelve completed cycles as a quiet chart above a two-column table. The maths comes last,
+under its own hairline, as one closed disclosure. "How was this worked out?" holds the
+personal sums behind the next-period date, then only the rules those sums don't show with
+real numbers (what starts a cycle, the period-length limits). Without a forecast it is
+"How predictions work" with the general rules.
 Use teal dots for ordinary cycles and ink crosses for cycles marked incomplete, with a
 matching legend. The chart gives the overview; the table supplies every date and length
 and remains available to screen readers. Put the incomplete checkbox below each start

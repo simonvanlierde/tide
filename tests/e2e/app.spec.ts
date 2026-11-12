@@ -146,6 +146,7 @@ test("Today explains how the next period was worked out", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: translate("en", "today.cycleInsights") }).click();
+  await page.getByText(translate("en", "today.howWorkedOut")).click();
   const sums = page.getByRole("region", { name: translate("en", "today.howWorkedOut") });
   const sheet = page.getByRole("dialog");
   // The seed has one period start, so the 28-day default stands in.
