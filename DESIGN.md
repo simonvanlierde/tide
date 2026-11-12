@@ -348,8 +348,10 @@ names the date; flow comes first, with "Not bleeding that day" to remove a log.
 Symptoms, mood and notes sit under a native **More details** disclosure. Chips save on
 tap and notes save as you type. Clearing details offers Undo. Done, Close and Escape
 close the panel; it stays open while editing or removing bleeding. Calendar's grid owns
-the date, with no competing date field. Both screens use the same inset surface and
-controls.
+the date, with no competing date field. While the editor is open, a grid tap changes its
+date and preserves the disclosure without logging bleeding; tapping the selected day
+closes it. With the editor closed, empty-day taps still log bleeding in one tap.
+Both screens use the same inset surface and controls.
 
 ### Chips
 

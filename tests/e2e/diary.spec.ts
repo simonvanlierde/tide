@@ -19,15 +19,41 @@ test("Calendar selection keeps bleeding and details on the same day", async ({ p
   await page.getByRole("button", { name: /^Edit April 12, 2026/ }).click();
   await expect(page.getByRole("heading", { name: formatLongDate("2026-04-12", "en"), exact: true })).toBeVisible();
   await expect(page.getByRole("radio", { name: translate("en", "flow.heavy"), exact: true })).toBeChecked();
-  await page.getByText(translate("en", "dayEditor.moreDetails"), { exact: true }).click();
+  await expect(note).toBeVisible();
   await expect(note).toHaveValue("");
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).not.toBeVisible();
 
   await page.getByRole("button", { name: /^Edit April 11, 2026/ }).click();
   await expect(page.getByRole("heading", { name: formatLongDate("2026-04-11", "en"), exact: true })).toBeVisible();
   await expect(page.getByRole("radio", { name: translate("en", "flow.light"), exact: true })).toBeChecked();
-  await page.getByText(translate("en", "dayEditor.moreDetails"), { exact: true }).click();
+  await expect(note).toBeVisible();
   await expect(note).toHaveValue("A quiet day.");
+});
+
+test("Calendar can add past details without logging bleeding and keeps closed-grid one-tap logging", async ({
+  page,
+}) => {
+  await seedAppState(page, "en", {}, {});
+  await page.goto("/calendar");
+  await page.getByRole("button", { name: /^Add details for / }).click();
+  await page.getByRole("button", { name: /^Edit April 12, 2026/ }).click();
+  await expect(page.getByRole("heading", { name: formatLongDate("2026-04-12", "en"), exact: true })).toBeVisible();
+  const note = page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true });
+  await expect(note).toBeVisible();
+  await note.fill("A quiet afternoon.");
+  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
+  expect(
+    await page.evaluate(() => {
+      const state = JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}");
+      return { bleeding: state.intensityByDay, note: state.detailsByDay["2026-04-12"]?.note };
+    }),
+  ).toEqual({ bleeding: {}, note: "A quiet afternoon." });
+  await page.getByRole("button", { name: translate("en", "diary.done"), exact: true }).click();
+  await page.getByRole("button", { name: /^Log April 13, 2026/ }).click();
+  await expect(page.locator(".calendar__help[role=status]")).toContainText("Logged Mon, Apr 13.");
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+  ).toEqual({ "2026-04-13": null });
 });
 
 for (const language of SUPPORTED_LANGUAGES) {

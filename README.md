@@ -70,9 +70,10 @@ leaving symptoms blank means you did not record them. Mood and a note of up to 1
 characters are optional too. Each choice saves as you make it; **Clear details** offers
 Undo. On Calendar, use the dated links under **Daily details** to revisit entries for that
 month. The same dated panel handles bleeding flow and optional **More details** on Today
-and Calendar. Pick days on the Calendar grid to change the date; adding diary details
-does not log bleeding. Calendar confirmations clear after ten seconds, pausing while
-you hover over them or focus Undo.
+and Calendar. For diary-only entries on past days, choose **Details** on Calendar, then
+pick a day on the grid. While the editor is open, grid taps change its date without logging
+bleeding. With it closed, a tap still logs a bleeding day. Calendar confirmations clear
+after ten seconds, pausing while you hover over them or focus Undo.
 
 ## Development
 

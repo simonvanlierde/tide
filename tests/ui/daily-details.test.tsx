@@ -179,6 +179,22 @@ describe("optional daily details", () => {
     expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
   });
 
+  it("chooses a past diary-only day from an open editor without logging bleeding", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, { state: createAppState() });
+    await user.click(screen.getByRole("button", { name: /add details for sat, apr 18/i }));
+    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026$/ }));
+
+    expect(screen.getByRole("heading", { name: "April 12, 2026" })).toBeInTheDocument();
+    expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "A walk helped.");
+    expect(stored().intensityByDay).toEqual({});
+    expect(stored().detailsByDay).toEqual({
+      "2026-04-12": { symptoms: null, mood: null, note: "A walk helped." },
+    });
+    expect(screen.queryByRole("heading", { name: "April 18, 2026" })).not.toBeInTheDocument();
+  });
+
   it("moves the Calendar editor's single date context with the grid selection", async () => {
     const user = userEvent.setup();
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
@@ -192,7 +208,7 @@ describe("optional daily details", () => {
     expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /^Edit April 13, 2026/ }));
-    await user.click(screen.getByText("More details", { selector: "summary" }));
+    expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
     expect(screen.queryByRole("region", { name: "April 12, 2026" })).not.toBeInTheDocument();
     const second = screen.getByRole("region", { name: "April 13, 2026" });
     expect(within(second).getByRole("status")).toBeEmptyDOMElement();

@@ -165,16 +165,21 @@ export function CalendarScreen(props: CalendarScreenProps) {
             days={days}
             selectedDay={log.selectedDay ?? log.rangePick?.from ?? null}
             justLoggedDay={log.justLoggedDay}
+            editing={log.selectedDay !== null}
             onSelectDay={(day) => {
-              setEditorSection("bleeding");
-              log.selectDay(day);
+              if (log.selectedDay) {
+                if (day === log.selectedDay) log.closePicker();
+                else log.openDay(day);
+              } else {
+                setEditorSection("bleeding");
+                log.selectDay(day);
+              }
             }}
           />
         </div>
         <CalendarLegend days={days} />
         {log.selectedDay ? (
           <DayEditor
-            key={log.selectedDay}
             day={log.selectedDay}
             today={today}
             initialSection={editorSection}

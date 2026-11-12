@@ -29,12 +29,12 @@ export function DayEditor({
   const editable = !readOnly && day <= today;
   const [focusPending, setFocusPending] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: changing the date or entry section moves focus to the new fields.
   useEffect(() => {
-    const target =
-      initialSection === "details"
-        ? panel.current?.querySelector<HTMLElement>(".diary-fields button:not(:disabled)")
-        : (panel.current?.querySelector<HTMLElement>("input:checked:not(:disabled)") ??
-          panel.current?.querySelector<HTMLElement>("input:not(:disabled), .day-editor__log:not(:disabled)"));
+    const target = panel.current?.querySelector(".day-editor__details[open]")
+      ? panel.current?.querySelector<HTMLElement>(".diary-fields button:not(:disabled)")
+      : (panel.current?.querySelector<HTMLElement>("input:checked:not(:disabled)") ??
+        panel.current?.querySelector<HTMLElement>("input:not(:disabled), .day-editor__log:not(:disabled)"));
     (target ?? panel.current?.querySelector<HTMLElement>(".icon-close"))?.focus();
     const frame = requestAnimationFrame(() =>
       panel.current?.scrollIntoView?.({
@@ -43,7 +43,7 @@ export function DayEditor({
       }),
     );
     return () => cancelAnimationFrame(frame);
-  }, [initialSection]);
+  }, [day, initialSection]);
 
   useEffect(() => {
     if (!focusPending) return;

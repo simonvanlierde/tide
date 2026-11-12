@@ -9,7 +9,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Today and Calendar share one dated editor for bleeding flow and optional daily
-  details. Calendar confirmations clear after ten seconds and pause while hovered or
+  details. Choosing another date while editing does not log bleeding. Calendar
+  confirmations clear after ten seconds and pause while hovered or
   focused. First-use guidance links to Calendar for periods that started earlier.
 - A skippable introduction covers privacy, importing history, fertility choices and
   keeping backups, while leaving the first log in reach. Calendar shows a hint until
