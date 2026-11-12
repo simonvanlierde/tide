@@ -48,8 +48,8 @@ stratum. These cases are correlated; they are not 1,440 independent people.
 - A decline is a null next-period date; its rate uses all cases. Returned dates at or
   before the cutoff are counted separately as already due and remain in error metrics.
 - Coverage and mean inclusive width use only ranges actually supplied by the explainer.
-  Their count is reported alongside coverage. These ranges are not calibrated confidence
-  intervals; a wide range can cover a target while saying little that helps planning.
+  Their count is reported alongside coverage. As in the
+  [backtest](backtest.md#large-errors-and-displayed-ranges), these ranges are not calibrated confidence intervals.
 
 ## Results
 
@@ -96,17 +96,3 @@ metrics: d319f9dd007e9a81edd4e35a3d2d6bc4ad079b1398e071840c31b9bc3cd7073b
 The output also hashes the predictor, date helpers and evaluator. Tests check pairing,
 prospective targets, applied masks, genuine long intervals, metric denominators,
 reproducibility and production wiring. A denominator mutation fails the metrics test.
-
-## External-data gate
-
-A bounded recheck on 2026-11-12 found only the original CSV listed on
-[Zenodo 15598359](https://zenodo.org/records/15598359), with no listed codebook or correction.
-The associated [paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC13141897/) was behind a browser
-challenge, and the publisher's supplement returned 403; the supplement was not reviewed.
-This does not establish that no clarification exists.
-
-The existing audit leaves event meanings, participant boundaries, birth flags, observation
-gaps and date anomalies unresolved. No participant records were downloaded for this run.
-The dataset remains excluded from backtests until a usable codebook or author clarification
-resolves those questions. No authors were contacted. Any proposed estimator still needs
-independent usable evidence, with people separated across tuning and evaluation.

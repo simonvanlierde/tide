@@ -54,7 +54,9 @@ backup, so a restored device keeps updating the same events. Changing existing c
 importing older history or deleting all data makes a new value. The next file then adds new
 events, and you delete the old ones by hand.
 
-To see how close the next-period estimate lands on real cycle data, read
-[backtest.md](backtest.md).
+## How well it works
+
+- The [backtest](backtest.md) scores the next-period date on 3,144 real cycles and compares it with simple baselines.
+- The [sparse-history stress test](sparse-history.md) checks missed logs, short histories and long or shifting cycles on synthetic data.
 
 The estimates are for information only. They are not a form of birth control.
