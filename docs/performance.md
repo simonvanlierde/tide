@@ -78,6 +78,14 @@ A second pass reversed the version order. The twenty-year duration improvement r
 changed direction (6.97 to 6.18 ms), so it does not establish a speed-up or regression.
 The repository has no timing threshold; correctness and the bundle budget remain release gates.
 
+A later check on 12 November used the same fixture, CPU affinity and two execution orders,
+with shared-host load around 2 to 4. At twenty years, duration medians fell from 2.89–2.90 to 1.26 ms.
+Range logging rose from 2.90–2.94 to 5.43–5.47 ms. Forecast medians rose from 4.97–5.00 to 5.50–5.61 ms;
+that 0.50–0.64 ms cost repeated in both orders. The candidate also constructs timeline and statistics data
+that 0.4.0 did not return. One-year model operations stayed below 0.3 ms median.
+Both versions passed assertions for the next-period date, period length and all fourteen added dates.
+These results confirm the duration improvement and additional range cost; they do not measure browser or phone latency.
+
 ### Remaining costs
 
 A range test checks that history reconciliation happens once,

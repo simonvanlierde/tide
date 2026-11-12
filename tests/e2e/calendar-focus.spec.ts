@@ -31,7 +31,7 @@ test("opening an empty day does not log bleeding and closing returns focus", asy
   await expect(day).toBeFocused();
   await expect(log).toHaveCount(0);
   expect(
-    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay),
   ).toEqual({});
 });
 

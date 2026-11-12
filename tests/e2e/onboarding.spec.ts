@@ -46,9 +46,9 @@ test("skipping introduction persists without enabling fertility or adding storag
   await expect(card).toHaveCount(0);
   const stored = await page.evaluate(() => ({
     keys: Object.keys(localStorage),
-    settings: JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").settings,
+    settings: JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").settings,
   }));
-  expect(stored.keys).toEqual(["tide.period-tracker.state"]);
+  expect(stored.keys).toEqual(["tide.period-tracker.state.v1"]);
   expect(stored.settings).toMatchObject({ onboardingDismissed: true, showFertility: null });
 });
 
@@ -109,7 +109,7 @@ test("the past-period path opens Calendar without logging today", async ({ page 
   await expect(page).toHaveURL(/\/calendar$/);
   await expect(page.getByRole("table", { name: translate("en", "calendar.title") })).toBeVisible();
   const days = await page.evaluate(
-    () => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay ?? {},
+    () => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay ?? {},
   );
   expect(days).toEqual({});
 });

@@ -221,9 +221,9 @@ export function useAppStateActions() {
       // device holds no history afterwards. Settings reset too.
       resetState() {
         // Another tab's storage event may still be waiting when Delete is clicked.
-        if (readOnly || loadStoredState().readOnly) return;
-        clearAppState();
+        if (readOnly || loadStoredState().readOnly || !clearAppState()) return false;
         dispatch({ type: "importState", state: defaultAppState });
+        return true;
       },
     }),
     [dispatch, readOnly],

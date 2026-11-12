@@ -12,7 +12,9 @@ import type {
 } from "../domain/types";
 import { SUPPORTED_LANGUAGES } from "../i18n";
 
-export const STORAGE_KEY = "tide.period-tracker.state";
+export const LEGACY_STORAGE_KEY = "tide.period-tracker.state";
+// A separate generation keeps pre-versioning tabs from rewriting current data.
+export const STORAGE_KEY = "tide.period-tracker.state.v1";
 
 // The stored shape this build reads and writes. Bump it when a change would
 // lose data in an older build that rewrites the blob with only the fields it

@@ -483,6 +483,19 @@ describe("SettingsScreen", () => {
     expect(screen.getByRole("status")).toHaveTextContent("All data deleted.");
   });
 
+  it("does not report deletion when storage cannot save the reset", async () => {
+    const user = userEvent.setup();
+    renderSettings(createAppState({ periodDays: ["2026-03-01"] }));
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Storage is full", "QuotaExceededError");
+    });
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^delete$/i }));
+    expect(screen.getByRole("alert")).toHaveTextContent("Your latest changes couldn't be saved on this device.");
+    expect(screen.queryByText("All data deleted.")).not.toBeInTheDocument();
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-03-01"]);
+  });
+
   it("offers a backup inside the delete dialog, and marks its confirm as destructive", async () => {
     const user = userEvent.setup();
     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
@@ -499,6 +512,53 @@ describe("SettingsScreen", () => {
     expect(dialog.getByRole("status")).toHaveTextContent(/backup saved/i);
     expect(loadStoredState().state.settings.lastBackupOn).not.toBeNull();
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-03-01"]);
+  });
+
+  it.each(["delete", "replace"])("shows a failed backup inside the %s dialog and allows a retry", async (action) => {
+    const user = userEvent.setup();
+    const createObjectURL = vi.spyOn(URL, "createObjectURL").mockImplementation(() => {
+      throw new Error("download blocked");
+    });
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
+    renderSettings(createAppState({ periodDays: ["2026-03-01"] }));
+
+    if (action === "delete") {
+      await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    } else {
+      await user.upload(
+        screen.getByLabelText(/import data file/i),
+        new File([JSON.stringify({ days: {}, schemaVersion: 3 })], "backup.json", { type: "application/json" }),
+      );
+    }
+    const dialog = within(screen.getByRole("dialog"));
+    await user.click(dialog.getByRole("button", { name: "Download a backup first" }));
+    expect(dialog.getByRole("alert")).toHaveTextContent("The backup couldn't be downloaded. Try again.");
+    expect(loadStoredState().state.settings.lastBackupOn).toBeNull();
+
+    createObjectURL.mockReturnValue("blob:tide-backup");
+    await user.click(dialog.getByRole("button", { name: "Download a backup first" }));
+    expect(dialog.queryByRole("alert")).not.toBeInTheDocument();
+    expect(dialog.getByRole("status")).toHaveTextContent(/backup saved/i);
+    await user.click(dialog.getByRole("button", { name: /cancel/i }));
+    expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-03-01"]);
+  });
+
+  it("offers a backup before deleting diary-only history", async () => {
+    const user = userEvent.setup();
+    const createObjectURL = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-backup");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => undefined);
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined);
+    const detailsByDay = { "2026-03-01": { symptoms: null, mood: null, note: "Keep my diary." } };
+    renderSettings(createAppState({ detailsByDay }));
+
+    expect(screen.getByRole("button", { name: /^export$/i })).toHaveAccessibleDescription("No backup yet");
+    await user.click(screen.getByRole("button", { name: /delete all data/i }));
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Download a backup first" }));
+    const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
+    expect(JSON.parse(await blob.text()).detailsByDay).toEqual(detailsByDay);
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: /cancel/i }));
+    expect(loadStoredState().state.detailsByDay).toEqual(detailsByDay);
   });
 
   it("shows what is stored and when it was last backed up", () => {

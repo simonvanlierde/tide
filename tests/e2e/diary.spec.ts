@@ -48,7 +48,7 @@ test("Calendar opens saved note icons and logs bleeding only through the dated e
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
   expect(
     await page.evaluate(() => {
-      const state = JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}");
+      const state = JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}");
       return { bleeding: state.intensityByDay, note: state.detailsByDay["2026-04-12"]?.note };
     }),
   ).toEqual({ bleeding: {}, note: "A quiet afternoon." });
@@ -78,7 +78,7 @@ test("Calendar opens saved note icons and logs bleeding only through the dated e
   await page.getByRole("button", { name: translate("en", "dayEditor.logBleeding"), exact: true }).click();
   await expect(page.getByRole("radio", { name: translate("en", "flow.medium"), exact: true })).toBeVisible();
   expect(
-    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay),
   ).toEqual({ "2026-04-13": null });
 });
 
@@ -151,7 +151,7 @@ test("diary-only history survives reload, calendar viewing and backup restore", 
     );
     expect(
       await restored.evaluate(
-        () => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay,
+        () => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay,
       ),
     ).toEqual({});
   } finally {

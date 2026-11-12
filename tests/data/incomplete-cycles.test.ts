@@ -83,8 +83,7 @@ describe("incomplete cycle persistence", () => {
     expect(loadStoredState()).toEqual({ state, readOnly: false });
     expect(window.localStorage.getItem(BACKUP_KEY)).toBeNull();
     window.localStorage.setItem(BACKUP_KEY, "old copy");
-    clearAppState();
-    expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull();
+    expect(clearAppState()).toBe(true);
     expect(window.localStorage.getItem(BACKUP_KEY)).toBeNull();
     expect(loadStoredState().state).toEqual(defaultAppState);
   });

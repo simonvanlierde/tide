@@ -56,6 +56,7 @@ export function DataSection({ today }: DataSectionProps) {
   const showFertility = state.settings.showFertility === true;
   const expectedCycles = getExpectedCycles(useForecast(today), today, calendarCount);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
+  const hasHistory = loggedDayCount > 0 || Object.keys(state.detailsByDay).length > 0;
 
   function fail(group: DataGroup, text: string) {
     setStatus(null);
@@ -228,29 +229,37 @@ export function DataSection({ today }: DataSectionProps) {
 
   // Offered inside the dialogs that cannot be undone, so the safe path is
   // one tap away rather than a cancel and a scroll.
-  const backupFirst =
-    status?.kind === "exported" ? (
-      <p className="status-row" role="status">
-        <span className="status-chip">{t("settings.exportSuccess")}</span>
-      </p>
-    ) : (
-      <button type="button" className="secondary-action" onClick={handleExport}>
-        <span className="button-label">
-          <AppIcon icon={Download} className="button-icon" />
-          <span>{t("settings.backupFirst")}</span>
-        </span>
-      </button>
-    );
+  const backupFirst = (
+    <>
+      {status?.kind === "exported" ? (
+        <p className="status-row" role="status">
+          <span className="status-chip">{t("settings.exportSuccess")}</span>
+        </p>
+      ) : (
+        <button type="button" className="secondary-action" onClick={handleExport}>
+          <span className="button-label">
+            <AppIcon icon={Download} className="button-icon" />
+            <span>{t("settings.backupFirst")}</span>
+          </span>
+        </button>
+      )}
+      {error?.group === "history" ? (
+        <p className="supporting-note supporting-note--icon supporting-note--error" role="alert">
+          <AppIcon icon={CircleAlert} className="supporting-note__icon" />
+          <span>{error.text}</span>
+        </p>
+      ) : null}
+    </>
+  );
 
   const { lastBackupOn } = state.settings;
   // When the last backup was, on the button that makes one. Nothing to back up
   // yet means nothing to remind about.
-  const backupHint =
-    loggedDayCount === 0
-      ? null
-      : lastBackupOn
-        ? t("settings.lastBackup", { date: formatMonthDay(lastBackupOn, locale) })
-        : t("settings.noBackup");
+  const backupHint = !hasHistory
+    ? null
+    : lastBackupOn
+      ? t("settings.lastBackup", { date: formatMonthDay(lastBackupOn, locale) })
+      : t("settings.noBackup");
 
   return (
     <article className="utility-card utility-card--slim">
@@ -441,16 +450,20 @@ export function DataSection({ today }: DataSectionProps) {
           body={
             <>
               <p>{t("settings.resetConfirm")}</p>
-              {loggedDayCount > 0 ? backupFirst : null}
+              {hasHistory ? backupFirst : null}
             </>
           }
           confirmLabel={t("settings.resetAction")}
           destructive
           onConfirm={() => {
-            actions.resetState();
+            const reset = actions.resetState();
+            setConfirmingReset(false);
+            if (!reset) {
+              fail("history", t("app.storageError"));
+              return;
+            }
             setError(null);
             setStatus({ kind: "reset" });
-            setConfirmingReset(false);
           }}
           onCancel={() => setConfirmingReset(false)}
         />

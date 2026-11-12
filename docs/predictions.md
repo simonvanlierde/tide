@@ -40,7 +40,7 @@ Changing an interval's start or end clears its marker, so an old choice cannot a
 cycle. Tide backups keep these markers.
 
 Settings → Data →
-**Add to calendar** saves the next 3 expected period starts as all-day events in an `.ics` file,
+**Add to calendar** saves the next 3, 6 or 12 expected period starts (3 by default) as all-day events in an `.ics` file,
 made on your device. The events are marked private and never mark you as busy. Visibility still depends on your
 calendar and sharing settings; the private flag does not encrypt them. Each event is identified by its cycle number and a random id this
 device makes on the first export, with no date in it, so importing a newer file moves the event
