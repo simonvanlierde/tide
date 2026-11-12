@@ -40,7 +40,7 @@
   }
   /* On a narrow line the log label needs the room: Details keeps its icon,
      and its aria-label still names it. */
-  @container (max-width: 21em) {
+  @container (max-width: 23em) {
     .details-button {
       padding: 0 14px;
     }
@@ -129,13 +129,6 @@
   .diary-chip__icon {
     width: 16px;
     height: 16px;
-  }
-  /* "No symptoms" is the other answer, not one more symptom. */
-  .diary-chip--none {
-    border-style: dashed;
-  }
-  .diary-chip--none[aria-pressed="true"] {
-    border-style: solid;
   }
   /* Three moods share the row evenly, each with its weather. */
   .diary-chip--mood {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import type { Forecast, IsoDate, LoggedFlow } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
 import { addDays, formatShortDate } from "../../utils/date";
@@ -368,7 +368,9 @@ export function CycleDial({
             {estimate && previewIndex === null ? (
               <>
                 <span className="cycle-dial__eyebrow">{estimate.label}</span>
-                <strong className="cycle-dial__estimate">{estimate.value}</strong>
+                <strong className="cycle-dial__estimate" style={{ "--chars": estimate.value.length } as CSSProperties}>
+                  {estimate.value}
+                </strong>
                 <span className="cycle-dial__date">{estimate.date}</span>
                 <span className="cycle-dial__phase cycle-dial__phase--small">
                   {/* Late: the estimate above already says so. */}

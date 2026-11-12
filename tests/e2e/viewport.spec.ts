@@ -291,6 +291,40 @@ for (const size of SIZES) {
         });
       }
 
+      // A long headline shrinks to one line; a long eyebrow wraps. Neither
+      // runs into the ring.
+      test("keeps the dial's estimate on one line and its eyebrow inside the disc", async ({ page }) => {
+        await page.goto("/");
+        const result = await page.locator(".cycle-dial__inner").evaluate((inner) => {
+          const disc = inner.getBoundingClientRect();
+          return [".cycle-dial__eyebrow", ".cycle-dial__estimate"].map((selector) => {
+            const el = inner.querySelector(selector) as Element;
+            const range = document.createRange();
+            range.selectNodeContents(el);
+            const box = range.getBoundingClientRect();
+            const cx = disc.left + disc.width / 2;
+            const cy = disc.top + disc.height / 2;
+            // The text's farther top or bottom corner must sit inside the circle.
+            const dy = Math.max(Math.abs(box.top - cy), Math.abs(box.bottom - cy));
+            const dx = Math.max(Math.abs(box.left - cx), Math.abs(box.right - cx));
+            return { lines: range.getClientRects().length, inside: Math.hypot(dx, dy) <= disc.width / 2 };
+          });
+        });
+        expect(result[0]?.inside).toBe(true);
+        expect(result[1]).toEqual({ lines: 1, inside: true });
+      });
+
+      // The logged line's icon shares a row with its text, never one of its own.
+      test("keeps the log icon beside its summary", async ({ page }) => {
+        await page.goto("/");
+        const beside = await page.locator(".log-action__summary").evaluate((button) => {
+          const icon = (button.querySelector(".log-action__status-icon") as Element).getBoundingClientRect();
+          const text = (button.querySelector("span:not(.log-action__hint)") as Element).getBoundingClientRect();
+          return icon.bottom > text.top && icon.top < text.bottom && icon.right <= text.left;
+        });
+        expect(beside).toBe(true);
+      });
+
       // Export and Import stack rather than hyphenate: a word split over two
       // lines ("Expor-tieren") has one text rect per line.
       test("keeps the Export and Import labels on one line", async ({ page }) => {

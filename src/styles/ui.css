@@ -589,6 +589,12 @@
     text-align: start;
   }
 
+  /* Capped at the row minus the icon (18 px) and the gap (8 px), so a long
+     summary wraps beside its icon instead of dropping below it. */
+  .log-action__summary > span:not(.log-action__hint) {
+    max-width: calc(100% - 26px);
+  }
+
   .log-action__hint {
     display: inline-flex;
     align-items: center;

@@ -70,6 +70,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - "Add details" on the calendar names its day, and adds details for the day you last picked.
 - The German and French fertility line on Today is shorter, so it fits on one line on a phone.
 - The legend under the dial sits in two even rows instead of three items and one on its own.
+- In Dutch, German, French and Spanish, a long dial headline shrinks to one line and a long
+  label above it wraps instead of touching the ring, and the logged line keeps its icon beside
+  the text. Details shows only its icon until the screen is wide enough for the label.
+- Plainer Dutch, German, French and Spanish wording in the cycle insights, backup, import,
+  export and calendar texts.
+- The "No symptoms" chip is no longer dashed.
 - The dial's fertile window, ovulation and expected period fill its band with a pale wash
   of their colour, so the ring reads as one band. The ring fills in on the first look of the
   day, the scrub dot glides home when you let go, and logging today sends one ring out from

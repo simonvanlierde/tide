@@ -14,12 +14,12 @@ export const nl: Dictionary = {
   "history.length": "Duur",
   "history.incomplete": "Onvolledig",
   "history.incompleteFor": "Onvolledige cyclus vanaf {date}",
-  "history.help": "Onvolledige cycli houden hun gelogde dagen, maar tellen niet mee voor de geschatte cycluslengte.",
+  "history.help": "Onvolledige cycli behouden hun gelogde dagen, maar tellen niet mee voor de geschatte cycluslengte.",
   "history.excluded": "Onvolledig; telt niet mee voor schattingen",
   "history.chartDates": "Menstruatiestarts, van oud naar nieuw",
   "backup.title": "Bewaar een kopie van je geschiedenis",
   "backup.body":
-    "Je geschiedenis staat alleen in deze browser en verdwijnt als de browsergegevens worden gewist. Download een reservekopie om ze te herstellen.",
+    "Je geschiedenis staat alleen in deze browser en verdwijnt als je de browsergegevens wist. Download een reservekopie om ze te herstellen.",
   "backup.download": "Reservekopie maken",
   "backup.snooze": "Herinner me over een week",
   "backup.error": "De reservekopie kon niet worden gedownload. Probeer het opnieuw.",
@@ -27,10 +27,10 @@ export const nl: Dictionary = {
   // Optional daily details
   "diary.addDetails": "Details toevoegen",
   "diary.editDetails": "Details bewerken",
-  "diary.addDetailsFor": "Details toevoegen voor {date}",
+  "diary.addDetailsFor": "Details voor {date} toevoegen",
   "diary.details": "Details",
   "diary.done": "Klaar",
-  "diary.editDetailsFor": "Details van {date} bewerken",
+  "diary.editDetailsFor": "Details voor {date} bewerken",
   "diary.undo": "Ongedaan maken",
   "diary.date": "Datum",
   "diary.symptoms": "Klachten",
@@ -59,7 +59,7 @@ export const nl: Dictionary = {
   "app.skipToContent": "Naar inhoud",
   "app.primaryNav": "Hoofdnavigatie",
   "app.newerData":
-    "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Laad opnieuw om bij te werken. Wijzigingen die je hier maakt, worden niet opgeslagen.",
+    "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Herlaad de pagina om bij te werken. Wijzigingen die je hier maakt, worden niet opgeslagen.",
 
   "app.storageError":
     "Je laatste wijzigingen konden niet op dit apparaat worden opgeslagen. Houd Tide open en exporteer een reservekopie via Instellingen.",
@@ -79,7 +79,7 @@ export const nl: Dictionary = {
   "today.notBirthControl": "Een schatting. Gebruik het niet als anticonceptie.",
   "fertilityAsk.title": "Vrucht\u00adbaarheids\u00adschattingen tonen?",
   "fertilityAsk.body":
-    "Tide kan de dagen aangeven waarop je het meest waarschijnlijk vruchtbaar bent, berekend uit de menstruaties die je logt. Het is maar een schatting, gebruik het dus niet als anticonceptie. Je kunt dit wijzigen in Instellingen.",
+    "Tide kan de dagen aangeven waarop je waarschijnlijk het vruchtbaarst bent, berekend op basis van de menstruaties die je logt. Het is maar een schatting, dus gebruik het niet als anticonceptie. Je kunt dit wijzigen in Instellingen.",
   "fertilityAsk.show": "Tonen",
   "fertilityAsk.hide": "Niet tonen",
   "today.importPrompt": "Heb je een Tide-reservekopie of je geschiedenis uit Clue of Flo?",
@@ -95,7 +95,7 @@ export const nl: Dictionary = {
   "today.ovulationInDays.one": "Eisprong over {n} dag",
   "today.ovulationInDays.other": "Eisprong over {n} dagen",
   "today.learningFallback":
-    "Er wordt uitgegaan van een gemiddelde cyclus van 28 dagen totdat Tide een paar van je cycli heeft gezien.",
+    "Tide rekent met een standaardcyclus van 28 dagen tot het een paar van je cycli heeft gezien.",
   "today.learningInsufficient": "Log je menstruatie om een voorspelling te zien.",
 
   "phase.menstrual": "Menstruatie",
@@ -125,8 +125,7 @@ export const nl: Dictionary = {
   "insights.cycleLength": "Cyclus\u00adlengte",
   "insights.periodLength": "Menstruatie\u00adduur",
   "insights.cyclesTracked": "Gebruikte cycli",
-  "insights.basedOn":
-    "Er wordt een gebruikelijke cyclus van {cycle} dagen gebruikt totdat je een volledige cyclus hebt.",
+  "insights.basedOn": "Tide rekent met een standaardcyclus van {cycle} dagen tot je een volledige cyclus hebt.",
   "insights.regularity": "Cyclusregelmaat",
   "insights.regularityAria": "Cyclusregelmaat: {label}",
   "regularity.none": "Nog niet genoeg gegevens",
@@ -137,12 +136,12 @@ export const nl: Dictionary = {
   "insights.how": "Hoe voorspellingen werken",
   "insights.how1": "Alles wordt op je apparaat berekend op basis van de dagen die je registreert.",
   "insights.howCycleStart":
-    "Een tussenpoos van {gap} dagen of meer tussen gelogde bloedingsdagen start een nieuwe cyclus. Een kortere tussenpoos hoort bij dezelfde menstruatie. Spotting telt niet mee.",
+    "Zitten er {gap} dagen of meer tussen twee gelogde bloedingsdagen, dan begint een nieuwe cyclus. Bij minder dagen hoort het bij dezelfde menstruatie. Spotting telt niet mee.",
   "insights.how2":
-    "De cycluslengte is de mediaan van je laatste {recent} volledige cycli. Onvolledige cycli tellen niet mee. Zonder volledige cycli wordt een gebruikelijke cyclus van {cycle} dagen gebruikt.",
+    "De cycluslengte is de mediaan van je laatste {recent} volledige cycli. Onvolledige cycli tellen niet mee. Zonder volledige cycli rekent Tide met een standaardcyclus van {cycle} dagen.",
   "insights.how3": "De geschatte menstruatieduur is je eerdere gemiddelde, beperkt tot {min}–{max} dagen.",
   "insights.how4":
-    "Je volgende menstruatie wordt verwacht één cycluslengte na het begin van je laatste menstruatie. De eisprong wordt {luteal} dagen daarvoor geschat.",
+    "Je volgende menstruatie wordt verwacht één cycluslengte na het begin van je laatste menstruatie. De eisprong valt naar schatting {luteal} dagen daarvoor.",
   "insights.howNextPeriod":
     "Je volgende menstruatie wordt verwacht één cycluslengte na het begin van je laatste menstruatie.",
   "insights.how5":
@@ -242,20 +241,19 @@ export const nl: Dictionary = {
   "settings.data": "Gegevens",
   "settings.dataInfo": "Over importeren en exporteren",
   "settings.dataHelp":
-    "Exporteren bewaart je menstruatiegeschiedenis en dagelijkse details in een bestand. Een Tide-reservekopie importeren vervangt ze. Importeren uit Clue of Flo voegt menstruatiedagen toe.",
+    "Exporteren slaat je menstruatiegeschiedenis en dagelijkse details op in een bestand. Een Tide-reservekopie importeren vervangt ze. Importeren uit Clue of Flo voegt menstruatiedagen toe.",
   "settings.importSources": "Je kunt een Tide-reservekopie importeren, of een export uit Clue of Flo.",
   "settings.export": "Exporteren",
   "settings.exportSuccess": "Back-up opgeslagen in je downloads.",
   "settings.exportCalendar": "Naar agenda",
   "settings.calendarHelp":
-    "Bewaart je volgende 3 verwachte menstruaties als bestand dat je agenda-app kan openen. Eenmaal toegevoegd zijn het gewone agenda-afspraken, dus het account van je agenda bewaart en synchroniseert ze.",
+    "Slaat je volgende 3 verwachte menstruaties op als bestand dat je agenda-app kan openen. Eenmaal toegevoegd zijn het gewone agenda-afspraken, die je agenda-account bewaart en synchroniseert.",
   "settings.calendarFertility": "Vruchtbare periodes meenemen",
   "settings.calendarSuccess": "Agendabestand opgeslagen in je downloads.",
   "settings.calendarError": "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens.",
   "settings.import": "Importeren",
   "settings.importFile": "Gegevensbestand importeren",
-  "settings.importError":
-    "Dat bestand is geen Tide-reservekopie en geen export van Clue of Flo. Kies een ander bestand.",
+  "settings.importError": "Dit bestand is geen Tide-reservekopie of export uit Clue of Flo. Kies een ander bestand.",
   "settings.importUnavailable": "Importeren kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens.",
   "settings.importSuccess.one": "{n} gelogde dag geïmporteerd.",
   "settings.importSuccess.other": "{n} gelogde dagen geïmporteerd.",

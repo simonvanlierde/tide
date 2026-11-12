@@ -170,7 +170,11 @@
     text-align: center;
   }
 
+  /* Already at the xs floor, so a long eyebrow wraps inside the disc's chord
+     rather than shrinking. */
   .cycle-dial__eyebrow {
+    max-width: 60cqw;
+    text-wrap: balance;
     font-size: min(var(--text-xs), 5cqw);
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -200,7 +204,9 @@
   .cycle-dial__estimate {
     max-width: 74cqw;
     margin-block: 2px;
-    font-size: min(var(--text-2xl), 10cqw);
+    /* --chars shrinks a long translation ("Over 24 dagen") to fit one line;
+       a short one keeps the full size. About 0.63 em per character. */
+    font-size: min(var(--text-2xl), 10cqw, calc(110cqw / var(--chars, 1)));
     font-weight: 600;
     line-height: 1.05;
     color: var(--ink);

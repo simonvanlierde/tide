@@ -19,7 +19,7 @@ export const es: Dictionary = {
   "history.chartDates": "Inicios de períodos, del más antiguo al más reciente",
   "backup.title": "Guarda una copia de tu historial",
   "backup.body":
-    "Tu historial solo se guarda en este navegador y desaparece si se borran sus datos. Descarga una copia de seguridad para poder restaurarlo.",
+    "Tu historial solo se guarda en este navegador y desaparece si borras sus datos. Descarga una copia de seguridad para poder restaurarlo.",
   "backup.download": "Crear copia de seguridad",
   "backup.snooze": "Recordar en una semana",
   "backup.error": "No se ha podido descargar la copia de seguridad. Inténtalo de nuevo.",
@@ -60,7 +60,7 @@ export const es: Dictionary = {
   "app.skipToContent": "Saltar al contenido",
   "app.primaryNav": "Navegación principal",
   "app.newerData":
-    "Una versión más reciente de Tide guardó tus datos. Recarga para actualizar. Los cambios hechos aquí no se guardan.",
+    "Una versión más reciente de Tide guardó tus datos. Recarga la página para actualizar. Los cambios hechos aquí no se guardan.",
 
   "app.storageError":
     "No se han podido guardar tus últimos cambios en este dispositivo. Mantén Tide abierto y exporta una copia de seguridad desde Ajustes.",
@@ -95,7 +95,7 @@ export const es: Dictionary = {
   "today.ovulationToday": "Ovulación hoy",
   "today.ovulationInDays.one": "Ovulación en {n} día",
   "today.ovulationInDays.other": "Ovulación en {n} días",
-  "today.learningFallback": "Se usa un ciclo típico de 28 días hasta que Tide conozca algunos de tus ciclos.",
+  "today.learningFallback": "Tide usa un ciclo típico de 28 días hasta conocer algunos de tus ciclos.",
   "today.learningInsufficient": "Registra tu período para ver una previsión.",
 
   "phase.menstrual": "Menstrual",
@@ -125,7 +125,7 @@ export const es: Dictionary = {
   "insights.cycleLength": "Duración del ciclo",
   "insights.periodLength": "Duración del período",
   "insights.cyclesTracked": "Ciclos utilizados",
-  "insights.basedOn": "Se usa un ciclo típico de {cycle} días hasta que tengas un ciclo completo.",
+  "insights.basedOn": "Tide usa un ciclo típico de {cycle} días hasta que tengas un ciclo completo.",
   "insights.regularity": "Regularidad del ciclo",
   "insights.regularityAria": "Regularidad del ciclo: {label}",
   "regularity.none": "Aún no hay suficientes datos",
@@ -141,8 +141,9 @@ export const es: Dictionary = {
     "La duración del ciclo es la mediana de tus últimos {recent} ciclos completos. Los ciclos incompletos no cuentan. Sin ciclos completos, se usa un ciclo típico de {cycle} días.",
   "insights.how3": "La duración estimada del período es tu promedio anterior, limitada a {min}–{max} días.",
   "insights.how4":
-    "Tu próximo período se prevé una duración de ciclo después del inicio del último. La ovulación se estima {luteal} días antes.",
-  "insights.howNextPeriod": "Tu próximo período se prevé una duración de ciclo después del inicio del último.",
+    "Tu próximo período se espera tantos días después del inicio del último como dura tu ciclo. La ovulación se estima {luteal} días antes.",
+  "insights.howNextPeriod":
+    "Tu próximo período se espera tantos días después del inicio del último como dura tu ciclo.",
   "insights.how5":
     "La ventana fértil empieza {before} días antes de la ovulación y termina {after} día después. Se amplía cuando tus ciclos varían más.",
 
@@ -240,7 +241,7 @@ export const es: Dictionary = {
   "settings.data": "Datos",
   "settings.dataInfo": "Acerca de importar y exportar",
   "settings.dataHelp":
-    "Exportar guarda tu historial de menstruación y tus detalles diarios en un archivo. Importar una copia de Tide los reemplaza. Importar desde Clue o Flo añade días de menstruación.",
+    "Exportar guarda tu historial de menstruación y tus detalles diarios en un archivo. Importar una copia de seguridad de Tide los reemplaza. Importar desde Clue o Flo añade días de menstruación.",
   "settings.importSources": "Puedes importar una copia de seguridad de Tide o una exportación de Clue o Flo.",
   "settings.export": "Exportar",
   "settings.exportSuccess": "Copia de seguridad guardada en tus descargas.",

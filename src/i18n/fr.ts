@@ -3,10 +3,8 @@ import type { Dictionary } from "./en";
 export const fr: Dictionary = {
   // History and local backups
   "history.title": "Historique des cycles",
-  "history.description.one":
-    "Cycles terminés, du début d’une période de règles à la suivante. Le dernier cycle est affiché.",
-  "history.description.other":
-    "Cycles terminés, du début d’une période de règles à la suivante. Les {n} derniers sont affichés.",
+  "history.description.one": "Cycles terminés, d’un début de règles au suivant. Le dernier cycle est affiché.",
+  "history.description.other": "Cycles terminés, d’un début de règles au suivant. Les {n} derniers sont affichés.",
   "history.empty": "Note le début de tes prochaines règles pour voir tes cycles terminés.",
   "history.days": "Jours",
   "history.start": "Début des règles",
@@ -19,7 +17,7 @@ export const fr: Dictionary = {
   "history.chartDates": "Débuts des règles, du plus ancien au plus récent",
   "backup.title": "Garde une copie de ton historique",
   "backup.body":
-    "Ton historique n’est enregistré que dans ce navigateur et disparaît si ses données sont effacées. Télécharge une sauvegarde pour pouvoir le restaurer.",
+    "Ton historique n’est enregistré que dans ce navigateur et disparaît si tu effaces ses données. Télécharge une sauvegarde pour pouvoir le restaurer.",
   "backup.download": "Sauvegarder les données",
   "backup.snooze": "Me rappeler dans une semaine",
   "backup.error": "La sauvegarde n’a pas pu être téléchargée. Réessaie.",
@@ -60,7 +58,7 @@ export const fr: Dictionary = {
   "app.skipToContent": "Aller au contenu",
   "app.primaryNav": "Navigation principale",
   "app.newerData":
-    "Une version plus récente de Tide a enregistré tes données. Recharge pour mettre à jour. Les modifications faites ici ne sont pas enregistrées.",
+    "Une version plus récente de Tide a enregistré tes données. Recharge la page pour mettre à jour. Les modifications faites ici ne sont pas enregistrées.",
 
   "app.storageError":
     "Tes dernières modifications n’ont pas pu être enregistrées sur cet appareil. Garde Tide ouvert et exporte une sauvegarde dans les réglages.",
@@ -80,7 +78,7 @@ export const fr: Dictionary = {
   "today.notBirthControl": "Une estimation. Ne l’utilise pas comme contraception.",
   "fertilityAsk.title": "Afficher les estimations de fertilité ?",
   "fertilityAsk.body":
-    "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. Ce n’est qu’une estimation, ne l’utilise donc pas comme contraception. Tu pourras changer d’avis dans les Réglages.",
+    "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. Ce n’est qu’une estimation, donc ne l’utilise pas comme contraception. Tu pourras changer d’avis dans les Réglages.",
   "fertilityAsk.show": "Afficher",
   "fertilityAsk.hide": "Ne pas afficher",
   "today.importPrompt": "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?",
@@ -96,7 +94,7 @@ export const fr: Dictionary = {
   "today.ovulationInDays.one": "Ovulation dans {n} jour",
   "today.ovulationInDays.other": "Ovulation dans {n} jours",
   "today.learningFallback":
-    "Un cycle type de 28 jours est utilisé jusqu’à ce que Tide connaisse quelques-uns de tes cycles.",
+    "Tide utilise un cycle type de 28 jours jusqu’à ce qu’il connaisse quelques-uns de tes cycles.",
   "today.learningInsufficient": "Enregistre tes règles pour voir une prévision.",
 
   "phase.menstrual": "Menstruelle",
@@ -126,7 +124,7 @@ export const fr: Dictionary = {
   "insights.cycleLength": "Durée du cycle",
   "insights.periodLength": "Durée des règles",
   "insights.cyclesTracked": "Cycles utilisés",
-  "insights.basedOn": "Un cycle type de {cycle} jours est utilisé tant que tu n’as pas de cycle complet.",
+  "insights.basedOn": "Tide utilise un cycle type de {cycle} jours tant que tu n’as pas de cycle complet.",
   "insights.regularity": "Régularité du cycle",
   "insights.regularityAria": "Régularité du cycle : {label}",
   "regularity.none": "Pas encore assez de données",
@@ -249,7 +247,7 @@ export const fr: Dictionary = {
   "settings.exportSuccess": "Sauvegarde enregistrée dans tes téléchargements.",
   "settings.exportCalendar": "Ajouter au calendrier",
   "settings.calendarHelp":
-    "Enregistre tes 3 prochaines règles prévues dans un fichier que ton agenda peut ouvrir. Une fois ajoutées, ce sont des événements ordinaires, que le compte de ton agenda enregistre et synchronise.",
+    "Enregistre tes 3 prochaines règles prévues dans un fichier que ton agenda peut ouvrir. Une fois ajoutées, ce sont des événements ordinaires, que ton compte d’agenda enregistre et synchronise.",
   "settings.calendarFertility": "Inclure les fenêtres de fertilité",
   "settings.calendarSuccess": "Fichier de calendrier enregistré dans tes téléchargements.",
   "settings.calendarError": "Impossible de créer le fichier de calendrier. Recharge Tide et réessaie.",
