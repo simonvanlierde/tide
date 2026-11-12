@@ -6,6 +6,7 @@ import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { dayAngleDeg } from "../../src/features/today/dialGeometry";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
+import { addDays } from "../../src/utils/date";
 import {
   createAppState,
   createLearnedCycleState,
@@ -341,12 +342,24 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("button", { name: /not yet/i })).toBeInTheDocument();
   });
 
-  it("puts today's bleeding in the headline and the next period under it", () => {
+  it("puts today's bleeding in the headline and its usual length under it", () => {
+    // Three finished four-day periods, then day 2 of the current one.
+    const fourDays = (start: IsoDate) => [0, 1, 2, 3].map((offset) => addDays(start, offset));
+    const periodDays = [...fourDays("2026-01-08"), ...fourDays("2026-02-05"), ...fourDays("2026-03-05")];
+    renderToday("2026-04-03", createAppState({ periodDays: [...periodDays, "2026-04-02", "2026-04-03"] }));
+
+    expect(document.querySelector(".cycle-dial__estimate")).toHaveTextContent(/^period day 2$/i);
+    expect(document.querySelector(".cycle-dial__next")).toHaveTextContent(/^usually lasts 4 days$/i);
+    // The next period waits until the bleeding stops.
+    expect(document.querySelector(".cycle-dial__date")).not.toBeInTheDocument();
+  });
+
+  it("leaves the usual length out while the length is only a typical guess", () => {
     renderToday("2026-04-03", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
     expect(document.querySelector(".cycle-dial__estimate")).toHaveTextContent(/^period day 2$/i);
-    expect(document.querySelector(".cycle-dial__next")).toHaveTextContent(/^next period/i);
-    expect(screen.queryByText(/^period in \d+ days$/i)).not.toBeInTheDocument();
+    expect(document.querySelector(".cycle-dial__next")).not.toBeInTheDocument();
+    expect(document.querySelector(".cycle-dial__rule")).not.toBeInTheDocument();
   });
 
   it("switches to overdue wording once the period is late", () => {

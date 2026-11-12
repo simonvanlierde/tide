@@ -376,9 +376,9 @@ export function CycleDial({
       >
         <div className="cycle-dial__ring" style={dialStyle}>
           <div className="cycle-dial__inner">
-            {/* At rest the centre reads in time order: today, a rule, then the
-                next period. Whichever is the news takes the headline: today while
-                bleeding is logged, the estimate otherwise. */}
+            {/* At rest the centre reads in time order: today, a rule, then what
+                comes next. While bleeding is logged today leads; otherwise the
+                next-period estimate is the headline. */}
             {estimate && previewIndex === null ? (
               <>
                 {bleedingToday ? (
@@ -391,15 +391,20 @@ export function CycleDial({
                 ) : (
                   <span className="cycle-dial__phase cycle-dial__phase--small">{nowLine}</span>
                 )}
-                <span aria-hidden="true" className="cycle-dial__rule" />
                 {bleedingToday ? (
-                  <span className="cycle-dial__next">
-                    {t("today.nextPeriod")}
-                    <br />
-                    {estimate.date}
-                  </span>
+                  // While bleeding, how long it usually lasts beats a date weeks
+                  // away. Only a learned length: the fallback's would be a guess.
+                  forecast.estimateMode === "learned" ? (
+                    <>
+                      <span aria-hidden="true" className="cycle-dial__rule" />
+                      <span className="cycle-dial__next">
+                        {t("dial.usualPeriodLength", { n: forecast.periodLength })}
+                      </span>
+                    </>
+                  ) : null
                 ) : (
                   <>
+                    <span aria-hidden="true" className="cycle-dial__rule" />
                     <strong
                       className="cycle-dial__estimate"
                       style={{ "--chars": headlineChars(estimate.value) } as CSSProperties}

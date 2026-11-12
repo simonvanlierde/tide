@@ -140,9 +140,6 @@ msgstr "Tes dernières modifications n’ont pas pu être enregistrées sur cet 
 msgid "today.srCycleDay"
 msgstr "Jour du cycle {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Prochaines règles"
-
 msgid "today.fertility"
 msgstr "Fertilité"
 
@@ -262,6 +259,9 @@ msgstr "Jour {n}"
 
 msgid "dial.periodDay"
 msgstr "Jour {n} des règles"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Dure en général {n} jour} other {Dure en général {n} jours}}"
 
 msgid "status.period"
 msgstr "Règles"

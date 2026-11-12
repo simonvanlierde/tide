@@ -410,8 +410,8 @@ and then the next period, in that order, split by a short hairline. Whichever is
 takes the headline, and the headline names its own subject, with no eyebrow above it.
 Between periods: a small "Day 10 · Follicular phase" line, then "Period in 19 days" and
 the date. Late: "Day 37", then "Period 8 days late" and "Expected Tue, Apr 7". With
-bleeding logged today: "Period day 5" as the headline, then a small "Next period" and
-the date.
+bleeding logged today: "Period day 5" as the headline, then a small "Usually lasts 5 days"
+from your own history. Before Tide has learned your length, the headline stands alone.
 After the introduction is dismissed, a dial without history holds its logging hint instead. While you scrub it shows the
 previewed day: the numeral with a small "Cycle day" label beside it, then phase and date. Text inside the slider is not read out, so
 the same estimate sits in a visually hidden line before it. An ink marker circles today, and a teal ghost dot follows your

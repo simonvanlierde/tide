@@ -140,9 +140,6 @@ msgstr "Deine letzten Änderungen konnten nicht auf diesem Gerät gespeichert we
 msgid "today.srCycleDay"
 msgstr "Zyklustag {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Nächste Periode"
-
 msgid "today.fertility"
 msgstr "Fruchtbarkeit"
 
@@ -262,6 +259,9 @@ msgstr "Tag {n}"
 
 msgid "dial.periodDay"
 msgstr "Tag {n} der Periode"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Dauert meist {n} Tag} other {Dauert meist {n} Tage}}"
 
 msgid "status.period"
 msgstr "Periode"

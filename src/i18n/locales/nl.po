@@ -140,9 +140,6 @@ msgstr "Je laatste wijzigingen konden niet op dit apparaat worden opgeslagen. Ho
 msgid "today.srCycleDay"
 msgstr "Cyclusdag {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Volgende menstruatie"
-
 msgid "today.fertility"
 msgstr "Vruchtbaarheid"
 
@@ -262,6 +259,9 @@ msgstr "Dag {n}"
 
 msgid "dial.periodDay"
 msgstr "Menstruatiedag {n}"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Duurt meestal {n} dag} other {Duurt meestal {n} dagen}}"
 
 msgid "status.period"
 msgstr "Menstruatie"

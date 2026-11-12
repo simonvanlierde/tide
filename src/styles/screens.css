@@ -309,7 +309,7 @@
     background: var(--surface-border);
   }
 
-  /* The next period once today's bleeding has taken the headline. */
+  /* The usual period length, under today's bleeding headline. */
   .cycle-dial__next {
     max-width: 64cqw;
     font-size: min(var(--text-md), 5cqw);

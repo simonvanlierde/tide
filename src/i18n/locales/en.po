@@ -140,9 +140,6 @@ msgstr "Your latest changes couldn''t be saved on this device. Keep Tide open an
 msgid "today.srCycleDay"
 msgstr "Cycle day {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Next period"
-
 msgid "today.fertility"
 msgstr "Fertility"
 
@@ -262,6 +259,9 @@ msgstr "Day {n}"
 
 msgid "dial.periodDay"
 msgstr "Period day {n}"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Usually lasts {n} day} other {Usually lasts {n} days}}"
 
 msgid "status.period"
 msgstr "Period"
