@@ -1,0 +1,684 @@
+msgid ""
+msgstr ""
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "history.title"
+msgstr "Cyclusgeschiedenis"
+
+msgid "history.description"
+msgstr "{n, plural, one {Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste cyclus wordt getoond.} other {Voltooide cycli, van de ene menstruatiestart tot de volgende. De laatste {n} worden getoond.}}"
+
+msgid "history.empty"
+msgstr "Registreer de start van een volgende menstruatie om je voltooide cycli te zien."
+
+msgid "history.days"
+msgstr "Dagen"
+
+msgid "history.start"
+msgstr "Menstruatiestart"
+
+msgid "history.length"
+msgstr "Duur"
+
+msgid "history.incomplete"
+msgstr "Onvolledig"
+
+msgid "history.incompleteFor"
+msgstr "Onvolledige cyclus vanaf {date}"
+
+msgid "history.help"
+msgstr "Onvolledige cycli behouden hun gelogde dagen, maar tellen niet mee voor de geschatte cycluslengte."
+
+msgid "history.excluded"
+msgstr "Onvolledig; telt niet mee voor schattingen"
+
+msgid "history.chartDates"
+msgstr "Menstruatiestarts, van oud naar nieuw"
+
+msgid "backup.title"
+msgstr "Bewaar een kopie van je geschiedenis"
+
+msgid "backup.body"
+msgstr "Je geschiedenis staat alleen in deze browser en verdwijnt als je de browsergegevens wist. Download een reservekopie om ze te herstellen."
+
+msgid "backup.download"
+msgstr "Reservekopie maken"
+
+msgid "backup.snooze"
+msgstr "Herinner me over een week"
+
+msgid "backup.error"
+msgstr "De reservekopie kon niet worden gedownload. Probeer het opnieuw."
+
+msgid "diary.addDetails"
+msgstr "Details toevoegen"
+
+msgid "diary.editDetails"
+msgstr "Details bewerken"
+
+msgid "diary.addDetailsFor"
+msgstr "Details voor {date} toevoegen"
+
+msgid "diary.details"
+msgstr "Details"
+
+msgid "diary.done"
+msgstr "Klaar"
+
+msgid "diary.editDetailsFor"
+msgstr "Details voor {date} bewerken"
+
+msgid "diary.undo"
+msgstr "Ongedaan maken"
+
+msgid "diary.date"
+msgstr "Datum"
+
+msgid "diary.symptoms"
+msgstr "Klachten"
+
+msgid "diary.noSymptoms"
+msgstr "Geen klachten"
+
+msgid "diary.mood"
+msgstr "Stemming"
+
+msgid "diary.note"
+msgstr "Notitie (optioneel)"
+
+msgid "diary.noteHint"
+msgstr "Maximaal {max} tekens. Details blijven op dit apparaat en worden opgenomen in reservekopieën."
+
+msgid "diary.saved"
+msgstr "Details opgeslagen."
+
+msgid "diary.removed"
+msgstr "Details gewist."
+
+msgid "diary.clear"
+msgstr "Details wissen"
+
+msgid "diary.history"
+msgstr "Dagelijkse details"
+
+msgid "diary.openDay"
+msgstr "Details bekijken voor {date}"
+
+msgid "diary.symptom.cramps"
+msgstr "Krampen"
+
+msgid "diary.symptom.headache"
+msgstr "Hoofdpijn"
+
+msgid "diary.symptom.bloating"
+msgstr "Opgeblazen gevoel"
+
+msgid "diary.symptom.breastTenderness"
+msgstr "Gevoelige borsten"
+
+msgid "diary.symptom.fatigue"
+msgstr "Vermoeidheid"
+
+msgid "diary.mood.low"
+msgstr "Somber"
+
+msgid "diary.mood.okay"
+msgstr "Gaat wel"
+
+msgid "diary.mood.good"
+msgstr "Goed"
+
+msgid "settings.importReplacesDetails"
+msgstr "Je huidige menstruatiegeschiedenis en dagelijkse details worden vervangen."
+
+msgid "nav.today"
+msgstr "Vandaag"
+
+msgid "nav.calendar"
+msgstr "Kalender"
+
+msgid "nav.settings"
+msgstr "Instellingen"
+
+msgid "app.skipToContent"
+msgstr "Naar inhoud"
+
+msgid "app.primaryNav"
+msgstr "Hoofdnavigatie"
+
+msgid "app.newerData"
+msgstr "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Herlaad de pagina om bij te werken. Wijzigingen die je hier maakt, worden niet opgeslagen."
+
+msgid "app.storageError"
+msgstr "Je laatste wijzigingen konden niet op dit apparaat worden opgeslagen. Houd Tide open en exporteer een reservekopie via Instellingen."
+
+msgid "today.srCycleDay"
+msgstr "Cyclusdag {day}, {phase}"
+
+msgid "today.nextPeriod"
+msgstr "Volgende menstruatie"
+
+msgid "today.fertility"
+msgstr "Vruchtbaarheid"
+
+msgid "today.fertilityInfoLabel"
+msgstr "Hoe vruchtbaarheid wordt geschat"
+
+msgid "today.cycleInsights"
+msgstr "Cyclusinzichten"
+
+msgid "today.howWorkedOut"
+msgstr "Hoe is dit berekend?"
+
+msgid "today.explainError"
+msgstr "Dit kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens."
+
+msgid "today.expectedToday"
+msgstr "Vandaag verwacht"
+
+msgid "today.inDays"
+msgstr "{n, plural, one {Over {n} dag} other {Over {n} dagen}}"
+
+msgid "today.higherToday"
+msgstr "In de vruchtbare periode"
+
+msgid "today.lowerToday"
+msgstr "Buiten de vruchtbare periode"
+
+msgid "today.notBirthControl"
+msgstr "Een schatting. Gebruik het niet als anticonceptie."
+
+msgid "fertilityAsk.title"
+msgstr "Vrucht\u00adbaarheids\u00adschattingen tonen?"
+
+msgid "fertilityAsk.body"
+msgstr "Tide kan de dagen aangeven waarop je waarschijnlijk het vruchtbaarst bent, berekend op basis van de menstruaties die je logt. Het is maar een schatting, dus gebruik het niet als anticonceptie. Je kunt dit wijzigen in Instellingen."
+
+msgid "fertilityAsk.show"
+msgstr "Tonen"
+
+msgid "fertilityAsk.hide"
+msgstr "Niet tonen"
+
+msgid "today.importPrompt"
+msgstr "Heb je een Tide-reservekopie of je geschiedenis uit Clue of Flo?"
+
+msgid "today.importLink"
+msgstr "Importeren"
+
+msgid "today.fertilityUnclear"
+msgstr "Onduidelijk bij vertraging"
+
+msgid "today.periodLate"
+msgstr "Menstruatie"
+
+msgid "today.daysLate"
+msgstr "{n, plural, one {{n} dag te laat} other {{n} dagen te laat}}"
+
+msgid "today.expectedOn"
+msgstr "Verwacht {date}"
+
+msgid "today.ovulationDaysAgo"
+msgstr "{n, plural, one {Eisprong {n} dag geleden} other {Eisprong {n} dagen geleden}}"
+
+msgid "today.ovulationToday"
+msgstr "Eisprong vandaag"
+
+msgid "today.ovulationInDays"
+msgstr "{n, plural, one {Eisprong over {n} dag} other {Eisprong over {n} dagen}}"
+
+msgid "today.learningFallback"
+msgstr "Tide rekent met een standaardcyclus van 28 dagen tot het een paar van je cycli heeft gezien."
+
+msgid "today.learningInsufficient"
+msgstr "Log je menstruatie om een voorspelling te zien."
+
+msgid "phase.menstrual"
+msgstr "Menstruatie"
+
+msgid "phase.follicular"
+msgstr "Folliculair"
+
+msgid "phase.ovulation"
+msgstr "Eisprong"
+
+msgid "phase.luteal"
+msgstr "Luteaal"
+
+msgid "phase.learning"
+msgstr "Leren"
+
+msgid "phase.between"
+msgstr "Tussen menstruaties"
+
+msgid "phaseLine.menstrual"
+msgstr "Menstruatiefase"
+
+msgid "phaseLine.follicular"
+msgstr "Folliculaire fase"
+
+msgid "phaseLine.ovulation"
+msgstr "Ovulatiefase"
+
+msgid "phaseLine.luteal"
+msgstr "Luteale fase"
+
+msgid "phaseLine.learning"
+msgstr "Leren"
+
+msgid "phaseLine.between"
+msgstr "Tussen menstruaties"
+
+msgid "phaseLine.late"
+msgstr "Menstruatie te laat"
+
+msgid "dial.overview"
+msgstr "Cyclusoverzicht"
+
+msgid "dial.days"
+msgstr "Cyclusdagen"
+
+msgid "dial.cycleDay"
+msgstr "Cyclusdag"
+
+msgid "dial.day"
+msgstr "Dag {n}"
+
+msgid "status.period"
+msgstr "Menstruatie"
+
+msgid "status.ovulationExpected"
+msgstr "Eisprong verwacht"
+
+msgid "status.fertileWindow"
+msgstr "Vruchtbare periode"
+
+msgid "status.periodExpected"
+msgstr "Menstruatie verwacht"
+
+msgid "insights.title"
+msgstr "Cyclusinzichten"
+
+msgid "insights.cycleLength"
+msgstr "Cyclus\u00adlengte"
+
+msgid "insights.periodLength"
+msgstr "Menstruatie\u00adduur"
+
+msgid "insights.cyclesTracked"
+msgstr "Gebruikte cycli"
+
+msgid "insights.basedOn"
+msgstr "Tide rekent met een standaardcyclus van {cycle} dagen tot je een volledige cyclus hebt."
+
+msgid "insights.regularity"
+msgstr "Cyclusregelmaat"
+
+msgid "insights.regularityAria"
+msgstr "Cyclusregelmaat: {label}"
+
+msgid "regularity.none"
+msgstr "Nog niet genoeg gegevens"
+
+msgid "regularity.veryRegular"
+msgstr "Zeer regelmatig"
+
+msgid "regularity.regular"
+msgstr "Regelmatig"
+
+msgid "regularity.somewhatVariable"
+msgstr "Enigszins wisselend"
+
+msgid "regularity.variable"
+msgstr "Wisselend"
+
+msgid "insights.how"
+msgstr "Hoe voorspellingen werken"
+
+msgid "insights.how1"
+msgstr "Alles wordt op je apparaat berekend op basis van de dagen die je registreert."
+
+msgid "insights.howCycleStart"
+msgstr "Zitten er {gap} dagen of meer tussen twee gelogde bloedingsdagen, dan begint een nieuwe cyclus. Bij minder dagen hoort het bij dezelfde menstruatie. Spotting telt niet mee."
+
+msgid "insights.how2"
+msgstr "De cycluslengte is de mediaan van je laatste {recent} volledige cycli. Onvolledige cycli tellen niet mee. Zonder volledige cycli rekent Tide met een standaardcyclus van {cycle} dagen."
+
+msgid "insights.how3"
+msgstr "De geschatte menstruatieduur is je eerdere gemiddelde, beperkt tot {min}–{max} dagen."
+
+msgid "insights.how4"
+msgstr "Je volgende menstruatie wordt verwacht één cycluslengte na het begin van je laatste menstruatie. De eisprong valt naar schatting {luteal} dagen daarvoor."
+
+msgid "insights.howNextPeriod"
+msgstr "Je volgende menstruatie wordt verwacht één cycluslengte na het begin van je laatste menstruatie."
+
+msgid "insights.how5"
+msgstr "De vruchtbare periode begint {before} dagen vóór de eisprong en eindigt {after} dag erna. Ze wordt breder als je cycli meer variëren."
+
+msgid "legend.period"
+msgstr "Menstruatie"
+
+msgid "legend.expected"
+msgstr "Verwachte menstruatie"
+
+msgid "legend.fertileWindow"
+msgstr "Vruchtbare periode"
+
+msgid "legend.fertile"
+msgstr "Vruchtbaar"
+
+msgid "legend.ovulation"
+msgstr "Eisprong"
+
+msgid "legend.cycleDay"
+msgstr "Cyclusdag"
+
+msgid "flow.legend"
+msgstr "Bloedverlies"
+
+msgid "flow.spotting"
+msgstr "Spotting"
+
+msgid "flow.light"
+msgstr "Licht"
+
+msgid "flow.medium"
+msgstr "Gemiddeld"
+
+msgid "flow.heavy"
+msgstr "Zwaar"
+
+msgid "log.remove"
+msgstr "Bloedverlies verwijderen"
+
+msgid "log.logged"
+msgstr "Vandaag gelogd"
+
+msgid "log.loggedWith"
+msgstr "Vandaag gelogd · {flow}"
+
+msgid "log.addFlow"
+msgstr "Hoeveelheid kiezen"
+
+msgid "log.changeFlow"
+msgstr "Wijzigen"
+
+msgid "log.add"
+msgstr "Bloedverlies registreren"
+
+msgid "reminder.question"
+msgstr "Is je menstruatie begonnen?"
+
+msgid "reminder.dismiss"
+msgstr "Nog niet, herinner me later"
+
+msgid "reminder.reassure"
+msgstr "Een paar dagen variatie is normaal."
+
+msgid "calendar.title"
+msgstr "Kalender"
+
+msgid "calendar.previousMonth"
+msgstr "Vorige maand"
+
+msgid "calendar.nextMonth"
+msgstr "Volgende maand"
+
+msgid "calendar.jumpToMonth"
+msgstr "Ga naar maand"
+
+msgid "calendar.month"
+msgstr "Maand"
+
+msgid "calendar.year"
+msgstr "Jaar"
+
+msgid "calendar.tapHelp"
+msgstr "Tik op een dag om bloedverlies te registreren of te wijzigen."
+
+msgid "calendar.today"
+msgstr "Vandaag"
+
+msgid "calendar.goToCurrentMonth"
+msgstr "Ga naar huidige maand"
+
+msgid "calendar.justLogged"
+msgstr "{date} gelogd."
+
+msgid "calendar.justLoggedForecast"
+msgstr "{date} gelogd. Voorspelling bijgewerkt."
+
+msgid "calendar.undo"
+msgstr "Ongedaan maken"
+
+msgid "calendar.logRange"
+msgstr "Eerdere menstruatie loggen"
+
+msgid "calendar.rangePickFirst"
+msgstr "Kies de eerste dag van de menstruatie."
+
+msgid "calendar.rangePickLast"
+msgstr "Vanaf {date}: kies nu de laatste dag, hooguit {max} dagen."
+
+msgid "calendar.rangeTooLong"
+msgstr "Dat is meer dan {max} dagen. Kies een eerdere laatste dag."
+
+msgid "calendar.emptyHelp"
+msgstr "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen."
+
+msgid "calendar.futureHelp"
+msgstr "Toekomstige dagen kun je nog niet loggen."
+
+msgid "calendar.log"
+msgstr "Registreren"
+
+msgid "calendar.edit"
+msgstr "Wijzigen"
+
+msgid "calendar.dayUnavailable"
+msgstr "{label} niet beschikbaar"
+
+msgid "calendar.dayWithMarker"
+msgstr "{label}, {marker}"
+
+msgid "marker.fertile"
+msgstr "vruchtbare periode"
+
+msgid "marker.ovulation"
+msgstr "verwachte eisprong"
+
+msgid "marker.predictedPeriod"
+msgstr "verwachte menstruatie"
+
+msgid "calendar.notBleeding"
+msgstr "Geen bloedverlies die dag"
+
+msgid "common.unknown"
+msgstr "onbekend"
+
+msgid "common.close"
+msgstr "Sluiten"
+
+msgid "common.cancel"
+msgstr "Annuleren"
+
+msgid "common.days"
+msgstr "dagen"
+
+msgid "common.reload"
+msgstr "Opnieuw laden"
+
+msgid "error.title"
+msgstr "Er ging iets mis"
+
+msgid "error.body"
+msgstr "Je gegevens staan nog steeds op dit apparaat."
+
+msgid "error.downloadRaw"
+msgstr "Ruwe gegevens downloaden"
+
+msgid "settings.title"
+msgstr "Instellingen"
+
+msgid "settings.preferences"
+msgstr "Voorkeuren"
+
+msgid "settings.theme"
+msgstr "Thema"
+
+msgid "theme.system"
+msgstr "Systeem"
+
+msgid "theme.light"
+msgstr "Licht"
+
+msgid "theme.dark"
+msgstr "Donker"
+
+msgid "settings.language"
+msgstr "Taal"
+
+msgid "language.system"
+msgstr "Taal van apparaat"
+
+msgid "language.en"
+msgstr "English"
+
+msgid "language.nl"
+msgstr "Nederlands"
+
+msgid "language.de"
+msgstr "Deutsch"
+
+msgid "language.fr"
+msgstr "Français"
+
+msgid "language.es"
+msgstr "Español"
+
+msgid "settings.showFertility"
+msgstr "Vrucht\u00adbaarheids\u00adschattingen tonen"
+
+msgid "settings.fertilityInfo"
+msgstr "Over vruchtbaarheidsschattingen"
+
+msgid "settings.fertilityHelp"
+msgstr "Toont de vruchtbare periode en de verwachte eisprong op Vandaag en in de kalender."
+
+msgid "settings.showCycleNumbers"
+msgstr "Cyclusdag\u00adnummers tonen"
+
+msgid "settings.cycleNumbersInfo"
+msgstr "Over cyclusdagnummers"
+
+msgid "settings.cycleNumbersHelp"
+msgstr "Toont op de kalender de dag van je cyclus (1, 2, 3, ...), tot je volgende verwachte menstruatie."
+
+msgid "settings.about"
+msgstr "Over"
+
+msgid "legal.privacy"
+msgstr "Privacyverklaring"
+
+msgid "legal.accessibility"
+msgstr "Toegankelijkheids\u00adverklaring"
+
+msgid "legal.inEnglish"
+msgstr "In het Engels"
+
+msgid "settings.privacy"
+msgstr "Tide uploadt je gegevens niet."
+
+msgid "settings.fertilityDisclaimer"
+msgstr "Vruchtbaarheidsschattingen zijn alleen ter informatie. Gebruik ze niet als anticonceptie."
+
+msgid "settings.fertilityMethod"
+msgstr "De vruchtbare periode zijn de dagen rond je verwachte eisprong, geschat op basis van je recente cycluslengtes."
+
+msgid "settings.sourceCode"
+msgstr "Broncode, v{version}, opent in een nieuw tabblad"
+
+msgid "settings.data"
+msgstr "Gegevens"
+
+msgid "settings.dataInfo"
+msgstr "Over importeren en exporteren"
+
+msgid "settings.dataHelp"
+msgstr "Exporteren slaat je menstruatiegeschiedenis en dagelijkse details op in een bestand. Een Tide-reservekopie importeren vervangt ze. Importeren uit Clue of Flo voegt menstruatiedagen toe."
+
+msgid "settings.importSources"
+msgstr "Je kunt een Tide-reservekopie importeren, of een export uit Clue of Flo."
+
+msgid "settings.export"
+msgstr "Exporteren"
+
+msgid "settings.exportSuccess"
+msgstr "Back-up opgeslagen in je downloads."
+
+msgid "settings.exportCalendar"
+msgstr "Naar agenda"
+
+msgid "settings.calendarHelp"
+msgstr "Slaat je volgende 3 verwachte menstruaties op als bestand dat je agenda-app kan openen. Eenmaal toegevoegd zijn het gewone agenda-afspraken, die je agenda-account bewaart en synchroniseert."
+
+msgid "settings.calendarFertility"
+msgstr "Vruchtbare periodes meenemen"
+
+msgid "settings.calendarSuccess"
+msgstr "Agendabestand opgeslagen in je downloads."
+
+msgid "settings.calendarError"
+msgstr "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens."
+
+msgid "settings.import"
+msgstr "Importeren"
+
+msgid "settings.importFile"
+msgstr "Gegevensbestand importeren"
+
+msgid "settings.importError"
+msgstr "Dit bestand is geen Tide-reservekopie of export uit Clue of Flo. Kies een ander bestand."
+
+msgid "settings.importUnavailable"
+msgstr "Importeren kon niet worden geopend. Laad Tide opnieuw en probeer het nog eens."
+
+msgid "settings.importSuccess"
+msgstr "{n, plural, one {{n} gelogde dag geïmporteerd.} other {{n} gelogde dagen geïmporteerd.}}"
+
+msgid "settings.importConfirmTitle"
+msgstr "Je gegevens vervangen?"
+
+msgid "settings.importConfirmAction"
+msgstr "Vervangen"
+
+msgid "settings.importFileDays"
+msgstr "{n, plural, one {Dit bestand bevat {n} gelogde dag.} other {Dit bestand bevat {n} gelogde dagen.}}"
+
+msgid "settings.importReplaces"
+msgstr "{n, plural, one {Het vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.} other {Het vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.}}"
+
+msgid "settings.importMergeTitle"
+msgstr "Dagen uit {source} toevoegen?"
+
+msgid "settings.importMergeAction"
+msgstr "Toevoegen"
+
+msgid "settings.importMerges"
+msgstr "Dagen die hier al gelogd zijn, blijven zoals ze zijn."
+
+msgid "settings.reset"
+msgstr "Alle gegevens wissen"
+
+msgid "settings.resetTitle"
+msgstr "Alle gegevens verwijderen?"
+
+msgid "settings.resetAction"
+msgstr "Verwijderen"
+
+msgid "settings.resetConfirm"
+msgstr "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt."

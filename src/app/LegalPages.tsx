@@ -1,10 +1,8 @@
-import type { MessageKey } from "../i18n";
-
 const SITE_TITLE = "tide";
 
 // The pages rendered from docs/, by path. The host answers an unknown path with
 // index.html, so each loads the app. The title stays English, like the text.
-const PAGES: Record<string, { title: string; labelKey: MessageKey }> = {
+const PAGES: Record<string, { title: string; labelKey: string }> = {
   "/privacy": { title: "Privacy statement", labelKey: "legal.privacy" },
   "/accessibility": { title: "Accessibility statement", labelKey: "legal.accessibility" },
 };

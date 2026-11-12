@@ -4,8 +4,7 @@ import type { OtherAppImport } from "../../data/otherApps";
 import { downloadAppState, mergeImportedDays, parseImportedState } from "../../data/transfer";
 import { getExpectedCycles } from "../../domain/cycle";
 import type { AppState, IsoDate } from "../../domain/types";
-import { plural } from "../../i18n";
-import { useAppState, useAppStateActions, useForecast, useIsReadOnly, useLocale, useT } from "../../state/provider";
+import { useAppState, useAppStateActions, useForecast, useIsReadOnly, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { InfoPopover } from "./InfoPopover";
@@ -26,7 +25,6 @@ export function DataSection({ today }: DataSectionProps) {
   const state = useAppState();
   const actions = useAppStateActions();
   const t = useT();
-  const locale = useLocale();
   // A newer build saved the data and this tab never saves, so an import would
   // vanish on reload and a delete would wipe data this build can't read.
   const readOnly = useIsReadOnly();
@@ -274,7 +272,7 @@ export function DataSection({ today }: DataSectionProps) {
           <p className="status-row" role="status">
             <span className="status-chip">
               {status.kind === "imported"
-                ? t(plural("settings.importSuccess", status.days, locale), {
+                ? t("settings.importSuccess", {
                     n: status.days,
                   })
                 : t(status.kind === "exported" ? "settings.exportSuccess" : "settings.calendarSuccess")}
@@ -303,7 +301,7 @@ export function DataSection({ today }: DataSectionProps) {
           body={
             <>
               <p>
-                {t(plural("settings.importFileDays", pendingImport.fileDays, locale), {
+                {t("settings.importFileDays", {
                   n: pendingImport.fileDays,
                 })}
               </p>
@@ -311,7 +309,7 @@ export function DataSection({ today }: DataSectionProps) {
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")
-                  : t(plural("settings.importReplaces", loggedDayCount, locale), {
+                  : t("settings.importReplaces", {
                       n: loggedDayCount,
                     })}
               </p>

@@ -4,7 +4,6 @@ import { followAppLink } from "../../app/links";
 import { explainForecast } from "../../domain/cycle";
 import { getReminderState } from "../../domain/reminders";
 import type { CycleEstimateMode, CyclePhase, CycleSummary, IsoDate } from "../../domain/types";
-import { plural, type SupportedLanguage } from "../../i18n";
 import {
   type Translate,
   useAppState,
@@ -96,7 +95,7 @@ export function TodayScreen(props: TodayScreenProps) {
       ? null
       : {
           label: t(isOverdue ? "today.periodLate" : "today.nextPeriod"),
-          value: getNextPeriodPhrase(t, locale, forecast.nextPeriod.daysUntil),
+          value: getNextPeriodPhrase(t, forecast.nextPeriod.daysUntil),
           date: isOverdue
             ? t("today.expectedOn", { date: formatShortDate(forecast.nextPeriod.date, locale) })
             : formatShortDate(forecast.nextPeriod.date, locale),
@@ -217,7 +216,7 @@ export function TodayScreen(props: TodayScreenProps) {
                   <>
                     <span>{getFertilityEstimate(t, forecast.phaseLabel, forecast.fertile)}</span>
                     <span className="fact__meta">
-                      {getOvulationPhrase(t, locale, differenceInDays(forecast.ovulationDate, today))}
+                      {getOvulationPhrase(t, differenceInDays(forecast.ovulationDate, today))}
                     </span>
                     <span className="fact__meta">{t("today.notBirthControl")}</span>
                   </>
@@ -266,25 +265,21 @@ export function TodayScreen(props: TodayScreenProps) {
   );
 }
 
-function getNextPeriodPhrase(
-  t: Translate,
-  locale: SupportedLanguage,
-  daysUntil: CycleSummary["nextPeriod"]["daysUntil"],
-) {
+function getNextPeriodPhrase(t: Translate, daysUntil: CycleSummary["nextPeriod"]["daysUntil"]) {
   if (daysUntil === null) {
     return t("common.unknown");
   }
 
   if (daysUntil < 0) {
     const daysLate = Math.abs(daysUntil);
-    return t(plural("today.daysLate", daysLate, locale), { n: daysLate });
+    return t("today.daysLate", { n: daysLate });
   }
 
   if (daysUntil === 0) {
     return t("today.expectedToday");
   }
 
-  return t(plural("today.inDays", daysUntil, locale), { n: daysUntil });
+  return t("today.inDays", { n: daysUntil });
 }
 
 function getPhaseWord(t: Translate, phaseLabel: CyclePhase) {
@@ -295,17 +290,17 @@ function getPhaseLine(t: Translate, phaseLabel: CyclePhase) {
   return t(phaseLabel === "unknown" ? "phaseLine.learning" : `phaseLine.${phaseLabel}`);
 }
 
-function getOvulationPhrase(t: Translate, locale: SupportedLanguage, daysUntil: number) {
+function getOvulationPhrase(t: Translate, daysUntil: number) {
   if (daysUntil < 0) {
     const daysSince = Math.abs(daysUntil);
-    return t(plural("today.ovulationDaysAgo", daysSince, locale), { n: daysSince });
+    return t("today.ovulationDaysAgo", { n: daysSince });
   }
 
   if (daysUntil === 0) {
     return t("today.ovulationToday");
   }
 
-  return t(plural("today.ovulationInDays", daysUntil, locale), {
+  return t("today.ovulationInDays", {
     n: daysUntil,
   });
 }

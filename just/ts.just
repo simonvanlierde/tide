@@ -21,6 +21,7 @@ ts-cov:
 
 # Tests only; extra arguments reach vitest (`just ts-test -t name`).
 ts-test *args:
+    pnpm i18n:compile
     pnpm exec vitest run {{ args }}
 
 # Playwright against the production build: the accessibility and CSP specs.

@@ -3,11 +3,10 @@ import type { ReactElement } from "react";
 import { CalendarScreen } from "../features/calendar/CalendarScreen";
 import { SettingsScreen } from "../features/settings/SettingsScreen";
 import { TodayScreen } from "../features/today/TodayScreen";
-import type { MessageKey } from "../i18n";
 
 export interface AppScreen {
   path: "/" | "/calendar" | "/settings";
-  labelKey: MessageKey;
+  labelKey: string;
   icon: typeof House;
   render: () => ReactElement;
 }
