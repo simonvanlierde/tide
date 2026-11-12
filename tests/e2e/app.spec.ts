@@ -29,14 +29,14 @@ test("logging today persists across reload", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: /log bleeding today/i }).click();
-  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: translate("en", "calendar.notBleeding"), exact: true })).toBeVisible();
 
   // A later visit folds the log into its one line, which opens Remove again.
   await page.reload();
   const summary = page.getByRole("button", { name: /logged today/i });
   await expect(summary).not.toHaveAttribute("aria-expanded");
   await summary.click();
-  await expect(page.getByRole("button", { name: /remove bleeding log/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: translate("en", "calendar.notBleeding"), exact: true })).toBeVisible();
 });
 
 test("deep links reload correctly for the static app paths", async ({ page }) => {
@@ -90,12 +90,11 @@ test("manifest and install assets are served", async ({ page }) => {
 });
 
 test("the fertility question is accessible and its answer is saved", async ({ page }) => {
-  await seedAppState(page, "en", { showFertility: null });
+  await seedAppState(page, "en", { showFertility: null, onboardingDismissed: false }, {});
   await page.goto("/");
 
-  const question = page.getByRole("region", {
-    name: translate("en", "fertilityAsk.title"),
-  });
+  const question = page.getByRole("region", { name: translate("en", "onboarding.title") });
+  await question.locator("summary").click();
   await expect(question).toBeVisible();
   await expect(page.getByText(translate("en", "today.fertility"), { exact: true })).toHaveCount(0);
   const { violations } = await new AxeBuilder({ page })
@@ -105,8 +104,7 @@ test("the fertility question is accessible and its answer is saved", async ({ pa
   expect(violations.map((v) => v.id)).toEqual([]);
 
   await question.getByRole("button", { name: translate("en", "fertilityAsk.show"), exact: true }).click();
-  await expect(question).toHaveCount(0);
-  await expect(page.getByText(translate("en", "today.notBirthControl"), { exact: true })).toBeVisible();
+  await expect(question).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
   const saved = await page.evaluate(() => localStorage.getItem("tide.period-tracker.state"));
@@ -128,9 +126,9 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
 test("Today's import link lands on the Import button", async ({ page }) => {
   // A first run: nothing stored, so Today shows the empty state.
   await page.goto("/");
-  await expect(page.getByRole("slider").getByText(translate("en", "today.learningInsufficient"))).toBeVisible();
+  await expect(page.getByRole("region", { name: translate("en", "onboarding.title") })).toBeVisible();
 
-  await page.getByRole("link", { name: translate("en", "today.importLink") }).click();
+  await page.getByRole("link", { name: translate("en", "onboarding.import") }).click();
   await expect(page).toHaveURL(/\/settings#import$/);
   const importButton = page.getByRole("button", {
     name: translate("en", "settings.import"),

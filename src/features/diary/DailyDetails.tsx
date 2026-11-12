@@ -1,6 +1,5 @@
 import { Check, Cloud, CloudRain, NotebookPen, Sun } from "lucide-react";
 import { type Ref, useEffect, useId, useRef, useState } from "react";
-import { isIsoDate } from "../../data/schema";
 import { type DailyDetails as Details, MAX_NOTE_LENGTH, MOODS, SYMPTOMS } from "../../domain/diary";
 import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useIsReadOnly, useLocale, useT } from "../../state/provider";
@@ -46,40 +45,32 @@ export function DetailsButton({
   );
 }
 
-/** The Calendar's details: a trigger for the shown day and the month's detail-only days. */
-// `day` is the day the trigger opens, named in its label (the Calendar's
-// selected day). Without it the trigger opens today and needs no date.
-export function DailyDetails({ today, day: target, month }: { today: IsoDate; day?: IsoDate; month: IsoDate }) {
+/** The Calendar owns the date and the single editor these controls open. */
+export function DailyDetails({
+  today,
+  day: target,
+  month,
+  onOpenDay,
+}: {
+  today: IsoDate;
+  day?: IsoDate;
+  month: IsoDate;
+  onOpenDay: (day: IsoDate) => void;
+}) {
   const state = useAppState();
   const t = useT();
   const locale = useLocale();
-  const [day, setDay] = useState(today);
-  const [open, setOpen] = useState(false);
-  const trigger = useRef<HTMLButtonElement>(null);
   const id = useId();
   const entries = Object.keys(state.detailsByDay)
     .filter((date) => date.startsWith(month.slice(0, 7)))
     .sort()
     .reverse();
-
-  function close() {
-    setOpen(false);
-    requestAnimationFrame(() => trigger.current?.focus());
-  }
-
   return (
     <div className="daily-details">
       <button
-        ref={trigger}
         type="button"
         className={target ? "calendar__action daily-details__trigger" : "text-action daily-details__trigger"}
-        disabled={open}
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => {
-          setDay(target ?? today);
-          setOpen(true);
-        }}
+        onClick={() => onOpenDay(target ?? today)}
       >
         {target ? <AppIcon icon={NotebookPen} className="button-icon" /> : null}
         {target
@@ -88,8 +79,7 @@ export function DailyDetails({ today, day: target, month }: { today: IsoDate; da
             })
           : t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
       </button>
-      <div id={id}>{open ? <DetailsForm day={day} today={today} onDayChange={setDay} onClose={close} /> : null}</div>
-      {!open && entries.length > 0 ? (
+      {entries.length > 0 ? (
         <section className="daily-details__history" aria-labelledby={`${id}-history`}>
           <h2 id={`${id}-history`} className="section-title">
             {t("diary.history")}
@@ -101,10 +91,7 @@ export function DailyDetails({ today, day: target, month }: { today: IsoDate; da
                   type="button"
                   className="text-action"
                   aria-label={t("diary.openDay", { date: formatLongDate(date as IsoDate, locale) })}
-                  onClick={() => {
-                    setDay(date as IsoDate);
-                    setOpen(true);
-                  }}
+                  onClick={() => onOpenDay(date as IsoDate)}
                 >
                   {formatShortDate(date as IsoDate, locale)}
                 </button>
@@ -117,28 +104,13 @@ export function DailyDetails({ today, day: target, month }: { today: IsoDate; da
   );
 }
 
-/**
- * Every tap saves: there is no draft to lose and no Save button to remember.
- * Clearing is the one destructive step, so it offers Undo until the next change.
- * `onDayChange` shows a date field (the Calendar); without it the form is for `day`.
- */
-export function DetailsForm({
-  day,
-  today,
-  onDayChange,
-  onClose,
-}: {
-  day: IsoDate;
-  today: IsoDate;
-  onDayChange?: (day: IsoDate) => void;
-  onClose: () => void;
-}) {
+/** Every tap saves; Undo never overwrites newer details from another tab. */
+export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
   const state = useAppState();
   const actions = useAppStateActions();
   const readOnly = useIsReadOnly();
   const t = useT();
   const id = useId();
-  const first = useRef<HTMLElement>(null);
   const value = state.detailsByDay[day] ?? EMPTY;
   const [status, setStatus] = useState<"saved" | { cleared: Details } | null>(null);
   const editable = !readOnly && day <= today;
@@ -146,9 +118,6 @@ export function DetailsForm({
   // empty: an edit since then (here or in another tab) would be overwritten.
   const undoable = status !== null && status !== "saved" && sameDetails(value, EMPTY);
 
-  useEffect(() => {
-    first.current?.focus();
-  }, []);
   // Clear and Undo replace each other under the finger; focus follows.
   const clearButton = useRef<HTMLButtonElement>(null);
   const undoButton = useRef<HTMLButtonElement>(null);
@@ -169,35 +138,15 @@ export function DetailsForm({
   const symptoms = value.symptoms ?? [];
 
   return (
-    <section className="diary-form" aria-label={t("diary.details")}>
-      {onDayChange ? (
-        <label className="diary-form__field" htmlFor={`${id}-date`}>
-          {t("diary.date")}
-          <input
-            ref={first as React.RefObject<HTMLInputElement>}
-            id={`${id}-date`}
-            type="date"
-            value={day}
-            max={today}
-            required
-            onChange={(event) => {
-              if (isIsoDate(event.target.value) && event.target.value <= today) {
-                setStatus(null);
-                onDayChange(event.target.value);
-              }
-            }}
-          />
-        </label>
-      ) : null}
+    <div className="diary-fields">
       <fieldset className="diary-form__group" disabled={!editable}>
         <legend>{t("diary.symptoms")}</legend>
         <div className="diary-form__chips">
-          {SYMPTOMS.map((symptom, index) => {
+          {SYMPTOMS.map((symptom) => {
             const pressed = symptoms.includes(symptom);
             return (
               <button
                 key={symptom}
-                ref={index === 0 && !onDayChange ? (first as React.RefObject<HTMLButtonElement>) : undefined}
                 type="button"
                 className="diary-chip"
                 aria-pressed={pressed}
@@ -251,8 +200,8 @@ export function DetailsForm({
           onChange={(event) => save({ ...value, note: event.target.value })}
         />
       </label>
-      <p id={`${id}-note-help`} className="supporting-note diary-form__hint">
-        {t("diary.noteHint", { max: MAX_NOTE_LENGTH })}
+      <p id={`${id}-note-help`} className="supporting-note diary-form__count">
+        {t("diary.noteCount", { count: value.note.length, max: MAX_NOTE_LENGTH })}
       </p>
       <p className="diary-form__status" role="status">
         {status === "saved" ? (
@@ -278,9 +227,6 @@ export function DetailsForm({
         ) : null}
       </p>
       <div className="diary-form__actions">
-        <button type="button" className="secondary-action diary-form__done" onClick={onClose}>
-          {t("diary.done")}
-        </button>
         {editable && !sameDetails(value, EMPTY) ? (
           <button
             ref={clearButton}
@@ -297,6 +243,6 @@ export function DetailsForm({
           </button>
         ) : null}
       </div>
-    </section>
+    </div>
   );
 }

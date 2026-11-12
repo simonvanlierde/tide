@@ -20,10 +20,11 @@ interface CalendarGridProps {
   days: CalendarCell[];
   selectedDay: IsoDate | null;
   justLoggedDay: IsoDate | null;
+  editing: boolean;
   onSelectDay: (day: IsoDate) => void;
 }
 
-export function CalendarGrid({ days, selectedDay, justLoggedDay, onSelectDay }: CalendarGridProps) {
+export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSelectDay }: CalendarGridProps) {
   const t = useT();
   const locale = useLocale();
   const weekdays = useMemo(() => {
@@ -117,7 +118,7 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, onSelectDay }: 
               ]
                 .filter(Boolean)
                 .join(" ");
-              const dayLabel = `${t(isLogged ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
+              const dayLabel = `${t(isLogged || editing ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
               // A logged future day (clock moved back, or imported) stays
               // removable; only logging a new future day is blocked.
               const isUnavailable = day.isFuture && !isLogged;

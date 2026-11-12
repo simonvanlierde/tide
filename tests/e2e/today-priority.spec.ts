@@ -54,10 +54,10 @@ test("the flow levels are one Tab stop after a fresh log", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Log bleeding today", exact: true }).click();
   await expect(page.getByRole("radio", { name: "Spotting" })).toBeFocused();
-  // One Tab leaves the group; Details sits on the line above it, one Shift+Tab back.
+  // The radios share one Tab stop, between Close and the removal action.
   await page.keyboard.press("Tab");
-  expect(await page.evaluate(() => document.activeElement?.closest('[role="radiogroup"]') ?? null)).toBeNull();
+  await expect(page.getByRole("button", { name: "Not bleeding that day", exact: true })).toBeFocused();
   await page.keyboard.press("Shift+Tab");
   await page.keyboard.press("Shift+Tab");
-  await expect(page.getByRole("button", { name: "Add details" })).toBeFocused();
+  await expect(page.getByRole("button", { name: "Close", exact: true })).toBeFocused();
 });

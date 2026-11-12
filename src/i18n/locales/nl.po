@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Bewaar een kopie van je geschiedenis"
 
 msgid "backup.body"
-msgstr "Je geschiedenis staat alleen in deze browser en verdwijnt als je de browsergegevens wist. Download een reservekopie om ze te herstellen."
+msgstr "Als je browsergegevens wist, verdwijnt je geschiedenis. Bewaar een reservekopie."
 
 msgid "backup.download"
 msgstr "Reservekopie maken"
@@ -89,8 +89,8 @@ msgstr "Stemming"
 msgid "diary.note"
 msgstr "Notitie (optioneel)"
 
-msgid "diary.noteHint"
-msgstr "Maximaal {max} tekens. Details blijven op dit apparaat en worden opgenomen in reservekopieën."
+msgid "diary.noteCount"
+msgstr "{count, number} / {max, number}"
 
 msgid "diary.saved"
 msgstr "Details opgeslagen."
@@ -195,19 +195,13 @@ msgid "fertilityAsk.title"
 msgstr "Vrucht\u00adbaarheids\u00adschattingen tonen?"
 
 msgid "fertilityAsk.body"
-msgstr "Tide kan de dagen aangeven waarop je waarschijnlijk het vruchtbaarst bent, berekend op basis van de menstruaties die je logt. Het is maar een schatting, dus gebruik het niet als anticonceptie. Je kunt dit wijzigen in Instellingen."
+msgstr "Schattingen zijn gebaseerd op je menstruatiegeschiedenis. Gebruik ze niet als anticonceptie."
 
 msgid "fertilityAsk.show"
 msgstr "Tonen"
 
 msgid "fertilityAsk.hide"
 msgstr "Niet tonen"
-
-msgid "today.importPrompt"
-msgstr "Heb je een Tide-reservekopie of je geschiedenis uit Clue of Flo?"
-
-msgid "today.importLink"
-msgstr "Importeren"
 
 msgid "today.fertilityUnclear"
 msgstr "Onduidelijk bij vertraging"
@@ -416,9 +410,6 @@ msgstr "Is je menstruatie begonnen?"
 msgid "reminder.dismiss"
 msgstr "Nog niet, herinner me later"
 
-msgid "reminder.reassure"
-msgstr "Een paar dagen variatie is normaal."
-
 msgid "calendar.title"
 msgstr "Kalender"
 
@@ -612,7 +603,7 @@ msgid "settings.dataHelp"
 msgstr "Exporteren slaat je menstruatiegeschiedenis en dagelijkse details op in een bestand. Een Tide-reservekopie importeren vervangt ze. Importeren uit Clue of Flo voegt menstruatiedagen toe."
 
 msgid "settings.importSources"
-msgstr "Je kunt een Tide-reservekopie importeren, of een export uit Clue of Flo."
+msgstr "Tide-reservekopie of export uit Clue of Flo."
 
 msgid "settings.export"
 msgstr "Exporteren"
@@ -624,7 +615,7 @@ msgid "settings.exportCalendar"
 msgstr "Naar agenda"
 
 msgid "settings.calendarHelp"
-msgstr "Slaat je volgende 3 verwachte menstruaties op als bestand dat je agenda-app kan openen. Eenmaal toegevoegd zijn het gewone agenda-afspraken, die je agenda-account bewaart en synchroniseert."
+msgstr "Downloadt een bestand met je volgende 3 verwachte menstruaties. Je agenda-account bewaart en synchroniseert afspraken die je toevoegt."
 
 msgid "settings.calendarFertility"
 msgstr "Vruchtbare periodes meenemen"
@@ -682,3 +673,33 @@ msgstr "Verwijderen"
 
 msgid "settings.resetConfirm"
 msgstr "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt."
+
+msgid "onboarding.title"
+msgstr "Je geschiedenis blijft hier"
+
+msgid "onboarding.privacy"
+msgstr "Tide uploadt niet wat je logt."
+
+msgid "onboarding.import"
+msgstr "Importeer je geschiedenis uit Tide, Clue of Flo"
+
+msgid "onboarding.backup"
+msgstr "Voeg Tide toe aan je beginscherm. Download elke 60 dagen een reservekopie."
+
+msgid "onboarding.dismiss"
+msgstr "Introductie overslaan"
+
+msgid "calendar.firstVisitHelp"
+msgstr "Tik op een dag om die te loggen of te wijzigen, of kies Eerdere menstruatie loggen voor meerdere dagen."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Bloeding loggen"
+
+msgid "dayEditor.moreDetails"
+msgstr "Meer details"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Vruchtbaarheidsschattingen"

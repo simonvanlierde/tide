@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Garde une copie de ton historique"
 
 msgid "backup.body"
-msgstr "Ton historique n’est enregistré que dans ce navigateur et disparaît si tu effaces ses données. Télécharge une sauvegarde pour pouvoir le restaurer."
+msgstr "Effacer les données du navigateur supprime ton historique. Garde une sauvegarde."
 
 msgid "backup.download"
 msgstr "Sauvegarder les données"
@@ -89,8 +89,8 @@ msgstr "Humeur"
 msgid "diary.note"
 msgstr "Note (facultative)"
 
-msgid "diary.noteHint"
-msgstr "Jusqu’à {max} caractères. Les détails restent sur cet appareil et sont inclus dans les sauvegardes."
+msgid "diary.noteCount"
+msgstr "{count, number} / {max, number}"
 
 msgid "diary.saved"
 msgstr "Détails enregistrés."
@@ -195,19 +195,13 @@ msgid "fertilityAsk.title"
 msgstr "Afficher les estimations de fertilité ?"
 
 msgid "fertilityAsk.body"
-msgstr "Tide peut indiquer les jours où tu es le plus susceptible d’être fertile, calculés à partir des règles que tu enregistres. Ce n’est qu’une estimation, donc ne l’utilise pas comme contraception. Tu pourras changer d’avis dans les Réglages."
+msgstr "Les estimations reposent sur ton historique de règles. Ne les utilise pas comme contraception."
 
 msgid "fertilityAsk.show"
 msgstr "Afficher"
 
 msgid "fertilityAsk.hide"
 msgstr "Ne pas afficher"
-
-msgid "today.importPrompt"
-msgstr "Tu as une sauvegarde Tide ou un historique Clue ou Flo ?"
-
-msgid "today.importLink"
-msgstr "L’importer"
 
 msgid "today.fertilityUnclear"
 msgstr "Incertaine en cas de retard"
@@ -416,9 +410,6 @@ msgstr "Tes règles ont-elles commencé ?"
 msgid "reminder.dismiss"
 msgstr "Pas encore, me le rappeler plus tard"
 
-msgid "reminder.reassure"
-msgstr "Quelques jours de variation, c’est courant."
-
 msgid "calendar.title"
 msgstr "Calendrier"
 
@@ -612,7 +603,7 @@ msgid "settings.dataHelp"
 msgstr "L’export enregistre ton historique de règles et tes détails quotidiens dans un fichier. Importer une sauvegarde Tide les remplace. Importer depuis Clue ou Flo ajoute des jours de règles."
 
 msgid "settings.importSources"
-msgstr "Tu peux importer une sauvegarde Tide, ou un export de Clue ou Flo."
+msgstr "Sauvegarde Tide ou export de Clue ou Flo."
 
 msgid "settings.export"
 msgstr "Exporter"
@@ -624,7 +615,7 @@ msgid "settings.exportCalendar"
 msgstr "Ajouter au calendrier"
 
 msgid "settings.calendarHelp"
-msgstr "Enregistre tes 3 prochaines règles prévues dans un fichier que ton agenda peut ouvrir. Une fois ajoutées, ce sont des événements ordinaires, que ton compte d’agenda enregistre et synchronise."
+msgstr "Télécharge un fichier avec tes 3 prochaines règles prévues. Ton compte d’agenda enregistre et synchronise les événements que tu ajoutes."
 
 msgid "settings.calendarFertility"
 msgstr "Inclure les fenêtres de fertilité"
@@ -682,3 +673,33 @@ msgstr "Supprimer"
 
 msgid "settings.resetConfirm"
 msgstr "Toutes les données et tous les réglages sur cet appareil sont effacés. Cette action est irréversible."
+
+msgid "onboarding.title"
+msgstr "Ton historique reste ici"
+
+msgid "onboarding.privacy"
+msgstr "Tide n’envoie pas ce que tu enregistres."
+
+msgid "onboarding.import"
+msgstr "Importer un historique de Tide, Clue ou Flo"
+
+msgid "onboarding.backup"
+msgstr "Ajoute Tide à ton écran d’accueil. Télécharge une sauvegarde tous les 60 jours."
+
+msgid "onboarding.dismiss"
+msgstr "Passer l’introduction"
+
+msgid "calendar.firstVisitHelp"
+msgstr "Appuie sur un jour pour l’enregistrer ou le modifier, ou choisis Enregistrer des règles passées pour plusieurs jours."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Noter un saignement"
+
+msgid "dayEditor.moreDetails"
+msgstr "Plus de détails"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Estimations de fertilité"

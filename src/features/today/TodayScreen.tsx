@@ -1,4 +1,4 @@
-import { ChevronRight } from "lucide-react";
+import { CalendarRange, ChevronRight } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { followAppLink } from "../../app/links";
 import { explainForecast } from "../../domain/cycle";
@@ -16,7 +16,8 @@ import {
 import { useToday } from "../../state/useToday";
 import { AppIcon } from "../../ui/icons";
 import { differenceInDays, formatShortDate } from "../../utils/date";
-import { DetailsButton, DetailsForm } from "../diary/DailyDetails";
+import { DetailsButton } from "../diary/DailyDetails";
+import { DayEditor } from "../log/DayEditor";
 import { LogAction } from "../log/LogAction";
 import { BackupReminder } from "../reminders/BackupReminder";
 import { ReminderPrompt } from "../reminders/ReminderPrompt";
@@ -24,7 +25,7 @@ import { InfoPopover } from "../settings/InfoPopover";
 import { CycleDial } from "./CycleDial";
 import { CycleHistory } from "./CycleHistory";
 import { CycleInsights } from "./CycleInsights";
-import { FertilityQuestion } from "./FertilityQuestion";
+import { OnboardingCard } from "./OnboardingCard";
 
 type Explainer = typeof import("./ForecastExplainer").ForecastExplainer;
 
@@ -54,13 +55,13 @@ export function TodayScreen(props: TodayScreenProps) {
     }
   };
   const insightsButton = useRef<HTMLButtonElement>(null);
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editorSection, setEditorSection] = useState<"bleeding" | "details" | null>(null);
   const detailsId = useId();
   const detailsButton = useRef<HTMLButtonElement>(null);
   const readOnly = useIsReadOnly();
   // null: not asked yet. Estimates stay hidden until the user says yes.
   const showFertility = state.settings.showFertility === true;
-  const askFertility = state.settings.showFertility === null && forecast.nextPeriod.date !== null && !readOnly;
+  const showOnboarding = !state.settings.onboardingDismissed && !readOnly;
   // Logging, removing or dismissing swaps the button under the user's finger
   // for another control, so focus follows to the replacement once. A change
   // from another tab or a new day leaves focus where it is.
@@ -72,8 +73,8 @@ export function TodayScreen(props: TodayScreenProps) {
     }
   }, [focusPending]);
   const toggleToday = () => {
-    setFocusPending(true);
     actions.togglePeriodDay(today, today);
+    setEditorSection("bleeding");
   };
   const isTodayLogged = today in state.intensityByDay;
   const reminderState = getReminderState({
@@ -106,9 +107,9 @@ export function TodayScreen(props: TodayScreenProps) {
     <DetailsButton
       ref={detailsButton}
       day={today}
-      open={detailsOpen}
+      open={editorSection !== null}
       controls={detailsId}
-      onOpen={() => setDetailsOpen(!detailsOpen)}
+      onOpen={() => setEditorSection("details")}
     />
   );
   const logVariant =
@@ -134,67 +135,78 @@ export function TodayScreen(props: TodayScreenProps) {
             : null}
       </p>
 
-      <CycleDial
-        forecast={forecast}
-        phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
-        estimate={estimate}
-        prompt={forecast.estimateMode === "insufficient" ? learningNote : null}
-        intensityByDay={state.intensityByDay}
-        today={today}
-      />
+      {showOnboarding && forecast.estimateMode === "insufficient" ? null : (
+        <CycleDial
+          forecast={forecast}
+          phaseLabel={isOverdue ? t("phaseLine.late") : getPhaseLine(t, forecast.phaseLabel)}
+          estimate={estimate}
+          prompt={forecast.estimateMode === "insufficient" ? learningNote : null}
+          intensityByDay={state.intensityByDay}
+          today={today}
+        />
+      )}
       {forecast.estimateMode !== "insufficient" && learningNote ? (
         <p className="today-screen__note">{learningNote}</p>
       ) : null}
 
+      {showOnboarding ? (
+        <OnboardingCard
+          onDismiss={() => {
+            setFocusPending(true);
+            actions.setSetting("onboardingDismissed", true);
+          }}
+        />
+      ) : null}
+
       <div className="today-screen__lead">
-        {reminderState.shouldPrompt ? (
-          <ReminderPrompt
-            isOverdue={reminderState.isOverdue}
-            onLog={toggleToday}
-            onDismiss={() => {
-              setFocusPending(true);
-              actions.dismissReminder(today);
-            }}
-            autoFocus={focusPending}
-            aside={details}
-          />
-        ) : (
-          <LogAction
-            isLogged={isTodayLogged}
-            intensity={state.intensityByDay[today]}
-            variant={logVariant}
-            onToggle={toggleToday}
-            onSelectIntensity={(intensity) => actions.setDayIntensity(today, intensity, today)}
-            autoFocus={focusPending}
-            aside={details}
-          />
-        )}
+        {editorSection === null ? (
+          <div className="today-screen__logging">
+            {reminderState.shouldPrompt ? (
+              <ReminderPrompt
+                onLog={toggleToday}
+                onDismiss={() => {
+                  setFocusPending(true);
+                  actions.dismissReminder(today);
+                }}
+                autoFocus={focusPending}
+                aside={details}
+              />
+            ) : (
+              <LogAction
+                isLogged={isTodayLogged}
+                intensity={state.intensityByDay[today]}
+                variant={logVariant}
+                onToggle={toggleToday}
+                onEdit={() => setEditorSection("bleeding")}
+                autoFocus={focusPending}
+                aside={details}
+              />
+            )}
+            {!readOnly && Object.keys(state.intensityByDay).length === 0 ? (
+              <a className="text-action today-screen__past-period" href="/calendar" onClick={followAppLink}>
+                <AppIcon icon={CalendarRange} className="text-action__icon" />
+                {t("calendar.logRange")}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
         <div id={detailsId}>
-          {detailsOpen ? (
-            <DetailsForm
-              // A new day is a new form: an Undo or "saved" from yesterday must not carry over.
+          {editorSection !== null ? (
+            <DayEditor
               key={today}
               day={today}
               today={today}
+              initialSection={editorSection}
               onClose={() => {
-                setDetailsOpen(false);
-                requestAnimationFrame(() => detailsButton.current?.focus());
+                const fromDetails = editorSection === "details";
+                setEditorSection(null);
+                if (fromDetails) requestAnimationFrame(() => detailsButton.current?.focus());
+                else setFocusPending(true);
               }}
             />
           ) : null}
         </div>
       </div>
-
-      {/* Import is disabled while read-only, so the link would lead nowhere. */}
-      {Object.keys(state.intensityByDay).length === 0 && !readOnly ? (
-        <p className="today-screen__note">
-          {t("today.importPrompt")}{" "}
-          {/* biome-ignore lint/a11y/useValidAnchor: real page navigation with an href; the handler only keeps it client-side, like the tab bar */}
-          <a href="/settings#import" onClick={followAppLink}>
-            {t("today.importLink")}
-          </a>
-        </p>
-      ) : null}
 
       <div className="fact-list">
         {forecast.estimateMode === "insufficient" || !showFertility ? null : (
@@ -204,7 +216,7 @@ export function TodayScreen(props: TodayScreenProps) {
                 {t("today.fertility")}
                 <InfoPopover label={t("today.fertilityInfoLabel")} align="start">
                   <p>{t("settings.fertilityMethod")}</p>
-                  <p>{t("settings.fertilityDisclaimer")}</p>
+                  <p>{t("today.notBirthControl")}</p>
                 </InfoPopover>
               </dt>
               <dd className="fact__value">
@@ -218,7 +230,6 @@ export function TodayScreen(props: TodayScreenProps) {
                     <span className="fact__meta">
                       {getOvulationPhrase(t, differenceInDays(forecast.ovulationDate, today))}
                     </span>
-                    <span className="fact__meta">{t("today.notBirthControl")}</span>
                   </>
                 ) : null}
               </dd>
@@ -231,17 +242,6 @@ export function TodayScreen(props: TodayScreenProps) {
           <AppIcon icon={ChevronRight} className="fact-list__more-icon" />
         </button>
       </div>
-
-      {askFertility ? (
-        <FertilityQuestion
-          onAnswer={(show) => {
-            actions.setSetting("showFertility", show);
-            // The card goes away under the user's focus; continue from the
-            // control just before it.
-            insightsButton.current?.focus();
-          }}
-        />
-      ) : null}
 
       {insightsOpen ? (
         <CycleInsights

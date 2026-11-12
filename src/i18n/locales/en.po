@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Keep a copy of your history"
 
 msgid "backup.body"
-msgstr "Your history is stored only in this browser, and clearing the browser''s data erases it. Download a backup so you can restore it."
+msgstr "Clearing browser data erases your history. Keep a backup."
 
 msgid "backup.download"
 msgstr "Back up data"
@@ -89,8 +89,8 @@ msgstr "Mood"
 msgid "diary.note"
 msgstr "Note (optional)"
 
-msgid "diary.noteHint"
-msgstr "Up to {max} characters. Details stay on this device and are included in backups."
+msgid "diary.noteCount"
+msgstr "{count, number} / {max, number}"
 
 msgid "diary.saved"
 msgstr "Details saved."
@@ -195,19 +195,13 @@ msgid "fertilityAsk.title"
 msgstr "Show fertility estimates?"
 
 msgid "fertilityAsk.body"
-msgstr "Tide can mark the days you''re most likely to be fertile, worked out from the periods you log. It''s only an estimate, so don''t use it as birth control. You can change this in Settings."
+msgstr "Estimates use your period history. Don''t use them as birth control."
 
 msgid "fertilityAsk.show"
 msgstr "Show"
 
 msgid "fertilityAsk.hide"
 msgstr "Don''t show"
-
-msgid "today.importPrompt"
-msgstr "Have a Tide backup, or history in Clue or Flo?"
-
-msgid "today.importLink"
-msgstr "Import it"
 
 msgid "today.fertilityUnclear"
 msgstr "Unclear while late"
@@ -416,9 +410,6 @@ msgstr "Has your period started?"
 msgid "reminder.dismiss"
 msgstr "Not yet, remind me later"
 
-msgid "reminder.reassure"
-msgstr "A few days of variation is common."
-
 msgid "calendar.title"
 msgstr "Calendar"
 
@@ -612,7 +603,7 @@ msgid "settings.dataHelp"
 msgstr "Export saves your period history and daily details to a file. Importing a Tide backup replaces them. Importing from Clue or Flo adds period days."
 
 msgid "settings.importSources"
-msgstr "You can import a Tide backup, or an export from Clue or Flo."
+msgstr "Tide backup, Clue or Flo export."
 
 msgid "settings.export"
 msgstr "Export"
@@ -624,7 +615,7 @@ msgid "settings.exportCalendar"
 msgstr "Add to calendar"
 
 msgid "settings.calendarHelp"
-msgstr "Saves your next 3 expected periods as a file your calendar app can open. Once added, they become normal calendar events, so your calendar account stores and syncs them."
+msgstr "Downloads a file with your next 3 expected periods. Your calendar account stores and syncs events you add."
 
 msgid "settings.calendarFertility"
 msgstr "Include fertile windows"
@@ -682,3 +673,33 @@ msgstr "Delete"
 
 msgid "settings.resetConfirm"
 msgstr "All data and settings on this device are erased. This cannot be undone."
+
+msgid "onboarding.title"
+msgstr "Your history stays here"
+
+msgid "onboarding.privacy"
+msgstr "Tide does not upload what you log."
+
+msgid "onboarding.import"
+msgstr "Import history from Tide, Clue or Flo"
+
+msgid "onboarding.backup"
+msgstr "Add Tide to your home screen. Download a backup every 60 days."
+
+msgid "onboarding.dismiss"
+msgstr "Skip introduction"
+
+msgid "calendar.firstVisitHelp"
+msgstr "Tap a day to log or change it, or use Log a past period for a range."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Log bleeding"
+
+msgid "dayEditor.moreDetails"
+msgstr "More details"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Fertility estimates"

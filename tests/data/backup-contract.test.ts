@@ -10,7 +10,7 @@ afterEach(() => {
   localStorage.clear();
 });
 
-it("exports and restores the documented schema 4 example without losing persistent data", async () => {
+it("exports and restores the documented schema 5 example without losing persistent data", async () => {
   const example = JSON.parse(readFileSync("docs/backup-example.json", "utf8"));
   const state = {
     intensityByDay: example.days,
@@ -27,7 +27,11 @@ it("exports and restores the documented schema 4 example without losing persiste
   const text = await blob.text();
   expect(JSON.parse(text)).toEqual(example);
   const restored = parseImportedState(text, "2026-03-01");
-  expect(restored).toEqual(state);
+  const restoredState = {
+    ...state,
+    settings: { ...state.settings, onboardingDismissed: true, calendarHelpDismissed: true },
+  };
+  expect(restored).toEqual(restoredState);
   expect(saveAppState(restored)).toBe(true);
-  expect(loadStoredState()).toEqual({ state, readOnly: false });
+  expect(loadStoredState()).toEqual({ state: restoredState, readOnly: false });
 });

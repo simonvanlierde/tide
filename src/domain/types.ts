@@ -81,6 +81,9 @@ export interface CycleStats {
 }
 
 export interface AppSettings {
+  /** Device-local first-use guidance; never included in exported backups. */
+  onboardingDismissed: boolean;
+  calendarHelpDismissed: boolean;
   /** Day the reminder was dismissed with "Not yet"; suppresses the prompt only
    * while it equals today. Transient UI state — persisted locally, not exported. */
   dismissedOn: IsoDate | null;
@@ -88,7 +91,7 @@ export interface AppSettings {
   lastBackupOn: IsoDate | null;
   backupReminderDismissedOn: IsoDate | null;
   /** Show fertile-window and ovulation estimates on the home screen and
-   * calendar. null until the user answers the question on Today; estimates
+   * calendar. null until the user makes a choice; estimates
    * stay hidden until then. */
   showFertility: boolean | null;
   /** Number the days of the current cycle (day 1, 2, 3…) on the calendar. */

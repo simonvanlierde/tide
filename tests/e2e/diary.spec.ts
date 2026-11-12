@@ -1,30 +1,59 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
+import { formatLongDate } from "../../src/utils/date";
 import { findOverflow } from "./overflow";
 import { FIXED_NOW, seedAppState } from "./seed";
 
-test("keyboard date edits keep the selected day segment and load its details", async ({ page }) => {
-  await page.clock.setFixedTime(new Date("2026-11-11T12:00:00Z"));
-  // Only the Calendar's details pick a date; Today's are for today.
+test("Calendar selection keeps bleeding and details on the same day", async ({ page }) => {
+  await seedAppState(page, "en", {}, { "2026-04-11": "light", "2026-04-12": "heavy" });
+  await page.goto("/calendar");
+  await page.getByRole("button", { name: /^Edit April 11, 2026/ }).click();
+  await expect(page.getByRole("heading", { name: formatLongDate("2026-04-11", "en"), exact: true })).toBeVisible();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.light"), exact: true })).toBeChecked();
+  await page.getByText(translate("en", "dayEditor.moreDetails"), { exact: true }).click();
+  const note = page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true });
+  await note.fill("A quiet day.");
+  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
+
+  await page.getByRole("button", { name: /^Edit April 12, 2026/ }).click();
+  await expect(page.getByRole("heading", { name: formatLongDate("2026-04-12", "en"), exact: true })).toBeVisible();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.heavy"), exact: true })).toBeChecked();
+  await expect(note).toBeVisible();
+  await expect(note).toHaveValue("");
+  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).not.toBeVisible();
+
+  await page.getByRole("button", { name: /^Edit April 11, 2026/ }).click();
+  await expect(page.getByRole("heading", { name: formatLongDate("2026-04-11", "en"), exact: true })).toBeVisible();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.light"), exact: true })).toBeChecked();
+  await expect(note).toBeVisible();
+  await expect(note).toHaveValue("A quiet day.");
+});
+
+test("Calendar can add past details without logging bleeding and keeps closed-grid one-tap logging", async ({
+  page,
+}) => {
+  await seedAppState(page, "en", {}, {});
   await page.goto("/calendar");
   await page.getByRole("button", { name: /^Add details for / }).click();
-  const date = page.getByLabel(translate("en", "diary.date"), { exact: true });
-  await expect(date).toHaveValue("2026-11-11");
-  await date.press("ArrowRight");
-  await date.press("ArrowDown");
-  await expect(date).toHaveValue("2026-11-10");
-  await date.press("ArrowDown");
-  await expect(date).toHaveValue("2026-11-09");
-  await page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true }).fill("A quiet day.");
+  await page.getByRole("button", { name: /^Edit April 12, 2026/ }).click();
+  await expect(page.getByRole("heading", { name: formatLongDate("2026-04-12", "en"), exact: true })).toBeVisible();
+  const note = page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true });
+  await expect(note).toBeVisible();
+  await note.fill("A quiet afternoon.");
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
-  await date.fill("2026-11-08");
-  await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue("");
-  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).not.toBeVisible();
-  await date.fill("2026-11-09");
-  await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
-    "A quiet day.",
-  );
+  expect(
+    await page.evaluate(() => {
+      const state = JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}");
+      return { bleeding: state.intensityByDay, note: state.detailsByDay["2026-04-12"]?.note };
+    }),
+  ).toEqual({ bleeding: {}, note: "A quiet afternoon." });
+  await page.getByRole("button", { name: translate("en", "diary.done"), exact: true }).click();
+  await page.getByRole("button", { name: /^Log April 13, 2026/ }).click();
+  await expect(page.locator(".calendar__help[role=status]")).toContainText("Logged Mon, Apr 13.");
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+  ).toEqual({ "2026-04-13": null });
 });
 
 for (const language of SUPPORTED_LANGUAGES) {

@@ -42,7 +42,7 @@ msgid "backup.title"
 msgstr "Bewahre eine Kopie deines Verlaufs auf"
 
 msgid "backup.body"
-msgstr "Dein Verlauf ist nur in diesem Browser gespeichert und geht verloren, wenn du die Browserdaten löschst. Lade eine Sicherung herunter, um ihn wiederherzustellen."
+msgstr "Wenn du Browserdaten löschst, geht dein Verlauf verloren. Bewahre eine Sicherung auf."
 
 msgid "backup.download"
 msgstr "Sicherung erstellen"
@@ -89,8 +89,8 @@ msgstr "Stimmung"
 msgid "diary.note"
 msgstr "Notiz (optional)"
 
-msgid "diary.noteHint"
-msgstr "Bis zu {max} Zeichen. Details bleiben auf diesem Gerät und werden in Sicherungen gespeichert."
+msgid "diary.noteCount"
+msgstr "{count, number} / {max, number}"
 
 msgid "diary.saved"
 msgstr "Details gespeichert."
@@ -195,19 +195,13 @@ msgid "fertilityAsk.title"
 msgstr "Fruchtbarkeits\u00adschätzungen anzeigen?"
 
 msgid "fertilityAsk.body"
-msgstr "Tide kann die Tage markieren, an denen du am ehesten fruchtbar bist, berechnet aus deinen erfassten Perioden. Das ist nur eine Schätzung, also nutze sie nicht zur Verhütung. Du kannst das in den Einstellungen ändern."
+msgstr "Schätzungen beruhen auf deinem Periodenverlauf. Nutze sie nicht zur Verhütung."
 
 msgid "fertilityAsk.show"
 msgstr "Anzeigen"
 
 msgid "fertilityAsk.hide"
 msgstr "Nicht anzeigen"
-
-msgid "today.importPrompt"
-msgstr "Hast du eine Tide-Sicherung oder Daten aus Clue oder Flo?"
-
-msgid "today.importLink"
-msgstr "Importieren"
 
 msgid "today.fertilityUnclear"
 msgstr "Unklar bei Verspätung"
@@ -416,9 +410,6 @@ msgstr "Hat deine Periode angefangen?"
 msgid "reminder.dismiss"
 msgstr "Noch nicht, später erinnern"
 
-msgid "reminder.reassure"
-msgstr "Ein paar Tage Abweichung sind normal."
-
 msgid "calendar.title"
 msgstr "Kalender"
 
@@ -612,7 +603,7 @@ msgid "settings.dataHelp"
 msgstr "Der Export speichert deinen Menstruationsverlauf und deine täglichen Details in einer Datei. Der Import einer Tide-Sicherung ersetzt sie. Ein Import aus Clue oder Flo fügt Menstruationstage hinzu."
 
 msgid "settings.importSources"
-msgstr "Du kannst eine Tide-Sicherung importieren oder einen Export aus Clue oder Flo."
+msgstr "Tide-Sicherung oder Export aus Clue oder Flo."
 
 msgid "settings.export"
 msgstr "Exportieren"
@@ -624,7 +615,7 @@ msgid "settings.exportCalendar"
 msgstr "Zum Kalender"
 
 msgid "settings.calendarHelp"
-msgstr "Speichert deine nächsten 3 erwarteten Perioden als Datei für deine Kalender-App. Einmal hinzugefügt, sind es normale Kalendertermine: Dein Kalenderkonto speichert und synchronisiert sie."
+msgstr "Lädt eine Datei mit deinen nächsten 3 erwarteten Perioden herunter. Dein Kalenderkonto speichert und synchronisiert Termine, die du hinzufügst."
 
 msgid "settings.calendarFertility"
 msgstr "Fruchtbare Fenster einschließen"
@@ -682,3 +673,33 @@ msgstr "Löschen"
 
 msgid "settings.resetConfirm"
 msgstr "Alle Daten und Einstellungen auf diesem Gerät werden gelöscht. Das kann nicht rückgängig gemacht werden."
+
+msgid "onboarding.title"
+msgstr "Dein Verlauf bleibt hier"
+
+msgid "onboarding.privacy"
+msgstr "Tide lädt deine Einträge nicht hoch."
+
+msgid "onboarding.import"
+msgstr "Verlauf aus Tide, Clue oder Flo importieren"
+
+msgid "onboarding.backup"
+msgstr "Füge Tide deinem Startbildschirm hinzu. Lade alle 60 Tage eine Sicherung herunter."
+
+msgid "onboarding.dismiss"
+msgstr "Einführung überspringen"
+
+msgid "calendar.firstVisitHelp"
+msgstr "Tippe auf einen Tag, um ihn zu erfassen oder zu ändern, oder wähle Vergangene Periode erfassen für mehrere Tage."
+
+msgid "dayEditor.title"
+msgstr "{date}"
+
+msgid "dayEditor.logBleeding"
+msgstr "Blutung eintragen"
+
+msgid "dayEditor.moreDetails"
+msgstr "Weitere Angaben"
+
+msgid "onboarding.fertilitySummary"
+msgstr "Fruchtbarkeitsschätzungen"

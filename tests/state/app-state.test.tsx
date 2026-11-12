@@ -167,7 +167,7 @@ describe("app state", () => {
     expect(() => renderHook(() => useAppStateActions())).toThrow(/must be used inside AppStateProvider/);
   });
 
-  it("resets incomplete markers and local backup metadata along with history", () => {
+  it("resets history, local backup metadata, and dismissed onboarding guidance", () => {
     const initial = createAppState({
       periodDays: ["2026-01-01", "2026-01-29"],
       incompleteCycleStarts: ["2026-01-01"],
@@ -179,6 +179,17 @@ describe("app state", () => {
     });
     act(() => result.current.actions.resetState());
     expect(result.current.state).toEqual(defaultAppState);
+  });
+
+  it("shares local guidance dismissal across tabs and persists both flags", () => {
+    const { result } = renderHook(() => useAppState(), {
+      wrapper: ({ children }) => <AppStateProvider initialState={defaultAppState}>{children}</AppStateProvider>,
+    });
+    const other = createAppState();
+    saveAppState(other);
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: STORAGE_KEY })));
+    expect(result.current.settings).toEqual(other.settings);
+    expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "").settings).toEqual(other.settings);
   });
 
   it("persists diary-only history, requests durable storage, and shares it across tabs", () => {

@@ -20,7 +20,8 @@ export const STORAGE_KEY = "tide.period-tracker.state";
 // 2: showFertility can be null (not asked yet); see normalizeAppState.
 // 3: incomplete cycle markers and local backup dates.
 // 4: independent daily symptoms, mood, and notes.
-export const SCHEMA_VERSION = 4;
+// 5: local onboarding and calendar guidance dismissal.
+export const SCHEMA_VERSION = 5;
 
 const THEME_PREFERENCES: ThemePreference[] = ["system", "light", "dark"];
 const LANGUAGE_PREFERENCES: LanguagePreference[] = ["system", ...SUPPORTED_LANGUAGES];
@@ -30,6 +31,8 @@ export const defaultAppState: AppState = {
   detailsByDay: {},
   incompleteCycleStarts: [],
   settings: {
+    onboardingDismissed: false,
+    calendarHelpDismissed: false,
     dismissedOn: null,
     lastBackupOn: null,
     backupReminderDismissedOn: null,
@@ -81,6 +84,10 @@ export function normalizeSettings(settings: unknown): AppSettings {
   const candidate = settings && typeof settings === "object" ? (settings as Partial<AppSettings>) : {};
 
   return {
+    // Missing flags belong to an established installation, which needs no tour.
+    onboardingDismissed: typeof candidate.onboardingDismissed === "boolean" ? candidate.onboardingDismissed : true,
+    calendarHelpDismissed:
+      typeof candidate.calendarHelpDismissed === "boolean" ? candidate.calendarHelpDismissed : true,
     dismissedOn: isIsoDate(candidate.dismissedOn) ? candidate.dismissedOn : defaultAppState.settings.dismissedOn,
     lastBackupOn: isIsoDate(candidate.lastBackupOn) ? candidate.lastBackupOn : null,
     backupReminderDismissedOn: isIsoDate(candidate.backupReminderDismissedOn)
@@ -119,7 +126,7 @@ export function normalizeAppState(state: unknown): AppState {
 
   const settings = normalizeSettings(candidate.settings);
   // Before version 2, showFertility defaulted to true without anyone being
-  // asked. Turn that default back into "not asked" so the question shows; a
+  // asked. Turn that default back into "not asked" so estimates need a choice; a
   // false was a choice made in Settings and stays.
   if (version < 2 && settings.showFertility) {
     settings.showFertility = null;

@@ -33,12 +33,23 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
     case "setDayDetails": {
       const details = normalizeDailyDetails(action.details);
       if (!isIsoDate(action.day) || action.day > action.today || !details) return state;
+      const previous = state.detailsByDay[action.day];
+      if (
+        previous &&
+        previous.note === details.note &&
+        previous.mood === details.mood &&
+        (previous.symptoms === details.symptoms ||
+          (previous.symptoms?.length === details.symptoms?.length &&
+            previous.symptoms?.every((symptom, index) => symptom === details.symptoms?.[index])))
+      )
+        return state;
       const detailsByDay = { ...state.detailsByDay };
       if (hasDailyDetails(details)) detailsByDay[action.day] = details;
       else delete detailsByDay[action.day];
-      return { ...state, detailsByDay };
+      return { ...(hasDailyDetails(details) ? dismissOnboarding(state) : state), detailsByDay };
     }
     case "togglePeriodDay": {
+      if (!isIsoDate(action.day)) return state;
       const hasLoggedDay = action.day in state.intensityByDay;
 
       // Never log a future-dated day; always allow removing an existing one
@@ -57,10 +68,11 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
         intensityByDay[action.day] = null;
       }
 
-      return updateLoggedDays(state, intensityByDay);
+      return updateLoggedDays(hasLoggedDay ? state : dismissOnboarding(state), intensityByDay);
     }
 
     case "setDayIntensity": {
+      if (!isIsoDate(action.day)) return state;
       // The gauge only appears once a day is logged, but stay robust: never set
       // a level on a future, un-logged day.
       const isLogged = action.day in state.intensityByDay;
@@ -68,7 +80,10 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
         return state;
       }
 
-      return updateLoggedDays(state, { ...state.intensityByDay, [action.day]: action.intensity });
+      return updateLoggedDays(isLogged ? state : dismissOnboarding(state), {
+        ...state.intensityByDay,
+        [action.day]: action.intensity,
+      });
     }
 
     case "logPeriodRange": {
@@ -80,7 +95,7 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
           changed = true;
         }
       }
-      return changed ? updateLoggedDays(state, intensityByDay) : state;
+      return changed ? updateLoggedDays(dismissOnboarding(state), intensityByDay) : state;
     }
 
     case "toggleIncompleteCycle": {
@@ -112,6 +127,12 @@ export function appStateReducer(state: AppState, action: AppStateAction): AppSta
     case "importState":
       return action.state;
   }
+}
+
+function dismissOnboarding(state: AppState): AppState {
+  return state.settings.onboardingDismissed
+    ? state
+    : { ...state, settings: { ...state.settings, onboardingDismissed: true } };
 }
 
 export function selectForecast(

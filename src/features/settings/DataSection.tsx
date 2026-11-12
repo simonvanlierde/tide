@@ -55,12 +55,22 @@ export function DataSection({ today }: DataSectionProps) {
 
   // The status counts the days the import added: all of a backup, or only the
   // new days of a merge. The backup dates describe this device, not the file,
-  // so an import keeps them.
+  // so an import keeps them and Calendar guidance. A successful import
+  // completes the first-run introduction.
   function applyImport(next: AppState, merged = false) {
     if (latest.current.readOnly) return;
     const current = latest.current.state;
-    const { lastBackupOn, backupReminderDismissedOn } = current.settings;
-    actions.importState({ ...next, settings: { ...next.settings, lastBackupOn, backupReminderDismissedOn } });
+    const { lastBackupOn, backupReminderDismissedOn, calendarHelpDismissed } = current.settings;
+    actions.importState({
+      ...next,
+      settings: {
+        ...next.settings,
+        lastBackupOn,
+        backupReminderDismissedOn,
+        calendarHelpDismissed,
+        onboardingDismissed: true,
+      },
+    });
     setError(null);
     setStatus({
       kind: "imported",

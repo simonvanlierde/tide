@@ -1,9 +1,15 @@
 import { describe, expect, it, vi } from "vitest";
-import { SCHEMA_VERSION } from "../../src/data/schema";
+import { defaultAppState, SCHEMA_VERSION } from "../../src/data/schema";
 import { BACKUP_KEY, clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import { createAppState } from "../support/app";
 
 describe("local storage", () => {
+  it("round-trips undismissed fresh-install guidance without a migration backup", () => {
+    expect(loadStoredState().state).toEqual(defaultAppState);
+    saveAppState(defaultAppState);
+    expect(loadStoredState()).toEqual({ state: defaultAppState, readOnly: false });
+    expect(window.localStorage.getItem(BACKUP_KEY)).toBeNull();
+  });
   it("round-trips app state through a plain storage record", () => {
     const state = createAppState({
       periodDays: ["2026-04-02"],
@@ -72,7 +78,7 @@ describe("local storage", () => {
   it("recovers safely from corrupted local storage", () => {
     window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
 
-    expect(loadStoredState().state).toEqual(createAppState());
+    expect(loadStoredState().state).toEqual(defaultAppState);
   });
 
   it("fills in defaults for incomplete current-shape state", () => {
@@ -155,7 +161,7 @@ describe("local storage", () => {
   it("backs up an unreadable blob before falling back to defaults", () => {
     window.localStorage.setItem(STORAGE_KEY, "{ definitely not json");
 
-    expect(loadStoredState().state).toEqual(createAppState());
+    expect(loadStoredState().state).toEqual(defaultAppState);
     expect(window.localStorage.getItem(BACKUP_KEY)).toBe("{ definitely not json");
   });
 
@@ -179,7 +185,7 @@ describe("local storage", () => {
     const removeItem = vi.spyOn(Storage.prototype, "removeItem").mockImplementation(blocked);
 
     try {
-      expect(loadStoredState().state).toEqual(createAppState());
+      expect(loadStoredState().state).toEqual(defaultAppState);
       expect(() => clearAppState()).not.toThrow();
     } finally {
       getItem.mockRestore();

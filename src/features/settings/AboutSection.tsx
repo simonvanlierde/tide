@@ -13,7 +13,6 @@ export function AboutSection() {
     <article className="utility-card">
       <h2 className="section-title">{t("settings.about")}</h2>
       <div className="settings-group settings-group--compact">
-        <p className="supporting-note">{t("settings.fertilityDisclaimer")}</p>
         <ul className="link-rows">
           {Object.entries(LEGAL_PAGES).map(([path, { labelKey }]) => (
             <li key={path}>

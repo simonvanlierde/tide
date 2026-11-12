@@ -1,6 +1,6 @@
 import fc from "fast-check";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { defaultAppState, SCHEMA_VERSION } from "../../src/data/schema";
+import { SCHEMA_VERSION } from "../../src/data/schema";
 import { downloadAppState, parseImportedState } from "../../src/data/transfer";
 import { MOODS, SYMPTOMS } from "../../src/domain/diary";
 import { FLOW_INTENSITIES } from "../../src/domain/flow";
@@ -65,6 +65,8 @@ describe("parseImportedState", () => {
     return blob.text().then((text) => {
       // dismissedOn is transient UI state and must not leave in the backup.
       expect(text).not.toContain("dismissedOn");
+      expect(text).not.toContain("onboardingDismissed");
+      expect(text).not.toContain("calendarHelpDismissed");
       expect(parseImportedState(text, "2026-04-15")).toEqual({
         ...state,
         intensityByDay: { "2026-04-02": "heavy", "2026-04-03": "medium" },
@@ -114,7 +116,7 @@ describe("parseImportedState", () => {
       }),
     );
 
-    expect(parsed).toEqual(defaultAppState);
+    expect(parsed).toEqual(createAppState());
   });
 });
 
@@ -180,6 +182,8 @@ describe("backup round-trip property", () => {
     incompleteCycleStarts: fc.constant([]),
     intensityByDay: fc.dictionary(day, fc.constantFrom<LoggedFlow>(null, ...FLOW_INTENSITIES)),
     settings: fc.record({
+      onboardingDismissed: fc.boolean(),
+      calendarHelpDismissed: fc.boolean(),
       dismissedOn: fc.option(day),
       lastBackupOn: fc.option(day),
       backupReminderDismissedOn: fc.option(day),
@@ -202,7 +206,14 @@ describe("backup round-trip property", () => {
         const blob = createObjectURL.mock.calls.at(-1)?.[0] as Blob;
         expect(parseImportedState(await blob.text(), TODAY)).toEqual({
           ...state,
-          settings: { ...state.settings, dismissedOn: null, lastBackupOn: null, backupReminderDismissedOn: null },
+          settings: {
+            ...state.settings,
+            dismissedOn: null,
+            lastBackupOn: null,
+            backupReminderDismissedOn: null,
+            onboardingDismissed: true,
+            calendarHelpDismissed: true,
+          },
         });
       }),
     );

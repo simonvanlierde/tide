@@ -44,10 +44,13 @@ describe("SettingsScreen", () => {
     expect(screen.queryByRole("button", { name: /snooze/i })).not.toBeInTheDocument();
   });
 
-  it("shows concise information guidance", () => {
+  it("keeps fertility guidance inside its information popover", async () => {
+    const user = userEvent.setup();
     renderSettings();
-
-    expect(screen.getByText(/fertility estimates are for information only/i)).toBeInTheDocument();
+    const warning = screen.getByText(/fertility estimates are for information only/i);
+    expect(warning).not.toBeVisible();
+    await user.click(screen.getByLabelText("About fertility estimates"));
+    expect(warning).toBeVisible();
   });
 
   it("answers the fertility question from the switch and remembers it", async () => {
@@ -452,6 +455,8 @@ describe("SettingsScreen", () => {
       }),
     );
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([]);
+    expect(loadStoredState().state.settings.onboardingDismissed).toBe(false);
+    expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
   });
 
   it("confirms an export instead of letting the download happen in silence", async () => {
@@ -559,4 +564,17 @@ describe("SettingsScreen", () => {
       );
     },
   );
+});
+
+it("finishes introduction after import while keeping Calendar help local to the device", async () => {
+  const user = userEvent.setup();
+  renderSettings(createAppState({ settings: { onboardingDismissed: false, calendarHelpDismissed: false } }));
+  await user.upload(
+    screen.getByLabelText(/import data file/i),
+    new File([JSON.stringify(createAppState({ periodDays: ["2026-04-02"] }))], "tide.json", {
+      type: "application/json",
+    }),
+  );
+  expect(loadStoredState().state.settings.onboardingDismissed).toBe(true);
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
 });

@@ -1,11 +1,12 @@
-import { act, fireEvent, render, screen } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY } from "../../src/data/storage";
 import { MAX_NOTE_LENGTH } from "../../src/domain/diary";
 import { CalendarScreen } from "../../src/features/calendar/CalendarScreen";
-import { DailyDetails, DetailsForm } from "../../src/features/diary/DailyDetails";
+import { DailyDetails } from "../../src/features/diary/DailyDetails";
+import { DayEditor } from "../../src/features/log/DayEditor";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
 import { AppStateProvider } from "../../src/state/provider";
 import { createAppState, renderWithAppState } from "../support/app";
@@ -20,7 +21,7 @@ describe("optional daily details", () => {
     const state = createAppState();
     const view = render(
       <AppStateProvider initialState={state}>
-        <DailyDetails today="2026-04-18" month="2026-04-01" />
+        <TodayScreen today="2026-04-18" />
       </AppStateProvider>,
     );
     if (opened) {
@@ -29,11 +30,11 @@ describe("optional daily details", () => {
     }
     view.rerender(
       <AppStateProvider initialState={state}>
-        <DailyDetails today="2026-04-19" month="2026-04-01" />
+        <TodayScreen today="2026-04-19" />
       </AppStateProvider>,
     );
     await user.click(screen.getByRole("button", { name: "Add details" }));
-    expect(screen.getByLabelText("Date")).toHaveValue("2026-04-19");
+    expect(screen.getByRole("heading", { name: "April 19, 2026" })).toBeInTheDocument();
     await user.type(screen.getByRole("textbox", { name: /note/i }), "A new day.");
     expect(Object.keys(stored().detailsByDay)).toEqual(["2026-04-19"]);
   });
@@ -104,7 +105,9 @@ describe("optional daily details", () => {
     expect(details).toHaveAttribute("aria-expanded", "false");
 
     await user.click(details);
-    expect(details).toHaveAttribute("aria-expanded", "true");
+    expect(details).not.toBeInTheDocument();
+    expect(screen.getByRole("region", { name: "April 18, 2026" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /log bleeding today/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Cramps" }));
     await user.click(screen.getByRole("button", { name: "Done" }));
 
@@ -170,24 +173,49 @@ describe("optional daily details", () => {
 
     render(
       <AppStateProvider initialState={createAppState()}>
-        <DetailsForm day="2026-04-20" today="2026-04-18" onClose={() => {}} />
+        <DayEditor day="2026-04-20" today="2026-04-18" initialSection="details" onClose={() => {}} />
       </AppStateProvider>,
     );
     expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
   });
 
-  it("clears the saved note when the Calendar's date moves to another day", async () => {
+  it("chooses a past diary-only day from an open editor without logging bleeding", async () => {
     const user = userEvent.setup();
-    render(
-      <AppStateProvider initialState={createAppState()}>
-        <DailyDetails today="2026-04-18" month="2026-04-01" />
-      </AppStateProvider>,
-    );
-    await user.click(screen.getByRole("button", { name: "Add details" }));
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, { state: createAppState() });
+    await user.click(screen.getByRole("button", { name: /add details for sat, apr 18/i }));
+    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026$/ }));
+
+    expect(screen.getByRole("heading", { name: "April 12, 2026" })).toBeInTheDocument();
+    expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "A walk helped.");
+    expect(stored().intensityByDay).toEqual({});
+    expect(stored().detailsByDay).toEqual({
+      "2026-04-12": { symptoms: null, mood: null, note: "A walk helped." },
+    });
+    expect(screen.queryByRole("heading", { name: "April 18, 2026" })).not.toBeInTheDocument();
+  });
+
+  it("moves the Calendar editor's single date context with the grid selection", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-04-12", "2026-04-13"] }),
+    });
+    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026/ }));
+    await user.click(screen.getByText("More details", { selector: "summary" }));
     await user.click(screen.getByRole("button", { name: "Cramps" }));
-    expect(screen.getByRole("status")).toHaveTextContent("Details saved.");
-    fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-04-12" } });
-    expect(screen.getByRole("status")).toBeEmptyDOMElement();
+    const first = screen.getByRole("region", { name: "April 12, 2026" });
+    expect(within(first).getByRole("status")).toHaveTextContent("Details saved.");
+    expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /^Edit April 13, 2026/ }));
+    expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
+    expect(screen.queryByRole("region", { name: "April 12, 2026" })).not.toBeInTheDocument();
+    const second = screen.getByRole("region", { name: "April 13, 2026" });
+    expect(within(second).getByRole("status")).toBeEmptyDOMElement();
+    expect(within(second).getByRole("button", { name: "Cramps" })).toHaveAttribute("aria-pressed", "false");
+    await user.type(within(second).getByRole("textbox", { name: /note/i }), "Different day");
+    expect(stored().detailsByDay["2026-04-12"].symptoms).toEqual(["cramps"]);
+    expect(stored().detailsByDay["2026-04-13"].note).toBe("Different day");
   });
 
   it("drops Undo once another tab writes to the cleared day", async () => {
@@ -210,23 +238,36 @@ describe("optional daily details", () => {
     expect(stored().detailsByDay["2026-04-18"].note).toBe("Other tab");
   });
 
-  it("ignores a future date, lists only the shown month and caps the note", async () => {
+  it("lists only the shown month's detail days and opens their exact dates", async () => {
     const user = userEvent.setup();
-    const state = {
-      ...createAppState(),
+    const onOpenDay = vi.fn();
+    const state = createAppState({
       detailsByDay: {
-        "2026-03-30": { symptoms: null, mood: "low" as const, note: "" },
-        "2026-04-12": { symptoms: null, mood: "good" as const, note: "" },
+        "2026-03-30": { symptoms: null, mood: "low", note: "" },
+        "2026-04-12": { symptoms: null, mood: "good", note: "" },
       },
-    };
-    renderWithAppState(<DailyDetails today="2026-04-18" month="2026-04-01" />, { state });
-    expect(screen.getByRole("button", { name: /12/ })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /30/ })).not.toBeInTheDocument();
-
+    });
+    renderWithAppState(<DailyDetails today="2026-04-18" month="2026-04-01" onOpenDay={onOpenDay} />, { state });
+    expect(screen.getByRole("button", { name: /view details for .*12/i })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /view details for .*30/i })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /view details for .*12/i }));
+    expect(onOpenDay).toHaveBeenLastCalledWith("2026-04-12");
     await user.click(screen.getByRole("button", { name: "Add details" }));
-    fireEvent.change(screen.getByLabelText("Date"), { target: { value: "2026-04-25" } });
-    expect(screen.getByLabelText("Date")).toHaveValue("2026-04-18");
-    expect(screen.getByRole("textbox", { name: /note/i })).toHaveAttribute("maxLength", String(MAX_NOTE_LENGTH));
+    expect(onOpenDay).toHaveBeenLastCalledWith("2026-04-18");
+    expect(stored().intensityByDay).toEqual({});
+  });
+
+  it("caps the note and shows its character count without a second date picker", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<DayEditor day="2026-04-18" today="2026-04-18" initialSection="details" onClose={() => {}} />, {
+      state: createAppState(),
+    });
+    expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
+    const note = screen.getByRole("textbox", { name: /note/i });
+    expect(note).toHaveAttribute("maxLength", String(MAX_NOTE_LENGTH));
+    expect(note).toHaveAccessibleDescription("0 / 1,000");
+    await user.type(note, "Rest helped.");
+    expect(note).toHaveAccessibleDescription("12 / 1,000");
   });
 
   it("lets calendar readers revisit a detail-only day without logging bleeding", async () => {

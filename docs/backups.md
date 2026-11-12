@@ -9,7 +9,7 @@ The file contains sensitive health information in plain text. Tide does not encr
 4. Import the saved file. If any bleeding or diary history exists, confirm replacement; an empty history imports immediately.
 5. Check known dates, diary-only entries and preferences after restoring. Keep both files until you have verified the result.
 
-## Schema 4
+## Schema 5
 
 [`backup-example.json`](backup-example.json) is a complete synthetic backup.
 Run its export, parse and storage round trip with:
@@ -23,7 +23,7 @@ It checks every exported field, including diary-only days, incomplete-cycle mark
 
 | Field | Meaning |
 | --- | --- |
-| `schemaVersion` | The format version, currently `4`. |
+| `schemaVersion` | The format version, currently `5`. |
 | `days` | Map from local calendar date to logged flow: `null`, `spotting`, `light`, `medium` or `heavy`. |
 | `detailsByDay` | Independent diary entries keyed by local date, each with `symptoms`, `mood` and `note`. |
 | `incompleteCycleStarts` | Starts of completed cycle intervals you marked incomplete. Those intervals do not contribute to prediction estimates. |
@@ -45,8 +45,9 @@ An entry with no symptoms logged, no mood and an empty note contains no diary da
 Backups include `showFertility` (unanswered `null`, `true` or `false`), `showCycleDayNumbers`, `theme`, `language` and `calendarId`.
 `system` follows the restoring device's theme or language. A valid `calendarId` preserves the identity of exported calendar events across devices.
 
-Backups omit `dismissedOn`, `lastBackupOn` and `backupReminderDismissedOn`.
-The restore UI keeps the destination device's backup dates; the other reminder dismissal resets.
+Backups omit `dismissedOn`, `lastBackupOn`, `backupReminderDismissedOn`, `onboardingDismissed` and `calendarHelpDismissed`.
+The restore UI keeps the destination device's backup dates and Calendar guidance dismissal; the other reminder dismissal resets.
+Importing completes the Today introduction on this device.
 Exporting records a backup date on the exporting device, outside the downloaded file.
 
 ### Validation and older backups
@@ -65,6 +66,7 @@ Older backups can use `intensityByDay` instead of `days`, including the legacy `
 Unversioned data reads as schema 0. Before schema 2, an old `showFertility: true` default becomes unanswered;
 `false` remains a deliberate choice. Missing newer fields use their current defaults.
 Schema 3 added incomplete-cycle markers and local backup dates; schema 4 added independent diary entries.
+Schema 5 adds device-local introduction and Calendar guidance flags; existing installations skip both hints.
 Newer local-storage data opens read-only rather than being overwritten. A raw crash-recovery download preserves the stored blob without normalization.
 
 ## Other imports and calendar files

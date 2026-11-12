@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
 import { SCHEMA_VERSION, STORAGE_KEY } from "../../src/data/schema";
-import { renderWithAppState } from "../support/app";
+import { createAppState, renderWithAppState } from "../support/app";
 
 describe("App shell", () => {
   beforeEach(() => {
@@ -97,9 +97,9 @@ describe("App shell", () => {
   it("takes Today's import link to the Import button in Settings", async () => {
     window.history.replaceState(null, "", "/");
     const user = userEvent.setup();
-    renderWithAppState(<App />);
+    renderWithAppState(<App />, { state: createAppState({ settings: { onboardingDismissed: false } }) });
 
-    await user.click(screen.getByRole("link", { name: /^import it$/i }));
+    await user.click(screen.getByRole("link", { name: /import history from tide, clue or flo/i }));
 
     expect(window.location.pathname).toBe("/settings");
     expect(screen.getByRole("button", { name: /^import$/i })).toHaveFocus();

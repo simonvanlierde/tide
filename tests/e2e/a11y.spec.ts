@@ -47,6 +47,9 @@ for (const colorScheme of ["light", "dark"] as const) {
       await page.goto("/");
       await page.getByRole("button", { name: "Cycle insights" }).click();
       await expect(page.getByRole("region", { name: "How was this worked out?" })).toBeVisible();
+      await page.getByRole("dialog").evaluate(async (dialog) => {
+        await Promise.all(dialog.getAnimations({ subtree: true }).map((animation) => animation.finished));
+      });
 
       await expectNoViolations(page);
     });

@@ -9,12 +9,11 @@ const details = { symptoms: ["cramps", "cramps"], mood: "good", note: "A quiet d
 afterEach(() => vi.restoreAllMocks());
 
 describe("daily details persistence", () => {
-  it("migrates schema 3 without diary entries and writes schema 4", () => {
-    expect(SCHEMA_VERSION).toBe(4);
+  it("migrates schema 3 without diary entries and writes the current schema", () => {
     const state = normalizeAppState({ schemaVersion: 3, intensityByDay: {} });
     expect(state.detailsByDay).toEqual({});
     saveAppState(state);
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "").schemaVersion).toBe(4);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "").schemaVersion).toBe(SCHEMA_VERSION);
   });
 
   it("keeps missing symptoms distinct from explicit no symptoms and deduplicates presets", () => {
@@ -77,6 +76,9 @@ describe("daily details persistence", () => {
     ]) {
       expect(() => parseImportedState(JSON.stringify({ days: {}, detailsByDay }))).toThrow();
     }
-    expect(parseImportedState(JSON.stringify({ days: {} }))).toEqual(defaultAppState);
+    expect(parseImportedState(JSON.stringify({ days: {} }))).toEqual({
+      ...defaultAppState,
+      settings: { ...defaultAppState.settings, onboardingDismissed: true, calendarHelpDismissed: true },
+    });
   });
 });

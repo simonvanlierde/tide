@@ -8,6 +8,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Today and Calendar share one dated editor for bleeding flow and optional daily
+  details. Choosing another date while editing does not log bleeding. Calendar
+  confirmations clear after ten seconds and pause while hovered or
+  focused. First-use guidance links to Calendar for periods that started earlier.
+- A skippable introduction covers privacy, importing history, fertility choices and
+  keeping backups, while leaving the first log in reach. Calendar shows a hint until
+  your first bleeding log there. Existing installations skip the introduction.
 - [Sparse-history stress results](docs/sparse-history.md) show how missing logs, long cycles
   and little history affect the existing estimates. The prediction rule is unchanged.
 - [JSON backup guide](docs/backups.md) documents the saved fields and safe restore steps, with a tested example.
@@ -60,6 +67,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Fertility disclaimers sit in their info popovers on Today and Settings. Daily notes show
+  a character count instead of repeating privacy and backup guidance. Import, backup and
+  fertility-choice explanations are shorter, and overdue prompts omit generic reassurance.
 - Translations now use [PO catalogs](README.md#translations), keeping the same wording
   and offline language switching in all five languages.
 - The calendar is quieter: a day with nothing logged is a plain number, and the cycle-day
@@ -89,9 +99,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   estimate. Don't use it as birth control." on Today, in the one-time question and in
   Settings; the calendar, backup and import texts say exactly what is stored where.
 - Today is simpler: the cycle dial shows the next-period estimate in its centre, and
-  logging sits right under it. Logging is one line once done: "Logged today", Remove,
-  and an optional row of flow levels. Later the same day it folds
-  into that one line, which offers to add or change the flow. When a period is due, Today
+  logging sits right under it. One tap logs bleeding and opens the dated editor. Later
+  the same day, a compact logged line opens it to add or change flow. When a period is due, Today
   asks "Has your period started?" without repeating the date, and a late period no
   longer reads as "Period expected" on the dial. The "Stored only on this device" line is gone.
 - Daily details open from a **Details** button beside the log button. Symptoms and mood
@@ -133,8 +142,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- Opening daily details selects today after midnight. Keyboard date edits keep the
-  selected date segment, so repeated day changes do not change the month instead.
+- Calendar dismisses its first-use hint when you log bleeding in the daily editor.
+- Opening daily details selects today after midnight. Calendar uses its grid to select
+  the date for both bleeding and diary details.
 - If device storage is full or blocked, Tide now warns that changes have not
   been saved. Keep the app open and export a backup from Settings.
 - A pending delete cannot erase data saved by a newer version in another tab.
