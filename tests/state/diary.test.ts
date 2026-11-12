@@ -23,15 +23,23 @@ describe("daily details actions", () => {
     );
   });
 
-  it("removes empty records but preserves explicit no symptoms", () => {
+  it("removes empty records, an empty symptom list included", () => {
     const state = createAppState();
+    expect(
+      appStateReducer(state, {
+        type: "setDayDetails",
+        day,
+        today: day,
+        details: { symptoms: [], mood: null, note: "" },
+      }).detailsByDay,
+    ).toEqual({});
     const next = appStateReducer(state, {
       type: "setDayDetails",
       day,
       today: day,
-      details: { symptoms: [], mood: null, note: "" },
+      details: { symptoms: ["fatigue"], mood: null, note: "" },
     });
-    expect(next.detailsByDay[day]?.symptoms).toEqual([]);
+    expect(next.detailsByDay[day]?.symptoms).toEqual(["fatigue"]);
     expect(
       appStateReducer(next, {
         type: "setDayDetails",

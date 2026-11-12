@@ -28,7 +28,7 @@ function renderReminder() {
 describe("backup reminder", () => {
   it("offers backup for diary-only history", () => {
     renderWithAppState(<BackupReminder today="2026-05-15" onDone={vi.fn()} />, {
-      state: createAppState({ detailsByDay: { "2026-03-01": { symptoms: [], mood: null, note: "" } } }),
+      state: createAppState({ detailsByDay: { "2026-03-01": { symptoms: ["fatigue"], mood: null, note: "" } } }),
     });
     expect(screen.getByRole("button", { name: "Back up data" })).toBeInTheDocument();
   });

@@ -68,9 +68,6 @@ msgstr "Undo"
 msgid "diary.symptoms"
 msgstr "Symptoms"
 
-msgid "diary.noSymptoms"
-msgstr "No symptoms"
-
 msgid "diary.mood"
 msgstr "Mood"
 

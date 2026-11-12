@@ -171,7 +171,7 @@ describe("app state", () => {
     const initial = createAppState({
       periodDays: ["2026-01-01", "2026-01-29"],
       incompleteCycleStarts: ["2026-01-01"],
-      detailsByDay: { "2026-04-02": { symptoms: [], mood: "good", note: "A note" } },
+      detailsByDay: { "2026-04-02": { symptoms: ["fatigue"], mood: "good", note: "A note" } },
       settings: { lastBackupOn: "2026-04-01", backupReminderDismissedOn: "2026-04-20" },
     });
     const { result } = renderHook(() => ({ state: useAppState(), actions: useAppStateActions() }), {
@@ -200,7 +200,7 @@ describe("app state", () => {
         wrapper: ({ children }) => <AppStateProvider initialState={createAppState()}>{children}</AppStateProvider>,
       });
       expect(persist).not.toHaveBeenCalled();
-      const details = { symptoms: [], mood: "good" as const, note: "A note" };
+      const details = { symptoms: ["fatigue" as const], mood: "good" as const, note: "A note" };
       act(() => result.current.actions.setDayDetails("2026-04-02", details, "2026-04-02"));
       expect(result.current.state.detailsByDay).toEqual({ "2026-04-02": details });
       expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "").detailsByDay).toEqual({ "2026-04-02": details });
@@ -246,7 +246,11 @@ describe("app state", () => {
     });
     const initial = result.current.forecast;
     act(() =>
-      result.current.actions.setDayDetails("2026-04-18", { symptoms: [], mood: "good", note: "Rested" }, "2026-04-18"),
+      result.current.actions.setDayDetails(
+        "2026-04-18",
+        { symptoms: ["fatigue"], mood: "good", note: "Rested" },
+        "2026-04-18",
+      ),
     );
     expect(result.current.forecast).toBe(initial);
     act(() => result.current.actions.togglePeriodDay("2026-04-18", "2026-04-18"));

@@ -9,7 +9,7 @@
   },
   "detailsByDay": {
     "2026-01-03": { "symptoms": ["cramps"], "mood": "low", "note": "Rested at home." },
-    "2026-01-15": { "symptoms": [], "mood": "good", "note": "Walked by the river." },
+    "2026-01-15": { "symptoms": ["fatigue"], "mood": "good", "note": "Walked by the river." },
     "2026-01-16": { "symptoms": null, "mood": null, "note": "Slept well." }
   },
   "incompleteCycleStarts": ["2026-01-02"],

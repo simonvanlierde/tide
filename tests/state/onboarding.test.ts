@@ -39,7 +39,7 @@ describe("local onboarding state", () => {
         type: "setDayDetails",
         day: "2026-04-02",
         today: "2026-04-02",
-        details: { symptoms: [], mood: null, note: "" },
+        details: { symptoms: ["fatigue"], mood: null, note: "" },
       },
     ] satisfies AppStateAction[]) {
       expect(appStateReducer(defaultAppState, action).settings.onboardingDismissed).toBe(true);

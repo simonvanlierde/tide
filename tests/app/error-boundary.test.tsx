@@ -9,7 +9,7 @@ import { AppStateProvider } from "../../src/state/provider";
 const damagedState = JSON.stringify({
   schemaVersion: 4,
   intensityByDay: { "2026-04-02": "heavy" },
-  detailsByDay: { "2026-04-02": { symptoms: [], mood: "good", note: "x".repeat(2000) } },
+  detailsByDay: { "2026-04-02": { symptoms: ["fatigue"], mood: "good", note: "x".repeat(2000) } },
   settings: {},
 });
 

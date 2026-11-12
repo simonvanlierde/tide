@@ -68,9 +68,6 @@ msgstr "Ongedaan maken"
 msgid "diary.symptoms"
 msgstr "Klachten"
 
-msgid "diary.noSymptoms"
-msgstr "Geen klachten"
-
 msgid "diary.mood"
 msgstr "Stemming"
 

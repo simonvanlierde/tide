@@ -62,14 +62,15 @@ describe("optional daily details", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Details saved.");
   });
 
-  it("keeps no symptoms distinct from unlogged, and a second tap undoes a choice", async () => {
+  it("clears a day when its last choice is undone", async () => {
     const user = userEvent.setup();
     renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
     await user.click(screen.getByRole("button", { name: "Add details" }));
-    await user.click(screen.getByRole("button", { name: "No symptoms" }));
-    expect(stored().detailsByDay["2026-04-18"].symptoms).toEqual([]);
+    expect(screen.queryByRole("button", { name: "No symptoms" })).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Cramps" }));
+    expect(stored().detailsByDay["2026-04-18"].symptoms).toEqual(["cramps"]);
 
-    await user.click(screen.getByRole("button", { name: "No symptoms" }));
+    await user.click(screen.getByRole("button", { name: "Cramps" }));
     expect(stored().detailsByDay).toEqual({});
 
     await user.click(screen.getByRole("button", { name: "Good" }));
