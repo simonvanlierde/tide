@@ -132,6 +132,11 @@ the pull request closes or turns draft
 ([how it works](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#pull-request-previews)).
 Previews are public: anyone with the address can open one.
 
+## Prediction stress checks
+
+`pnpm validate:sparse` runs a deterministic synthetic evaluation of sparse, irregular and
+missed-log histories. [Method and limits](docs/sparse-history.md) explain the results.
+
 ## Translations
 
 The five languages live in Lingui 6 PO catalogs under `src/i18n/locales/`.
