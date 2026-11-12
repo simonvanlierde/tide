@@ -79,7 +79,7 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("heading", { name: /cycle insights/i })).toBeInTheDocument();
     // One completed 28-day cycle in the learned fixture.
     expect(screen.getByText("Cycle length")).toBeInTheDocument();
-    expect(screen.getByText("How predictions work")).toBeInTheDocument();
+    expect(screen.getByText("How was this worked out?")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /close/i }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
@@ -541,7 +541,8 @@ describe("TodayScreen before the fertility opt-in", () => {
     await user.click(screen.getByRole("button", { name: /cycle insights/i }));
 
     expect(screen.getByRole("dialog").textContent).not.toMatch(OVULATION_WORDS);
-    expect(screen.getByText(/one cycle length after your last period started/i)).toBeInTheDocument();
+    // The personal sums say how the date came about, without ovulation.
+    expect(await screen.findByText(/your last period started/i)).toBeInTheDocument();
   });
 
   it("keeps the ovulation phases on the dial once fertility is on", () => {

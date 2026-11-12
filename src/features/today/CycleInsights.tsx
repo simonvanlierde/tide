@@ -18,6 +18,9 @@ interface CycleInsightsProps {
   stats: CycleStats;
   showFertility: boolean;
   onClose: () => void;
+  /** The personal sums behind the next-period date: undefined when there is
+   * no forecast to explain, null while they load. */
+  explainer?: ReactNode;
   children?: ReactNode;
 }
 
@@ -25,7 +28,7 @@ interface CycleInsightsProps {
 // worked out. A native <dialog> gives us the focus trap, Esc-to-close, and
 // backdrop for free. Mounted only while open, so it's shown on mount and a
 // native close (Esc, backdrop) unmounts it via onClose.
-export function CycleInsights({ summary, stats, showFertility, onClose, children }: CycleInsightsProps) {
+export function CycleInsights({ summary, stats, showFertility, onClose, explainer, children }: CycleInsightsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const t = useT();
 
@@ -33,6 +36,7 @@ export function CycleInsights({ summary, stats, showFertility, onClose, children
     dialogRef.current?.showModal();
   }, []);
 
+  const explained = explainer !== undefined;
   const regularity = getRegularity(stats.variabilityDays);
   const regularityLabel = t(regularity.labelKey);
 
@@ -90,27 +94,31 @@ export function CycleInsights({ summary, stats, showFertility, onClose, children
 
       {children}
 
+      {/* One disclosure for the maths: the personal sums first, then only the
+          rules they don't already show with real numbers. */}
       <details className="insights__how">
         <summary className="insights__how-summary">
           <ChevronRight aria-hidden="true" className="insights__how-icon" strokeWidth={1.8} />
-          {t("insights.how")}
+          {t(explained ? "today.howWorkedOut" : "insights.how")}
         </summary>
+        {explainer}
         <ul className="insights__how-list">
-          <li>{t("insights.how1")}</li>
           <li>{t("insights.howCycleStart", { gap: NEW_CYCLE_MIN_GAP_DAYS })}</li>
-          <li>
-            {t("insights.how2", {
-              recent: RECENT_CYCLE_WINDOW,
-              cycle: DEFAULT_CYCLE_LENGTH,
-            })}
-          </li>
+          {explained ? null : (
+            <li>
+              {t("insights.how2", {
+                recent: RECENT_CYCLE_WINDOW,
+                cycle: DEFAULT_CYCLE_LENGTH,
+              })}
+            </li>
+          )}
           <li>
             {t("insights.how3", {
               min: MIN_PERIOD_LENGTH,
               max: MAX_PERIOD_LENGTH,
             })}
           </li>
-          {showFertility ? (
+          {explained ? null : showFertility ? (
             <>
               <li>{t("insights.how4", { luteal: DEFAULT_LUTEAL_LENGTH })}</li>
               <li>

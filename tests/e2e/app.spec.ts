@@ -146,6 +146,7 @@ test("Today explains how the next period was worked out", async ({ page }) => {
   await page.goto("/");
 
   await page.getByRole("button", { name: translate("en", "today.cycleInsights") }).click();
+  await page.getByText(translate("en", "today.howWorkedOut")).click();
   const sums = page.getByRole("region", { name: translate("en", "today.howWorkedOut") });
   const sheet = page.getByRole("dialog");
   // The seed has one period start, so the 28-day default stands in.
@@ -167,7 +168,7 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
       return create(blob);
     };
   });
-  await page.getByRole("checkbox", { name: translate("en", "settings.calendarFertility") }).check();
+  await page.getByRole("switch", { name: translate("en", "settings.calendarFertility") }).click();
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.getByRole("button", { name: translate("en", "settings.exportCalendar") }).click(),
@@ -178,5 +179,7 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
   expect(ics).toMatch(/^BEGIN:VCALENDAR\r\n/);
   expect(ics.match(/^UID:period-\d+-[0-9a-f-]{36}@/gm)).toHaveLength(3);
   expect(ics).toContain("UID:fertile-");
-  await expect(page.getByRole("status").filter({ hasText: translate("en", "settings.calendarSuccess") })).toBeVisible();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Calendar file with 3 expected periods and their fertile windows" }),
+  ).toBeVisible();
 });

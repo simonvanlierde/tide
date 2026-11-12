@@ -664,7 +664,7 @@ describe("CalendarScreen", () => {
       state: createAppState({ periodDays: [], settings: { calendarHelpDismissed: false } }),
     });
 
-    expect(screen.getByText(/tap a day to view or edit it\. use log a past period for a range/i)).toBeInTheDocument();
+    expect(screen.getByText(/^tap a day to view or edit it\.$/i)).toBeInTheDocument();
     expect(container.querySelector(".calendar-legend")).toBeNull();
   });
 

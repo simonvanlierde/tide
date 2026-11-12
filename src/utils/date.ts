@@ -46,6 +46,7 @@ const formatterCache = new Map<string, Intl.DateTimeFormat>();
 // dozens of cells per render).
 const FORMATTER_SHAPES = {
   short: { weekday: "short", month: "short", day: "numeric" },
+  monthDay: { month: "short", day: "numeric" },
   monthLabel: { month: "long", year: "numeric" },
   long: { month: "long", day: "numeric", year: "numeric" },
   monthName: { month: "long" },
@@ -69,6 +70,11 @@ function dateFormatter(locale: string, shape: keyof typeof FORMATTER_SHAPES): In
 
 export function formatShortDate(value: IsoDate, locale = "en-US"): string {
   return dateFormatter(locale, "short").format(parseIsoDate(value));
+}
+
+// "Nov 12": a date short enough for a button's second line.
+export function formatMonthDay(value: IsoDate, locale = "en-US"): string {
+  return dateFormatter(locale, "monthDay").format(parseIsoDate(value));
 }
 
 export function formatMonthLabel(value: IsoDate, locale = "en-US"): string {

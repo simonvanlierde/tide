@@ -31,9 +31,10 @@ async function openInsights(page: Page) {
 // then shows its longest lines, a range and a widened fertile window.
 const VARIED_CYCLES = medium(["2026-01-10", "2026-02-12", "2026-03-11", "2026-04-11"]);
 
-// The sums are a section of the insights sheet.
+// The sums open from the insights sheet's closed disclosure.
 async function openExplainer(page: Page) {
   await page.locator(".fact-list__more").first().click();
+  await page.locator(".insights__how > summary").click();
   await page.locator(".insights__sums").waitFor();
 }
 
@@ -130,7 +131,7 @@ const SCREENS: {
   {
     name: "settings delete dialog",
     path: "/settings",
-    open: (page) => page.locator(".data-actions ~ .text-action").click(),
+    open: (page) => page.locator(".text-action--danger").click(),
   },
   {
     name: "settings import dialog",

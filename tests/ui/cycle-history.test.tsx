@@ -18,7 +18,7 @@ describe("CycleHistory", () => {
     renderWithAppState(<CycleHistory today="2026-04-15" />, {
       state: createAppState({ periodDays: ["2026-02-01", "2026-03-01"], settings: { language: "en" } }),
     });
-    expect(screen.getByText(/Showing the latest cycle\./)).toBeInTheDocument();
+    expect(screen.getByText(/Your latest completed cycle\./)).toBeInTheDocument();
   });
 
   it("shows recorded intervals and reversibly excludes an incomplete cycle without removing logs", () => {

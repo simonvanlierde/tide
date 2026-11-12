@@ -6,6 +6,8 @@ interface ConfirmDialogProps {
   /** What the action will do, in the user's own terms. */
   body: ReactNode;
   confirmLabel: string;
+  /** Erases data: the confirm takes the danger colour. */
+  destructive?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -14,13 +16,16 @@ interface ConfirmDialogProps {
 // focus trap, Esc-to-close and backdrop for free; the browser's own confirm()
 // gives none of the app's language, type or theme, and its buttons stay in the
 // browser's locale rather than the one the user picked here.
-export function ConfirmDialog({ title, body, confirmLabel, onConfirm, onCancel }: ConfirmDialogProps) {
+export function ConfirmDialog({ title, body, confirmLabel, destructive, onConfirm, onCancel }: ConfirmDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const confirmed = useRef(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const t = useT();
 
   useEffect(() => {
     dialogRef.current?.showModal();
+    // Cancel is the safe default, even when the body holds a button of its own.
+    cancelRef.current?.focus();
   }, []);
 
   // Close through the dialog so the browser restores focus to the trigger
@@ -41,12 +46,12 @@ export function ConfirmDialog({ title, body, confirmLabel, onConfirm, onCancel }
       </h2>
       <div className="confirm-dialog__body">{body}</div>
       <div className="confirm-dialog__actions">
-        <button type="button" className="secondary-action" onClick={requestClose}>
+        <button ref={cancelRef} type="button" className="secondary-action" onClick={requestClose}>
           {t("common.cancel")}
         </button>
         <button
           type="button"
-          className="commit-action"
+          className={destructive ? "commit-action commit-action--danger" : "commit-action"}
           onClick={() => {
             confirmed.current = true;
             requestClose();
