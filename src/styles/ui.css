@@ -979,25 +979,15 @@
     line-height: 1.3;
   }
 
-  .data-group__heading {
-    display: grid;
-    gap: 2px;
-  }
-
-  .data-group__title {
-    margin: 0;
-    color: var(--ink);
-    font-size: var(--text-base);
-    font-weight: 600;
-  }
-
-  /* The calendar file's options sit in one inset panel above its button. */
+  /* The calendar options stack without the hairlines Preferences rows get. */
   .calendar-export__options {
     display: grid;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: var(--radius-button);
-    background: var(--surface-soft);
+    gap: 8px;
+  }
+
+  .calendar-export__options .settings-row + .settings-row {
+    border-top: 0;
+    padding-top: 0;
   }
 
   /* Calendar export rows: the legend swatch, then the label, as in Calendar. */

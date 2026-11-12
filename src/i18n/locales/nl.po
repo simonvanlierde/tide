@@ -581,17 +581,11 @@ msgstr "Aan agenda toevoegen"
 msgid "settings.calendarHelp"
 msgstr "Verwachte dagen voor je agenda-app. Die kan ze online synchroniseren."
 
-msgid "settings.calendarTitle"
-msgstr "Agendabestand"
-
 msgid "settings.calendarFertility"
 msgstr "Vruchtbare periodes"
 
 msgid "settings.calendarSuccess"
 msgstr "{n, plural, one {Agendabestand met {n} verwachte menstruatie opgeslagen in je downloads.} other {Agendabestand met {n} verwachte menstruaties opgeslagen in je downloads.}}"
-
-msgid "settings.exportHint"
-msgstr "Tide-back-up (.json)"
 
 msgid "settings.calendarPeriods"
 msgstr "Verwachte menstruaties"
@@ -651,7 +645,7 @@ msgid "settings.resetConfirm"
 msgstr "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} gelogde dag, niet geüpload} other {{n} gelogde dagen, niet geüpload}}"
+msgstr "{n, plural, one {{n} dag, alleen op dit apparaat} other {{n} dagen, alleen op dit apparaat}}"
 
 msgid "settings.lastBackup"
 msgstr "Laatste back-up {date}"

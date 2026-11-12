@@ -581,17 +581,11 @@ msgstr "Añadir al calendario"
 msgid "settings.calendarHelp"
 msgstr "Días previstos para tu app de calendario, que puede sincronizarlos en línea."
 
-msgid "settings.calendarTitle"
-msgstr "Archivo de calendario"
-
 msgid "settings.calendarFertility"
 msgstr "Ventanas fértiles"
 
 msgid "settings.calendarSuccess"
 msgstr "{n, plural, one {Archivo de calendario con {n} período previsto guardado en tus descargas.} other {Archivo de calendario con {n} períodos previstos guardado en tus descargas.}}"
-
-msgid "settings.exportHint"
-msgstr "Copia de Tide (.json)"
 
 msgid "settings.calendarPeriods"
 msgstr "Períodos previstos"
@@ -651,7 +645,7 @@ msgid "settings.resetConfirm"
 msgstr "Se borran todos los datos y ajustes de este dispositivo. Esta acción no se puede deshacer."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} día registrado, sin subir} other {{n} días registrados, sin subir}}"
+msgstr "{n, plural, one {{n} día, solo en este dispositivo} other {{n} días, solo en este dispositivo}}"
 
 msgid "settings.lastBackup"
 msgstr "Última copia {date}"

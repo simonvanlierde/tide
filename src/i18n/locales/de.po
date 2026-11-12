@@ -581,17 +581,11 @@ msgstr "Zum Kalender hinzufügen"
 msgid "settings.calendarHelp"
 msgstr "Erwartete Tage für deine Kalender-App. Sie synchronisiert sie eventuell online."
 
-msgid "settings.calendarTitle"
-msgstr "Kalenderdatei"
-
 msgid "settings.calendarFertility"
 msgstr "Fruchtbare Fenster"
 
 msgid "settings.calendarSuccess"
 msgstr "{n, plural, one {Kalenderdatei mit {n} erwarteten Periode in deinen Downloads gespeichert.} other {Kalenderdatei mit {n} erwarteten Perioden in deinen Downloads gespeichert.}}"
-
-msgid "settings.exportHint"
-msgstr "Tide-Sicherung (.json)"
 
 msgid "settings.calendarPeriods"
 msgstr "Erwartete Perioden"
@@ -651,7 +645,7 @@ msgid "settings.resetConfirm"
 msgstr "Alle Daten und Einstellungen auf diesem Gerät werden gelöscht. Das kann nicht rückgängig gemacht werden."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} erfasster Tag, nicht hochgeladen} other {{n} erfasste Tage, nicht hochgeladen}}"
+msgstr "{n, plural, one {{n} Tag, nur auf diesem Gerät} other {{n} Tage, nur auf diesem Gerät}}"
 
 msgid "settings.lastBackup"
 msgstr "Letzte Sicherung {date}"

@@ -8,12 +8,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- Settings → Data opens with one line saying how many days are logged, that they are not
-  uploaded, and when you last downloaded a backup. Export and Import each name what they
-  take, and backup, calendar export and Delete all data sit in separate groups, with each
+- Settings → Data opens with one line saying how many days are logged and that they stay on
+  this device. Export shows when you last downloaded a backup and Import names the apps it
+  reads. Backup, calendar export and Delete all data sit in separate groups, with each
   message under the action that caused it.
-- Add to calendar lets you pick 3, 6 or 12 expected periods, and fertile windows are a
-  switch beside the calendar legend's own swatch. The confirmation says what the file holds.
+- Add to calendar lets you pick 3, 6 or 12 expected periods right under the button, and
+  fertile windows are a switch beside the calendar legend's own swatch. The confirmation says what the file holds.
 - Delete all data and a replacing import now use a raspberry confirm button and offer
   "Download a backup first" inside the dialog. After a delete, Settings says "All data
   deleted."

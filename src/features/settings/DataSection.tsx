@@ -6,7 +6,7 @@ import { getExpectedCycles } from "../../domain/cycle";
 import type { AppState, IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useForecast, useIsReadOnly, useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
-import { formatShortDate } from "../../utils/date";
+import { formatMonthDay } from "../../utils/date";
 import { ConfirmDialog } from "./ConfirmDialog";
 
 const MAX_IMPORT_BYTES = 5_000_000;
@@ -243,6 +243,14 @@ export function DataSection({ today }: DataSectionProps) {
     );
 
   const { lastBackupOn } = state.settings;
+  // When the last backup was, on the button that makes one. Nothing to back up
+  // yet means nothing to remind about.
+  const backupHint =
+    loggedDayCount === 0
+      ? null
+      : lastBackupOn
+        ? t("settings.lastBackup", { date: formatMonthDay(lastBackupOn, locale) })
+        : t("settings.noBackup");
 
   return (
     <article className="utility-card utility-card--slim">
@@ -253,17 +261,9 @@ export function DataSection({ today }: DataSectionProps) {
             control reads as a button that doesn't answer. */}
         <p className="supporting-note supporting-note--icon">
           <AppIcon icon={ShieldCheck} className="supporting-note__icon supporting-note__icon--assuring" />
-          {/* Once there is data, the promise and its proof share one line:
-              what is here, that it isn't uploaded, and when it was last saved. */}
+          {/* Once there is data, the promise names what it covers. */}
           {loggedDayCount > 0 ? (
-            <span className="data-summary">
-              {t("settings.dataSummary", { n: loggedDayCount })}
-              {" · "}
-              {lastBackupOn
-                ? // Non-breaking spaces keep the date on one line; the rest may wrap.
-                  t("settings.lastBackup", { date: formatShortDate(lastBackupOn, locale).replaceAll(" ", "\u00a0") })
-                : t("settings.noBackup")}
-            </span>
+            <span className="data-summary">{t("settings.dataSummary", { n: loggedDayCount })}</span>
           ) : (
             <span>{t("settings.privacy")}</span>
           )}
@@ -275,7 +275,7 @@ export function DataSection({ today }: DataSectionProps) {
             <button
               type="button"
               className="secondary-action secondary-action--hinted"
-              aria-describedby="export-hint"
+              aria-describedby={backupHint ? "export-hint" : undefined}
               onClick={handleExport}
             >
               <span className="button-label">
@@ -283,9 +283,11 @@ export function DataSection({ today }: DataSectionProps) {
                 <span>{t("settings.export")}</span>
               </span>
               {/* Hidden from the name, so it matches the visible label; read as the description. */}
-              <span id="export-hint" className="button-hint" aria-hidden="true">
-                {t("settings.exportHint")}
-              </span>
+              {backupHint ? (
+                <span id="export-hint" className="button-hint" aria-hidden="true">
+                  {backupHint}
+                </span>
+              ) : null}
             </button>
             <button
               id="import"
@@ -324,16 +326,22 @@ export function DataSection({ today }: DataSectionProps) {
         </div>
         {/* Nothing to put in a calendar until there is a forecast. */}
         {expectedCycles.length > 0 ? (
-          <section className="data-group" aria-labelledby="calendar-title">
-            {/* A title and an inset tie the two options to the file they shape. */}
-            <header className="data-group__heading">
-              <h3 id="calendar-title" className="data-group__title">
-                {t("settings.calendarTitle")}
-              </h3>
-              <p id="calendar-help" className="supporting-note">
-                {t("settings.calendarHelp")}
-              </p>
-            </header>
+          <div className="data-group">
+            <button
+              type="button"
+              className="secondary-action"
+              aria-describedby="calendar-help"
+              onClick={handleCalendarExport}
+            >
+              <span className="button-label">
+                <AppIcon icon={CalendarPlus} className="button-icon" />
+                <span>{t("settings.exportCalendar")}</span>
+              </span>
+            </button>
+            <p id="calendar-help" className="supporting-note">
+              {t("settings.calendarHelp")}
+            </p>
+            {/* The options sit right under the button and its note, so they read as part of it. */}
             <div className="calendar-export__options">
               {/* The swatches are the calendar legend's own, so each row shows
                 what it adds to the calendar app. */}
@@ -374,19 +382,8 @@ export function DataSection({ today }: DataSectionProps) {
                 </div>
               ) : null}
             </div>
-            <button
-              type="button"
-              className="secondary-action"
-              aria-describedby="calendar-help"
-              onClick={handleCalendarExport}
-            >
-              <span className="button-label">
-                <AppIcon icon={CalendarPlus} className="button-icon" />
-                <span>{t("settings.exportCalendar")}</span>
-              </span>
-            </button>
             {feedback("calendar")}
-          </section>
+          </div>
         ) : null}
         <div className="data-group data-group--danger">
           <button

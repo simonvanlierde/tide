@@ -581,17 +581,11 @@ msgstr "Ajouter au calendrier"
 msgid "settings.calendarHelp"
 msgstr "Les jours prévus pour ton app de calendrier, qui peut les synchroniser en ligne."
 
-msgid "settings.calendarTitle"
-msgstr "Fichier de calendrier"
-
 msgid "settings.calendarFertility"
 msgstr "Fenêtres de fertilité"
 
 msgid "settings.calendarSuccess"
 msgstr "{n, plural, one {Fichier de calendrier avec {n} règles prévues enregistré dans tes téléchargements.} other {Fichier de calendrier avec {n} règles prévues enregistré dans tes téléchargements.}}"
-
-msgid "settings.exportHint"
-msgstr "Sauvegarde Tide (.json)"
 
 msgid "settings.calendarPeriods"
 msgstr "Règles prévues"
@@ -651,7 +645,7 @@ msgid "settings.resetConfirm"
 msgstr "Toutes les données et tous les réglages sur cet appareil sont effacés. Cette action est irréversible."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} jour enregistré, non envoyé} other {{n} jours enregistrés, non envoyés}}"
+msgstr "{n, plural, one {{n} jour, uniquement sur cet appareil} other {{n} jours, uniquement sur cet appareil}}"
 
 msgid "settings.lastBackup"
 msgstr "Dernière sauvegarde {date}"

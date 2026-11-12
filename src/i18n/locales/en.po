@@ -581,17 +581,11 @@ msgstr "Add to calendar"
 msgid "settings.calendarHelp"
 msgstr "Expected days for your calendar app. It may sync them online."
 
-msgid "settings.calendarTitle"
-msgstr "Calendar file"
-
 msgid "settings.calendarFertility"
 msgstr "Fertile windows"
 
 msgid "settings.calendarSuccess"
 msgstr "{n, plural, one {Calendar file with {n} expected period saved to your downloads.} other {Calendar file with {n} expected periods saved to your downloads.}}"
-
-msgid "settings.exportHint"
-msgstr "Tide backup (.json)"
 
 msgid "settings.calendarPeriods"
 msgstr "Expected periods"
@@ -651,7 +645,7 @@ msgid "settings.resetConfirm"
 msgstr "All data and settings on this device are erased. This cannot be undone."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} logged day, not uploaded} other {{n} logged days, not uploaded}}"
+msgstr "{n, plural, one {{n} day, only on this device} other {{n} days, only on this device}}"
 
 msgid "settings.lastBackup"
 msgstr "Last backup {date}"
