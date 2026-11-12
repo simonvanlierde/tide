@@ -579,7 +579,10 @@ msgid "settings.exportCalendar"
 msgstr "Aan agenda toevoegen"
 
 msgid "settings.calendarHelp"
-msgstr "Je agenda kan ze online synchroniseren."
+msgstr "Verwachte dagen voor je agenda-app. Die kan ze online synchroniseren."
+
+msgid "settings.calendarTitle"
+msgstr "Agendabestand"
 
 msgid "settings.calendarFertility"
 msgstr "Vruchtbare periodes"

@@ -579,7 +579,10 @@ msgid "settings.exportCalendar"
 msgstr "Add to calendar"
 
 msgid "settings.calendarHelp"
-msgstr "Your calendar may sync them online."
+msgstr "Expected days for your calendar app. It may sync them online."
+
+msgid "settings.calendarTitle"
+msgstr "Calendar file"
 
 msgid "settings.calendarFertility"
 msgstr "Fertile windows"

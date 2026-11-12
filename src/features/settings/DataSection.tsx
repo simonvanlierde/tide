@@ -324,45 +324,56 @@ export function DataSection({ today }: DataSectionProps) {
         </div>
         {/* Nothing to put in a calendar until there is a forecast. */}
         {expectedCycles.length > 0 ? (
-          <div className="data-group">
-            {/* The swatches are the calendar legend's own, so each row shows
+          <section className="data-group" aria-labelledby="calendar-title">
+            {/* A title and an inset tie the two options to the file they shape. */}
+            <header className="data-group__heading">
+              <h3 id="calendar-title" className="data-group__title">
+                {t("settings.calendarTitle")}
+              </h3>
+              <p id="calendar-help" className="supporting-note">
+                {t("settings.calendarHelp")}
+              </p>
+            </header>
+            <div className="calendar-export__options">
+              {/* The swatches are the calendar legend's own, so each row shows
                 what it adds to the calendar app. */}
-            {/* biome-ignore lint/a11y/useSemanticElements: a labelled div group, as in ThemeSection; <fieldset> brings unwanted default styling. */}
-            <div className="settings-row calendar-export__row" role="group" aria-labelledby="calendar-periods">
-              <span className="settings-label calendar-export__label">
-                <i className="calendar-legend__swatch calendar-legend__swatch--predicted" aria-hidden="true" />
-                <span id="calendar-periods">{t("settings.calendarPeriods")}</span>
-              </span>
-              <div className="segmented segmented--count">
-                {CALENDAR_COUNTS.map((count) => (
-                  <button
-                    key={count}
-                    type="button"
-                    className={calendarCount === count ? "segmented__option is-active" : "segmented__option"}
-                    aria-pressed={calendarCount === count}
-                    onClick={() => setCalendarCount(count)}
-                  >
-                    {count}
-                  </button>
-                ))}
-              </div>
-            </div>
-            {showFertility ? (
-              <div className="settings-row settings-row--switch calendar-export__row">
+              {/* biome-ignore lint/a11y/useSemanticElements: a labelled div group, as in ThemeSection; <fieldset> brings unwanted default styling. */}
+              <div className="settings-row calendar-export__row" role="group" aria-labelledby="calendar-periods">
                 <span className="settings-label calendar-export__label">
-                  <i className="calendar-legend__swatch calendar-legend__swatch--fertile" aria-hidden="true" />
-                  <span id="calendar-fertile">{t("settings.calendarFertility")}</span>
+                  <i className="calendar-legend__swatch calendar-legend__swatch--predicted" aria-hidden="true" />
+                  <span id="calendar-periods">{t("settings.calendarPeriods")}</span>
                 </span>
-                <button
-                  type="button"
-                  role="switch"
-                  aria-checked={calendarFertile}
-                  aria-labelledby="calendar-fertile"
-                  className="switch"
-                  onClick={() => setCalendarFertile(!calendarFertile)}
-                />
+                <div className="segmented segmented--count">
+                  {CALENDAR_COUNTS.map((count) => (
+                    <button
+                      key={count}
+                      type="button"
+                      className={calendarCount === count ? "segmented__option is-active" : "segmented__option"}
+                      aria-pressed={calendarCount === count}
+                      onClick={() => setCalendarCount(count)}
+                    >
+                      {count}
+                    </button>
+                  ))}
+                </div>
               </div>
-            ) : null}
+              {showFertility ? (
+                <div className="settings-row settings-row--switch calendar-export__row">
+                  <span className="settings-label calendar-export__label">
+                    <i className="calendar-legend__swatch calendar-legend__swatch--fertile" aria-hidden="true" />
+                    <span id="calendar-fertile">{t("settings.calendarFertility")}</span>
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={calendarFertile}
+                    aria-labelledby="calendar-fertile"
+                    className="switch"
+                    onClick={() => setCalendarFertile(!calendarFertile)}
+                  />
+                </div>
+              ) : null}
+            </div>
             <button
               type="button"
               className="secondary-action"
@@ -374,11 +385,8 @@ export function DataSection({ today }: DataSectionProps) {
                 <span>{t("settings.exportCalendar")}</span>
               </span>
             </button>
-            <p id="calendar-help" className="supporting-note">
-              {t("settings.calendarHelp")}
-            </p>
             {feedback("calendar")}
-          </div>
+          </section>
         ) : null}
         <div className="data-group data-group--danger">
           <button

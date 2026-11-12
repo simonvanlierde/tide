@@ -392,9 +392,11 @@ The Settings **Data card** splits its jobs with hairlines, not extra cards: back
 import, then calendar export, then Delete all data. Each message appears under the action
 that caused it. Once days are logged, the privacy sentence becomes one shield line: how
 many days there are, that they are not uploaded, and when the last backup was. Export and
-Import carry a muted second line naming what they take. The calendar rows lead with the
-calendar legend's own swatches, so each shows what it adds; the 3 / 6 / 12 count is a
-small segmented control that stays beside its label at every width.
+Import carry a muted second line naming what they take. The calendar group opens with a
+plain "Calendar file" title and its note, and its options sit in one soft-surface inset
+above the Add to calendar button. Each option leads with the calendar legend's own swatch,
+so it shows what it adds; the 3 / 6 / 12 count is a small segmented control beside its
+label, under it only on the narrowest screens.
 
 ### Inputs / Fields
 

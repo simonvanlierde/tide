@@ -579,7 +579,10 @@ msgid "settings.exportCalendar"
 msgstr "Añadir al calendario"
 
 msgid "settings.calendarHelp"
-msgstr "Tu calendario puede sincronizarlos en línea."
+msgstr "Días previstos para tu app de calendario, que puede sincronizarlos en línea."
+
+msgid "settings.calendarTitle"
+msgstr "Archivo de calendario"
 
 msgid "settings.calendarFertility"
 msgstr "Ventanas fértiles"
