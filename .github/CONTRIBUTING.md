@@ -27,6 +27,10 @@ and the git hooks. `just check` runs the checks CI runs, and `just fmt` fixes an
 formats. It also has the architecture and the
 things that trip people up.
 
+Each change comes with tests. Run a new regression test against the old code first and confirm that it fails for the intended reason.
+Follow the existing TypeScript style; Biome checks formatting and lint rules, and TypeScript checks types.
+Run `just check` and the Chromium e2e tests (`just ts-e2e --project=chromium --timeout=15000 --reporter=line`) before opening a pull request.
+
 pnpm locks only releases at least a week old. If `just check` fails on
 a security fix newer than that, add the package to `minimumReleaseAgeExclude` in `pnpm-workspace.yaml`,
 and remove it a week later ([how](https://github.com/simonvanlierde/project-templates/blob/main/docs/tooling.md#dependencies)).

@@ -59,6 +59,8 @@ hint until you log a bleeding day or a past period there; Undo does not bring th
 
 The estimates are for information only. They are not a form of birth control.
 
+The [JSON backup contract](docs/backups.md) explains the saved fields, restore rules and a tested example.
+
 ### Daily details
 
 Choose **Details**, next to the log button on Today, to record cramps, a headache, bloating,
