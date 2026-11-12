@@ -163,7 +163,9 @@ const LABELS = [
   ".insights__stat-label",
   ".insights__regularity-label",
   ".flow-gauge__label",
-  ".cycle-dial__eyebrow",
+  ".cycle-dial__day-label",
+  ".cycle-dial__estimate",
+  ".cycle-dial__next",
   ".cycle-dial__phase",
   ".app-header__title",
 ].join(", ");
@@ -291,27 +293,29 @@ for (const size of SIZES) {
         });
       }
 
-      // A long headline shrinks to one line; a long eyebrow wraps. Neither
-      // runs into the ring.
-      test("keeps the dial's estimate on one line and its eyebrow inside the disc", async ({ page }) => {
+      // A long headline shrinks to fit two lines. Nothing in the centre runs
+      // into the ring.
+      test("keeps the dial's centre inside the disc, the headline on two lines at most", async ({ page }) => {
         await page.goto("/");
         const result = await page.locator(".cycle-dial__inner").evaluate((inner) => {
           const disc = inner.getBoundingClientRect();
-          return [".cycle-dial__eyebrow", ".cycle-dial__estimate"].map((selector) => {
-            const el = inner.querySelector(selector) as Element;
+          return [...inner.children].map((el) => {
             const range = document.createRange();
             range.selectNodeContents(el);
-            const box = range.getBoundingClientRect();
+            // The rule has no text: measure the element itself.
+            const box = el.textContent ? range.getBoundingClientRect() : el.getBoundingClientRect();
             const cx = disc.left + disc.width / 2;
             const cy = disc.top + disc.height / 2;
             // The text's farther top or bottom corner must sit inside the circle.
             const dy = Math.max(Math.abs(box.top - cy), Math.abs(box.bottom - cy));
             const dx = Math.max(Math.abs(box.left - cx), Math.abs(box.right - cx));
-            return { lines: range.getClientRects().length, inside: Math.hypot(dx, dy) <= disc.width / 2 };
+            const lines = new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size;
+            return { className: el.className, lines, inside: Math.hypot(dx, dy) <= disc.width / 2 };
           });
         });
-        expect(result[0]?.inside).toBe(true);
-        expect(result[1]).toEqual({ lines: 1, inside: true });
+        expect(result.filter((item) => !item.inside)).toEqual([]);
+        const headline = result.find((item) => item.className === "cycle-dial__estimate");
+        expect(headline?.lines).toBeLessThanOrEqual(2);
       });
 
       // The logged line's icon shares a row with its text, never one of its own.

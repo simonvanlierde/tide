@@ -176,11 +176,11 @@ msgstr "How was this worked out?"
 msgid "today.explainError"
 msgstr "This couldn''t be opened. Reload Tide and try again."
 
-msgid "today.expectedToday"
-msgstr "Expected today"
+msgid "today.periodExpectedToday"
+msgstr "Period expected today"
 
-msgid "today.inDays"
-msgstr "{n, plural, one {In {n} day} other {In {n} days}}"
+msgid "today.periodInDays"
+msgstr "{n, plural, one {Period in {n} day} other {Period in {n} days}}"
 
 msgid "today.higherToday"
 msgstr "In the fertile window"
@@ -206,11 +206,9 @@ msgstr "Don''t show"
 msgid "today.fertilityUnclear"
 msgstr "Unclear while late"
 
-msgid "today.periodLate"
-msgstr "Period"
 
-msgid "today.daysLate"
-msgstr "{n, plural, one {{n} day late} other {{n} days late}}"
+msgid "today.periodDaysLate"
+msgstr "{n, plural, one {Period {n} day late} other {Period {n} days late}}"
 
 msgid "today.expectedOn"
 msgstr "Expected {date}"
@@ -280,6 +278,9 @@ msgstr "Cycle day"
 
 msgid "dial.day"
 msgstr "Day {n}"
+
+msgid "dial.periodDay"
+msgstr "Period day {n}"
 
 msgid "status.period"
 msgstr "Period"

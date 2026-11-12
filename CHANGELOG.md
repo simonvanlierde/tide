@@ -68,6 +68,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- The dial reads in time order: today on top, then the next period. On a day with bleeding
+  logged, "Period day 5" is the headline, and the next period moves to a small line under it.
 - Fertility disclaimers sit in their info popovers on Today and Settings. Daily notes show
   a character count instead of repeating privacy and backup guidance. Import, backup and
   fertility-choice explanations are shorter, and overdue prompts omit generic reassurance.
