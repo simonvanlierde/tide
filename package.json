@@ -29,7 +29,8 @@
     "test:e2e": "pnpm i18n:compile && playwright test",
     "typecheck": "pnpm i18n:compile && tsc",
     "i18n:compile": "lingui compile --strict",
-    "i18n:compare": "pnpm i18n:compile && node scripts/compareI18n.mjs"
+    "i18n:compare": "pnpm i18n:compile && node scripts/compareI18n.mjs",
+    "validate:sparse": "node scripts/sparseHistory.mjs"
   },
   "knip": {
     "ignoreDependencies": [

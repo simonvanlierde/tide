@@ -5,6 +5,9 @@ public dataset. Run it yourself with `pnpm backtest`.
 
 Last run: 2026-11-11. The production predictor still uses the six-cycle median described below.
 
+For paired missing-log and cold-start stress cases, see the separate
+[sparse-history evaluation](sparse-history.md). Its synthetic results are not population accuracy.
+
 ## Dataset
 
 [Menstrual Cycles Length of Women in the USA and Canada, 1990-2013](https://doi.org/10.7278/S50d-4gxs-s4hj),
@@ -25,7 +28,8 @@ Other datasets considered:
 | Dataset | Size | Licence | Why not |
 |---|---|---|---|
 | [Marquette NFP "Menstrual Cycle Data"](https://epublications.marquette.edu/data_nfp/7/) (Fehring, 2012) | 159 women, 1,665 cycle rows, with an estimated ovulation day. The file download returned HTTP 403 to a script | None stated. Only: "Data reuse agreed to by subjects in consent form." A [Kaggle copy](https://www.kaggle.com/datasets/nikitabisht/menstrual-cycle-data) lists its licence as "Unknown"; a re-upload cannot add one | No licence, so publishing results on it is unclear |
-| [mcPHASES](https://www.physionet.org/content/mcphases/) (PhysioNet) | 42 people, two 3-month stretches | PhysioNet Restricted Health Data License 1.5.0 | Needs an account and a signed data use agreement |
+| [mcPHASES](https://physionet.org/content/mcphases/1.0.0/) (PhysioNet) | 42 people; 20 returned for a second 3-month window about two years later | PhysioNet Restricted Health Data License 1.5.0 | Files are no longer available; registration and a signed agreement alone cannot provide access |
+| [Fertili](https://www.stat.unipd.it/ricerca/basi-di-dati) (University of Padova) | Multiple historical fertility-awareness cohorts | Department owns the copyright | Access requires a research proposal; an application form and technical report are available |
 | Clue app study ([Li et al.](https://arxiv.org/abs/1909.11211)) | 378,000 users | Raw data not released | Not available |
 
 ## Method

@@ -8,6 +8,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- [Sparse-history stress results](docs/sparse-history.md) show how missing logs, long cycles
+  and little history affect the existing estimates. The prediction rule is unchanged.
 - [JSON backup guide](docs/backups.md) documents the saved fields and safe restore steps, with a tested example.
 - Record optional symptoms, a mood and a short note for today or a past day, independently
   of bleeding. [Daily details](README.md#daily-details) are included in Tide backups and
