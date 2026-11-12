@@ -1133,6 +1133,7 @@
   }
 
   .calendar-grid__cell {
+    position: relative;
     display: grid;
     min-width: 0;
     padding: 0;
@@ -1167,6 +1168,7 @@
   /* Running cycle-day count, inside the tile's corner and quieter than the
      day number. No disc: a disc on the corner reads as an unread count. */
   .calendar-grid__period-day {
+    pointer-events: none;
     position: absolute;
     top: 3px;
     right: 4px;

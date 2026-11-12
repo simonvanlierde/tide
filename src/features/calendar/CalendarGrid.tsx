@@ -124,7 +124,12 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
               const isUnavailable = day.isFuture && !isLogged;
               const dateLabel = isUnavailable ? t("calendar.dayUnavailable", { label: dayLabel }) : dayLabel;
               // Flow is otherwise colour-only, so name it for screen readers.
-              const detail = flow ? t(`flow.${flow}`) : marker ? t(MARKER_LABEL_KEY[marker]) : undefined;
+              const detail = [
+                flow ? t(`flow.${flow}`) : marker ? t(MARKER_LABEL_KEY[marker]) : null,
+                day.cycleDay ? `${t("legend.cycleDay")} ${day.cycleDay}` : null,
+              ]
+                .filter(Boolean)
+                .join(", ");
 
               return (
                 <td key={day.key} className="calendar-grid__cell">
@@ -147,12 +152,13 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
                     onClick={() => onSelectDay(value)}
                   >
                     {parseIsoDate(value).getUTCDate()}
-                    {day.cycleDay ? (
-                      <span className="calendar-grid__period-day" aria-hidden="true">
-                        {day.cycleDay}
-                      </span>
-                    ) : null}
                   </button>
+                  {/* The cycle count annotates the cell; the date labels its button. */}
+                  {day.cycleDay ? (
+                    <span className="calendar-grid__period-day" aria-hidden="true">
+                      {day.cycleDay}
+                    </span>
+                  ) : null}
                 </td>
               );
             })}

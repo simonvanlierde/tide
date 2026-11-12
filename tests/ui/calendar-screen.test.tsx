@@ -517,6 +517,7 @@ describe("CalendarScreen", () => {
     });
     expect(withNumbers.container.querySelectorAll(".calendar-grid__period-day")).not.toHaveLength(0);
     expect(withNumbers.container.querySelector(".calendar-legend")).toHaveTextContent(/cycle day/i);
+    expect(screen.getByRole("button", { name: /log april 4, 2026/i })).toHaveAccessibleName(/cycle day 3/i);
     withNumbers.unmount();
 
     const hidden = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
@@ -527,6 +528,7 @@ describe("CalendarScreen", () => {
     });
     expect(hidden.container.querySelectorAll(".calendar-grid__period-day")).toHaveLength(0);
     expect(hidden.container.querySelector(".calendar-legend")).not.toHaveTextContent(/cycle day/i);
+    expect(screen.getByRole("button", { name: /log april 4, 2026/i })).not.toHaveAccessibleName(/cycle day/i);
   });
 
   it("adds details for the selected day, today until one is picked", async () => {
@@ -667,7 +669,7 @@ describe("CalendarScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /^undo$/i }));
     for (const day of [5, 6, 8, 9]) {
-      expect(screen.getByRole("button", { name: `Log April ${day}, 2026` })).not.toHaveClass("is-logged");
+      expect(screen.getByRole("button", { name: new RegExp(`^Log April ${day}, 2026`) })).not.toHaveClass("is-logged");
     }
     expect(screen.getByRole("button", { name: /edit april 7, 2026.*heavy/i })).toHaveClass("is-flow-heavy");
   });

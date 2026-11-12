@@ -248,6 +248,8 @@ keeps 0.06em.
 **The Whole Word Rule.** Headings, labels and buttons never hyphenate. A long compound
 carries soft hyphens between its parts in the dictionary, and breaks only there. Running
 text (paragraphs, list items, fact values) hyphenates as usual.
+Bottom navigation permits emergency wrapping when enlarged text cannot fit a whole label,
+so every destination remains visible and usable on a narrow screen.
 
 ## Layout
 
