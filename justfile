@@ -124,7 +124,7 @@ repo-settings:
     if ! echo "$policies" | grep -qxF 'main'; then
         gh api -X POST "repos/{owner}/{repo}/environments/production/deployment-branch-policies" -f name="main" -f type="branch" >/dev/null 2>"$err" || fail
     fi
-    echo "Configured environment 'production'. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID to both environments: see the Deploy section of the README."
+    echo "Configured environment 'production'. Add CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID to both environments: see Deploy in docs/development.md."
 
 # Set the GitHub About box from your answers: description, homepage and a topic per stack. Adds topics, never removes yours. Safe to rerun.
 repo-about:

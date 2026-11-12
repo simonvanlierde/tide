@@ -83,7 +83,8 @@ The JSON backup format stays at schema 5.
 A Tide JSON restore replaces bleeding history, diary entries, incomplete markers and portable settings.
 Supported Clue and Flo exports instead merge bleeding days only: existing Tide values win on overlapping dates.
 They do not import diary entries or replace preferences. The confirmation shows the detected source and day count.
-See [`src/data/otherApps.ts`](../src/data/otherApps.ts) for the supported foreign formats.
+Tide reads Clue's `measurements.json` (from its export zip) or an older `.cluedata` backup, and Flo's export.
+[`src/data/otherApps.ts`](../src/data/otherApps.ts) has the parsers.
 
 An ICS file shares calendar events; it is not a backup and cannot restore your Tide history.
 Its private flag neither encrypts events nor guarantees that a calendar service hides them.

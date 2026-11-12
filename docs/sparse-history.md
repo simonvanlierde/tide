@@ -31,17 +31,15 @@ are retained without filtering, splitting or invented periods.
 
 Cutoffs advance to 4, 20 and 60 days after the current true onset. No further episodes
 are logged during this follow-up, even when a latent period has occurred. The target is
-always the first true onset strictly after the cutoff. Thus the later cutoffs also test
-cessation of tracking, rather than merely observing a complete cycle later.
+always the first true onset strictly after the cutoff. So the later cutoffs also test what
+happens when someone stops logging.
 
 Every mask and history window shares its history's truth, cutoff and target. Only observed
 bleeding days at or before the cutoff reach `forecast`; future truth is used only for
 scoring. `explainForecast` supplies the displayed range. No estimator is tuned or selected.
 
 There are 1,440 paired cases, with five histories per full scenario/history/mask/cutoff
-stratum. These cases are correlated; they are not 1,440 independent people. The earlier
-one-off sample is not reproduced here: its generator was unavailable for review. This
-maintained generator has its own explicit parameters and regression checks.
+stratum. These cases are correlated; they are not 1,440 independent people.
 
 ## Metrics
 
@@ -50,15 +48,14 @@ maintained generator has its own explicit parameters and regression checks.
 - A decline is a null next-period date; its rate uses all cases. Returned dates at or
   before the cutoff are counted separately as already due and remain in error metrics.
 - Coverage and mean inclusive width use only ranges actually supplied by the explainer.
-  Their count is reported alongside coverage. These ranges are not calibrated confidence
-  intervals; a wide range can cover a target while saying little that helps planning.
+  Their count is reported alongside coverage. As in the
+  [backtest](backtest.md#large-errors-and-displayed-ranges), these ranges are not calibrated confidence intervals.
 
 ## Results
 
 Run on 2026-11-12 against main at `f8483df`. Two complete JSON outputs were byte-identical.
 The command took about 0.32 seconds on the development machine, including module loading;
-this is not a phone-runtime benchmark. Evaluation code is outside the app bundle, and
-no production source or dependency changed.
+this is not a phone-runtime benchmark.
 
 | Cutoff after current onset | Cases | Declines | Returned dates already due |
 | --- | ---: | ---: | ---: |
@@ -86,8 +83,8 @@ from five histories. With zero prior cycles, one current bleeding episode is sti
 
 The full JSON reports errors, declines, range coverage and width for every mask and
 cutoff as well. Sparse long histories expose the default's limits; variable histories
-remain hard even with more observations. This is evidence to retain honest uncertainty,
-not evidence to promote an alternative estimator.
+remain hard even with more observations. The results argue for showing honest uncertainty,
+not for switching to another estimator.
 
 Reproduction hashes:
 
@@ -99,17 +96,3 @@ metrics: d319f9dd007e9a81edd4e35a3d2d6bc4ad079b1398e071840c31b9bc3cd7073b
 The output also hashes the predictor, date helpers and evaluator. Tests check pairing,
 prospective targets, applied masks, genuine long intervals, metric denominators,
 reproducibility and production wiring. A denominator mutation fails the metrics test.
-
-## External-data gate
-
-A bounded recheck on 2026-11-12 found only the original CSV listed on
-[Zenodo 15598359](https://zenodo.org/records/15598359), with no listed codebook or correction.
-The associated [paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC13141897/) was behind a browser
-challenge, and the publisher's supplement returned 403; the supplement was not reviewed.
-This does not establish that no clarification exists.
-
-The existing audit leaves event meanings, participant boundaries, birth flags, observation
-gaps and date anomalies unresolved. No participant records were downloaded for this run.
-The dataset remains excluded from backtests until a usable codebook or author clarification
-resolves those questions. No authors were contacted. Any proposed estimator still needs
-independent usable evidence, with people separated across tuning and evaluation.

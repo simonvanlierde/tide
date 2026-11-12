@@ -3,10 +3,8 @@
 How close does Tide's next-period date land on real cycles? This page answers that on one
 public dataset. Run it yourself with `pnpm backtest`.
 
-Last run: 2026-11-11. The production predictor still uses the six-cycle median described below.
-
-For paired missing-log and cold-start stress cases, see the separate
-[sparse-history evaluation](sparse-history.md). Its synthetic results are not population accuracy.
+Last run: 2026-11-11, on the six-cycle median that [How predictions work](predictions.md) describes.
+The [sparse-history stress test](sparse-history.md) covers missed logs and short histories on synthetic data.
 
 ## Dataset
 
@@ -31,6 +29,13 @@ Other datasets considered:
 | [mcPHASES](https://physionet.org/content/mcphases/1.0.0/) (PhysioNet) | 42 people; 20 returned for a second 3-month window about two years later | PhysioNet Restricted Health Data License 1.5.0 | Files are no longer available; registration and a signed agreement alone cannot provide access |
 | [Fertili](https://www.stat.unipd.it/ricerca/basi-di-dati) (University of Padova) | Multiple historical fertility-awareness cohorts | Department owns the copyright | Access requires a research proposal; an application form and technical report are available |
 | Clue app study ([Li et al.](https://arxiv.org/abs/1909.11211)) | 378,000 users | Raw data not released | Not available |
+
+[Zenodo 15598359](https://zenodo.org/records/15598359) is also excluded. On 2026-11-12 it listed
+only the original CSV, with no codebook or correction. Event meanings, participant boundaries,
+birth flags, observation gaps and date anomalies are unclear without one. The
+[associated paper](https://pmc.ncbi.nlm.nih.gov/articles/PMC13141897/) and its supplement could not
+be opened, so a clarification may exist there. No participant records were downloaded, and no
+authors were contacted.
 
 ## Method
 
@@ -157,8 +162,9 @@ A genuinely long cycle must not be silently classified as a forgotten record. Th
 no evidence for doing that automatically.
 
 The next model comparison needs independent data covering sparse logging and consistently short,
-long and variable cycles. It must compare large errors and range coverage/width alongside MAE,
-with cold-start results reported separately. The production estimator remains unchanged.
+long and variable cycles, with people kept apart between tuning and evaluation. It must compare
+large errors and range coverage and width alongside MAE, and report cold-start results separately.
+Until then the production estimator stays as it is.
 
 ## Limits
 
