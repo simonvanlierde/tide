@@ -6,6 +6,7 @@ import { STORAGE_KEY, saveAppState } from "../../src/data/storage";
 import type { IsoDate } from "../../src/domain/types";
 import { dayAngleDeg } from "../../src/features/today/dialGeometry";
 import { TodayScreen } from "../../src/features/today/TodayScreen";
+import { addDays } from "../../src/utils/date";
 import {
   createAppState,
   createLearnedCycleState,
@@ -44,8 +45,16 @@ describe("TodayScreen", () => {
 
     expect(screen.getByRole("heading", { name: /day 17/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/cycle overview/i)).toBeInTheDocument();
-    expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^period in 12 days$/i)).toBeInTheDocument();
     expect(screen.getByText(/^day 17 · luteal phase$/i)).toBeInTheDocument();
+    // Time order: today's line, then the rule, then the estimate it counts to.
+    const centre = [...document.querySelectorAll(".cycle-dial__inner > *")].map((el) => el.className);
+    expect(centre).toEqual([
+      "cycle-dial__phase cycle-dial__phase--small",
+      "cycle-dial__rule",
+      "cycle-dial__estimate",
+      "cycle-dial__date cycle-dial__date--small",
+    ]);
     expect(screen.getByText(/^outside the fertile window$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/how fertility is estimated/i)).toBeInTheDocument();
   });
@@ -114,7 +123,7 @@ describe("TodayScreen", () => {
     expect(dial).toHaveAttribute("aria-valuenow", "17");
     // Back at rest: the estimate again.
     expect(screen.queryByText("Sun, Apr 19")).not.toBeInTheDocument();
-    expect(screen.getByText(/^in 12 days$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^period in 12 days$/i)).toBeInTheDocument();
   });
 
   it("scrubs the dial with a pointer and resets on release", () => {
@@ -302,7 +311,7 @@ describe("TodayScreen", () => {
   it("says the period is expected today when it lands on today", () => {
     renderToday("2026-05-17", createLearningCycleState());
 
-    expect(screen.getByText(/^expected today$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^period expected today$/i)).toBeInTheDocument();
   });
 
   it("resets the preview when the pointer leaves, cancels, or the dial blurs", () => {
@@ -333,6 +342,26 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("button", { name: /not yet/i })).toBeInTheDocument();
   });
 
+  it("puts today's bleeding in the headline and its usual length under it", () => {
+    // Three finished four-day periods, then day 2 of the current one.
+    const fourDays = (start: IsoDate) => [0, 1, 2, 3].map((offset) => addDays(start, offset));
+    const periodDays = [...fourDays("2026-01-08"), ...fourDays("2026-02-05"), ...fourDays("2026-03-05")];
+    renderToday("2026-04-03", createAppState({ periodDays: [...periodDays, "2026-04-02", "2026-04-03"] }));
+
+    expect(document.querySelector(".cycle-dial__estimate")).toHaveTextContent(/^period day 2$/i);
+    expect(document.querySelector(".cycle-dial__next")).toHaveTextContent(/^usually lasts 4 days$/i);
+    // The next period waits until the bleeding stops.
+    expect(document.querySelector(".cycle-dial__date")).not.toBeInTheDocument();
+  });
+
+  it("leaves the usual length out while the length is only a typical guess", () => {
+    renderToday("2026-04-03", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
+
+    expect(document.querySelector(".cycle-dial__estimate")).toHaveTextContent(/^period day 2$/i);
+    expect(document.querySelector(".cycle-dial__next")).not.toBeInTheDocument();
+    expect(document.querySelector(".cycle-dial__rule")).not.toBeInTheDocument();
+  });
+
   it("switches to overdue wording once the period is late", () => {
     renderToday("2026-05-01", createAppState({ periodDays: ["2026-04-02", "2026-04-03"] }));
 
@@ -341,8 +370,7 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("slider").getAttribute("aria-valuetext")).toContain("Period late");
     // The fact row stops claiming a "next" period in the past.
     expect(screen.queryByText(/next period/i)).not.toBeInTheDocument();
-    expect(document.querySelector(".cycle-dial__eyebrow")).toHaveTextContent(/^period$/i);
-    expect(screen.getByText(/^1 day late$/i)).toBeInTheDocument();
+    expect(screen.getByText(/^period 1 day late$/i)).toBeInTheDocument();
     // Late already says it; the small line keeps only the cycle day.
     expect(screen.getByText(/^day \d+$/i)).toBeInTheDocument();
     expect(screen.getByText(/^Expected /)).toBeInTheDocument();

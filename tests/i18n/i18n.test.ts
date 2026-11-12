@@ -28,19 +28,19 @@ describe("i18n", () => {
   });
 
   it("renders ICU plurals with each locale's rules", () => {
-    expect(translate("fr", "today.inDays", { n: 1.5 })).toBe("Dans 1.5 jour");
-    expect(translate("en", "today.inDays", { n: 1.5 })).toBe("In 1.5 days");
-    expect(translate("es", "today.inDays", { n: 1_000_000 })).toBe("En 1000000 días");
+    expect(translate("fr", "today.periodInDays", { n: 1.5 })).toBe("Règles dans 1.5 jour");
+    expect(translate("en", "today.periodInDays", { n: 1.5 })).toBe("Period in 1.5 days");
+    expect(translate("es", "today.periodInDays", { n: 1_000_000 })).toBe("Período en 1000000 días");
   });
 
   it.each([
-    ["en", "In 1 day", "In 2 days"],
-    ["nl", "Over 1 dag", "Over 2 dagen"],
-    ["de", "In 1 Tag", "In 2 Tagen"],
-    ["fr", "Dans 1 jour", "Dans 2 jours"],
-    ["es", "En 1 día", "En 2 días"],
+    ["en", "Period in 1 day", "Period in 2 days"],
+    ["nl", "Menstruatie over 1 dag", "Menstruatie over 2 dagen"],
+    ["de", "Periode in 1 Tag", "Periode in 2 Tagen"],
+    ["fr", "Règles dans 1 jour", "Règles dans 2 jours"],
+    ["es", "Período en 1 día", "Período en 2 días"],
   ] as const)("selects singular and plural forms in %s", (lang, singular, plural) => {
-    expect(translate(lang, "today.inDays", { n: 1 })).toBe(singular);
-    expect(translate(lang, "today.inDays", { n: 2 })).toBe(plural);
+    expect(translate(lang, "today.periodInDays", { n: 1 })).toBe(singular);
+    expect(translate(lang, "today.periodInDays", { n: 2 })).toBe(plural);
   });
 });

@@ -140,9 +140,6 @@ msgstr "Tes dernières modifications n’ont pas pu être enregistrées sur cet 
 msgid "today.srCycleDay"
 msgstr "Jour du cycle {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Prochaines règles"
-
 msgid "today.fertility"
 msgstr "Fertilité"
 
@@ -158,11 +155,11 @@ msgstr "Comment est-ce calculé ?"
 msgid "today.explainError"
 msgstr "Impossible d’ouvrir ceci. Recharge Tide et réessaie."
 
-msgid "today.expectedToday"
-msgstr "Prévues aujourd’hui"
+msgid "today.periodExpectedToday"
+msgstr "Règles prévues aujourd’hui"
 
-msgid "today.inDays"
-msgstr "{n, plural, one {Dans {n} jour} other {Dans {n} jours}}"
+msgid "today.periodInDays"
+msgstr "{n, plural, one {Règles dans {n} jour} other {Règles dans {n} jours}}"
 
 msgid "today.higherToday"
 msgstr "Dans la fenêtre de fertilité"
@@ -188,11 +185,8 @@ msgstr "Ne pas afficher"
 msgid "today.fertilityUnclear"
 msgstr "Incertaine en cas de retard"
 
-msgid "today.periodLate"
-msgstr "Règles"
-
-msgid "today.daysLate"
-msgstr "{n, plural, one {{n} jour de retard} other {{n} jours de retard}}"
+msgid "today.periodDaysLate"
+msgstr "{n, plural, one {Règles en retard de {n} jour} other {Règles en retard de {n} jours}}"
 
 msgid "today.expectedOn"
 msgstr "Prévues {date}"
@@ -262,6 +256,12 @@ msgstr "Jour du cycle"
 
 msgid "dial.day"
 msgstr "Jour {n}"
+
+msgid "dial.periodDay"
+msgstr "Jour {n} des règles"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Dure en général {n} jour} other {Dure en général {n} jours}}"
 
 msgid "status.period"
 msgstr "Règles"

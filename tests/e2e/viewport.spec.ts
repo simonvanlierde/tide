@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
+import type { IsoDate } from "../../src/domain/types";
 import { translate } from "../../src/i18n";
+import { addDays } from "../../src/utils/date";
 import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 
@@ -38,6 +40,20 @@ async function openExplainer(page: Page) {
 // A period that ended ten days before today, so the dial is between periods.
 const PAST_PERIOD = medium(["2026-04-01", "2026-04-02", "2026-04-03", "2026-04-04"]);
 
+// Three finished four-day periods, then day 2 of the current one: the dial
+// shows the learned period length under today's bleeding.
+const fourDays = (start: IsoDate) => [0, 1, 2, 3].map((offset) => addDays(start, offset));
+const LEARNED_BLEEDING = medium([
+  ...fourDays("2026-01-20"),
+  ...fourDays("2026-02-17"),
+  ...fourDays("2026-03-17"),
+  "2026-04-14",
+  "2026-04-15",
+]);
+// Cycle day 37 on 04-15, eight days past a 28-day estimate. Further back and
+// Tide stops estimating, so the dial would show its learning prompt instead.
+const LATE_PERIOD = medium(["2026-03-10", "2026-03-11", "2026-03-12"]);
+
 // Every screen, and every sheet, dialog and popover it can open, in the states
 // that change what is on it. Each must fit at every size in every language.
 // The seed has fertility estimates on; the screens whose words change when
@@ -50,11 +66,8 @@ const SCREENS: {
   open?: (page: Page) => Promise<unknown>;
 }[] = [
   { name: "today, logged", path: "/" },
-  {
-    name: "today, period late",
-    path: "/",
-    days: medium(["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04"]),
-  },
+  { name: "today, logged with a learned period length", path: "/", days: LEARNED_BLEEDING },
+  { name: "today, period late", path: "/", days: LATE_PERIOD },
   { name: "today, nothing logged", path: "/", days: {} },
   {
     // The dial reads "Between periods" here, two lines in German.
@@ -163,7 +176,9 @@ const LABELS = [
   ".insights__stat-label",
   ".insights__regularity-label",
   ".flow-gauge__label",
-  ".cycle-dial__eyebrow",
+  ".cycle-dial__day-label",
+  ".cycle-dial__estimate",
+  ".cycle-dial__next",
   ".cycle-dial__phase",
   ".app-header__title",
 ].join(", ");
@@ -291,28 +306,40 @@ for (const size of SIZES) {
         });
       }
 
-      // A long headline shrinks to one line; a long eyebrow wraps. Neither
-      // runs into the ring.
-      test("keeps the dial's estimate on one line and its eyebrow inside the disc", async ({ page }) => {
-        await page.goto("/");
-        const result = await page.locator(".cycle-dial__inner").evaluate((inner) => {
-          const disc = inner.getBoundingClientRect();
-          return [".cycle-dial__eyebrow", ".cycle-dial__estimate"].map((selector) => {
-            const el = inner.querySelector(selector) as Element;
-            const range = document.createRange();
-            range.selectNodeContents(el);
-            const box = range.getBoundingClientRect();
-            const cx = disc.left + disc.width / 2;
-            const cy = disc.top + disc.height / 2;
-            // The text's farther top or bottom corner must sit inside the circle.
-            const dy = Math.max(Math.abs(box.top - cy), Math.abs(box.bottom - cy));
-            const dx = Math.max(Math.abs(box.left - cx), Math.abs(box.right - cx));
-            return { lines: range.getClientRects().length, inside: Math.hypot(dx, dy) <= disc.width / 2 };
+      // A long headline shrinks to fit two lines. Nothing in the centre runs
+      // into the ring, in any of the dial's resting states.
+      for (const [state, days] of Object.entries({
+        "bleeding, no learned length": undefined,
+        "bleeding, learned length": LEARNED_BLEEDING,
+        "between periods": PAST_PERIOD,
+        late: LATE_PERIOD,
+      })) {
+        test(`keeps the dial's centre inside the disc, the headline on two lines at most: ${state}`, async ({
+          page,
+        }) => {
+          await seedAppState(page, language, {}, days);
+          await page.goto("/");
+          const result = await page.locator(".cycle-dial__inner").evaluate((inner) => {
+            const disc = inner.getBoundingClientRect();
+            return [...inner.children].map((el) => {
+              const range = document.createRange();
+              range.selectNodeContents(el);
+              // The rule has no text: measure the element itself.
+              const box = el.textContent ? range.getBoundingClientRect() : el.getBoundingClientRect();
+              const cx = disc.left + disc.width / 2;
+              const cy = disc.top + disc.height / 2;
+              // The text's farther top or bottom corner must sit inside the circle.
+              const dy = Math.max(Math.abs(box.top - cy), Math.abs(box.bottom - cy));
+              const dx = Math.max(Math.abs(box.left - cx), Math.abs(box.right - cx));
+              const lines = new Set([...range.getClientRects()].map((rect) => Math.round(rect.top))).size;
+              return { className: el.className, lines, inside: Math.hypot(dx, dy) <= disc.width / 2 };
+            });
           });
+          expect(result.filter((item) => !item.inside)).toEqual([]);
+          const headline = result.find((item) => item.className === "cycle-dial__estimate");
+          expect(headline?.lines).toBeLessThanOrEqual(2);
         });
-        expect(result[0]?.inside).toBe(true);
-        expect(result[1]).toEqual({ lines: 1, inside: true });
-      });
+      }
 
       // The logged line's icon shares a row with its text, never one of its own.
       test("keeps the log icon beside its summary", async ({ page }) => {

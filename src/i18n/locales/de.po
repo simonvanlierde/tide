@@ -140,9 +140,6 @@ msgstr "Deine letzten Änderungen konnten nicht auf diesem Gerät gespeichert we
 msgid "today.srCycleDay"
 msgstr "Zyklustag {day}, {phase}"
 
-msgid "today.nextPeriod"
-msgstr "Nächste Periode"
-
 msgid "today.fertility"
 msgstr "Fruchtbarkeit"
 
@@ -158,11 +155,11 @@ msgstr "Wie wurde das berechnet?"
 msgid "today.explainError"
 msgstr "Das ließ sich nicht öffnen. Lade Tide neu und versuche es noch einmal."
 
-msgid "today.expectedToday"
-msgstr "Heute erwartet"
+msgid "today.periodExpectedToday"
+msgstr "Periode heute erwartet"
 
-msgid "today.inDays"
-msgstr "{n, plural, one {In {n} Tag} other {In {n} Tagen}}"
+msgid "today.periodInDays"
+msgstr "{n, plural, one {Periode in {n} Tag} other {Periode in {n} Tagen}}"
 
 msgid "today.higherToday"
 msgstr "Im fruchtbaren Fenster"
@@ -188,11 +185,8 @@ msgstr "Nicht anzeigen"
 msgid "today.fertilityUnclear"
 msgstr "Unklar bei Verspätung"
 
-msgid "today.periodLate"
-msgstr "Periode"
-
-msgid "today.daysLate"
-msgstr "{n, plural, one {{n} Tag überfällig} other {{n} Tage überfällig}}"
+msgid "today.periodDaysLate"
+msgstr "{n, plural, one {Periode {n} Tag überfällig} other {Periode {n} Tage überfällig}}"
 
 msgid "today.expectedOn"
 msgstr "Erwartet {date}"
@@ -262,6 +256,12 @@ msgstr "Zyklustag"
 
 msgid "dial.day"
 msgstr "Tag {n}"
+
+msgid "dial.periodDay"
+msgstr "Tag {n} der Periode"
+
+msgid "dial.usualPeriodLength"
+msgstr "{n, plural, one {Dauert meist {n} Tag} other {Dauert meist {n} Tage}}"
 
 msgid "status.period"
 msgstr "Periode"
