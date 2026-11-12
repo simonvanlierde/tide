@@ -567,7 +567,7 @@ msgid "settings.data"
 msgstr "Daten"
 
 msgid "settings.importSources"
-msgstr "Tide-Sicherung oder Export aus Clue oder Flo."
+msgstr "Tide, Clue oder Flo"
 
 msgid "settings.export"
 msgstr "Exportieren"
@@ -579,13 +579,22 @@ msgid "settings.exportCalendar"
 msgstr "Zum Kalender hinzufügen"
 
 msgid "settings.calendarHelp"
-msgstr "Deine nächsten {n} erwarteten Perioden. Dein Kalender synchronisiert sie eventuell online."
+msgstr "Dein Kalender synchronisiert sie eventuell online."
 
 msgid "settings.calendarFertility"
-msgstr "Fruchtbare Fenster einschließen"
+msgstr "Fruchtbare Fenster"
 
 msgid "settings.calendarSuccess"
-msgstr "Kalenderdatei in deinen Downloads gespeichert."
+msgstr "{n, plural, one {Kalenderdatei mit {n} erwarteten Periode in deinen Downloads gespeichert.} other {Kalenderdatei mit {n} erwarteten Perioden in deinen Downloads gespeichert.}}"
+
+msgid "settings.exportHint"
+msgstr "Tide-Sicherung (.json)"
+
+msgid "settings.calendarPeriods"
+msgstr "Erwartete Perioden"
+
+msgid "settings.calendarSuccessFertile"
+msgstr "{n, plural, one {Kalenderdatei mit {n} erwarteten Periode und ihrem fruchtbaren Fenster in deinen Downloads gespeichert.} other {Kalenderdatei mit {n} erwarteten Perioden und ihren fruchtbaren Fenstern in deinen Downloads gespeichert.}}"
 
 msgid "settings.calendarError"
 msgstr "Die Kalenderdatei ließ sich nicht erstellen. Lade Tide neu und versuche es noch einmal."
@@ -639,7 +648,7 @@ msgid "settings.resetConfirm"
 msgstr "Alle Daten und Einstellungen auf diesem Gerät werden gelöscht. Das kann nicht rückgängig gemacht werden."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} erfasster Tag} other {{n} erfasste Tage}}"
+msgstr "{n, plural, one {{n} erfasster Tag, nicht hochgeladen} other {{n} erfasste Tage, nicht hochgeladen}}"
 
 msgid "settings.lastBackup"
 msgstr "Letzte Sicherung {date}"

@@ -390,8 +390,11 @@ drilling in at the end.
 
 The Settings **Data card** splits its jobs with hairlines, not extra cards: backup and
 import, then calendar export, then Delete all data. Each message appears under the action
-that caused it. Once days are logged, a muted line under the privacy sentence says how
-many there are and when the last backup was.
+that caused it. Once days are logged, the privacy sentence becomes one shield line: how
+many days there are, that they are not uploaded, and when the last backup was. Export and
+Import carry a muted second line naming what they take. The calendar rows lead with the
+calendar legend's own swatches, so each shows what it adds; the 3 / 6 / 12 count is a
+small segmented control that stays beside its label at every width.
 
 ### Inputs / Fields
 

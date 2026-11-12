@@ -567,7 +567,7 @@ msgid "settings.data"
 msgstr "Gegevens"
 
 msgid "settings.importSources"
-msgstr "Tide-reservekopie of export uit Clue of Flo."
+msgstr "Tide, Clue of Flo"
 
 msgid "settings.export"
 msgstr "Exporteren"
@@ -579,13 +579,22 @@ msgid "settings.exportCalendar"
 msgstr "Aan agenda toevoegen"
 
 msgid "settings.calendarHelp"
-msgstr "Je volgende {n} verwachte menstruaties. Je agenda kan ze online synchroniseren."
+msgstr "Je agenda kan ze online synchroniseren."
 
 msgid "settings.calendarFertility"
-msgstr "Vruchtbare periodes meenemen"
+msgstr "Vruchtbare periodes"
 
 msgid "settings.calendarSuccess"
-msgstr "Agendabestand opgeslagen in je downloads."
+msgstr "{n, plural, one {Agendabestand met {n} verwachte menstruatie opgeslagen in je downloads.} other {Agendabestand met {n} verwachte menstruaties opgeslagen in je downloads.}}"
+
+msgid "settings.exportHint"
+msgstr "Tide-back-up (.json)"
+
+msgid "settings.calendarPeriods"
+msgstr "Verwachte menstruaties"
+
+msgid "settings.calendarSuccessFertile"
+msgstr "{n, plural, one {Agendabestand met {n} verwachte menstruatie en vruchtbare periode opgeslagen in je downloads.} other {Agendabestand met {n} verwachte menstruaties en vruchtbare periodes opgeslagen in je downloads.}}"
 
 msgid "settings.calendarError"
 msgstr "Het agendabestand kon niet worden gemaakt. Laad Tide opnieuw en probeer het nog eens."
@@ -639,7 +648,7 @@ msgid "settings.resetConfirm"
 msgstr "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} gelogde dag} other {{n} gelogde dagen}}"
+msgstr "{n, plural, one {{n} gelogde dag, niet geüpload} other {{n} gelogde dagen, niet geüpload}}"
 
 msgid "settings.lastBackup"
 msgstr "Laatste back-up {date}"

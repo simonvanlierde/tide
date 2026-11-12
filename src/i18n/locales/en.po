@@ -567,7 +567,7 @@ msgid "settings.data"
 msgstr "Data"
 
 msgid "settings.importSources"
-msgstr "Tide backup, Clue or Flo export."
+msgstr "Tide, Clue or Flo"
 
 msgid "settings.export"
 msgstr "Export"
@@ -579,13 +579,22 @@ msgid "settings.exportCalendar"
 msgstr "Add to calendar"
 
 msgid "settings.calendarHelp"
-msgstr "Your next {n} expected periods. Your calendar may sync them online."
+msgstr "Your calendar may sync them online."
 
 msgid "settings.calendarFertility"
-msgstr "Include fertile windows"
+msgstr "Fertile windows"
 
 msgid "settings.calendarSuccess"
-msgstr "Calendar file saved to your downloads."
+msgstr "{n, plural, one {Calendar file with {n} expected period saved to your downloads.} other {Calendar file with {n} expected periods saved to your downloads.}}"
+
+msgid "settings.exportHint"
+msgstr "Tide backup (.json)"
+
+msgid "settings.calendarPeriods"
+msgstr "Expected periods"
+
+msgid "settings.calendarSuccessFertile"
+msgstr "{n, plural, one {Calendar file with {n} expected period and its fertile window saved to your downloads.} other {Calendar file with {n} expected periods and their fertile windows saved to your downloads.}}"
 
 msgid "settings.calendarError"
 msgstr "The calendar file couldn''t be made. Reload Tide and try again."
@@ -639,7 +648,7 @@ msgid "settings.resetConfirm"
 msgstr "All data and settings on this device are erased. This cannot be undone."
 
 msgid "settings.dataSummary"
-msgstr "{n, plural, one {{n} logged day} other {{n} logged days}}"
+msgstr "{n, plural, one {{n} logged day, not uploaded} other {{n} logged days, not uploaded}}"
 
 msgid "settings.lastBackup"
 msgstr "Last backup {date}"

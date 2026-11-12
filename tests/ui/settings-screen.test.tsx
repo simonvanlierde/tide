@@ -150,7 +150,7 @@ describe("SettingsScreen", () => {
     });
 
     // Fertility estimates are off, so there is nothing to opt in to.
-    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+    expect(screen.queryByRole("switch", { name: /fertile windows/i })).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /add to calendar/i }));
     // The file builder loads on first use.
     await waitFor(() => expect(createObjectURL).toHaveBeenCalledOnce());
@@ -164,7 +164,30 @@ describe("SettingsScreen", () => {
       "DTSTART;VALUE=DATE:20260625",
     ]);
     expect(ics).not.toMatch(/fertile/i);
-    expect(screen.getByRole("status")).toHaveTextContent(/calendar file saved/i);
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "Calendar file with 3 expected periods saved to your downloads.",
+    );
+  });
+
+  it("lets you choose how many expected periods go into the calendar file", async () => {
+    const user = userEvent.setup();
+    vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
+    const createObjectURL = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:tide-calendar");
+    vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+    renderWithAppState(<SettingsScreen today="2026-04-18" />, {
+      state: createAppState({ periodDays: ["2026-03-05", "2026-04-02"] }),
+    });
+
+    const periods = within(screen.getByRole("group", { name: "Expected periods" }));
+    expect(periods.getByRole("button", { name: "3" })).toHaveAttribute("aria-pressed", "true");
+    await user.click(periods.getByRole("button", { name: "12" }));
+    await user.click(screen.getByRole("button", { name: /add to calendar/i }));
+    await waitFor(() => expect(createObjectURL).toHaveBeenCalledOnce());
+
+    const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
+    const ics = await blob.text();
+    expect(ics.match(/^DTSTART;VALUE=DATE:\d+/gm)).toHaveLength(12);
+    expect(screen.getByRole("status")).toHaveTextContent("Calendar file with 12 expected periods saved");
   });
 
   it("adds fertile windows to the calendar file only when ticked", async () => {
@@ -179,11 +202,9 @@ describe("SettingsScreen", () => {
       }),
     });
 
-    const checkbox = screen.getByRole("checkbox", {
-      name: /include fertile windows/i,
-    });
-    expect(checkbox).not.toBeChecked();
-    await user.click(checkbox);
+    const fertile = screen.getByRole("switch", { name: "Fertile windows" });
+    expect(fertile).not.toBeChecked();
+    await user.click(fertile);
     await user.click(screen.getByRole("button", { name: /add to calendar/i }));
     await waitFor(() => expect(createObjectURL).toHaveBeenCalledOnce());
 
@@ -191,6 +212,7 @@ describe("SettingsScreen", () => {
     const ics = await blob.text();
     // The window before the 04-30 period ended on 04-17, before today.
     expect(ics.match(/^UID:fertile-\d+-/gm)).toEqual(["UID:fertile-4-", "UID:fertile-5-"]);
+    expect(screen.getByRole("status")).toHaveTextContent(/expected periods and their fertile windows/);
   });
 
   it("keeps one calendar id across exports, and makes a new one once cleared", async () => {
@@ -481,7 +503,7 @@ describe("SettingsScreen", () => {
 
   it("shows what is stored and when it was last backed up", () => {
     renderSettings(createAppState({ periodDays: ["2026-03-01", "2026-03-02"] }));
-    expect(document.querySelector(".data-summary")).toHaveTextContent("2 logged days · No backup yet");
+    expect(document.querySelector(".data-summary")).toHaveTextContent("2 logged days, not uploaded · No backup yet");
   });
 
   it("shows nothing about stored days before anything is logged", () => {

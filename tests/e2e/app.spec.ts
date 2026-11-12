@@ -168,7 +168,7 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
       return create(blob);
     };
   });
-  await page.getByRole("checkbox", { name: translate("en", "settings.calendarFertility") }).check();
+  await page.getByRole("switch", { name: translate("en", "settings.calendarFertility") }).click();
   const [download] = await Promise.all([
     page.waitForEvent("download"),
     page.getByRole("button", { name: translate("en", "settings.exportCalendar") }).click(),
@@ -179,5 +179,7 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
   expect(ics).toMatch(/^BEGIN:VCALENDAR\r\n/);
   expect(ics.match(/^UID:period-\d+-[0-9a-f-]{36}@/gm)).toHaveLength(3);
   expect(ics).toContain("UID:fertile-");
-  await expect(page.getByRole("status").filter({ hasText: translate("en", "settings.calendarSuccess") })).toBeVisible();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Calendar file with 3 expected periods and their fertile windows" }),
+  ).toBeVisible();
 });

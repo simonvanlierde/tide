@@ -12,12 +12,17 @@ import { ConfirmDialog } from "./ConfirmDialog";
 const MAX_IMPORT_BYTES = 5_000_000;
 
 /** What the last export, import or delete did, so none happens in silence. */
-type DataStatus = { kind: "imported"; days: number } | { kind: "exported" } | { kind: "calendar" } | { kind: "reset" };
+type DataStatus =
+  | { kind: "imported"; days: number }
+  | { kind: "exported" }
+  | { kind: "calendar"; periods: number; fertile: boolean }
+  | { kind: "reset" };
 
 /** The Data card's jobs; feedback shows under the one that caused it. */
 type DataGroup = "history" | "calendar";
 
-const CALENDAR_CYCLES = 3;
+/** How many expected periods a calendar file can hold; the first is the default. */
+const CALENDAR_COUNTS = [3, 6, 12] as const;
 
 interface DataSectionProps {
   /** Another app's days after this one are dropped on import. */
@@ -46,8 +51,10 @@ export function DataSection({ today }: DataSectionProps) {
   >(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
   const [calendarFertile, setCalendarFertile] = useState(false);
+  // In memory only: Tide stores nothing beyond your data and settings.
+  const [calendarCount, setCalendarCount] = useState<number>(CALENDAR_COUNTS[0]);
   const showFertility = state.settings.showFertility === true;
-  const expectedCycles = getExpectedCycles(useForecast(today), today, CALENDAR_CYCLES);
+  const expectedCycles = getExpectedCycles(useForecast(today), today, calendarCount);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
 
   function fail(group: DataGroup, text: string) {
@@ -184,7 +191,7 @@ export function DataSection({ today }: DataSectionProps) {
       return;
     }
     setError(null);
-    setStatus({ kind: "calendar" });
+    setStatus({ kind: "calendar", periods: expectedCycles.length, fertile: showFertility && calendarFertile });
   }
 
   function feedback(group: DataGroup) {
@@ -213,7 +220,7 @@ export function DataSection({ today }: DataSectionProps) {
       case "exported":
         return t("settings.exportSuccess");
       case "calendar":
-        return t("settings.calendarSuccess");
+        return t(done.fertile ? "settings.calendarSuccessFertile" : "settings.calendarSuccess", { n: done.periods });
       case "reset":
         return t("settings.resetSuccess");
     }
@@ -246,36 +253,44 @@ export function DataSection({ today }: DataSectionProps) {
             control reads as a button that doesn't answer. */}
         <p className="supporting-note supporting-note--icon">
           <AppIcon icon={ShieldCheck} className="supporting-note__icon supporting-note__icon--assuring" />
-          <span>
-            {t("settings.privacy")}
-            {/* What is on this device and when it was last saved off it, so
-                the promise above has something to show for itself. */}
-            {loggedDayCount > 0 ? (
-              <span className="data-summary">
-                {t("settings.dataSummary", { n: loggedDayCount })}
-                {" · "}
-                {lastBackupOn
-                  ? // Non-breaking spaces keep the date on one line; the rest may wrap.
-                    t("settings.lastBackup", { date: formatShortDate(lastBackupOn, locale).replaceAll(" ", "\u00a0") })
-                  : t("settings.noBackup")}
-              </span>
-            ) : null}
-          </span>
+          {/* Once there is data, the promise and its proof share one line:
+              what is here, that it isn't uploaded, and when it was last saved. */}
+          {loggedDayCount > 0 ? (
+            <span className="data-summary">
+              {t("settings.dataSummary", { n: loggedDayCount })}
+              {" · "}
+              {lastBackupOn
+                ? // Non-breaking spaces keep the date on one line; the rest may wrap.
+                  t("settings.lastBackup", { date: formatShortDate(lastBackupOn, locale).replaceAll(" ", "\u00a0") })
+                : t("settings.noBackup")}
+            </span>
+          ) : (
+            <span>{t("settings.privacy")}</span>
+          )}
         </p>
       </header>
       <div className="settings-group settings-group--compact">
         <div className="data-group">
           <div className="data-actions">
-            <button type="button" className="secondary-action" onClick={handleExport}>
+            <button
+              type="button"
+              className="secondary-action secondary-action--hinted"
+              aria-describedby="export-hint"
+              onClick={handleExport}
+            >
               <span className="button-label">
                 <AppIcon icon={Download} className="button-icon" />
                 <span>{t("settings.export")}</span>
+              </span>
+              {/* Hidden from the name, so it matches the visible label; read as the description. */}
+              <span id="export-hint" className="button-hint" aria-hidden="true">
+                {t("settings.exportHint")}
               </span>
             </button>
             <button
               id="import"
               type="button"
-              className="secondary-action"
+              className="secondary-action secondary-action--hinted"
               disabled={readOnly}
               aria-describedby={readOnly ? "newer-data-notice" : "import-sources"}
               onClick={() => {
@@ -289,13 +304,12 @@ export function DataSection({ today }: DataSectionProps) {
                 <AppIcon icon={Upload} className="button-icon" />
                 <span>{t("settings.import")}</span>
               </span>
+              {/* Someone arriving from Clue or Flo sees that Import is their way in. */}
+              <span id="import-sources" className="button-hint" aria-hidden="true">
+                {t("settings.importSources")}
+              </span>
             </button>
           </div>
-          {/* Someone arriving from Clue or Flo should see that Import is their
-              way in without opening a popover. */}
-          <p id="import-sources" className="supporting-note">
-            {t("settings.importSources")}
-          </p>
           <input
             ref={fileInput}
             type="file"
@@ -311,6 +325,44 @@ export function DataSection({ today }: DataSectionProps) {
         {/* Nothing to put in a calendar until there is a forecast. */}
         {expectedCycles.length > 0 ? (
           <div className="data-group">
+            {/* The swatches are the calendar legend's own, so each row shows
+                what it adds to the calendar app. */}
+            {/* biome-ignore lint/a11y/useSemanticElements: a labelled div group, as in ThemeSection; <fieldset> brings unwanted default styling. */}
+            <div className="settings-row calendar-export__row" role="group" aria-labelledby="calendar-periods">
+              <span className="settings-label calendar-export__label">
+                <i className="calendar-legend__swatch calendar-legend__swatch--predicted" aria-hidden="true" />
+                <span id="calendar-periods">{t("settings.calendarPeriods")}</span>
+              </span>
+              <div className="segmented segmented--count">
+                {CALENDAR_COUNTS.map((count) => (
+                  <button
+                    key={count}
+                    type="button"
+                    className={calendarCount === count ? "segmented__option is-active" : "segmented__option"}
+                    aria-pressed={calendarCount === count}
+                    onClick={() => setCalendarCount(count)}
+                  >
+                    {count}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {showFertility ? (
+              <div className="settings-row settings-row--switch calendar-export__row">
+                <span className="settings-label calendar-export__label">
+                  <i className="calendar-legend__swatch calendar-legend__swatch--fertile" aria-hidden="true" />
+                  <span id="calendar-fertile">{t("settings.calendarFertility")}</span>
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={calendarFertile}
+                  aria-labelledby="calendar-fertile"
+                  className="switch"
+                  onClick={() => setCalendarFertile(!calendarFertile)}
+                />
+              </div>
+            ) : null}
             <button
               type="button"
               className="secondary-action"
@@ -323,18 +375,8 @@ export function DataSection({ today }: DataSectionProps) {
               </span>
             </button>
             <p id="calendar-help" className="supporting-note">
-              {t("settings.calendarHelp", { n: CALENDAR_CYCLES })}
+              {t("settings.calendarHelp")}
             </p>
-            {showFertility ? (
-              <label className="checkbox-row">
-                <input
-                  type="checkbox"
-                  checked={calendarFertile}
-                  onChange={(event) => setCalendarFertile(event.target.checked)}
-                />
-                <span>{t("settings.calendarFertility")}</span>
-              </label>
-            ) : null}
             {feedback("calendar")}
           </div>
         ) : null}
