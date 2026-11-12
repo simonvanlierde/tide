@@ -50,6 +50,13 @@ range 3.13 to 6.13 ms. The small forecast difference flipped direction (6.97 to 
 shows neither a speed-up nor a regression. Correctness and the bundle budget are the release
 gates; timing isn't.
 
+A later check on 12 November ran with less load on the host (load average about 2 to 4), with
+the same fixture and CPU, in both orders. At twenty years, the duration median fell from 2.90 to
+1.26 ms and range logging rose from 2.92 to 5.45 ms. The forecast median rose from 5.00 to 5.55 ms
+in both orders, because 0.5.0 also builds the timeline and statistics that 0.4.0 didn't return.
+One-year operations stayed under 0.3 ms. Both versions passed the same assertions. This confirms
+the faster duration and the slower range logging; it doesn't measure browser or phone latency.
+
 ## Known costs
 
 Range logging reconciles the history once, however many days it adds; a test checks that.

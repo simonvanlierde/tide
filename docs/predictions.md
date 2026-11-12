@@ -43,7 +43,7 @@ end clears the mark, so it can't move to a different cycle. Backups keep the mar
 
 ## Calendar file
 
-**Settings → Data → Add to calendar** saves your next 3 expected period starts as all-day
+**Settings → Data → Add to calendar** saves your next 3, 6 or 12 expected period starts (3 by default) as all-day
 events in an `.ics` file, made on your device. The events are marked private and don't show you
 as busy. The private flag doesn't encrypt them: who sees them depends on your calendar's sharing
 settings.

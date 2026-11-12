@@ -89,8 +89,9 @@ Without the token, the deploy jobs skip with a notice.
 
 To roll back, revert the commit on `main`, or re-run an earlier production job while its build
 artifact still exists (7 days). The build you roll back to must read the stored schema.
-Don't deploy 0.4.0 over newer data without a recovery plan: it predates the newer-schema
-protection and can drop fields added since.
+Version 0.4.0 can't read the storage that 0.5.0 copies your data into, so a rollback to it shows
+only the old copy, without later logs or diary entries. Export current data before a rollback.
+[Upgrading an existing installation](backups.md#upgrading-an-existing-installation) explains the copy and older tabs.
 
 ### Pull request previews
 

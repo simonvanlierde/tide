@@ -15,7 +15,7 @@ const SETTLE_MS = 3_000;
 // What the app itself keeps on a first visit, named so that anything new fails here:
 // the saved state and the offline shell (a service worker and its precache).
 // docs/privacy.md has to say the same.
-const OWN_STORAGE = { localStorage: ["tide.period-tracker.state"], cachePrefix: "workbox-precache" };
+const OWN_STORAGE = { localStorage: ["tide.period-tracker.state.v1"], cachePrefix: "workbox-precache" };
 
 for (const path of ROUTES) {
   test(`${path} sets no cookies, stores nothing and loads only its own files`, async ({ page, context }) => {

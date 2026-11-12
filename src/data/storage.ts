@@ -1,5 +1,5 @@
 import type { AppState } from "../domain/types";
-import { defaultAppState, normalizeAppState, SCHEMA_VERSION, STORAGE_KEY } from "./schema";
+import { defaultAppState, LEGACY_STORAGE_KEY, normalizeAppState, SCHEMA_VERSION, STORAGE_KEY } from "./schema";
 
 // biome-ignore lint/performance/noBarrelFile: intentional re-export of the public storage key
 export { STORAGE_KEY } from "./schema";
@@ -18,6 +18,14 @@ export function loadStoredState(): StoredState {
   let raw: string | null;
   try {
     raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw === null) {
+      raw = window.localStorage.getItem(LEGACY_STORAGE_KEY);
+      // Copy before normalization: even a newer schema must survive untouched.
+      // Keep the old copy until Delete; older tabs still write only that key.
+      if (raw !== null && !setItemSafely(STORAGE_KEY, raw)) {
+        return { state: defaultAppState, readOnly: false, recoveryRequired: true };
+      }
+    }
   } catch {
     // Storage blocked (site data disabled): run with defaults, nothing to back up.
     return { state: defaultAppState, readOnly: false };
@@ -59,7 +67,7 @@ export function loadStoredState(): StoredState {
 // blocked. For the crash screen, which must not depend on parsing it.
 export function loadRawAppState(): string | null {
   try {
-    return window.localStorage.getItem(STORAGE_KEY);
+    return window.localStorage.getItem(STORAGE_KEY) ?? window.localStorage.getItem(LEGACY_STORAGE_KEY);
   } catch {
     return null;
   }
@@ -77,10 +85,14 @@ function serialize(state: AppState) {
 // which nothing else ever surfaces.
 export function clearAppState() {
   try {
-    window.localStorage.removeItem(STORAGE_KEY);
+    // Keep a current record so an older tab cannot resurrect deleted history.
+    window.localStorage.setItem(STORAGE_KEY, serialize(defaultAppState));
     window.localStorage.removeItem(BACKUP_KEY);
+    window.localStorage.removeItem(LEGACY_STORAGE_KEY);
+    window.localStorage.removeItem(`${LEGACY_STORAGE_KEY}.backup`);
+    return true;
   } catch {
-    // Storage blocked: nothing was ever written, so there is nothing to clear.
+    return false;
   }
 }
 

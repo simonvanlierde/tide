@@ -1,9 +1,84 @@
 import { describe, expect, it, vi } from "vitest";
 import { defaultAppState, SCHEMA_VERSION } from "../../src/data/schema";
-import { BACKUP_KEY, clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../../src/data/storage";
+import {
+  BACKUP_KEY,
+  clearAppState,
+  loadRawAppState,
+  loadStoredState,
+  STORAGE_KEY,
+  saveAppState,
+} from "../../src/data/storage";
 import { createAppState } from "../support/app";
 
 describe("local storage", () => {
+  const legacyKey = "tide.period-tracker.state";
+
+  it("isolates current records from writes by older tabs after copying legacy data", () => {
+    const state = createAppState({
+      detailsByDay: { "2026-04-02": { symptoms: null, mood: null, note: "Keep this note" } },
+    });
+    const raw = JSON.stringify({ schemaVersion: SCHEMA_VERSION, ...state });
+    localStorage.setItem(legacyKey, raw);
+    expect(STORAGE_KEY).toBe("tide.period-tracker.state.v1");
+    expect(loadStoredState().state).toEqual(state);
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);
+    localStorage.setItem(legacyKey, JSON.stringify(createAppState()));
+    expect(loadStoredState().state).toEqual(state);
+  });
+
+  it("preserves a newer legacy blob byte for byte and opens it read-only", () => {
+    const raw = JSON.stringify({ schemaVersion: SCHEMA_VERSION + 1, future: "keep", ...createAppState() });
+    localStorage.setItem(legacyKey, raw);
+    expect(loadStoredState().readOnly).toBe(true);
+    expect(localStorage.getItem("tide.period-tracker.state.v1")).toBe(raw);
+    expect(localStorage.getItem(legacyKey)).toBe(raw);
+  });
+
+  it("stops and offers the legacy raw data when its protected copy cannot be saved", () => {
+    const raw = JSON.stringify({ schemaVersion: SCHEMA_VERSION, ...createAppState({ periodDays: ["2026-04-02"] }) });
+    localStorage.setItem(legacyKey, raw);
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+    try {
+      expect(loadStoredState().recoveryRequired).toBe(true);
+      expect(loadRawAppState()).toBe(raw);
+      expect(localStorage.getItem(legacyKey)).toBe(raw);
+      expect(localStorage.getItem("tide.period-tracker.state.v1")).toBeNull();
+    } finally {
+      setItem.mockRestore();
+    }
+  });
+
+  it.each(["broken", ""])("never falls back to legacy when the current record is present (%s)", (raw) => {
+    localStorage.setItem(legacyKey, JSON.stringify(createAppState({ periodDays: ["2026-04-02"] })));
+    localStorage.setItem("tide.period-tracker.state.v1", raw);
+    expect(loadStoredState().state).toEqual(defaultAppState);
+    expect(loadRawAppState()).toBe(raw);
+  });
+
+  it("clears both generations and keeps an empty current record against legacy resurrection", () => {
+    const raw = JSON.stringify(createAppState({ periodDays: ["2026-04-02"] }));
+    for (const key of [legacyKey, `${legacyKey}.backup`, STORAGE_KEY, BACKUP_KEY]) localStorage.setItem(key, raw);
+    expect(clearAppState()).toBe(true);
+    for (const key of [legacyKey, `${legacyKey}.backup`, BACKUP_KEY]) expect(localStorage.getItem(key)).toBeNull();
+    localStorage.setItem(legacyKey, raw);
+    expect(loadStoredState().state).toEqual(defaultAppState);
+  });
+
+  it("preserves legacy data if the empty current record cannot be saved during deletion", () => {
+    const raw = JSON.stringify(createAppState({ periodDays: ["2026-04-02"] }));
+    localStorage.setItem(legacyKey, raw);
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("quota", "QuotaExceededError");
+    });
+    try {
+      expect(clearAppState()).toBe(false);
+      expect(localStorage.getItem(legacyKey)).toBe(raw);
+    } finally {
+      setItem.mockRestore();
+    }
+  });
   it("round-trips undismissed fresh-install guidance without a migration backup", () => {
     expect(loadStoredState().state).toEqual(defaultAppState);
     saveAppState(defaultAppState);

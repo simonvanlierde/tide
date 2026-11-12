@@ -39,6 +39,30 @@ test("logging today persists across reload", async ({ page }) => {
   await expect(page.getByRole("button", { name: translate("en", "calendar.notBleeding"), exact: true })).toBeVisible();
 });
 
+test("a failed backup stays visible inside the delete dialog and can be retried", async ({ page }) => {
+  await seedAppState(page);
+  await page.goto("/settings");
+  await page.evaluate(() => {
+    const createObjectURL = URL.createObjectURL;
+    URL.createObjectURL = () => {
+      URL.createObjectURL = createObjectURL;
+      throw new Error("download blocked");
+    };
+  });
+  await page.getByRole("button", { name: "Delete all data" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog.getByRole("button", { name: "Cancel" })).toBeFocused();
+  await dialog.getByRole("button", { name: "Download a backup first" }).click();
+  await expect(dialog.getByRole("alert")).toHaveText("The backup couldn't be downloaded. Try again.");
+  const download = page.waitForEvent("download");
+  await dialog.getByRole("button", { name: "Download a backup first" }).click();
+  await download;
+  await expect(dialog.getByRole("alert")).toHaveCount(0);
+  await expect(dialog.getByRole("status")).toContainText("Backup saved");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect(page.getByText("5 days, only on this device")).toBeVisible();
+});
+
 test("deep links reload correctly for the static app paths", async ({ page }) => {
   await page.goto("/calendar");
   await expect(page.getByLabel(/calendar/i)).toBeVisible();
@@ -107,7 +131,7 @@ test("the fertility question is accessible and its answer is saved", async ({ pa
   await expect(question).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
-  const saved = await page.evaluate(() => localStorage.getItem("tide.period-tracker.state"));
+  const saved = await page.evaluate(() => localStorage.getItem("tide.period-tracker.state.v1"));
   expect(JSON.parse(saved ?? "{}").settings.showFertility).toBe(true);
 });
 

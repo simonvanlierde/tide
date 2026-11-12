@@ -43,7 +43,9 @@ for (const language of SUPPORTED_LANGUAGES) {
       expect((logBox?.y ?? 0) + (logBox?.height ?? 0)).toBeLessThan(tabs?.y ?? 0);
       await log.click();
       await expect(page.getByRole("radio").first()).toBeFocused();
-      const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}"));
+      const stored = await page.evaluate(() =>
+        JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}"),
+      );
       expect(stored.intensityByDay["2026-04-15"]).toBeDefined();
     });
   }

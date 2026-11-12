@@ -40,7 +40,7 @@ out: import it to bring your history, export it to leave.
   Chrome and desktop Chromium, and works offline.
 - There are three screens behind a bottom tab bar: Today, Calendar, Settings.
 - Today asks you to log when a period is expected or overdue and the day isn't logged yet.
-- State lives in `localStorage` under `tide.period-tracker.state`. The theme is picked
+- State lives in `localStorage`; [`src/data/schema.ts`](src/data/schema.ts) names its key. The theme is picked
   before the first paint, so the app never flashes the wrong one.
 - A skippable introduction covers on-device storage, import, optional fertility estimates,
   home-screen installation and backups. Calendar has a hint until the first bleeding log there.

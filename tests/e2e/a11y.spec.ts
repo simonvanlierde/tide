@@ -60,7 +60,9 @@ for (const colorScheme of ["light", "dark"] as const) {
       await expect(note).toBeVisible();
       await expect(note).toHaveValue("A quiet day.");
       expect(
-        await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+        await page.evaluate(
+          () => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay,
+        ),
       ).toEqual({ "2026-04-14": "medium" });
       await page.getByRole("button", { name: "Close", exact: true }).click();
       await expect(note).toHaveCount(0);

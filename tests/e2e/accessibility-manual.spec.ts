@@ -60,7 +60,7 @@ test("delete confirmation cancels with Escape and preserves data", async ({ page
   await expect(page.getByRole("button", { name: translate("en", "common.cancel"), exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(trigger).toBeFocused();
-  const state = await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}"));
+  const state = await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}"));
   expect(Object.keys(state.intensityByDay)).toHaveLength(5);
 });
 

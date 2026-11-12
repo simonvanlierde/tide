@@ -8,6 +8,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [0.5.0] - 2026-11-12
 
+Existing installations copy their data into separate browser storage automatically.
+Reload older Tide tabs before logging more days: changes in those tabs after the copy will not reach the updated app.
+See the [upgrade guide](docs/backups.md#upgrading-an-existing-installation) for recovery and deletion details.
+
 ### Added
 
 - Record optional symptoms, mood and a short note for today or a past day,
@@ -66,8 +70,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Backup failures appear inside Delete and Replace dialogs, where you can retry before continuing.
+  Delete also offers a backup when you have daily details without bleeding logs.
 - Today moves to the new date at midnight even if the device clock was corrected that evening.
-- Older tabs cannot overwrite state saved by a newer build. Delete and import recheck concurrent
+- Older tabs, including 0.4.0, cannot erase newer records or repeatedly rewrite the updated app's data. Delete and import recheck concurrent
   changes; loading incomplete or unreadable data preserves a recovery copy.
 - Blocked or full storage produces a warning with a way to export a backup.
   A failed import-reader download offers a retry instead of leaving the import unanswered.

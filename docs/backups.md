@@ -69,6 +69,15 @@ Schema 3 added incomplete-cycle markers and local backup dates; schema 4 added i
 Schema 5 adds device-local introduction and Calendar guidance flags; existing installations skip both hints.
 Newer local-storage data opens read-only rather than being overwritten. A raw crash-recovery download preserves the stored blob without normalization.
 
+### Upgrading an existing installation
+
+Tide copies your existing data into separate browser storage on the first visit after this update.
+An older tab can no longer overwrite the updated app's diary entries. Reload older tabs before logging more days;
+changes made in them after the copy do not reach the updated app.
+The old copy and its recovery backup remain on this device until **Delete all data** clears both generations.
+If the copy fails, the recovery screen offers the original data as a download.
+The JSON backup format stays at schema 5.
+
 ## Other imports and calendar files
 
 A Tide JSON restore replaces bleeding history, diary entries, incomplete markers and portable settings.

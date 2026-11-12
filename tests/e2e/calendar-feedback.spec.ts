@@ -43,7 +43,7 @@ test("Calendar range receipt updates atomically and expires without removing the
   await expect(page.getByRole("button", { name: /^Edit April 15, 2026/ })).toBeVisible();
   expect(
     await page.evaluate(
-      () => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay["2026-04-15"],
+      () => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay["2026-04-15"],
     ),
   ).toBeNull();
   await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(4);
