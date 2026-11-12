@@ -114,11 +114,12 @@
     width: 16px;
     height: 16px;
   }
-  /* Three moods share the row evenly, each with its weather. */
+  /* Keep mood labels whole and wrap their controls before splitting a long word. */
   .diary-chip--mood {
-    flex: 1 1 0;
+    flex: 1 1 max-content;
     justify-content: center;
-    min-width: max-content;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   .diary-chip__mood-icon {
     width: 18px;
@@ -193,11 +194,16 @@
 
 @layer ui {
   .day-editor,
+  .day-editor__body,
   .diary-fields {
     display: grid;
     gap: 18px;
     min-width: 0;
     text-align: start;
+  }
+  .day-editor__body {
+    grid-auto-rows: max-content;
+    align-content: start;
   }
   .day-editor__head {
     display: flex;
@@ -222,6 +228,9 @@
     justify-self: start;
     min-height: 44px;
     margin-top: -12px;
+    height: auto;
+    padding-block: 10px;
+    text-align: start;
   }
   .day-editor__details {
     min-width: 0;
@@ -245,5 +254,52 @@
   .day-editor button:disabled {
     cursor: not-allowed;
     opacity: 0.65;
+  }
+
+  @media (max-width: 600px) and (min-height: 480px) {
+    .day-editor[data-floating="true"] {
+      position: fixed;
+      z-index: 3;
+      inset-inline: max(12px, env(safe-area-inset-left)) max(12px, env(safe-area-inset-right));
+      bottom: var(--day-editor-bottom, calc(5rem + env(safe-area-inset-bottom) + 8px));
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 432px;
+      max-height: min(50dvh, var(--day-editor-available-height, 50dvh));
+      margin: 0 auto;
+      padding: 0;
+      border: 0;
+      background: var(--surface-soft);
+      box-shadow: 0 -6px 28px rgb(0 0 0 / 0.16);
+    }
+    .day-editor__head {
+      flex: 0 0 auto;
+      padding: 14px;
+    }
+    .day-editor__body {
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+      min-height: 0;
+      padding: 0 14px 14px;
+    }
+    @supports (scrollbar-color: auto) {
+      .day-editor__body {
+        scrollbar-color: var(--ink-muted) var(--surface-soft);
+      }
+    }
+    @supports (scrollbar-width: thin) {
+      .day-editor__body {
+        scrollbar-width: thin;
+      }
+    }
+  }
+}
+
+@layer shell {
+  @media (max-width: 600px) and (min-height: 480px) {
+    .app-shell:has(.day-editor[data-floating="true"]) .app-main {
+      padding-bottom: calc(46px + 3rem + env(safe-area-inset-bottom) + var(--day-editor-height, 0px) + 16px);
+    }
   }
 }

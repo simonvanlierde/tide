@@ -345,7 +345,7 @@ Both actions remain above the tabs on a short phone during first use.
 narrower than 23em it keeps only its icon. A tide dot marks a day that has details.
 It opens the same editor with **More details** expanded, without logging bleeding.
 
-The editor replaces Today's log line and opens below Calendar's legend. One heading
+On larger screens the editor replaces Today's log line and opens below Calendar's legend. One heading
 names the date; flow comes first, with "Not bleeding that day" to remove a log.
 Symptoms, mood and notes sit under a native **More details** disclosure. Chips save on
 tap and notes save as you type. Clearing details offers Undo. The top-right × and Escape
@@ -357,7 +357,13 @@ closed, any available day opens it without recording bleeding.
 Logging is explicit inside the panel. A notebook icon marks a day with saved details;
 diary-only days open with their details expanded. The note counter and save status share
 one compact footer row; no empty action rows reserve space.
-Both screens use the same inset surface and controls.
+Both screens use the same controls. On phone viewports up to 600 px wide and at least 480 px
+high, the editor floats above the tab bar as a nonmodal sheet. Its dated header and × stay
+visible while expanded details scroll inside the body. Calendar days remain tappable, with
+the selected week revealed above the sheet. The sheet accounts for the tab bar's actual
+height, safe areas and the visual viewport when the keyboard opens. Larger screens and very
+short landscape windows retain the inset panel. Enlarged text may require inner scrolling;
+controls stay reachable rather than being compressed to fit.
 
 ### Chips
 

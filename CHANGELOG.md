@@ -39,6 +39,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Fertile days are periwinkle and ovulation is gold. Optional dial motion respects reduced motion.
 - Daily details save as you edit. Notes show a character count; optional symptoms and mood
   sit under “More details”. One close control replaces Done and ×; empty footer rows are removed.
+  On phones, Today and Calendar use a bottom sheet with a visible date and close control;
+  expanded details scroll inside it while the Calendar remains interactive.
   Range-log confirmations expire after ten seconds, pausing on hover or focus.
 - All five languages use [Lingui PO catalogs](README.md#translations) bundled for offline switching.
   Wording and narrow-screen layouts are clearer in Dutch, German, French and Spanish.
@@ -66,6 +68,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   wrap instead of pushing destinations offscreen on narrow phones.
 - Switches have sufficient contrast in both themes. Flow levels, theme choices, insights and
   translated labels fit narrow phones and enlarged text without hiding behind the tabs.
+- The background stays anchored to the viewport when switching between short and long screens.
 
 ### Security
 

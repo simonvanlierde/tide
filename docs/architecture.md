@@ -79,6 +79,11 @@ bleeding data; logging is explicit inside it. While open, date changes keep the 
 state. Notebook icons identify saved details, replacing a separate date-history list.
 The close button and Escape dismiss the editor; changes save as they happen.
 Diary fields remount by date to clear saved/Undo feedback independently of the disclosure.
+On portrait phone viewports, the editor floats above the measured tab bar without blocking
+the Calendar. Its header stays visible while its body scrolls. Resize and visual-viewport
+events keep it within the available space; the Calendar reveals the selected day above it.
+Larger screens and short landscape windows retain the inline layout. Escape also closes the
+editor after focus returns to the surrounding screen.
 
 Calendar captures the forecast date before dispatching a range log and derives its
 confirmation in the same render. Its in-memory receipt expires after ten seconds without

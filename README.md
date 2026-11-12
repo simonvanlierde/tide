@@ -72,6 +72,9 @@ Undo. Today and Calendar share the same dated panel for flow and optional **More
 Tap a Calendar day to open it; choosing a date never logs bleeding. Use **Log bleeding**
 inside the panel when needed. A notebook icon marks saved details, including days without
 bleeding; those entries open their details directly. **×** or Escape closes the panel.
+On phones, the panel sits above the tabs while the selected Calendar day or Today's forecast
+stays visible. Expanded details scroll inside it; larger screens and short landscape windows
+keep the inline panel.
 Range-log confirmations clear after ten seconds, pausing on hover or when Undo has focus.
 
 ## Development

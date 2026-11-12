@@ -50,6 +50,8 @@ out: import it to bring your history, export it to leave.
   They are included in Tide backups and do not affect predictions.
 - Calendar dates open the shared editor without recording bleeding. Notebook icons mark saved
   details, including diary-only days; logging bleeding is an explicit action inside the panel.
+- On phones, Today and Calendar share a bottom sheet with a visible date and close control.
+  The Calendar remains interactive above it; optional details scroll inside the sheet.
 - It runs at <https://tide.duinlab.nl> (Cloudflare; see `wrangler.jsonc`).
 
 ## Capabilities and Constraints

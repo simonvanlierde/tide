@@ -8,6 +8,17 @@ import { createAppState, createLearnedCycleState, renderWithAppState } from "../
 const originalAnimate = HTMLElement.prototype.animate;
 
 describe("CalendarScreen", () => {
+  it("closes the editor with Escape after focus returns to the grid", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<CalendarScreen today="2026-04-18" />, { state: createAppState() });
+    const day = screen.getByRole("button", { name: /edit april 12, 2026/i });
+    await user.click(day);
+    day.focus();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("button", { name: /^close$/i })).not.toBeInTheDocument();
+    expect(day).toHaveFocus();
+  });
+
   afterEach(() => {
     HTMLElement.prototype.animate = originalAnimate;
     vi.restoreAllMocks();

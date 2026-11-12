@@ -16,6 +16,15 @@ interface CalendarScreenProps {
   today?: IsoDate;
 }
 
+function revealDate(cell: HTMLElement, panel: HTMLElement) {
+  if (getComputedStyle(panel).position !== "fixed") return;
+  const bounds = (cell.closest("tr") ?? cell).getBoundingClientRect();
+  const top = (window.visualViewport?.offsetTop ?? 0) + 12;
+  const bottom = panel.getBoundingClientRect().top - 12;
+  if (bounds.bottom > bottom) window.scrollBy({ top: bounds.bottom - bottom, behavior: "instant" });
+  else if (bounds.top < top) window.scrollBy({ top: bounds.top - top, behavior: "instant" });
+}
+
 export function CalendarScreen(props: CalendarScreenProps) {
   const liveToday = useToday();
   const today = props.today ?? liveToday;
@@ -27,6 +36,44 @@ export function CalendarScreen(props: CalendarScreenProps) {
   const touchStart = useRef<{ x: number; y: number } | null>(null);
   const wantPinpoint = useRef(false);
   const [editorSection, setEditorSection] = useState<"bleeding" | "details">("bleeding");
+
+  useEffect(() => {
+    if (!log.selectedDay) return;
+    const panel = articleRef.current?.querySelector<HTMLElement>(".day-editor");
+    const cell =
+      articleRef.current?.querySelectorAll<HTMLElement>(".calendar-grid__day")[
+        days.findIndex((entry) => entry.value === log.selectedDay)
+      ];
+    if (!panel || !cell) return;
+    const viewport = window.visualViewport;
+    let frame = 0;
+    function scheduleReveal() {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const focused = document.activeElement?.closest<HTMLElement>(".calendar-grid__day");
+        if (cell && panel) revealDate(focused ?? cell, panel);
+      });
+    }
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(scheduleReveal);
+    observer?.observe(panel);
+    // Position and page padding can change without resizing the sheet.
+    const layout = new MutationObserver(scheduleReveal);
+    layout.observe(panel, { attributes: true, attributeFilter: ["style"] });
+    const shell = panel.closest(".app-shell");
+    if (shell) layout.observe(shell, { attributes: true, attributeFilter: ["style"] });
+    scheduleReveal();
+    window.addEventListener("resize", scheduleReveal);
+    viewport?.addEventListener("resize", scheduleReveal);
+    viewport?.addEventListener("scroll", scheduleReveal);
+    return () => {
+      observer?.disconnect();
+      layout.disconnect();
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", scheduleReveal);
+      viewport?.removeEventListener("resize", scheduleReveal);
+      viewport?.removeEventListener("scroll", scheduleReveal);
+    };
+  }, [days, log.selectedDay]);
 
   // Pop the today cell so people see exactly where they landed after "Today".
   // goToToday changes the month inside a transition, so wait for the current
@@ -114,6 +161,20 @@ export function CalendarScreen(props: CalendarScreenProps) {
   // left alone — the flow gauge is a radiogroup that owns them. Skip the picker's
   // month/year dropdowns, which handle their own keys.
   function handleKeyDown(event: KeyboardEvent) {
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Home", "End", "Tab"].includes(event.key)) {
+      requestAnimationFrame(() => {
+        const cell = document.activeElement?.closest<HTMLElement>(".calendar-grid__day");
+        const panel = articleRef.current?.querySelector<HTMLElement>(".day-editor");
+        if (cell && panel) revealDate(cell, panel);
+      });
+    }
+    if (event.key === "Escape" && log.selectedDay) {
+      event.preventDefault();
+      const day = log.selectedDay;
+      log.closePicker();
+      focusDay(day);
+      return;
+    }
     if (
       event.target instanceof HTMLInputElement ||
       event.target instanceof HTMLSelectElement ||
