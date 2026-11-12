@@ -966,11 +966,6 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Wrap at the dot, never inside a date. */
-  .data-summary > span {
-    white-space: nowrap;
-  }
-
   /* The delete row sits flush under its hairline; the 44px target pads it. */
   .data-group + .data-group--danger {
     padding-top: 4px;
