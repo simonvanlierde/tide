@@ -1,6 +1,8 @@
+import { NotebookPen } from "lucide-react";
 import { type KeyboardEvent, useMemo, useState } from "react";
 import type { DayEstimate, IsoDate } from "../../domain/types";
 import { useLocale, useT } from "../../state/provider";
+import { AppIcon } from "../../ui/icons";
 import { formatLongDate, getWeekdayLabels, parseIsoDate } from "../../utils/date";
 import type { CalendarCell } from "./calendar";
 
@@ -19,12 +21,10 @@ const MARKER_LABEL_KEY: Record<DayEstimate, string> = {
 interface CalendarGridProps {
   days: CalendarCell[];
   selectedDay: IsoDate | null;
-  justLoggedDay: IsoDate | null;
-  editing: boolean;
   onSelectDay: (day: IsoDate) => void;
 }
 
-export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSelectDay }: CalendarGridProps) {
+export function CalendarGrid({ days, selectedDay, onSelectDay }: CalendarGridProps) {
   const t = useT();
   const locale = useLocale();
   const weekdays = useMemo(() => {
@@ -41,7 +41,7 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
   // it is a wall. The stop is the selected day, else today, else the first
   // loggable day.
   const [focusedDay, setFocusedDay] = useState<IsoDate | null>(null);
-  const loggableDays = days.filter((day) => !day.isFuture || day.isLogged);
+  const loggableDays = days.filter((day) => !day.isFuture || day.isLogged || day.hasDetails);
   const tabStop =
     [focusedDay, selectedDay].find((day) => day && loggableDays.some((entry) => entry.value === day)) ??
     loggableDays.find((day) => day.isToday)?.value ??
@@ -65,7 +65,7 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
     }
     event.preventDefault();
     const day = days[target];
-    if (!day || (day.isFuture && !day.isLogged)) {
+    if (!day || (day.isFuture && !day.isLogged && !day.hasDetails)) {
       return;
     }
     setFocusedDay(day.value);
@@ -108,7 +108,6 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
               const className = [
                 "calendar-grid__day",
                 isLogged ? "is-logged" : "",
-                value === justLoggedDay ? "is-just-logged" : "",
                 flow ? `is-flow-${flow}` : "",
                 day.isToday ? "is-today" : "",
                 isSelected ? "is-selected" : "",
@@ -118,13 +117,19 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
               ]
                 .filter(Boolean)
                 .join(" ");
-              const dayLabel = `${t(isLogged || editing ? "calendar.edit" : "calendar.log")} ${formatLongDate(value, locale)}`;
+              const dayLabel = `${t("calendar.edit")} ${formatLongDate(value, locale)}`;
               // A logged future day (clock moved back, or imported) stays
               // removable; only logging a new future day is blocked.
-              const isUnavailable = day.isFuture && !isLogged;
+              const isUnavailable = day.isFuture && !isLogged && !day.hasDetails;
               const dateLabel = isUnavailable ? t("calendar.dayUnavailable", { label: dayLabel }) : dayLabel;
               // Flow is otherwise colour-only, so name it for screen readers.
-              const detail = flow ? t(`flow.${flow}`) : marker ? t(MARKER_LABEL_KEY[marker]) : undefined;
+              const detail = [
+                flow ? t(`flow.${flow}`) : marker ? t(MARKER_LABEL_KEY[marker]) : null,
+                day.cycleDay ? `${t("legend.cycleDay")} ${day.cycleDay}` : null,
+                day.hasDetails ? t("diary.details") : null,
+              ]
+                .filter(Boolean)
+                .join(", ");
 
               return (
                 <td key={day.key} className="calendar-grid__cell">
@@ -147,12 +152,14 @@ export function CalendarGrid({ days, selectedDay, justLoggedDay, editing, onSele
                     onClick={() => onSelectDay(value)}
                   >
                     {parseIsoDate(value).getUTCDate()}
-                    {day.cycleDay ? (
-                      <span className="calendar-grid__period-day" aria-hidden="true">
-                        {day.cycleDay}
-                      </span>
-                    ) : null}
+                    {day.hasDetails ? <AppIcon icon={NotebookPen} className="calendar-grid__details-marker" /> : null}
                   </button>
+                  {/* The cycle count annotates the cell; the date labels its button. */}
+                  {day.cycleDay ? (
+                    <span className="calendar-grid__period-day" aria-hidden="true">
+                      {day.cycleDay}
+                    </span>
+                  ) : null}
                 </td>
               );
             })}

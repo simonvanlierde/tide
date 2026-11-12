@@ -12,7 +12,7 @@
     *,
     *::before,
     *::after {
-      transition-duration: 0.01ms;
+      transition-duration: 0s;
       animation-duration: 0.01ms;
       scroll-behavior: auto;
     }

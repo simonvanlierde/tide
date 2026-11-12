@@ -5,7 +5,7 @@ const history = Object.fromEntries(
   ["2026-03-05", "2026-03-06", "2026-04-02", "2026-04-03"].map((day) => [day, "medium"]),
 );
 
-test("Calendar receipt updates atomically and expires without removing the log", async ({ page }) => {
+test("Calendar range receipt updates atomically and expires without removing the log", async ({ page }) => {
   await page.clock.install({ time: FIXED_NOW });
   await seedAppState(page, "en", {}, history);
   await page.goto("/calendar");
@@ -26,13 +26,17 @@ test("Calendar receipt updates atomically and expires without removing the log",
       characterDataOldValue: true,
     });
   });
-  await page.getByRole("button", { name: /^Log April 15, 2026/ }).click();
+  await page.getByRole("button", { name: "Log a past period", exact: true }).click();
+  await page.getByRole("button", { name: /April 14, 2026/ }).click();
+  await page.getByRole("button", { name: /April 15, 2026/ }).click();
   const receipt = page.locator(".calendar__help[role=status]");
-  await expect(receipt).toHaveText("Logged Wed, Apr 15. Forecast updated. Undo");
+  await expect(receipt).toHaveText("Logged Tue, Apr 14 – Wed, Apr 15. Forecast updated. Undo");
   const statuses = await page.evaluate(() => (window as unknown as { calendarStatuses: string[] }).calendarStatuses);
-  expect(statuses.filter((text) => text.includes("Logged Wed, Apr 15."))).not.toEqual([]);
+  expect(statuses.filter((text) => text.includes("Logged Tue, Apr 14 – Wed, Apr 15."))).not.toEqual([]);
   expect(
-    statuses.filter((text) => text.includes("Logged Wed, Apr 15.") && !text.includes("Forecast updated.")),
+    statuses.filter(
+      (text) => text.includes("Logged Tue, Apr 14 – Wed, Apr 15.") && !text.includes("Forecast updated."),
+    ),
   ).toEqual([]);
   await page.clock.fastForward(10000);
   await expect(receipt).not.toBeVisible();
@@ -42,13 +46,16 @@ test("Calendar receipt updates atomically and expires without removing the log",
       () => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay["2026-04-15"],
     ),
   ).toBeNull();
+  await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(4);
 });
 
 test("Calendar Undo stays while hovered or focused and expires after leaving both", async ({ page }) => {
   await page.clock.install({ time: FIXED_NOW });
   await seedAppState(page, "en", {}, history);
   await page.goto("/calendar");
-  await page.getByRole("button", { name: /^Log April 15, 2026/ }).click();
+  await page.getByRole("button", { name: "Log a past period", exact: true }).click();
+  await page.getByRole("button", { name: /April 14, 2026/ }).click();
+  await page.getByRole("button", { name: /April 15, 2026/ }).click();
   const receipt = page.locator(".calendar__help[role=status]");
   const undo = receipt.getByRole("button", { name: "Undo", exact: true });
   await receipt.hover();

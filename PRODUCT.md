@@ -48,6 +48,10 @@ out: import it to bring your history, export it to leave.
   Incomplete cycles keep their logged days but do not influence cycle-length estimates.
 - Optional daily details record symptoms, mood and a note, independently of bleeding.
   They are included in Tide backups and do not affect predictions.
+- Calendar dates open the shared editor without recording bleeding. Notebook icons mark saved
+  details, including diary-only days; logging bleeding is an explicit action inside the panel.
+- On phones, Today and Calendar share a bottom sheet with a visible date and close control.
+  The Calendar remains interactive above it; optional details scroll inside the sheet.
 - It runs at <https://tide.duinlab.nl> (Cloudflare; see `wrangler.jsonc`).
 
 ## Capabilities and Constraints
@@ -56,7 +60,7 @@ out: import it to bring your history, export it to leave.
   [docs/predictions.md](docs/predictions.md) explains it. Those two are the source of truth, so don't repeat their numbers here.
 - Every estimate is an estimate. Fertility estimates stay hidden until you choose to see them
   in the introduction or Settings. The note
-  that they are not birth control sits next to the fertility line, not only in Settings.
+  that they are not birth control is in the fertility info popovers on Today and in Settings.
 - Five locales as Lingui PO catalogs, with ICU plurals and dates through `Intl`. German and
   French run long and still have to fit.
 - Light and dark themes, following the system or a manual choice.
