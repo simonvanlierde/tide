@@ -74,9 +74,6 @@ msgstr "Editar detalles del {date}"
 msgid "diary.undo"
 msgstr "Deshacer"
 
-msgid "diary.date"
-msgstr "Fecha"
-
 msgid "diary.symptoms"
 msgstr "Síntomas"
 
@@ -386,9 +383,6 @@ msgstr "Moderado"
 msgid "flow.heavy"
 msgstr "Abundante"
 
-msgid "log.remove"
-msgstr "Eliminar registro de sangrado"
-
 msgid "log.logged"
 msgstr "Registrado hoy"
 
@@ -457,9 +451,6 @@ msgstr "Desde el {date}: elige el último día, como máximo {max} días."
 
 msgid "calendar.rangeTooLong"
 msgstr "Son más de {max} días. Elige un último día anterior."
-
-msgid "calendar.emptyHelp"
-msgstr "Toca un día pasado para registrar tu primer día de sangrado."
 
 msgid "calendar.futureHelp"
 msgstr "Los días futuros aún no se pueden registrar."

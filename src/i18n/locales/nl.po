@@ -74,9 +74,6 @@ msgstr "Details voor {date} bewerken"
 msgid "diary.undo"
 msgstr "Ongedaan maken"
 
-msgid "diary.date"
-msgstr "Datum"
-
 msgid "diary.symptoms"
 msgstr "Klachten"
 
@@ -386,9 +383,6 @@ msgstr "Gemiddeld"
 msgid "flow.heavy"
 msgstr "Zwaar"
 
-msgid "log.remove"
-msgstr "Bloedverlies verwijderen"
-
 msgid "log.logged"
 msgstr "Vandaag gelogd"
 
@@ -457,9 +451,6 @@ msgstr "Vanaf {date}: kies nu de laatste dag, hooguit {max} dagen."
 
 msgid "calendar.rangeTooLong"
 msgstr "Dat is meer dan {max} dagen. Kies een eerdere laatste dag."
-
-msgid "calendar.emptyHelp"
-msgstr "Tik op een dag in het verleden om je eerste dag met bloedverlies te loggen."
 
 msgid "calendar.futureHelp"
 msgstr "Toekomstige dagen kun je nog niet loggen."

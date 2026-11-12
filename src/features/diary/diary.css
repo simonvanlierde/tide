@@ -151,8 +151,6 @@
     display: grid;
     gap: 8px;
   }
-  .diary-form__field input,
-  .diary-form__field select,
   .diary-form__field textarea {
     box-sizing: border-box;
     width: 100%;

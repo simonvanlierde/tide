@@ -123,6 +123,8 @@ One-time setup, for production and previews alike:
 
 Without the token, the deploy jobs skip with a notice. To roll back, revert the commit on `main`,
 or re-run an earlier run's production job while its build artifact exists (7 days).
+Use a build compatible with the stored schema. Version 0.4.0 predates newer-schema protection
+and can discard fields added since then; do not deploy it over newer data without a recovery plan.
 
 ### Pull request previews
 

@@ -23,6 +23,7 @@ tide saves your data in your browser's local storage. It stores:
 - the days you log, the flow level if you pick one, and which cycles you mark incomplete;
 - the symptoms, mood and notes you choose to record for a day;
 - your settings: theme, language, and whether to show fertility estimates and cycle day numbers;
+- whether you dismissed the introduction and Calendar guidance;
 - the days you last closed the period reminder, downloaded a backup or snoozed its reminder;
 - a random ID for your calendar file, so a newer file updates its events instead of adding them
   twice;

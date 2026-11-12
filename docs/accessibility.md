@@ -27,7 +27,8 @@ accessible websites.
 
 Its conformance is **not assessed** beyond the tested browser sample. The
 [repository self-assessment](https://github.com/simonvanlierde/tide/blob/main/docs/accessibility-assessment.md)
-records results for all 55 level A and AA criteria: 41 pass in that sample and 14 do not apply.
+records all 55 level A and AA criteria: 41 pass in that sample, 13 do not apply and the
+timed Calendar confirmation needs reassessment.
 These results do not establish WCAG conformance. No outside expert has tested tide.
 
 ## Known problems
@@ -79,7 +80,7 @@ and JavaScript to work.
 
 Prepared: 29 October 2026
 
-Last reviewed: 7 November 2026
+Last reviewed: 12 November 2026
 
 Next review: within 12 months of the last review, or at the next major release if that comes first.
 

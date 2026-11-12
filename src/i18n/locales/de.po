@@ -74,9 +74,6 @@ msgstr "Details für {date} bearbeiten"
 msgid "diary.undo"
 msgstr "Rückgängig"
 
-msgid "diary.date"
-msgstr "Datum"
-
 msgid "diary.symptoms"
 msgstr "Beschwerden"
 
@@ -386,9 +383,6 @@ msgstr "Mittel"
 msgid "flow.heavy"
 msgstr "Stark"
 
-msgid "log.remove"
-msgstr "Blutungseintrag entfernen"
-
 msgid "log.logged"
 msgstr "Heute erfasst"
 
@@ -457,9 +451,6 @@ msgstr "Ab {date}: Wähle jetzt den letzten Tag, höchstens {max} Tage."
 
 msgid "calendar.rangeTooLong"
 msgstr "Das sind mehr als {max} Tage. Wähle einen früheren letzten Tag."
-
-msgid "calendar.emptyHelp"
-msgstr "Tippe auf einen vergangenen Tag, um deinen ersten Blutungstag zu erfassen."
 
 msgid "calendar.futureHelp"
 msgstr "Zukünftige Tage lassen sich noch nicht erfassen."

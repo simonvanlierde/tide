@@ -74,9 +74,6 @@ msgstr "Modifier les détails pour le {date}"
 msgid "diary.undo"
 msgstr "Annuler"
 
-msgid "diary.date"
-msgstr "Date"
-
 msgid "diary.symptoms"
 msgstr "Symptômes"
 
@@ -386,9 +383,6 @@ msgstr "Moyen"
 msgid "flow.heavy"
 msgstr "Abondant"
 
-msgid "log.remove"
-msgstr "Supprimer le saignement"
-
 msgid "log.logged"
 msgstr "Enregistré aujourd’hui"
 
@@ -457,9 +451,6 @@ msgstr "À partir du {date} : choisis le dernier jour, {max} jours au plus."
 
 msgid "calendar.rangeTooLong"
 msgstr "Cela fait plus de {max} jours. Choisis un dernier jour plus tôt."
-
-msgid "calendar.emptyHelp"
-msgstr "Touche un jour passé pour enregistrer ton premier jour de saignement."
 
 msgid "calendar.futureHelp"
 msgstr "Les jours à venir ne peuvent pas encore être enregistrés."

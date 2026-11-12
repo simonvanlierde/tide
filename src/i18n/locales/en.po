@@ -74,9 +74,6 @@ msgstr "Edit details for {date}"
 msgid "diary.undo"
 msgstr "Undo"
 
-msgid "diary.date"
-msgstr "Date"
-
 msgid "diary.symptoms"
 msgstr "Symptoms"
 
@@ -386,9 +383,6 @@ msgstr "Medium"
 msgid "flow.heavy"
 msgstr "Heavy"
 
-msgid "log.remove"
-msgstr "Remove bleeding log"
-
 msgid "log.logged"
 msgstr "Logged today"
 
@@ -457,9 +451,6 @@ msgstr "From {date}: now pick the last day, up to {max} days."
 
 msgid "calendar.rangeTooLong"
 msgstr "That''s more than {max} days. Pick an earlier last day."
-
-msgid "calendar.emptyHelp"
-msgstr "Tap a past day to log your first bleeding day."
 
 msgid "calendar.futureHelp"
 msgstr "Future days can''t be logged yet."
