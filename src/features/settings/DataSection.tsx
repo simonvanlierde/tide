@@ -252,11 +252,13 @@ export function DataSection({ today }: DataSectionProps) {
                 the promise above has something to show for itself. */}
             {loggedDayCount > 0 ? (
               <span className="data-summary">
-                {t("settings.dataSummary", { n: loggedDayCount })}
+                <span>{t("settings.dataSummary", { n: loggedDayCount })}</span>
                 {" · "}
-                {lastBackupOn
-                  ? t("settings.lastBackup", { date: formatShortDate(lastBackupOn, locale) })
-                  : t("settings.noBackup")}
+                <span>
+                  {lastBackupOn
+                    ? t("settings.lastBackup", { date: formatShortDate(lastBackupOn, locale) })
+                    : t("settings.noBackup")}
+                </span>
               </span>
             ) : null}
           </span>
