@@ -723,6 +723,25 @@ it("remembers Calendar help after a successful day log, even when undone", async
   expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
 });
 
+it("dismisses Calendar help after logging bleeding in the shared editor", async () => {
+  const user = userEvent.setup();
+  const view = renderWithAppState(<CalendarScreen today="2026-04-18" />, {
+    state: createAppState({ settings: { calendarHelpDismissed: false } }),
+  });
+  await user.click(screen.getByRole("button", { name: /add details for/i }));
+  await user.click(screen.getByRole("button", { name: "Cramps" }));
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
+  await user.click(screen.getByRole("button", { name: "Log bleeding" }));
+  expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-18": null });
+  expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(true);
+  await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
+  await user.click(screen.getByRole("button", { name: "Done" }));
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+  view.unmount();
+  renderWithAppState(<CalendarScreen today="2026-04-18" />);
+  expect(screen.queryByText(/tap a day to log or change it/i)).not.toBeInTheDocument();
+});
+
 it("keeps Calendar help until a valid range is completed", async () => {
   const user = userEvent.setup();
   renderWithAppState(<CalendarScreen today="2026-04-18" />, {

@@ -2,7 +2,7 @@ import { CalendarRange, ChevronDown, ChevronLeft, ChevronRight } from "lucide-re
 import { type KeyboardEvent, type ReactNode, type TouchEvent, useEffect, useRef, useState } from "react";
 import { MAX_PERIOD_RANGE_DAYS } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
-import { useLocale, useT } from "../../state/provider";
+import { useAppStateActions, useLocale, useT } from "../../state/provider";
 import { useToday } from "../../state/useToday";
 import { formatShortDate } from "../../utils/date";
 import { DailyDetails } from "../diary/DailyDetails";
@@ -20,6 +20,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
   const liveToday = useToday();
   const today = props.today ?? liveToday;
   const { days, helpKey, month, log } = useCalendar(today);
+  const actions = useAppStateActions();
   const t = useT();
   const locale = useLocale();
   const articleRef = useRef<HTMLElement>(null);
@@ -183,6 +184,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
             day={log.selectedDay}
             today={today}
             initialSection={editorSection}
+            onLog={() => actions.setSetting("calendarHelpDismissed", true)}
             onClose={() => {
               const day = log.selectedDay;
               log.closePicker();

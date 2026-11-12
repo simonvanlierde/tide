@@ -140,6 +140,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Calendar dismisses its first-use hint when you log bleeding in the daily editor.
 - Opening daily details selects today after midnight. Calendar uses its grid to select
   the date for both bleeding and diary details.
 - If device storage is full or blocked, Tide now warns that changes have not

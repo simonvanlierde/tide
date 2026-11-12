@@ -41,10 +41,14 @@ describe("shared dated day editor", () => {
   it("logs, changes flow, and removes bleeding without clearing details or losing focus", async () => {
     const user = userEvent.setup();
     renderWithAppState(<DayEditor day={day} today={day} onClose={() => {}} />, {
-      state: createAppState({ detailsByDay: { [day]: { symptoms: null, mood: null, note: "Keep me" } } }),
+      state: createAppState({
+        detailsByDay: { [day]: { symptoms: null, mood: null, note: "Keep me" } },
+        settings: { calendarHelpDismissed: false },
+      }),
     });
     await user.click(screen.getByRole("button", { name: "Log bleeding" }));
     expect(stored().intensityByDay[day]).toBeNull();
+    expect(stored().settings.calendarHelpDismissed).toBe(false);
     expect(screen.getByRole("radio", { name: "Spotting" })).toHaveFocus();
     await user.click(screen.getByRole("radio", { name: "Heavy" }));
     expect(stored().intensityByDay[day]).toBe("heavy");

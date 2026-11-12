@@ -11,11 +11,13 @@ export function DayEditor({
   day,
   today,
   onClose,
+  onLog,
   initialSection = "bleeding",
 }: {
   day: IsoDate;
   today: IsoDate;
   onClose: () => void;
+  onLog?: () => void;
   initialSection?: "bleeding" | "details";
 }) {
   const state = useAppState();
@@ -108,6 +110,7 @@ export function DayEditor({
           onClick={() => {
             if (!editable) return;
             actions.togglePeriodDay(day, today);
+            onLog?.();
             setFocusPending(true);
           }}
         >
