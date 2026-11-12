@@ -382,7 +382,7 @@ drilling in at the end.
 
 Three equal tabs, icon over label: muted ink when inactive, deep tide on tide-tint when
 active. The header has the wordmark on the left and the screen name on the right as a
-tracked eyebrow. A teal skip link appears top-left on keyboard focus.
+tracked eyebrow; on Today it adds the date ("Today · Thu, Nov 12"). A teal skip link appears top-left on keyboard focus.
 
 ### Cycle Dial (signature)
 

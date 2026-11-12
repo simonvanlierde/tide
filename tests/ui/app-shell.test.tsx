@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { App } from "../../src/app/App";
 import { SCHEMA_VERSION, STORAGE_KEY } from "../../src/data/schema";
+import { formatShortDate, getTodayIsoDate } from "../../src/utils/date";
 import { createAppState, renderWithAppState } from "../support/app";
 
 describe("App shell", () => {
@@ -22,6 +23,16 @@ describe("App shell", () => {
     expect(screen.getByRole("link", { name: /^today$/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^calendar$/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /^settings$/i })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("names today's date in the Today header only", () => {
+    window.history.replaceState(null, "", "/");
+    renderWithAppState(<App />);
+
+    const today = getTodayIsoDate();
+    const title = document.querySelector(".app-header__title");
+    expect(title).toHaveTextContent(`Today · ${formatShortDate(today)}`);
+    expect(title?.querySelector("time")).toHaveAttribute("dateTime", today);
   });
 
   it("asks for a reload when a newer build saved the data", () => {
