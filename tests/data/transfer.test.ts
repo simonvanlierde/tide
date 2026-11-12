@@ -174,7 +174,7 @@ describe("backup round-trip property", () => {
     detailsByDay: fc.dictionary(
       day,
       fc.record({
-        symptoms: fc.option(fc.uniqueArray(fc.constantFrom(...SYMPTOMS))),
+        symptoms: fc.option(fc.uniqueArray(fc.constantFrom(...SYMPTOMS), { minLength: 1 })),
         mood: fc.option(fc.constantFrom(...MOODS)),
         note: fc.string({ minLength: 1, maxLength: 1000 }),
       }),

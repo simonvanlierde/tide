@@ -16,7 +16,7 @@ describe("daily details persistence", () => {
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "").schemaVersion).toBe(SCHEMA_VERSION);
   });
 
-  it("keeps missing symptoms distinct from explicit no symptoms and deduplicates presets", () => {
+  it("reads an old explicit no-symptoms list as none logged and deduplicates presets", () => {
     const state = normalizeAppState({
       detailsByDay: {
         [day]: details,
@@ -28,7 +28,6 @@ describe("daily details persistence", () => {
     expect(state.detailsByDay).toEqual({
       [day]: { ...details, symptoms: ["cramps"] },
       "2026-04-03": { symptoms: null, mood: "low", note: "" },
-      "2026-04-04": { symptoms: [], mood: null, note: "" },
     });
     saveAppState(state);
     expect(loadStoredState().state).toEqual(state);
@@ -53,7 +52,7 @@ describe("daily details persistence", () => {
 
   it("round-trips diary-only history in backups and filters future details", async () => {
     const state = normalizeAppState({
-      detailsByDay: { [day]: details, "2026-04-04": { symptoms: [], mood: null, note: "" } },
+      detailsByDay: { [day]: details, "2026-04-04": { symptoms: ["fatigue"], mood: null, note: "" } },
     });
     vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {});
     const create = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:backup");

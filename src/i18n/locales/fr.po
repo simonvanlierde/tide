@@ -68,9 +68,6 @@ msgstr "Annuler"
 msgid "diary.symptoms"
 msgstr "Symptômes"
 
-msgid "diary.noSymptoms"
-msgstr "Aucun symptôme"
-
 msgid "diary.mood"
 msgstr "Humeur"
 

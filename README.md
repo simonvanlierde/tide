@@ -65,10 +65,9 @@ The [JSON backup contract](docs/backups.md) explains the saved fields, restore r
 ### Daily details
 
 Choose **Details**, next to the log button on Today, to record cramps, a headache, bloating,
-breast tenderness or fatigue. You can choose **No symptoms** to record that you had none;
-leaving symptoms blank means you did not record them. Mood and a note of up to 1,000
-characters are optional too. Each choice saves as you make it; **Clear details** offers
-Undo. Today and Calendar share the same dated panel for flow and optional **More details**.
+breast tenderness or fatigue. Mood and a note of up to 1,000 characters are optional too.
+Each choice saves as you make it; **Clear details** offers Undo. Today and Calendar share
+the same dated panel for flow and optional **More details**.
 Tap a Calendar day to open it; choosing a date never logs bleeding. Use **Log bleeding**
 inside the panel when needed. A notebook icon marks saved details, including days without
 bleeding; those entries open their details directly. **×** or Escape closes the panel.

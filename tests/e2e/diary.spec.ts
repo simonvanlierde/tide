@@ -114,7 +114,7 @@ test("diary-only history survives reload, calendar viewing and backup restore", 
   await page.clock.setFixedTime(FIXED_NOW);
   await page.goto("/");
   await page.getByRole("button", { name: translate("en", "diary.addDetails"), exact: true }).click();
-  await page.getByRole("button", { name: translate("en", "diary.noSymptoms"), exact: true }).click();
+  await page.getByRole("button", { name: translate("en", "diary.symptom.cramps"), exact: true }).click();
   await page.getByRole("button", { name: translate("en", "diary.mood.good"), exact: true }).click();
   await page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true }).fill("A walk helped.");
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
@@ -126,10 +126,9 @@ test("diary-only history survives reload, calendar viewing and backup restore", 
   await page.getByRole("button", { name: translate("en", "common.close"), exact: true }).click();
   await page.getByRole("link", { name: translate("en", "nav.calendar"), exact: true }).click();
   await page.getByRole("button", { name: /^Edit April 15, 2026/ }).click();
-  await expect(page.getByRole("button", { name: translate("en", "diary.noSymptoms"), exact: true })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  await expect(
+    page.getByRole("button", { name: translate("en", "diary.symptom.cramps"), exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
     "A walk helped.",
   );

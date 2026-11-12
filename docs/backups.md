@@ -35,7 +35,7 @@ A `null` value means a period day was logged without choosing a flow level; it c
 `spotting` is a recorded flow level but does not start a predicted cycle.
 Incomplete markers refer to cycle intervals, not arbitrary diary dates. Normalization removes markers whose interval no longer exists.
 
-Diary entries do not require bleeding on the same date. Symptoms `null` means not logged; `[]` means explicitly **No symptoms**.
+Diary entries do not require bleeding on the same date. Symptoms `null` means none logged. An empty list from an older backup loads as `null`.
 Mood is `null`, `low`, `okay` or `good`. Notes preserve their text, including line breaks, up to 1,000 UTF-16 code units.
 The supported symptom identifiers and validation contract live in [`src/domain/diary.ts`](../src/domain/diary.ts).
 An entry with no symptoms logged, no mood and an empty note contains no diary data and is omitted on normalization.

@@ -68,9 +68,6 @@ msgstr "Deshacer"
 msgid "diary.symptoms"
 msgstr "Síntomas"
 
-msgid "diary.noSymptoms"
-msgstr "Sin síntomas"
-
 msgid "diary.mood"
 msgstr "Ánimo"
 

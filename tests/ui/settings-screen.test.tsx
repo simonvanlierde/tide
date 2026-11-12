@@ -547,7 +547,7 @@ describe("SettingsScreen", () => {
       );
       await user.upload(screen.getByLabelText(/import data file/i), file);
       const history = diaryOnly
-        ? createAppState({ detailsByDay: { "2026-03-01": { symptoms: [], mood: "good", note: "" } } })
+        ? createAppState({ detailsByDay: { "2026-03-01": { symptoms: ["fatigue"], mood: "good", note: "" } } })
         : createAppState({ periodDays: ["2026-03-01"] });
       const raw = JSON.stringify({ schemaVersion, ...history });
       window.localStorage.setItem(STORAGE_KEY, raw);

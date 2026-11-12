@@ -68,9 +68,6 @@ msgstr "Rückgängig"
 msgid "diary.symptoms"
 msgstr "Beschwerden"
 
-msgid "diary.noSymptoms"
-msgstr "Keine Beschwerden"
-
 msgid "diary.mood"
 msgstr "Stimmung"
 

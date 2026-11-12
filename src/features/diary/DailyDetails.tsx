@@ -100,15 +100,6 @@ export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
               </button>
             );
           })}
-          <button
-            type="button"
-            className="diary-chip"
-            aria-pressed={value.symptoms?.length === 0}
-            onClick={() => save({ ...value, symptoms: value.symptoms?.length === 0 ? null : [] })}
-          >
-            {value.symptoms?.length === 0 ? <AppIcon icon={Check} className="diary-chip__icon" /> : null}
-            {t("diary.noSymptoms")}
-          </button>
         </div>
       </fieldset>
       <fieldset className="diary-form__group" disabled={!editable}>

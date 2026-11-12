@@ -67,8 +67,8 @@ Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
    saved copy. Simultaneous edits are not merged; the last save wins.
 
 Daily details are separate from bleeding logs. The forecast uses bleeding history only;
-symptoms, mood and notes do not change estimates. An empty symptom list means the user
-recorded no symptoms; a null value means symptoms were not recorded.
+symptoms, mood and notes do not change estimates. A day without symptoms has none
+recorded (`null`); there is no separate "no symptoms" record.
 
 `DayEditor` is the shared dated editing surface for Today and Calendar. It reuses
 `FlowGauge` and `DiaryFields`; bleeding and diary actions remain independent. Calendar

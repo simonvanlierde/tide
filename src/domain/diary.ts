@@ -6,7 +6,7 @@ type Symptom = (typeof SYMPTOMS)[number];
 type Mood = (typeof MOODS)[number];
 
 export interface DailyDetails {
-  /** null means not logged; an empty list means explicitly no symptoms. */
+  /** null means none logged. Never empty: an old backup's explicit "No symptoms" ([]) loads as null. */
   symptoms: Symptom[] | null;
   mood: Mood | null;
   note: string;
@@ -24,7 +24,7 @@ export function normalizeDailyDetails(value: unknown): DailyDetails | undefined 
   )
     return undefined;
   return {
-    symptoms: candidate.symptoms === null ? null : [...new Set(candidate.symptoms)],
+    symptoms: candidate.symptoms === null || candidate.symptoms.length === 0 ? null : [...new Set(candidate.symptoms)],
     mood: candidate.mood as Mood | null,
     note: candidate.note,
   };

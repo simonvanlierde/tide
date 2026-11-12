@@ -6,6 +6,12 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Removed
+
+- The **No symptoms** choice in daily details. Leaving symptoms blank already says the same,
+  and nothing in Tide read the difference. Backups that hold it still import, as no symptoms
+  logged.
+
 ### Added
 
 - Today's header shows today's date, so the next-period date has a day to count from.
