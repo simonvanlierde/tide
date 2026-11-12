@@ -554,26 +554,7 @@
     min-width: 0;
   }
 
-  .log-action__row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    column-gap: 16px;
-  }
-
-  .log-action__status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-    color: var(--ink);
-    font-size: var(--text-lg);
-    font-weight: 500;
-  }
-
-  /* A later visit: the whole logged line is one button that opens the flow
-     row and Remove again. The hint on the right is the nudge to add a level. */
+  /* The compact logged line opens the shared editor; the hint invites a flow choice. */
   .log-action__summary {
     display: flex;
     flex-wrap: wrap;
@@ -620,39 +601,6 @@
     height: 18px;
     flex: none;
     color: var(--bleed);
-  }
-
-  .log-action__remove {
-    min-height: 44px;
-    color: var(--ink-soft);
-    font-size: var(--text-md);
-  }
-
-  /* The one moment when today is logged: the droplet takes a breath, ringed
-     like a newly logged calendar day. Motion off means it simply appears. */
-  @media (prefers-reduced-motion: no-preference) {
-    .log-action--logged[data-just-logged] .log-action__status-icon {
-      border-radius: var(--radius-pill);
-      animation: log-droplet 450ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-  }
-
-  @keyframes log-droplet {
-    from {
-      transform: scale(0.6);
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--bleed) 50%, transparent);
-    }
-    60% {
-      transform: scale(1.15);
-    }
-    to {
-      transform: scale(1);
-      box-shadow: 0 0 0 8px transparent;
-    }
-  }
-
-  .log-action__remove:hover {
-    color: var(--tide-strong);
   }
 
   .flow-gauge {
@@ -750,16 +698,6 @@
     outline-offset: 2px;
   }
 
-  /* Four swatches in a row while the longest label ("Gemiddeld") fits, two
-     otherwise. In em, so larger text falls back to two columns. */
-  @container (min-width: 21.5em) {
-    .log-action--logged .flow-gauge__levels {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 4px;
-    }
-  }
-
-  /* Per-day flow picker on the calendar */
   /* Inset panel: a tonal step down inside a card (day picker, month picker). */
   .inset-panel {
     padding: 14px;
