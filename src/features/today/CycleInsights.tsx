@@ -11,7 +11,6 @@ import {
   RECENT_CYCLE_WINDOW,
 } from "../../domain/cycle";
 import type { CycleStats, CycleSummary } from "../../domain/types";
-import type { MessageKey } from "../../i18n";
 import { useT } from "../../state/provider";
 
 interface CycleInsightsProps {
@@ -150,7 +149,7 @@ function Stat({ value, label, unit }: StatProps) {
 // word. Null means fewer than two cycles — nothing to compare yet.
 function getRegularity(variabilityDays: number | null): {
   level: number;
-  labelKey: MessageKey;
+  labelKey: string;
 } {
   if (variabilityDays === null) {
     return { level: 0, labelKey: "regularity.none" };

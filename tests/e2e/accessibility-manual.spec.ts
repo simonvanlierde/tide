@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { en } from "../../src/i18n/en";
+import { translate } from "../../src/i18n";
 import { findOverflow } from "./overflow";
 import { ROUTES } from "./routes";
 import { seedAppState } from "./seed";
@@ -9,11 +9,11 @@ test("keyboard users can skip navigation and leave the insights dialog", async (
   await seedAppState(page, "en");
   await page.goto("/");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("link", { name: en["app.skipToContent"] })).toBeFocused();
+  await expect(page.getByRole("link", { name: translate("en", "app.skipToContent") })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("main")).toBeFocused();
 
-  const trigger = page.getByRole("button", { name: en["today.cycleInsights"] });
+  const trigger = page.getByRole("button", { name: translate("en", "today.cycleInsights") });
   await trigger.focus();
   await page.keyboard.press("Enter");
   const dialog = page.getByRole("dialog");
@@ -42,10 +42,10 @@ test("calendar arrows and flow radios work without a pointer", async ({ page }) 
   await page.keyboard.press("ArrowLeft");
   await expect(page.locator(".calendar-grid__day:focus")).toHaveAccessibleName(/April 14, 2026/);
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("radio", { name: en["flow.medium"] })).toBeFocused();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.medium") })).toBeFocused();
   await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("radio", { name: en["flow.heavy"] })).toBeChecked();
-  await page.getByRole("button", { name: en["common.close"], exact: true }).focus();
+  await expect(page.getByRole("radio", { name: translate("en", "flow.heavy") })).toBeChecked();
+  await page.getByRole("button", { name: translate("en", "common.close"), exact: true }).focus();
   await page.keyboard.press("Enter");
   await expect(page.locator(".calendar-grid__day:focus")).toHaveAccessibleName(/April 14, 2026/);
 });
@@ -53,11 +53,11 @@ test("calendar arrows and flow radios work without a pointer", async ({ page }) 
 test("delete confirmation cancels with Escape and preserves data", async ({ page }) => {
   await seedAppState(page, "en");
   await page.goto("/settings");
-  const trigger = page.getByRole("button", { name: en["settings.reset"], exact: true });
+  const trigger = page.getByRole("button", { name: translate("en", "settings.reset"), exact: true });
   await trigger.focus();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("dialog")).toBeVisible();
-  await expect(page.getByRole("button", { name: en["common.cancel"], exact: true })).toBeFocused();
+  await expect(page.getByRole("button", { name: translate("en", "common.cancel"), exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
   await expect(trigger).toBeFocused();
   const state = await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}"));
@@ -139,9 +139,9 @@ test("import errors identify the problem and exporting reports its result", asyn
     mimeType: "application/json",
     buffer: Buffer.from("not a backup"),
   });
-  await expect(page.getByRole("alert")).toContainText(en["settings.importError"]);
-  await page.getByRole("button", { name: en["settings.export"], exact: true }).click();
-  await expect(page.getByRole("status").filter({ hasText: en["settings.exportSuccess"] })).toBeVisible();
+  await expect(page.getByRole("alert")).toContainText(translate("en", "settings.importError"));
+  await page.getByRole("button", { name: translate("en", "settings.export"), exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: translate("en", "settings.exportSuccess") })).toBeVisible();
 });
 
 test("cycle history has a table alternative and incomplete cycles work with a keyboard", async ({ page }) => {
@@ -153,14 +153,14 @@ test("cycle history has a table alternative and incomplete cycles work with a ke
   );
   await page.setViewportSize({ width: 320, height: 640 });
   await page.goto("/");
-  await page.getByRole("button", { name: en["today.cycleInsights"] }).click();
-  const history = page.getByRole("table", { name: en["history.title"] });
+  await page.getByRole("button", { name: translate("en", "today.cycleInsights") }).click();
+  const history = page.getByRole("table", { name: translate("en", "history.title") });
   await expect(history.getByRole("row")).toHaveCount(4);
   const incomplete = history.getByRole("checkbox").first();
   await incomplete.focus();
   await page.keyboard.press("Space");
   await expect(incomplete).toBeChecked();
-  await expect(incomplete).toHaveAccessibleDescription(en["history.help"]);
+  await expect(incomplete).toHaveAccessibleDescription(translate("en", "history.help"));
   await page.addStyleTag({
     content:
       "* { line-height: 1.5 !important; letter-spacing: .12em !important; word-spacing: .16em !important; } p { margin-bottom: 2em !important; }",
@@ -173,12 +173,12 @@ test("cycle history has a table alternative and incomplete cycles work with a ke
 test("backup reminders can be snoozed with a keyboard", async ({ page }) => {
   await seedAppState(page, "en", {}, { "2026-01-10": "medium" });
   await page.goto("/");
-  const prompt = page.getByRole("complementary", { name: en["backup.title"] });
+  const prompt = page.getByRole("complementary", { name: translate("en", "backup.title") });
   await expect(prompt).toBeVisible();
-  await prompt.getByRole("button", { name: en["backup.snooze"] }).focus();
+  await prompt.getByRole("button", { name: translate("en", "backup.snooze") }).focus();
   await page.keyboard.press("Enter");
   await expect(prompt).toHaveCount(0);
-  await expect(page.getByRole("button", { name: en["today.cycleInsights"] })).toBeFocused();
+  await expect(page.getByRole("button", { name: translate("en", "today.cycleInsights") })).toBeFocused();
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
@@ -191,12 +191,12 @@ for (const colorScheme of ["light", "dark"] as const) {
     );
     await page.emulateMedia({ colorScheme });
     await page.goto("/");
-    await expect(page.getByRole("complementary", { name: en["backup.title"] })).toBeVisible();
+    await expect(page.getByRole("complementary", { name: translate("en", "backup.title") })).toBeVisible();
     const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best-practice"];
     const promptResults = await new AxeBuilder({ page }).withTags(tags).analyze();
     expect(promptResults.violations, JSON.stringify(promptResults.violations)).toEqual([]);
-    await page.getByRole("button", { name: en["today.cycleInsights"] }).click();
-    await expect(page.getByRole("table", { name: en["history.title"] })).toBeVisible();
+    await page.getByRole("button", { name: translate("en", "today.cycleInsights") }).click();
+    await expect(page.getByRole("table", { name: translate("en", "history.title") })).toBeVisible();
     // Measure settled text, after the finite entrance opacity animation.
     await page.evaluate(() =>
       Promise.all(document.getAnimations().map((animation) => animation.finished.catch(() => undefined))),
@@ -209,23 +209,25 @@ for (const colorScheme of ["light", "dark"] as const) {
     await seedAppState(page, "en", { showFertility: false });
     await page.emulateMedia({ colorScheme });
     await page.goto("/settings");
-    const contrast = await page.getByRole("switch", { name: en["settings.showFertility"] }).evaluate((control) => {
-      function luminance(color: string) {
-        const channels =
-          color
-            .match(/[\d.]+/g)
-            ?.slice(0, 3)
-            .map(Number) ?? [];
-        const linear = channels.map((channel) => {
-          const value = channel / 255;
-          return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
-        });
-        return (linear[0] ?? 0) * 0.2126 + (linear[1] ?? 0) * 0.7152 + (linear[2] ?? 0) * 0.0722;
-      }
-      const thumb = luminance(getComputedStyle(control, "::after").backgroundColor);
-      const track = luminance(getComputedStyle(control).backgroundColor);
-      return (Math.max(thumb, track) + 0.05) / (Math.min(thumb, track) + 0.05);
-    });
+    const contrast = await page
+      .getByRole("switch", { name: translate("en", "settings.showFertility") })
+      .evaluate((control) => {
+        function luminance(color: string) {
+          const channels =
+            color
+              .match(/[\d.]+/g)
+              ?.slice(0, 3)
+              .map(Number) ?? [];
+          const linear = channels.map((channel) => {
+            const value = channel / 255;
+            return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+          });
+          return (linear[0] ?? 0) * 0.2126 + (linear[1] ?? 0) * 0.7152 + (linear[2] ?? 0) * 0.0722;
+        }
+        const thumb = luminance(getComputedStyle(control, "::after").backgroundColor);
+        const track = luminance(getComputedStyle(control).backgroundColor);
+        return (Math.max(thumb, track) + 0.05) / (Math.min(thumb, track) + 0.05);
+      });
     expect(contrast).toBeGreaterThanOrEqual(3);
   });
 }

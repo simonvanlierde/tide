@@ -1,6 +1,5 @@
 import { DEFAULT_CYCLE_LENGTH } from "../../domain/cycle";
 import type { CycleSummary, Forecast, IsoDate, LoggedFlow } from "../../domain/types";
-import type { MessageKey } from "../../i18n";
 import { addDays, differenceInDays } from "../../utils/date";
 
 export interface CycleSegment {
@@ -57,7 +56,7 @@ export function buildCycleSegments(
 
 // Returns the message key for the segment's status (localized by the caller),
 // or "" when there's nothing to show.
-export function getSegmentStatus(segment: CycleSegment, summary: CycleSummary): MessageKey | "" {
+export function getSegmentStatus(segment: CycleSegment, summary: CycleSummary): string | "" {
   if (segment.isPeriod) {
     return "status.period";
   }

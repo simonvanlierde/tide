@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "explain.cycles"
+msgstr "Ciclos usados para esta estimación, del más antiguo al más reciente: {list} días."
+
+msgid "explain.median"
+msgstr "Su mediana (el valor central) es de {cycle} días."
+
+msgid "explain.medianRounded"
+msgstr "Su mediana (el valor central) es {median}, redondeada a {cycle} días."
+
+msgid "explain.fallback"
+msgstr "No hay ciclos completos disponibles para esta estimación, así que se usa un ciclo típico de {cycle} días."
+
+msgid "explain.next"
+msgstr "Tu último período empezó el {start}. Sumando {cycle} días sale el {date}."
+
+msgid "explain.range"
+msgstr "{count, plural, one {Variación pasada: aproximadamente {spread} día. Margen estimado: del {from} al {to}. Tu período puede empezar fuera de este margen.} other {Variación pasada: aproximadamente {spread} días. Margen estimado: del {from} al {to}. Tu período puede empezar fuera de este margen.}}"
+
+msgid "explain.noRange"
+msgstr "Un margen necesita al menos dos ciclos completos que no estén marcados como incompletos."
+
+msgid "explain.sameLength"
+msgstr "Tus últimos ciclos duraron lo mismo, así que no hay margen."
+
+msgid "explain.ovulation"
+msgstr "La ovulación se estima {luteal} días antes: el {date}."
+
+msgid "explain.fertile"
+msgstr "La ventana fértil va de {before} días antes a {after} después: del {from} al {to}."
+
+msgid "explain.widened"
+msgstr "{n, plural, one {Es {n} día más ancha por cada lado, porque tus ciclos varían.} other {Es {n} días más ancha por cada lado, porque tus ciclos varían.}}"

@@ -1,0 +1,684 @@
+msgid ""
+msgstr ""
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "history.title"
+msgstr "Historial de ciclos"
+
+msgid "history.description"
+msgstr "{n, plural, one {Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestra el último ciclo.} other {Ciclos completados, desde el inicio de un período hasta el siguiente. Se muestran los últimos {n}.}}"
+
+msgid "history.empty"
+msgstr "Registra el inicio de otro período para ver tus ciclos completados."
+
+msgid "history.days"
+msgstr "Días"
+
+msgid "history.start"
+msgstr "Inicio del período"
+
+msgid "history.length"
+msgstr "Duración"
+
+msgid "history.incomplete"
+msgstr "Incompleto"
+
+msgid "history.incompleteFor"
+msgstr "Ciclo incompleto que empieza el {date}"
+
+msgid "history.help"
+msgstr "Los ciclos incompletos conservan sus días registrados, pero no cuentan para estimar la duración del ciclo."
+
+msgid "history.excluded"
+msgstr "Incompleto; excluido de las estimaciones"
+
+msgid "history.chartDates"
+msgstr "Inicios de períodos, del más antiguo al más reciente"
+
+msgid "backup.title"
+msgstr "Guarda una copia de tu historial"
+
+msgid "backup.body"
+msgstr "Tu historial solo se guarda en este navegador y desaparece si borras sus datos. Descarga una copia de seguridad para poder restaurarlo."
+
+msgid "backup.download"
+msgstr "Crear copia de seguridad"
+
+msgid "backup.snooze"
+msgstr "Recordar en una semana"
+
+msgid "backup.error"
+msgstr "No se ha podido descargar la copia de seguridad. Inténtalo de nuevo."
+
+msgid "diary.addDetails"
+msgstr "Añadir detalles"
+
+msgid "diary.editDetails"
+msgstr "Editar detalles"
+
+msgid "diary.addDetailsFor"
+msgstr "Añadir detalles del {date}"
+
+msgid "diary.details"
+msgstr "Detalles"
+
+msgid "diary.done"
+msgstr "Listo"
+
+msgid "diary.editDetailsFor"
+msgstr "Editar detalles del {date}"
+
+msgid "diary.undo"
+msgstr "Deshacer"
+
+msgid "diary.date"
+msgstr "Fecha"
+
+msgid "diary.symptoms"
+msgstr "Síntomas"
+
+msgid "diary.noSymptoms"
+msgstr "Sin síntomas"
+
+msgid "diary.mood"
+msgstr "Ánimo"
+
+msgid "diary.note"
+msgstr "Nota (opcional)"
+
+msgid "diary.noteHint"
+msgstr "Hasta {max} caracteres. Los detalles se quedan en este dispositivo y se incluyen en las copias de seguridad."
+
+msgid "diary.saved"
+msgstr "Detalles guardados."
+
+msgid "diary.removed"
+msgstr "Detalles borrados."
+
+msgid "diary.clear"
+msgstr "Borrar detalles"
+
+msgid "diary.history"
+msgstr "Detalles diarios"
+
+msgid "diary.openDay"
+msgstr "Ver detalles del {date}"
+
+msgid "diary.symptom.cramps"
+msgstr "Cólicos"
+
+msgid "diary.symptom.headache"
+msgstr "Dolor de cabeza"
+
+msgid "diary.symptom.bloating"
+msgstr "Hinchazón"
+
+msgid "diary.symptom.breastTenderness"
+msgstr "Sensibilidad en los pechos"
+
+msgid "diary.symptom.fatigue"
+msgstr "Cansancio"
+
+msgid "diary.mood.low"
+msgstr "Bajo"
+
+msgid "diary.mood.okay"
+msgstr "Normal"
+
+msgid "diary.mood.good"
+msgstr "Bueno"
+
+msgid "settings.importReplacesDetails"
+msgstr "Se reemplazarán tu historial de menstruación y tus detalles diarios actuales."
+
+msgid "nav.today"
+msgstr "Hoy"
+
+msgid "nav.calendar"
+msgstr "Calendario"
+
+msgid "nav.settings"
+msgstr "Ajustes"
+
+msgid "app.skipToContent"
+msgstr "Saltar al contenido"
+
+msgid "app.primaryNav"
+msgstr "Navegación principal"
+
+msgid "app.newerData"
+msgstr "Una versión más reciente de Tide guardó tus datos. Recarga la página para actualizar. Los cambios hechos aquí no se guardan."
+
+msgid "app.storageError"
+msgstr "No se han podido guardar tus últimos cambios en este dispositivo. Mantén Tide abierto y exporta una copia de seguridad desde Ajustes."
+
+msgid "today.srCycleDay"
+msgstr "Día del ciclo {day}, {phase}"
+
+msgid "today.nextPeriod"
+msgstr "Próximo período"
+
+msgid "today.fertility"
+msgstr "Fertilidad"
+
+msgid "today.fertilityInfoLabel"
+msgstr "Cómo se estima la fertilidad"
+
+msgid "today.cycleInsights"
+msgstr "Detalles del ciclo"
+
+msgid "today.howWorkedOut"
+msgstr "¿Cómo se ha calculado?"
+
+msgid "today.explainError"
+msgstr "No se ha podido abrir. Vuelve a cargar Tide e inténtalo de nuevo."
+
+msgid "today.expectedToday"
+msgstr "Previsto hoy"
+
+msgid "today.inDays"
+msgstr "{n, plural, one {En {n} día} other {En {n} días}}"
+
+msgid "today.higherToday"
+msgstr "En la ventana fértil"
+
+msgid "today.lowerToday"
+msgstr "Fuera de la ventana fértil"
+
+msgid "today.notBirthControl"
+msgstr "Una estimación. No la uses como método anticonceptivo."
+
+msgid "fertilityAsk.title"
+msgstr "¿Mostrar estimaciones de fertilidad?"
+
+msgid "fertilityAsk.body"
+msgstr "Tide puede marcar los días en que es más probable que seas fértil, calculados a partir de los períodos que registras. Es solo una estimación, así que no la uses como método anticonceptivo. Puedes cambiarlo en Ajustes."
+
+msgid "fertilityAsk.show"
+msgstr "Mostrar"
+
+msgid "fertilityAsk.hide"
+msgstr "No mostrar"
+
+msgid "today.importPrompt"
+msgstr "¿Tienes una copia de seguridad de Tide o tu historial de Clue o Flo?"
+
+msgid "today.importLink"
+msgstr "Importar"
+
+msgid "today.fertilityUnclear"
+msgstr "Incierta con retraso"
+
+msgid "today.periodLate"
+msgstr "Período"
+
+msgid "today.daysLate"
+msgstr "{n, plural, one {{n} día de retraso} other {{n} días de retraso}}"
+
+msgid "today.expectedOn"
+msgstr "Previsto {date}"
+
+msgid "today.ovulationDaysAgo"
+msgstr "{n, plural, one {Ovulación hace {n} día} other {Ovulación hace {n} días}}"
+
+msgid "today.ovulationToday"
+msgstr "Ovulación hoy"
+
+msgid "today.ovulationInDays"
+msgstr "{n, plural, one {Ovulación en {n} día} other {Ovulación en {n} días}}"
+
+msgid "today.learningFallback"
+msgstr "Tide usa un ciclo típico de 28 días hasta conocer algunos de tus ciclos."
+
+msgid "today.learningInsufficient"
+msgstr "Registra tu período para ver una previsión."
+
+msgid "phase.menstrual"
+msgstr "Menstrual"
+
+msgid "phase.follicular"
+msgstr "Folicular"
+
+msgid "phase.ovulation"
+msgstr "Ovulación"
+
+msgid "phase.luteal"
+msgstr "Lútea"
+
+msgid "phase.learning"
+msgstr "Aprendiendo"
+
+msgid "phase.between"
+msgstr "Entre períodos"
+
+msgid "phaseLine.menstrual"
+msgstr "Fase menstrual"
+
+msgid "phaseLine.follicular"
+msgstr "Fase folicular"
+
+msgid "phaseLine.ovulation"
+msgstr "Fase de ovulación"
+
+msgid "phaseLine.luteal"
+msgstr "Fase lútea"
+
+msgid "phaseLine.learning"
+msgstr "Aprendiendo"
+
+msgid "phaseLine.between"
+msgstr "Entre períodos"
+
+msgid "phaseLine.late"
+msgstr "Período con retraso"
+
+msgid "dial.overview"
+msgstr "Resumen del ciclo"
+
+msgid "dial.days"
+msgstr "Días del ciclo"
+
+msgid "dial.cycleDay"
+msgstr "Día del ciclo"
+
+msgid "dial.day"
+msgstr "Día {n}"
+
+msgid "status.period"
+msgstr "Período"
+
+msgid "status.ovulationExpected"
+msgstr "Ovulación prevista"
+
+msgid "status.fertileWindow"
+msgstr "Ventana fértil"
+
+msgid "status.periodExpected"
+msgstr "Período previsto"
+
+msgid "insights.title"
+msgstr "Detalles del ciclo"
+
+msgid "insights.cycleLength"
+msgstr "Duración del ciclo"
+
+msgid "insights.periodLength"
+msgstr "Duración del período"
+
+msgid "insights.cyclesTracked"
+msgstr "Ciclos utilizados"
+
+msgid "insights.basedOn"
+msgstr "Tide usa un ciclo típico de {cycle} días hasta que tengas un ciclo completo."
+
+msgid "insights.regularity"
+msgstr "Regularidad del ciclo"
+
+msgid "insights.regularityAria"
+msgstr "Regularidad del ciclo: {label}"
+
+msgid "regularity.none"
+msgstr "Aún no hay suficientes datos"
+
+msgid "regularity.veryRegular"
+msgstr "Muy regular"
+
+msgid "regularity.regular"
+msgstr "Regular"
+
+msgid "regularity.somewhatVariable"
+msgstr "Algo variable"
+
+msgid "regularity.variable"
+msgstr "Variable"
+
+msgid "insights.how"
+msgstr "Cómo funcionan las predicciones"
+
+msgid "insights.how1"
+msgstr "Todo se calcula en tu dispositivo a partir de los días que registras."
+
+msgid "insights.howCycleStart"
+msgstr "Un intervalo de {gap} días o más entre días de sangrado registrados inicia un ciclo nuevo. Un intervalo menor cuenta como el mismo período. El manchado no cuenta."
+
+msgid "insights.how2"
+msgstr "La duración del ciclo es la mediana de tus últimos {recent} ciclos completos. Los ciclos incompletos no cuentan. Sin ciclos completos, se usa un ciclo típico de {cycle} días."
+
+msgid "insights.how3"
+msgstr "La duración estimada del período es tu promedio anterior, limitada a {min}–{max} días."
+
+msgid "insights.how4"
+msgstr "Tu próximo período se espera tantos días después del inicio del último como dura tu ciclo. La ovulación se estima {luteal} días antes."
+
+msgid "insights.howNextPeriod"
+msgstr "Tu próximo período se espera tantos días después del inicio del último como dura tu ciclo."
+
+msgid "insights.how5"
+msgstr "La ventana fértil empieza {before} días antes de la ovulación y termina {after} día después. Se amplía cuando tus ciclos varían más."
+
+msgid "legend.period"
+msgstr "Período"
+
+msgid "legend.expected"
+msgstr "Período previsto"
+
+msgid "legend.fertileWindow"
+msgstr "Ventana fértil"
+
+msgid "legend.fertile"
+msgstr "Fértil"
+
+msgid "legend.ovulation"
+msgstr "Ovulación"
+
+msgid "legend.cycleDay"
+msgstr "Día del ciclo"
+
+msgid "flow.legend"
+msgstr "Flujo"
+
+msgid "flow.spotting"
+msgstr "Manchado"
+
+msgid "flow.light"
+msgstr "Ligero"
+
+msgid "flow.medium"
+msgstr "Moderado"
+
+msgid "flow.heavy"
+msgstr "Abundante"
+
+msgid "log.remove"
+msgstr "Eliminar registro de sangrado"
+
+msgid "log.logged"
+msgstr "Registrado hoy"
+
+msgid "log.loggedWith"
+msgstr "Registrado hoy · {flow}"
+
+msgid "log.addFlow"
+msgstr "Indicar flujo"
+
+msgid "log.changeFlow"
+msgstr "Cambiar"
+
+msgid "log.add"
+msgstr "Registrar sangrado de hoy"
+
+msgid "reminder.question"
+msgstr "¿Ha comenzado tu período?"
+
+msgid "reminder.dismiss"
+msgstr "Todavía no, recordármelo más tarde"
+
+msgid "reminder.reassure"
+msgstr "Unos días de variación son normales."
+
+msgid "calendar.title"
+msgstr "Calendario"
+
+msgid "calendar.previousMonth"
+msgstr "Mes anterior"
+
+msgid "calendar.nextMonth"
+msgstr "Mes siguiente"
+
+msgid "calendar.jumpToMonth"
+msgstr "Ir al mes"
+
+msgid "calendar.month"
+msgstr "Mes"
+
+msgid "calendar.year"
+msgstr "Año"
+
+msgid "calendar.tapHelp"
+msgstr "Toca un día para registrar o editar el sangrado."
+
+msgid "calendar.today"
+msgstr "Hoy"
+
+msgid "calendar.goToCurrentMonth"
+msgstr "Ir al mes actual"
+
+msgid "calendar.justLogged"
+msgstr "{date} registrado."
+
+msgid "calendar.justLoggedForecast"
+msgstr "{date} registrado. Previsión actualizada."
+
+msgid "calendar.undo"
+msgstr "Deshacer"
+
+msgid "calendar.logRange"
+msgstr "Registrar un período pasado"
+
+msgid "calendar.rangePickFirst"
+msgstr "Elige el primer día del período."
+
+msgid "calendar.rangePickLast"
+msgstr "Desde el {date}: elige el último día, como máximo {max} días."
+
+msgid "calendar.rangeTooLong"
+msgstr "Son más de {max} días. Elige un último día anterior."
+
+msgid "calendar.emptyHelp"
+msgstr "Toca un día pasado para registrar tu primer día de sangrado."
+
+msgid "calendar.futureHelp"
+msgstr "Los días futuros aún no se pueden registrar."
+
+msgid "calendar.log"
+msgstr "Registrar"
+
+msgid "calendar.edit"
+msgstr "Editar"
+
+msgid "calendar.dayUnavailable"
+msgstr "{label} no disponible"
+
+msgid "calendar.dayWithMarker"
+msgstr "{label}, {marker}"
+
+msgid "marker.fertile"
+msgstr "ventana fértil"
+
+msgid "marker.ovulation"
+msgstr "ovulación prevista"
+
+msgid "marker.predictedPeriod"
+msgstr "período previsto"
+
+msgid "calendar.notBleeding"
+msgstr "Sin sangrado ese día"
+
+msgid "common.unknown"
+msgstr "desconocido"
+
+msgid "common.close"
+msgstr "Cerrar"
+
+msgid "common.cancel"
+msgstr "Cancelar"
+
+msgid "common.days"
+msgstr "días"
+
+msgid "common.reload"
+msgstr "Recargar"
+
+msgid "error.title"
+msgstr "Algo salió mal"
+
+msgid "error.body"
+msgstr "Tus datos siguen guardados en este dispositivo."
+
+msgid "error.downloadRaw"
+msgstr "Descargar datos sin procesar"
+
+msgid "settings.title"
+msgstr "Ajustes"
+
+msgid "settings.preferences"
+msgstr "Preferencias"
+
+msgid "settings.theme"
+msgstr "Tema"
+
+msgid "theme.system"
+msgstr "Sistema"
+
+msgid "theme.light"
+msgstr "Claro"
+
+msgid "theme.dark"
+msgstr "Oscuro"
+
+msgid "settings.language"
+msgstr "Idioma"
+
+msgid "language.system"
+msgstr "Idioma del dispositivo"
+
+msgid "language.en"
+msgstr "English"
+
+msgid "language.nl"
+msgstr "Nederlands"
+
+msgid "language.de"
+msgstr "Deutsch"
+
+msgid "language.fr"
+msgstr "Français"
+
+msgid "language.es"
+msgstr "Español"
+
+msgid "settings.showFertility"
+msgstr "Mostrar estimaciones de fertilidad"
+
+msgid "settings.fertilityInfo"
+msgstr "Acerca de las estimaciones de fertilidad"
+
+msgid "settings.fertilityHelp"
+msgstr "Muestra la ventana fértil y la ovulación prevista en Hoy y en el calendario."
+
+msgid "settings.showCycleNumbers"
+msgstr "Mostrar números de día del ciclo"
+
+msgid "settings.cycleNumbersInfo"
+msgstr "Acerca de los números de día del ciclo"
+
+msgid "settings.cycleNumbersHelp"
+msgstr "Muestra el día de tu ciclo (1, 2, 3, ...) en el calendario, hasta tu próximo período previsto."
+
+msgid "settings.about"
+msgstr "Acerca de"
+
+msgid "legal.privacy"
+msgstr "Declaración de privacidad"
+
+msgid "legal.accessibility"
+msgstr "Declaración de accesibilidad"
+
+msgid "legal.inEnglish"
+msgstr "En inglés"
+
+msgid "settings.privacy"
+msgstr "Tide no sube tus datos a un servidor."
+
+msgid "settings.fertilityDisclaimer"
+msgstr "Las estimaciones de fertilidad son solo informativas. No las uses como método anticonceptivo."
+
+msgid "settings.fertilityMethod"
+msgstr "La ventana fértil son los días alrededor de tu ovulación prevista, estimada a partir de tus duraciones de ciclo recientes."
+
+msgid "settings.sourceCode"
+msgstr "Código fuente, v{version}, se abre en una pestaña nueva"
+
+msgid "settings.data"
+msgstr "Datos"
+
+msgid "settings.dataInfo"
+msgstr "Acerca de importar y exportar"
+
+msgid "settings.dataHelp"
+msgstr "Exportar guarda tu historial de menstruación y tus detalles diarios en un archivo. Importar una copia de seguridad de Tide los reemplaza. Importar desde Clue o Flo añade días de menstruación."
+
+msgid "settings.importSources"
+msgstr "Puedes importar una copia de seguridad de Tide o una exportación de Clue o Flo."
+
+msgid "settings.export"
+msgstr "Exportar"
+
+msgid "settings.exportSuccess"
+msgstr "Copia de seguridad guardada en tus descargas."
+
+msgid "settings.exportCalendar"
+msgstr "Añadir al calendario"
+
+msgid "settings.calendarHelp"
+msgstr "Guarda tus 3 próximos períodos previstos en un archivo que tu app de calendario puede abrir. Una vez añadidos, son eventos normales del calendario: la cuenta de tu calendario los guarda y los sincroniza."
+
+msgid "settings.calendarFertility"
+msgstr "Incluir ventanas fértiles"
+
+msgid "settings.calendarSuccess"
+msgstr "Archivo de calendario guardado en tus descargas."
+
+msgid "settings.calendarError"
+msgstr "No se ha podido crear el archivo de calendario. Vuelve a cargar Tide e inténtalo de nuevo."
+
+msgid "settings.import"
+msgstr "Importar"
+
+msgid "settings.importFile"
+msgstr "Importar archivo de datos"
+
+msgid "settings.importError"
+msgstr "Ese archivo no es una copia de seguridad de Tide ni una exportación de Clue o Flo. Elige otro archivo."
+
+msgid "settings.importUnavailable"
+msgstr "No se ha podido abrir la importación. Recarga la página e inténtalo de nuevo."
+
+msgid "settings.importSuccess"
+msgstr "{n, plural, one {{n} día registrado importado.} other {{n} días registrados importados.}}"
+
+msgid "settings.importConfirmTitle"
+msgstr "¿Reemplazar tus datos?"
+
+msgid "settings.importConfirmAction"
+msgstr "Reemplazar"
+
+msgid "settings.importFileDays"
+msgstr "{n, plural, one {Este archivo contiene {n} día registrado.} other {Este archivo contiene {n} días registrados.}}"
+
+msgid "settings.importReplaces"
+msgstr "{n, plural, one {Reemplaza el {n} día registrado en este dispositivo y no se puede deshacer.} other {Reemplaza los {n} días registrados en este dispositivo y no se puede deshacer.}}"
+
+msgid "settings.importMergeTitle"
+msgstr "¿Añadir los días de {source}?"
+
+msgid "settings.importMergeAction"
+msgstr "Añadir"
+
+msgid "settings.importMerges"
+msgstr "Los días ya registrados aquí se quedan como están."
+
+msgid "settings.reset"
+msgstr "Borrar todos los datos"
+
+msgid "settings.resetTitle"
+msgstr "¿Eliminar todos los datos?"
+
+msgid "settings.resetAction"
+msgstr "Eliminar"
+
+msgid "settings.resetConfirm"
+msgstr "Se borran todos los datos y ajustes de este dispositivo. Esta acción no se puede deshacer."

@@ -2,7 +2,6 @@ import { useId } from "react";
 import { getCycleHistory } from "../../domain/cycle";
 import { getPredictionDays } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
-import { plural } from "../../i18n";
 import { useAppState, useAppStateActions, useIsReadOnly, useLocale, useT } from "../../state/provider";
 import { formatLongDate, formatShortDate } from "../../utils/date";
 import "../../styles/cycle-history.css";
@@ -30,7 +29,7 @@ export function CycleHistory({ today }: { today: IsoDate }) {
       </h3>
       {first && last ? (
         <>
-          <p>{t(plural("history.description", history.length, locale), { n: history.length })}</p>
+          <p>{t("history.description", { n: history.length })}</p>
           <div className="cycle-history__chart" aria-hidden="true">
             <span>{t("history.days")}</span>
             <div className="cycle-history__plot">

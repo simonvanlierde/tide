@@ -1,10 +1,9 @@
 import { useId } from "react";
 import type { ForecastExplanation } from "../../domain/cycle";
 import type { IsoDate } from "../../domain/types";
-import { interpolate, plural } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
 import { formatShortDate } from "../../utils/date";
-import { EXPLAIN_MESSAGES } from "./explainMessages";
+import { explainTranslators } from "./explainMessages";
 
 interface ForecastExplainerProps {
   explanation: ForecastExplanation;
@@ -19,10 +18,10 @@ export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
   const locale = useLocale();
   const date = (day: IsoDate) => formatShortDate(day, locale);
   const num = (n: number) => n.toLocaleString(locale);
-  const messages = EXPLAIN_MESSAGES[locale];
-  const x = (key: keyof typeof messages, vars: Record<string, string | number> = {}) =>
+  const i18n = explainTranslators[locale];
+  const x = (key: string, vars: Record<string, string | number> = {}) =>
     // A date abbreviated with a dot ("Apr." in German) can end a sentence.
-    interpolate(messages[key], vars).replaceAll("..", ".");
+    i18n._(key, vars).replaceAll("..", ".");
 
   const f = e.fertility;
 
@@ -56,7 +55,8 @@ export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
         </li>
         <li>
           {e.range
-            ? x(plural("explain.range", e.spreadDays ?? 0, locale), {
+            ? x("explain.range", {
+                count: e.spreadDays ?? 0,
                 spread: num(e.spreadDays ?? 0),
                 from: date(e.range.from),
                 to: date(e.range.to),
@@ -78,8 +78,7 @@ export function ForecastExplainer({ explanation: e }: ForecastExplainerProps) {
                 from: date(f.from),
                 to: date(f.to),
               })}
-              {f.widening > 0 ? ` ${x(plural("explain.widened", f.widening, locale), { n: f.widening })}` : null}{" "}
-              {t("today.notBirthControl")}
+              {f.widening > 0 ? ` ${x("explain.widened", { n: f.widening })}` : null} {t("today.notBirthControl")}
             </li>
           </>
         ) : null}
