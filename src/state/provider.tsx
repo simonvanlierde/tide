@@ -1,3 +1,4 @@
+import { I18nProvider, LinguiContext } from "@lingui/react";
 import {
   createContext,
   type Dispatch,
@@ -19,7 +20,7 @@ import type {
   LanguagePreference,
   ThemePreference,
 } from "../domain/types";
-import { type MessageKey, resolveLanguage, translate } from "../i18n";
+import { resolveLanguage, translators } from "../i18n";
 import { type AppStateAction, appStateReducer, selectForecast } from "./core";
 
 const AppStateContext = createContext<AppState | null>(null);
@@ -78,7 +79,9 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
         <ReadOnlyContext.Provider value={readOnly}>
-          <StorageErrorContext.Provider value={storageError}>{children}</StorageErrorContext.Provider>
+          <StorageErrorContext.Provider value={storageError}>
+            <I18nProvider i18n={translators[resolveLanguage(state.settings.language)]}>{children}</I18nProvider>
+          </StorageErrorContext.Provider>
         </ReadOnlyContext.Provider>
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
@@ -128,7 +131,7 @@ function useLanguagePreference(language: LanguagePreference) {
 
 // The bound translator returned by useT — pass it to module-level helpers that
 // need to build localized strings.
-export type Translate = (key: MessageKey, vars?: Record<string, string | number>) => string;
+export type Translate = (key: string, vars?: Record<string, string | number>) => string;
 
 // The stored language preference, or "system" when rendered outside a provider
 // (isolated component tests, Storybook) so leaf components stay self-sufficient.
@@ -139,11 +142,10 @@ function useLanguage() {
 // Bound translator for the current language. Components call `const t = useT()`
 // then `t("settings.theme")`.
 export function useT(): Translate {
+  const lingui = useContext(LinguiContext);
   const language = useLanguage();
-  return useMemo(() => {
-    const lang = resolveLanguage(language);
-    return (key: MessageKey, vars?: Record<string, string | number>) => translate(lang, key, vars);
-  }, [language]);
+  const i18n = lingui?.i18n ?? translators[resolveLanguage(language)];
+  return useMemo(() => (key: string, vars?: Record<string, string | number>) => i18n._(key, vars), [i18n]);
 }
 
 // The resolved BCP-47 locale for date/number formatting (Intl). Read from state

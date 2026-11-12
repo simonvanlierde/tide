@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
 
 // Start online once; the service worker must cache lazy legal pages before they are opened.
 test("legal pages and Settings work offline after the first visit", async ({ page, context }) => {
@@ -27,4 +28,15 @@ test("legal pages and Settings work offline after the first visit", async ({ pag
     await page.locator(".back-link").click();
     await expect(page).toHaveURL(/\/settings$/);
   }
+  const requests: string[] = [];
+  context.on("request", (request) => requests.push(request.url()));
+  for (const language of SUPPORTED_LANGUAGES) {
+    await page.locator("#language-select").selectOption(language);
+    await expect(page.locator("html")).toHaveAttribute("lang", language);
+    await expect(page.locator('.tab-bar a[href="/"]')).toHaveText(translate(language, "nav.today"));
+  }
+  await page.locator("#language-select").selectOption("system");
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  expect(requests).toEqual([]);
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(["tide.period-tracker.state"]);
 });

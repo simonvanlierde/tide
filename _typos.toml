@@ -2,3 +2,7 @@
 # A standard spelling, and the French word in a comment about the language picker.
 unparseable = "unparseable"
 appareil = "appareil"
+
+[files]
+# Forecast translations contain all five languages.
+extend-exclude = ["src/features/today/locales/*.po"]

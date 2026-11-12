@@ -1,6 +1,5 @@
 import { type KeyboardEvent, useMemo, useState } from "react";
 import type { DayEstimate, IsoDate } from "../../domain/types";
-import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
 import { formatLongDate, getWeekdayLabels, parseIsoDate } from "../../utils/date";
 import type { CalendarCell } from "./calendar";
@@ -11,7 +10,7 @@ const MARKER_CLASS: Record<DayEstimate, string> = {
   "predicted-period": "is-predicted-period",
 };
 
-const MARKER_LABEL_KEY: Record<DayEstimate, MessageKey> = {
+const MARKER_LABEL_KEY: Record<DayEstimate, string> = {
   fertile: "marker.fertile",
   ovulation: "marker.ovulation",
   "predicted-period": "marker.predictedPeriod",

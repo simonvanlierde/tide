@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "explain.cycles"
+msgstr "Cycles utilisés pour cette estimation, du plus ancien au plus récent : {list} jours."
+
+msgid "explain.median"
+msgstr "Leur médiane (valeur du milieu) est de {cycle} jours."
+
+msgid "explain.medianRounded"
+msgstr "Leur médiane (valeur du milieu) est de {median}, arrondie à {cycle} jours."
+
+msgid "explain.fallback"
+msgstr "Aucun cycle complet n’est disponible pour cette estimation. Un cycle type de {cycle} jours est donc utilisé."
+
+msgid "explain.next"
+msgstr "Tes dernières règles ont commencé le {start}. Plus {cycle} jours donne le {date}."
+
+msgid "explain.range"
+msgstr "{count, plural, one {Variation passée : environ {spread} jour. Plage estimée : du {from} au {to}. Tes règles peuvent commencer en dehors de cette plage.} other {Variation passée : environ {spread} jours. Plage estimée : du {from} au {to}. Tes règles peuvent commencer en dehors de cette plage.}}"
+
+msgid "explain.noRange"
+msgstr "Une plage demande au moins deux cycles complets qui ne sont pas marqués comme incomplets."
+
+msgid "explain.sameLength"
+msgstr "Tes derniers cycles avaient tous la même durée, il n’y a donc pas de plage."
+
+msgid "explain.ovulation"
+msgstr "L’ovulation est estimée {luteal} jours avant : le {date}."
+
+msgid "explain.fertile"
+msgstr "La fenêtre de fertilité va de {before} jours avant à {after} après : du {from} au {to}."
+
+msgid "explain.widened"
+msgstr "{n, plural, one {Elle est plus large de {n} jour de chaque côté, car tes cycles varient.} other {Elle est plus large de {n} jours de chaque côté, car tes cycles varient.}}"

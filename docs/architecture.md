@@ -17,7 +17,7 @@ flowchart TD
   state["src/state<br/>reducer, provider, selectors"] --> domain & data
   data["src/data<br/>storage, schema, transfer"] --> domain
   domain["src/domain<br/>cycle, flow, reminders, types"] --> utils["src/utils<br/>dates"]
-  i18n["src/i18n<br/>one dictionary per locale"]
+  i18n["src/i18n<br/>compiled PO catalogs"]
   ui["src/ui<br/>icons"]
   state & features & domain & data --> i18n
 ```
@@ -28,8 +28,24 @@ flowchart TD
 - `src/state`: the reducer and selectors in `core.ts`, and the React provider that holds the state.
 - `src/app`: the app shell and routing by pathname (`/`, `/calendar`, `/settings` and the legal pages).
 - `src/features`: one folder per screen or flow.
-- `src/i18n`: typed message dictionaries, one per locale.
+- `src/i18n`: Lingui PO catalogs, one per locale, compiled into the bundle.
 - `src/ui`, `src/styles` and `src/utils`: shared icons, styles and date helpers.
+
+## Translations
+
+Lingui 6 renders explicit message IDs from five PO catalogs in `src/i18n/locales`.
+`src/state/provider.tsx` supplies the React `I18nProvider` and the bound `useT()`
+translator. Each locale has its own Lingui instance, so rendering another language cannot
+change the active screen. Plural messages use ICU `one` and `other` branches.
+Dates still use `Intl` with the resolved language preference.
+
+The forecast explainer has a second catalog in `src/features/today/locales`, compiled
+into its lazy chunk. The service worker precaches that chunk along with the app.
+All five languages work offline; choosing a language makes no catalog request.
+`lingui compile --strict` runs before development, builds, type checks and tests.
+Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
+[translation workflow](../README.md#translations) describes the commands.
+[ADR 0002](adr/0002-lingui-catalogs.md) records the choice.
 
 ## Data flow
 

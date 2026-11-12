@@ -46,3 +46,7 @@ Thumbs.db
 .tmp/
 .cache/
 .cspellcache
+
+# Lingui catalogs compiled before development, tests and builds.
+src/i18n/locales/*.mjs
+src/features/today/locales/*.mjs

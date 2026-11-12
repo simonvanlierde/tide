@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "explain.cycles"
+msgstr "Cycles used for this estimate, oldest first: {list} days."
+
+msgid "explain.median"
+msgstr "Their median (middle value) is {cycle} days."
+
+msgid "explain.medianRounded"
+msgstr "Their median (middle value) is {median}, rounded to {cycle} days."
+
+msgid "explain.fallback"
+msgstr "No complete cycles are available for this estimate, so a typical {cycle}-day cycle is used."
+
+msgid "explain.next"
+msgstr "Your last period started {start}. Adding {cycle} days gives {date}."
+
+msgid "explain.range"
+msgstr "{count, plural, one {Past variation: about {spread} day. Estimated range: {from} to {to}. Your period may start outside it.} other {Past variation: about {spread} days. Estimated range: {from} to {to}. Your period may start outside it.}}"
+
+msgid "explain.noRange"
+msgstr "A range needs at least two full cycles that are not marked incomplete."
+
+msgid "explain.sameLength"
+msgstr "Your recent cycles were all the same length, so there is no range."
+
+msgid "explain.ovulation"
+msgstr "Ovulation is estimated {luteal} days before that: {date}."
+
+msgid "explain.fertile"
+msgstr "The fertile window runs from {before} days before to {after} after it: {from} to {to}."
+
+msgid "explain.widened"
+msgstr "{n, plural, one {That is {n} day wider on each side, because your cycles vary.} other {That is {n} days wider on each side, because your cycles vary.}}"

@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { interpolate, plural, resolveLanguage, SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
+import { resolveLanguage, SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
 
 describe("i18n", () => {
   it("resolves a concrete preference verbatim", () => {
@@ -27,23 +27,12 @@ describe("i18n", () => {
     expect(translate("es", "settings.language")).toBe("Idioma");
   });
 
-  it("interpolates {name} placeholders and leaves unknown ones visible", () => {
-    expect(interpolate("Day {n}", { n: 3 })).toBe("Day 3");
-    expect(interpolate("Hi {who}", {})).toBe("Hi {who}");
-  });
-
-  it("picks the plural form by each language's rules", () => {
-    expect(plural("k", 1.5, "fr")).toBe("k.one");
-    expect(plural("k", 1.5, "en")).toBe("k.other");
-    // French and Spanish "many" has no key of its own.
-    expect(plural("k", 1_000_000, "es")).toBe("k.other");
-  });
-
-  it("keeps the old forms for whole days in every language", () => {
+  it("renders ICU plurals with each locale's rules", () => {
+    expect(translate("fr", "today.inDays", { n: 1.5 })).toBe("Dans 1.5 jour");
+    expect(translate("en", "today.inDays", { n: 1.5 })).toBe("In 1.5 days");
+    expect(translate("es", "today.inDays", { n: 1_000_000 })).toBe("En 1000000 días");
     for (const lang of SUPPORTED_LANGUAGES) {
-      for (const n of [1, 2, 5, 21, 101, 1_000_000]) {
-        expect(plural("k", n, lang)).toBe(n === 1 ? "k.one" : "k.other");
-      }
+      expect(translate(lang, "today.inDays", { n: 1 })).not.toBe(translate(lang, "today.inDays", { n: 2 }));
     }
   });
 });

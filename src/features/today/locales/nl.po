@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "explain.cycles"
+msgstr "Cycli voor deze schatting, oudste eerst: {list} dagen."
+
+msgid "explain.median"
+msgstr "De mediaan (middelste waarde) is {cycle} dagen."
+
+msgid "explain.medianRounded"
+msgstr "De mediaan (middelste waarde) is {median}, afgerond {cycle} dagen."
+
+msgid "explain.fallback"
+msgstr "Er zijn geen volledige cycli beschikbaar voor deze schatting. Daarom geldt een gebruikelijke cyclus van {cycle} dagen."
+
+msgid "explain.next"
+msgstr "Je laatste menstruatie begon op {start}. Plus {cycle} dagen geeft {date}."
+
+msgid "explain.range"
+msgstr "{count, plural, one {Eerdere variatie: ongeveer {spread} dag. Geschatte marge: {from} tot {to}. Je menstruatie kan ook daarbuiten beginnen.} other {Eerdere variatie: ongeveer {spread} dagen. Geschatte marge: {from} tot {to}. Je menstruatie kan ook daarbuiten beginnen.}}"
+
+msgid "explain.noRange"
+msgstr "Voor een marge zijn minstens twee volledige cycli nodig die niet als onvolledig zijn gemarkeerd."
+
+msgid "explain.sameLength"
+msgstr "Je laatste cycli waren allemaal even lang, dus er is geen marge."
+
+msgid "explain.ovulation"
+msgstr "De eisprong wordt {luteal} dagen daarvoor geschat: {date}."
+
+msgid "explain.fertile"
+msgstr "De vruchtbare periode loopt van {before} dagen ervoor tot {after} erna: {from} tot {to}."
+
+msgid "explain.widened"
+msgstr "{n, plural, one {Die is aan elke kant {n} dag breder, omdat je cycli verschillen.} other {Die is aan elke kant {n} dagen breder, omdat je cycli verschillen.}}"
