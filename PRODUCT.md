@@ -57,7 +57,7 @@ out: import it to bring your history, export it to leave.
 - Every estimate is an estimate. Fertility estimates stay hidden until you choose to see them
   in the introduction or Settings. The note
   that they are not birth control sits next to the fertility line, not only in Settings.
-- Five locales as typed dictionaries, with dates and plurals through `Intl`. German and
+- Five locales as Lingui PO catalogs, with ICU plurals and dates through `Intl`. German and
   French run long and still have to fit.
 - Light and dark themes, following the system or a manual choice.
 - CI checks bundle size, coverage, and accessibility with axe in the end-to-end tests.

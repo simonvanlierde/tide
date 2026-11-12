@@ -1,0 +1,696 @@
+msgid ""
+msgstr ""
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "history.title"
+msgstr "Cycle history"
+
+msgid "history.description"
+msgstr "{n, plural, one {Completed cycles, from one period start to the next. Showing the latest cycle.} other {Completed cycles, from one period start to the next. Showing the latest {n}.}}"
+
+msgid "history.empty"
+msgstr "Log the start of another period to see your completed cycles."
+
+msgid "history.days"
+msgstr "Days"
+
+msgid "history.start"
+msgstr "Period start"
+
+msgid "history.length"
+msgstr "Length"
+
+msgid "history.incomplete"
+msgstr "Incomplete"
+
+msgid "history.incompleteFor"
+msgstr "Incomplete cycle starting {date}"
+
+msgid "history.help"
+msgstr "Incomplete cycles keep their logged days but don''t count toward cycle-length estimates."
+
+msgid "history.excluded"
+msgstr "Incomplete; excluded from estimates"
+
+msgid "history.chartDates"
+msgstr "Period starts, oldest to newest"
+
+msgid "backup.title"
+msgstr "Keep a copy of your history"
+
+msgid "backup.body"
+msgstr "Your history is stored only in this browser, and clearing the browser''s data erases it. Download a backup so you can restore it."
+
+msgid "backup.download"
+msgstr "Back up data"
+
+msgid "backup.snooze"
+msgstr "Remind me in a week"
+
+msgid "backup.error"
+msgstr "The backup couldn''t be downloaded. Try again."
+
+msgid "diary.addDetails"
+msgstr "Add details"
+
+msgid "diary.editDetails"
+msgstr "Edit details"
+
+msgid "diary.addDetailsFor"
+msgstr "Add details for {date}"
+
+msgid "diary.details"
+msgstr "Details"
+
+msgid "diary.done"
+msgstr "Done"
+
+msgid "diary.editDetailsFor"
+msgstr "Edit details for {date}"
+
+msgid "diary.undo"
+msgstr "Undo"
+
+msgid "diary.date"
+msgstr "Date"
+
+msgid "diary.symptoms"
+msgstr "Symptoms"
+
+msgid "diary.noSymptoms"
+msgstr "No symptoms"
+
+msgid "diary.mood"
+msgstr "Mood"
+
+msgid "diary.note"
+msgstr "Note (optional)"
+
+msgid "diary.noteHint"
+msgstr "Up to {max} characters. Details stay on this device and are included in backups."
+
+msgid "diary.saved"
+msgstr "Details saved."
+
+msgid "diary.removed"
+msgstr "Details cleared."
+
+msgid "diary.clear"
+msgstr "Clear details"
+
+msgid "diary.history"
+msgstr "Daily details"
+
+msgid "diary.openDay"
+msgstr "View details for {date}"
+
+msgid "diary.symptom.cramps"
+msgstr "Cramps"
+
+msgid "diary.symptom.headache"
+msgstr "Headache"
+
+msgid "diary.symptom.bloating"
+msgstr "Bloating"
+
+msgid "diary.symptom.breastTenderness"
+msgstr "Breast tenderness"
+
+msgid "diary.symptom.fatigue"
+msgstr "Fatigue"
+
+msgid "diary.mood.low"
+msgstr "Low"
+
+msgid "diary.mood.okay"
+msgstr "Okay"
+
+msgid "diary.mood.good"
+msgstr "Good"
+
+msgid "settings.importReplacesDetails"
+msgstr "Your current period history and daily details will be replaced."
+
+msgid "nav.today"
+msgstr "Today"
+
+msgid "nav.calendar"
+msgstr "Calendar"
+
+msgid "nav.settings"
+msgstr "Settings"
+
+msgid "app.skipToContent"
+msgstr "Skip to content"
+
+msgid "app.primaryNav"
+msgstr "Primary navigation"
+
+msgid "app.newerData"
+msgstr "A newer version of Tide saved your data. Reload to update. Changes made here aren''t saved."
+
+msgid "app.storageError"
+msgstr "Your latest changes couldn''t be saved on this device. Keep Tide open and export a backup from Settings."
+
+msgid "today.srCycleDay"
+msgstr "Cycle day {day}, {phase}"
+
+msgid "today.nextPeriod"
+msgstr "Next period"
+
+msgid "today.fertility"
+msgstr "Fertility"
+
+msgid "today.fertilityInfoLabel"
+msgstr "How fertility is estimated"
+
+msgid "today.cycleInsights"
+msgstr "Cycle insights"
+
+msgid "today.howWorkedOut"
+msgstr "How was this worked out?"
+
+msgid "today.explainError"
+msgstr "This couldn''t be opened. Reload Tide and try again."
+
+msgid "today.expectedToday"
+msgstr "Expected today"
+
+msgid "today.inDays"
+msgstr "{n, plural, one {In {n} day} other {In {n} days}}"
+
+msgid "today.higherToday"
+msgstr "In the fertile window"
+
+msgid "today.lowerToday"
+msgstr "Outside the fertile window"
+
+msgid "today.notBirthControl"
+msgstr "An estimate. Don''t use it as birth control."
+
+msgid "fertilityAsk.title"
+msgstr "Show fertility estimates?"
+
+msgid "fertilityAsk.body"
+msgstr "Tide can mark the days you''re most likely to be fertile, worked out from the periods you log. It''s only an estimate, so don''t use it as birth control. You can change this in Settings."
+
+msgid "fertilityAsk.show"
+msgstr "Show"
+
+msgid "fertilityAsk.hide"
+msgstr "Don''t show"
+
+msgid "today.fertilityUnclear"
+msgstr "Unclear while late"
+
+msgid "today.periodLate"
+msgstr "Period"
+
+msgid "today.daysLate"
+msgstr "{n, plural, one {{n} day late} other {{n} days late}}"
+
+msgid "today.expectedOn"
+msgstr "Expected {date}"
+
+msgid "today.ovulationDaysAgo"
+msgstr "{n, plural, one {Ovulation {n} day ago} other {Ovulation {n} days ago}}"
+
+msgid "today.ovulationToday"
+msgstr "Ovulation today"
+
+msgid "today.ovulationInDays"
+msgstr "{n, plural, one {Ovulation in {n} day} other {Ovulation in {n} days}}"
+
+msgid "today.learningFallback"
+msgstr "Using a typical 28-day cycle until Tide has seen a few of your cycles."
+
+msgid "today.learningInsufficient"
+msgstr "Log your period to see a forecast."
+
+msgid "phase.menstrual"
+msgstr "Menstrual"
+
+msgid "phase.follicular"
+msgstr "Follicular"
+
+msgid "phase.ovulation"
+msgstr "Ovulation"
+
+msgid "phase.luteal"
+msgstr "Luteal"
+
+msgid "phase.learning"
+msgstr "Learning"
+
+msgid "phase.between"
+msgstr "Between periods"
+
+msgid "phaseLine.menstrual"
+msgstr "Menstrual phase"
+
+msgid "phaseLine.follicular"
+msgstr "Follicular phase"
+
+msgid "phaseLine.ovulation"
+msgstr "Ovulation phase"
+
+msgid "phaseLine.luteal"
+msgstr "Luteal phase"
+
+msgid "phaseLine.learning"
+msgstr "Learning"
+
+msgid "phaseLine.between"
+msgstr "Between periods"
+
+msgid "phaseLine.late"
+msgstr "Period late"
+
+msgid "dial.overview"
+msgstr "Cycle overview"
+
+msgid "dial.days"
+msgstr "Cycle days"
+
+msgid "dial.cycleDay"
+msgstr "Cycle day"
+
+msgid "dial.day"
+msgstr "Day {n}"
+
+msgid "status.period"
+msgstr "Period"
+
+msgid "status.ovulationExpected"
+msgstr "Ovulation expected"
+
+msgid "status.fertileWindow"
+msgstr "Fertile window"
+
+msgid "status.periodExpected"
+msgstr "Period expected"
+
+msgid "insights.title"
+msgstr "Cycle insights"
+
+msgid "insights.cycleLength"
+msgstr "Cycle length"
+
+msgid "insights.periodLength"
+msgstr "Period length"
+
+msgid "insights.cyclesTracked"
+msgstr "Cycles used"
+
+msgid "insights.basedOn"
+msgstr "Using a typical {cycle}-day cycle until you have a complete one."
+
+msgid "insights.regularity"
+msgstr "Cycle regularity"
+
+msgid "insights.regularityAria"
+msgstr "Cycle regularity: {label}"
+
+msgid "regularity.none"
+msgstr "Not enough data yet"
+
+msgid "regularity.veryRegular"
+msgstr "Very regular"
+
+msgid "regularity.regular"
+msgstr "Regular"
+
+msgid "regularity.somewhatVariable"
+msgstr "Somewhat variable"
+
+msgid "regularity.variable"
+msgstr "Variable"
+
+msgid "insights.how"
+msgstr "How predictions work"
+
+msgid "insights.how1"
+msgstr "Everything is worked out on your device from the days you log."
+
+msgid "insights.howCycleStart"
+msgstr "A gap of {gap} days or more between logged bleeding days starts a new cycle. A shorter gap counts as the same period. Spotting is left out."
+
+msgid "insights.how2"
+msgstr "Cycle length is the median of your last {recent} complete cycles. Incomplete cycles are left out. With no complete cycles, a typical {cycle}-day cycle is used."
+
+msgid "insights.how3"
+msgstr "Estimated period length is your past average, limited to {min}–{max} days."
+
+msgid "insights.how4"
+msgstr "Your next period is expected one cycle length after your last period started. Ovulation is estimated {luteal} days before that."
+
+msgid "insights.howNextPeriod"
+msgstr "Your next period is expected one cycle length after your last period started."
+
+msgid "insights.how5"
+msgstr "The fertile window starts {before} days before ovulation and ends {after} day after it. It widens when your cycles vary more."
+
+msgid "legend.period"
+msgstr "Period"
+
+msgid "legend.expected"
+msgstr "Expected period"
+
+msgid "legend.fertileWindow"
+msgstr "Fertile window"
+
+msgid "legend.fertile"
+msgstr "Fertile"
+
+msgid "legend.ovulation"
+msgstr "Ovulation"
+
+msgid "legend.cycleDay"
+msgstr "Cycle day"
+
+msgid "flow.legend"
+msgstr "Flow"
+
+msgid "flow.spotting"
+msgstr "Spotting"
+
+msgid "flow.light"
+msgstr "Light"
+
+msgid "flow.medium"
+msgstr "Medium"
+
+msgid "flow.heavy"
+msgstr "Heavy"
+
+msgid "log.remove"
+msgstr "Remove bleeding log"
+
+msgid "log.logged"
+msgstr "Logged today"
+
+msgid "log.loggedWith"
+msgstr "Logged today · {flow}"
+
+msgid "log.addFlow"
+msgstr "Add flow"
+
+msgid "log.changeFlow"
+msgstr "Change"
+
+msgid "log.add"
+msgstr "Log bleeding today"
+
+msgid "reminder.question"
+msgstr "Has your period started?"
+
+msgid "reminder.dismiss"
+msgstr "Not yet, remind me later"
+
+msgid "reminder.reassure"
+msgstr "A few days of variation is common."
+
+msgid "calendar.title"
+msgstr "Calendar"
+
+msgid "calendar.previousMonth"
+msgstr "Previous month"
+
+msgid "calendar.nextMonth"
+msgstr "Next month"
+
+msgid "calendar.jumpToMonth"
+msgstr "Jump to month"
+
+msgid "calendar.month"
+msgstr "Month"
+
+msgid "calendar.year"
+msgstr "Year"
+
+msgid "calendar.tapHelp"
+msgstr "Tap a day to log or edit bleeding."
+
+msgid "calendar.today"
+msgstr "Today"
+
+msgid "calendar.goToCurrentMonth"
+msgstr "Go to current month"
+
+msgid "calendar.justLogged"
+msgstr "Logged {date}."
+
+msgid "calendar.justLoggedForecast"
+msgstr "Logged {date}. Forecast updated."
+
+msgid "calendar.undo"
+msgstr "Undo"
+
+msgid "calendar.logRange"
+msgstr "Log a past period"
+
+msgid "calendar.rangePickFirst"
+msgstr "Pick the first day of the period."
+
+msgid "calendar.rangePickLast"
+msgstr "From {date}: now pick the last day, up to {max} days."
+
+msgid "calendar.rangeTooLong"
+msgstr "That''s more than {max} days. Pick an earlier last day."
+
+msgid "calendar.emptyHelp"
+msgstr "Tap a past day to log your first bleeding day."
+
+msgid "calendar.futureHelp"
+msgstr "Future days can''t be logged yet."
+
+msgid "calendar.log"
+msgstr "Log"
+
+msgid "calendar.edit"
+msgstr "Edit"
+
+msgid "calendar.dayUnavailable"
+msgstr "{label} unavailable"
+
+msgid "calendar.dayWithMarker"
+msgstr "{label}, {marker}"
+
+msgid "marker.fertile"
+msgstr "fertile window"
+
+msgid "marker.ovulation"
+msgstr "expected ovulation"
+
+msgid "marker.predictedPeriod"
+msgstr "expected period"
+
+msgid "calendar.notBleeding"
+msgstr "Not bleeding that day"
+
+msgid "common.unknown"
+msgstr "unknown"
+
+msgid "common.close"
+msgstr "Close"
+
+msgid "common.cancel"
+msgstr "Cancel"
+
+msgid "common.days"
+msgstr "days"
+
+msgid "common.reload"
+msgstr "Reload"
+
+msgid "error.title"
+msgstr "Something went wrong"
+
+msgid "error.body"
+msgstr "Your data is still saved on this device."
+
+msgid "error.downloadRaw"
+msgstr "Download raw data"
+
+msgid "settings.title"
+msgstr "Settings"
+
+msgid "settings.preferences"
+msgstr "Preferences"
+
+msgid "settings.theme"
+msgstr "Theme"
+
+msgid "theme.system"
+msgstr "System"
+
+msgid "theme.light"
+msgstr "Light"
+
+msgid "theme.dark"
+msgstr "Dark"
+
+msgid "settings.language"
+msgstr "Language"
+
+msgid "language.system"
+msgstr "Device language"
+
+msgid "language.en"
+msgstr "English"
+
+msgid "language.nl"
+msgstr "Nederlands"
+
+msgid "language.de"
+msgstr "Deutsch"
+
+msgid "language.fr"
+msgstr "Français"
+
+msgid "language.es"
+msgstr "Español"
+
+msgid "settings.showFertility"
+msgstr "Show fertility estimates"
+
+msgid "settings.fertilityInfo"
+msgstr "About fertility estimates"
+
+msgid "settings.fertilityHelp"
+msgstr "Shows the fertile window and expected ovulation on Today and in the calendar."
+
+msgid "settings.showCycleNumbers"
+msgstr "Show cycle day numbers"
+
+msgid "settings.cycleNumbersInfo"
+msgstr "About cycle day numbers"
+
+msgid "settings.cycleNumbersHelp"
+msgstr "Shows the day of your cycle (1, 2, 3, ...) on the calendar, up to your next expected period."
+
+msgid "settings.about"
+msgstr "About"
+
+msgid "legal.privacy"
+msgstr "Privacy statement"
+
+msgid "legal.accessibility"
+msgstr "Accessibility statement"
+
+msgid "legal.inEnglish"
+msgstr "In English"
+
+msgid "settings.privacy"
+msgstr "Tide does not upload your data."
+
+msgid "settings.fertilityDisclaimer"
+msgstr "Fertility estimates are for information only. Don''t use them as birth control."
+
+msgid "settings.fertilityMethod"
+msgstr "The fertile window is the days around your expected ovulation, estimated from your recent cycle lengths."
+
+msgid "settings.sourceCode"
+msgstr "Source code, v{version}, opens in a new tab"
+
+msgid "settings.data"
+msgstr "Data"
+
+msgid "settings.dataInfo"
+msgstr "About import and export"
+
+msgid "settings.dataHelp"
+msgstr "Export saves your period history and daily details to a file. Importing a Tide backup replaces them. Importing from Clue or Flo adds period days."
+
+msgid "settings.importSources"
+msgstr "You can import a Tide backup, or an export from Clue or Flo."
+
+msgid "settings.export"
+msgstr "Export"
+
+msgid "settings.exportSuccess"
+msgstr "Backup saved to your downloads."
+
+msgid "settings.exportCalendar"
+msgstr "Add to calendar"
+
+msgid "settings.calendarHelp"
+msgstr "Saves your next 3 expected periods as a file your calendar app can open. Once added, they become normal calendar events, so your calendar account stores and syncs them."
+
+msgid "settings.calendarFertility"
+msgstr "Include fertile windows"
+
+msgid "settings.calendarSuccess"
+msgstr "Calendar file saved to your downloads."
+
+msgid "settings.calendarError"
+msgstr "The calendar file couldn''t be made. Reload Tide and try again."
+
+msgid "settings.import"
+msgstr "Import"
+
+msgid "settings.importFile"
+msgstr "Import data file"
+
+msgid "settings.importError"
+msgstr "That file isn''t a Tide backup or a Clue or Flo export. Choose another file."
+
+msgid "settings.importUnavailable"
+msgstr "Import couldn''t be opened. Reload and try again."
+
+msgid "settings.importSuccess"
+msgstr "{n, plural, one {Imported {n} logged day.} other {Imported {n} logged days.}}"
+
+msgid "settings.importConfirmTitle"
+msgstr "Replace your data?"
+
+msgid "settings.importConfirmAction"
+msgstr "Replace"
+
+msgid "settings.importFileDays"
+msgstr "{n, plural, one {This file holds {n} logged day.} other {This file holds {n} logged days.}}"
+
+msgid "settings.importReplaces"
+msgstr "{n, plural, one {It replaces the {n} day logged on this device, and cannot be undone.} other {It replaces the {n} days logged on this device, and cannot be undone.}}"
+
+msgid "settings.importMergeTitle"
+msgstr "Add days from {source}?"
+
+msgid "settings.importMergeAction"
+msgstr "Add"
+
+msgid "settings.importMerges"
+msgstr "Days already logged here stay as they are."
+
+msgid "settings.reset"
+msgstr "Delete all data"
+
+msgid "settings.resetTitle"
+msgstr "Delete all data?"
+
+msgid "settings.resetAction"
+msgstr "Delete"
+
+msgid "settings.resetConfirm"
+msgstr "All data and settings on this device are erased. This cannot be undone."
+
+msgid "onboarding.title"
+msgstr "Your history stays here"
+
+msgid "onboarding.privacy"
+msgstr "Tide does not upload what you log."
+
+msgid "onboarding.import"
+msgstr "Import a Tide backup or a Clue or Flo export"
+
+msgid "onboarding.backup"
+msgstr "Add Tide to your home screen. Download a backup every 60 days."
+
+msgid "onboarding.dismiss"
+msgstr "Skip introduction"
+
+msgid "calendar.firstVisitHelp"
+msgstr "Tap a day to log or change it, or use Log a past period for a range."

@@ -1,7 +1,7 @@
 import type { LanguagePreference, ThemePreference } from "../../domain/types";
-import { type MessageKey, SUPPORTED_LANGUAGES } from "../../i18n";
+import { SUPPORTED_LANGUAGES } from "../../i18n";
 
-export const THEME_OPTIONS: { value: ThemePreference; labelKey: MessageKey }[] = [
+export const THEME_OPTIONS: { value: ThemePreference; labelKey: string }[] = [
   { value: "system", labelKey: "theme.system" },
   { value: "light", labelKey: "theme.light" },
   { value: "dark", labelKey: "theme.dark" },

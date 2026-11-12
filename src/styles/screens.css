@@ -43,14 +43,14 @@
     display: flex;
     align-items: center;
     min-height: 44px;
-    color: var(--tide-deep);
+    color: var(--tide-strong);
     text-underline-offset: 0.2em;
   }
 
   .onboarding__fertility summary {
     min-height: 44px;
     padding-block: 10px;
-    color: var(--tide-deep);
+    color: var(--tide-strong);
     cursor: pointer;
   }
 
@@ -70,7 +70,7 @@
   }
 
   .onboarding__choices button[aria-pressed="true"] {
-    background: var(--tide-deep);
+    background: var(--accent-solid);
     color: var(--ink-on-solid);
   }
 

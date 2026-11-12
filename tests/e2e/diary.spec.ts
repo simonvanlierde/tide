@@ -1,7 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
-import { en } from "../../src/i18n/en";
 import { findOverflow } from "./overflow";
 import { FIXED_NOW, seedAppState } from "./seed";
 
@@ -10,20 +9,22 @@ test("keyboard date edits keep the selected day segment and load its details", a
   // Only the Calendar's details pick a date; Today's are for today.
   await page.goto("/calendar");
   await page.getByRole("button", { name: /^Add details for / }).click();
-  const date = page.getByLabel(en["diary.date"], { exact: true });
+  const date = page.getByLabel(translate("en", "diary.date"), { exact: true });
   await expect(date).toHaveValue("2026-11-11");
   await date.press("ArrowRight");
   await date.press("ArrowDown");
   await expect(date).toHaveValue("2026-11-10");
   await date.press("ArrowDown");
   await expect(date).toHaveValue("2026-11-09");
-  await page.getByRole("textbox", { name: en["diary.note"], exact: true }).fill("A quiet day.");
-  await expect(page.getByText(en["diary.saved"], { exact: true })).toBeVisible();
+  await page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true }).fill("A quiet day.");
+  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
   await date.fill("2026-11-08");
-  await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("");
-  await expect(page.getByText(en["diary.saved"], { exact: true })).not.toBeVisible();
+  await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue("");
+  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).not.toBeVisible();
   await date.fill("2026-11-09");
-  await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A quiet day.");
+  await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
+    "A quiet day.",
+  );
 });
 
 for (const language of SUPPORTED_LANGUAGES) {
@@ -57,25 +58,29 @@ for (const language of SUPPORTED_LANGUAGES) {
 test("diary-only history survives reload, calendar viewing and backup restore", async ({ page, browser }) => {
   await page.clock.setFixedTime(FIXED_NOW);
   await page.goto("/");
-  await page.getByRole("button", { name: en["diary.addDetails"], exact: true }).click();
-  await page.getByRole("button", { name: en["diary.noSymptoms"], exact: true }).click();
-  await page.getByRole("button", { name: en["diary.mood.good"], exact: true }).click();
-  await page.getByRole("textbox", { name: en["diary.note"], exact: true }).fill("A walk helped.");
-  await expect(page.getByText(en["diary.saved"], { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: translate("en", "diary.addDetails"), exact: true }).click();
+  await page.getByRole("button", { name: translate("en", "diary.noSymptoms"), exact: true }).click();
+  await page.getByRole("button", { name: translate("en", "diary.mood.good"), exact: true }).click();
+  await page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true }).fill("A walk helped.");
+  await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
   await page.reload();
-  await page.getByRole("button", { name: en["diary.editDetails"], exact: true }).click();
-  await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A walk helped.");
-  await page.getByRole("button", { name: en["diary.done"], exact: true }).click();
-  await page.getByRole("link", { name: en["nav.calendar"], exact: true }).click();
+  await page.getByRole("button", { name: translate("en", "diary.editDetails"), exact: true }).click();
+  await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
+    "A walk helped.",
+  );
+  await page.getByRole("button", { name: translate("en", "diary.done"), exact: true }).click();
+  await page.getByRole("link", { name: translate("en", "nav.calendar"), exact: true }).click();
   await page.getByRole("button", { name: /view details for/i }).click();
-  await expect(page.getByRole("button", { name: en["diary.noSymptoms"], exact: true })).toHaveAttribute(
+  await expect(page.getByRole("button", { name: translate("en", "diary.noSymptoms"), exact: true })).toHaveAttribute(
     "aria-pressed",
     "true",
   );
-  await expect(page.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A walk helped.");
-  await page.getByRole("link", { name: en["nav.settings"], exact: true }).click();
+  await expect(page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
+    "A walk helped.",
+  );
+  await page.getByRole("link", { name: translate("en", "nav.settings"), exact: true }).click();
   const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: en["settings.export"], exact: true }).click();
+  await page.getByRole("button", { name: translate("en", "settings.export"), exact: true }).click();
   const file = await download;
   const path = await file.path();
   expect(path).toBeTruthy();
@@ -84,10 +89,12 @@ test("diary-only history survives reload, calendar viewing and backup restore", 
     const restored = await context.newPage();
     await restored.clock.setFixedTime(FIXED_NOW);
     await restored.goto("/settings");
-    await restored.getByLabel(en["settings.importFile"], { exact: true }).setInputFiles(path as string);
-    await restored.getByRole("link", { name: en["nav.today"], exact: true }).click();
-    await restored.getByRole("button", { name: en["diary.editDetails"], exact: true }).click();
-    await expect(restored.getByRole("textbox", { name: en["diary.note"], exact: true })).toHaveValue("A walk helped.");
+    await restored.getByLabel(translate("en", "settings.importFile"), { exact: true }).setInputFiles(path as string);
+    await restored.getByRole("link", { name: translate("en", "nav.today"), exact: true }).click();
+    await restored.getByRole("button", { name: translate("en", "diary.editDetails"), exact: true }).click();
+    await expect(restored.getByRole("textbox", { name: translate("en", "diary.note"), exact: true })).toHaveValue(
+      "A walk helped.",
+    );
     expect(
       await restored.evaluate(
         () => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay,

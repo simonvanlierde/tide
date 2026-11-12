@@ -59,7 +59,7 @@ test("a first log removes introduction across reload and later removal", async (
 });
 
 for (const colorScheme of ["light", "dark"] as const) {
-  test(`${colorScheme}: the introduction and collapsed fertility choice are accessible`, async ({ page }) => {
+  test(`${colorScheme}: the introduction and fertility choices are accessible`, async ({ page }) => {
     await page.emulateMedia({ colorScheme });
     await page.clock.setFixedTime(FIXED_NOW);
     await page.goto("/");
@@ -69,6 +69,20 @@ for (const colorScheme of ["light", "dark"] as const) {
       .withTags(["wcag2a", "wcag2aa"])
       .analyze();
     expect(violations.map((violation) => violation.id)).toEqual([]);
+    const card = page.getByRole("region", { name: "Your history stays here" });
+    await card.locator("summary").click();
+    for (const name of ["Show", "Don't show"]) {
+      const choice = card.getByRole("button", { name, exact: true });
+      await choice.click();
+      await expect(choice).toHaveAttribute("aria-pressed", "true");
+      await expect(choice).toHaveCSS("background-color", "rgb(31, 106, 101)");
+      await expect(choice).toHaveCSS("color", "rgb(255, 255, 255)");
+      const selected = await new AxeBuilder({ page })
+        .include(".today-screen")
+        .withTags(["wcag2a", "wcag2aa"])
+        .analyze();
+      expect(selected.violations.map((violation) => violation.id)).toEqual([]);
+    }
   });
 }
 

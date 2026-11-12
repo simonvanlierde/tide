@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { en } from "../../src/i18n/en";
+import { translate } from "../../src/i18n";
 import { FIXED_NOW, seedAppState } from "./seed";
 
 // Pin "today" so every test sees the same date regardless of when CI runs.
@@ -22,7 +22,7 @@ test("app shell loads and primary navigation works", async ({ page }) => {
 
   await page.getByRole("link", { name: /^calendar$/i }).click();
   await expect(page).toHaveURL(/\/calendar$/);
-  await expect(page.getByRole("table", { name: en["calendar.title"] })).toBeVisible();
+  await expect(page.getByRole("table", { name: translate("en", "calendar.title") })).toBeVisible();
 });
 
 test("logging today persists across reload", async ({ page }) => {
@@ -48,7 +48,7 @@ test("deep links reload correctly for the static app paths", async ({ page }) =>
   await page.goto("/settings");
   await expect(page.getByRole("heading", { name: /about/i })).toBeVisible();
   await page.reload();
-  await expect(page.getByText(en["settings.privacy"])).toBeVisible();
+  await expect(page.getByText(translate("en", "settings.privacy"))).toBeVisible();
 });
 
 test("manifest and install assets are served", async ({ page }) => {
@@ -93,17 +93,17 @@ test("the fertility question is accessible and its answer is saved", async ({ pa
   await seedAppState(page, "en", { showFertility: null, onboardingDismissed: false }, {});
   await page.goto("/");
 
-  const question = page.getByRole("region", { name: en["onboarding.title"] });
+  const question = page.getByRole("region", { name: translate("en", "onboarding.title") });
   await question.locator("summary").click();
   await expect(question).toBeVisible();
-  await expect(page.getByText(en["today.fertility"], { exact: true })).toHaveCount(0);
+  await expect(page.getByText(translate("en", "today.fertility"), { exact: true })).toHaveCount(0);
   const { violations } = await new AxeBuilder({ page })
     .include(".today-screen")
     .withTags(["wcag2a", "wcag2aa"])
     .analyze();
   expect(violations.map((v) => v.id)).toEqual([]);
 
-  await question.getByRole("button", { name: en["fertilityAsk.show"], exact: true }).click();
+  await question.getByRole("button", { name: translate("en", "fertilityAsk.show"), exact: true }).click();
   await expect(question).toBeVisible();
 
   // The seed script reruns on reload, so read the saved answer directly.
@@ -114,7 +114,7 @@ test("the fertility question is accessible and its answer is saved", async ({ pa
 test("a past period logs in one go and survives a reload", async ({ page }) => {
   await page.goto("/calendar");
 
-  await page.getByRole("button", { name: en["calendar.logRange"] }).click();
+  await page.getByRole("button", { name: translate("en", "calendar.logRange") }).click();
   await page.getByRole("button", { name: /april 6, 2026/i }).click();
   await page.getByRole("button", { name: /april 10, 2026/i }).click();
   await expect(page.locator(".calendar-grid__day.is-logged")).toHaveCount(5);
@@ -126,31 +126,31 @@ test("a past period logs in one go and survives a reload", async ({ page }) => {
 test("Today's import link lands on the Import button", async ({ page }) => {
   // A first run: nothing stored, so Today shows the empty state.
   await page.goto("/");
-  await expect(page.getByRole("region", { name: en["onboarding.title"] })).toBeVisible();
+  await expect(page.getByRole("region", { name: translate("en", "onboarding.title") })).toBeVisible();
 
-  await page.getByRole("link", { name: en["onboarding.import"] }).click();
+  await page.getByRole("link", { name: translate("en", "onboarding.import") }).click();
   await expect(page).toHaveURL(/\/settings#import$/);
   const importButton = page.getByRole("button", {
-    name: en["settings.import"],
+    name: translate("en", "settings.import"),
     exact: true,
   });
   await expect(importButton).toBeFocused();
   // Someone coming from Clue or Flo can see this is their way in.
-  await expect(importButton).toHaveAccessibleDescription(en["settings.importSources"]);
+  await expect(importButton).toHaveAccessibleDescription(translate("en", "settings.importSources"));
   // Fertility estimates stay off until asked for.
-  await expect(page.getByRole("switch", { name: en["settings.showFertility"] })).not.toBeChecked();
+  await expect(page.getByRole("switch", { name: translate("en", "settings.showFertility") })).not.toBeChecked();
 });
 
 test("Today explains how the next period was worked out", async ({ page }) => {
   await seedAppState(page, "en");
   await page.goto("/");
 
-  await page.getByRole("button", { name: en["today.cycleInsights"] }).click();
-  const sums = page.getByRole("region", { name: en["today.howWorkedOut"] });
+  await page.getByRole("button", { name: translate("en", "today.cycleInsights") }).click();
+  const sums = page.getByRole("region", { name: translate("en", "today.howWorkedOut") });
   const sheet = page.getByRole("dialog");
   // The seed has one period start, so the 28-day default stands in.
   await expect(sums).toContainText("typical 28-day cycle");
-  await expect(sums).toContainText(en["today.notBirthControl"]);
+  await expect(sums).toContainText(translate("en", "today.notBirthControl"));
   await page.keyboard.press("Escape");
   await expect(sheet).toBeHidden();
 });
@@ -167,10 +167,10 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
       return create(blob);
     };
   });
-  await page.getByRole("checkbox", { name: en["settings.calendarFertility"] }).check();
+  await page.getByRole("checkbox", { name: translate("en", "settings.calendarFertility") }).check();
   const [download] = await Promise.all([
     page.waitForEvent("download"),
-    page.getByRole("button", { name: en["settings.exportCalendar"] }).click(),
+    page.getByRole("button", { name: translate("en", "settings.exportCalendar") }).click(),
   ]);
 
   expect(download.suggestedFilename()).toBe("tide-expected-periods-2026-04-15.ics");
@@ -178,5 +178,5 @@ test("Settings saves expected periods as a calendar file", async ({ page }) => {
   expect(ics).toMatch(/^BEGIN:VCALENDAR\r\n/);
   expect(ics.match(/^UID:period-\d+-[0-9a-f-]{36}@/gm)).toHaveLength(3);
   expect(ics).toContain("UID:fertile-");
-  await expect(page.getByRole("status").filter({ hasText: en["settings.calendarSuccess"] })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: translate("en", "settings.calendarSuccess") })).toBeVisible();
 });

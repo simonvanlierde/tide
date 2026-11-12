@@ -2,7 +2,6 @@ import { CalendarRange, ChevronDown, ChevronLeft, ChevronRight } from "lucide-re
 import { type KeyboardEvent, type TouchEvent, useEffect, useRef, useState } from "react";
 import { MAX_PERIOD_RANGE_DAYS } from "../../domain/flow";
 import type { IsoDate } from "../../domain/types";
-import type { MessageKey } from "../../i18n";
 import { useLocale, useT } from "../../state/provider";
 import { useToday } from "../../state/useToday";
 import { formatShortDate } from "../../utils/date";
@@ -255,7 +254,7 @@ const LEGEND_ITEMS = [
   { key: "fertile", labelKey: "legend.fertile" },
   { key: "ovulation", labelKey: "legend.ovulation" },
   { key: "cycle-day", labelKey: "legend.cycleDay" },
-] as const satisfies readonly { key: string; labelKey: MessageKey }[];
+] as const satisfies readonly { key: string; labelKey: string }[];
 
 const LEGEND_KEY = {
   "predicted-period": "predicted",

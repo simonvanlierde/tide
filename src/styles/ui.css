@@ -961,7 +961,7 @@
     outline-offset: 2px;
   }
 
-  /* Words break only at the soft hyphens the dictionaries put between the
+  /* Words break only at the soft hyphens the translations put between the
      parts of a long compound ("Fruchtbarkeits-schätzungen"), never at a
      syllable the browser picks ("an-zeigen"). */
   .settings-label {

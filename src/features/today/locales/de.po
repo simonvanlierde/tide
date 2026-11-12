@@ -1,0 +1,39 @@
+msgid ""
+msgstr ""
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "explain.cycles"
+msgstr "Zyklen für diese Schätzung, der älteste zuerst: {list} Tage."
+
+msgid "explain.median"
+msgstr "Ihr Median (der mittlere Wert) ist {cycle} Tage."
+
+msgid "explain.medianRounded"
+msgstr "Ihr Median (der mittlere Wert) ist {median}, gerundet {cycle} Tage."
+
+msgid "explain.fallback"
+msgstr "Für diese Schätzung sind keine vollständigen Zyklen verfügbar. Daher gilt ein typischer Zyklus von {cycle} Tagen."
+
+msgid "explain.next"
+msgstr "Deine letzte Periode begann am {start}. Plus {cycle} Tage ergibt den {date}."
+
+msgid "explain.range"
+msgstr "{count, plural, one {Bisherige Schwankung: etwa {spread} Tag. Geschätzte Spanne: {from} bis {to}. Deine Periode kann auch außerhalb beginnen.} other {Bisherige Schwankung: etwa {spread} Tage. Geschätzte Spanne: {from} bis {to}. Deine Periode kann auch außerhalb beginnen.}}"
+
+msgid "explain.noRange"
+msgstr "Für eine Spanne braucht es mindestens zwei vollständige Zyklen, die nicht als unvollständig markiert sind."
+
+msgid "explain.sameLength"
+msgstr "Deine letzten Zyklen waren alle gleich lang, daher gibt es keine Spanne."
+
+msgid "explain.ovulation"
+msgstr "Der Eisprung wird {luteal} Tage davor geschätzt: {date}."
+
+msgid "explain.fertile"
+msgstr "Das fruchtbare Fenster reicht von {before} Tagen davor bis {after} danach: {from} bis {to}."
+
+msgid "explain.widened"
+msgstr "{n, plural, one {Es ist auf jeder Seite {n} Tag breiter, weil deine Zyklen schwanken.} other {Es ist auf jeder Seite {n} Tage breiter, weil deine Zyklen schwanken.}}"

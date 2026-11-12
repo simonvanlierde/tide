@@ -1,7 +1,6 @@
 import { startTransition, useEffect, useMemo, useRef, useState } from "react";
 import { getPeriodRange } from "../../domain/flow";
 import type { FlowIntensity, IsoDate } from "../../domain/types";
-import type { MessageKey } from "../../i18n";
 import { useAppState, useAppStateActions, useForecast, useLocale } from "../../state/provider";
 import { addMonths, formatMonthLabel } from "../../utils/date";
 import { buildCalendarCells, buildMonthDays } from "./calendar";
@@ -20,7 +19,7 @@ export function useCalendar(today: IsoDate) {
     () => buildCalendarCells(buildMonthDays(visibleMonth, today), forecast, state.intensityByDay, showCycleDayNumbers),
     [visibleMonth, today, forecast, state.intensityByDay, showCycleDayNumbers],
   );
-  const helpKey: MessageKey =
+  const helpKey: string =
     (days[0]?.value ?? visibleMonth) > today
       ? "calendar.futureHelp"
       : !state.settings.calendarHelpDismissed

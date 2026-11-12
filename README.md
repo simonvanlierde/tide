@@ -127,6 +127,23 @@ the pull request closes or turns draft
 ([how it works](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#pull-request-previews)).
 Previews are public: anyone with the address can open one.
 
+## Translations
+
+The five languages live in Lingui 6 PO catalogs under `src/i18n/locales/`.
+The forecast explainer has its own catalogs under `src/features/today/locales/`.
+Keep explicit message IDs and edit each locale manually, including English. Use ICU
+`{n, plural, one {...} other {...}}` for plurals. Run `pnpm i18n:compile`
+(`lingui compile --strict`) after editing; development, tests and builds also compile first.
+Restart the development server or compile again after changing a catalog. Do not run
+`lingui extract`: dynamically selected IDs are maintained in the catalogs.
+
+Compiled catalogs ship in the app and its precached forecast chunk. Language changes
+work offline. The language picker and the system default share the existing saved preference;
+dates use `Intl` as before. Generated `.mjs` files stay out of Git.
+
+`pnpm i18n:compare` checks every message and plural form against the main commit before
+the migration. Pass another baseline with `pnpm i18n:compare <git-ref>`.
+
 ## License
 
 [MIT](LICENSE) © Simon van Lierde

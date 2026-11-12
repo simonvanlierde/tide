@@ -19,15 +19,17 @@
     "benchmark": "node scripts/benchmarkPredictor.mjs",
     "og-card": "node scripts/ogCard.mjs",
     "budget": "node scripts/checkBundleBudget.mjs",
-    "build": "vite build",
-    "check": "biome check && knip",
-    "coverage": "vitest run --coverage --coverage.reporter=text",
-    "dev": "vite",
+    "build": "pnpm i18n:compile && vite build",
+    "check": "pnpm i18n:compile && biome check && knip",
+    "coverage": "pnpm i18n:compile && vitest run --coverage --coverage.reporter=text",
+    "dev": "pnpm i18n:compile && vite",
     "fix": "biome check --write",
     "preview": "vite preview",
-    "test": "vitest run",
-    "test:e2e": "playwright test",
-    "typecheck": "tsc"
+    "test": "pnpm i18n:compile && vitest run",
+    "test:e2e": "pnpm i18n:compile && playwright test",
+    "typecheck": "pnpm i18n:compile && tsc",
+    "i18n:compile": "lingui compile --strict",
+    "i18n:compare": "pnpm i18n:compile && node scripts/compareI18n.mjs"
   },
   "knip": {
     "ignoreDependencies": [
@@ -41,6 +43,7 @@
     }
   },
   "dependencies": {
+    "@lingui/core": "^6.12.0",
     "lucide-react": "^1.67.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
@@ -49,6 +52,8 @@
     "@axe-core/playwright": "^4.14.0",
     "@biomejs/biome": "^2.6.4",
     "@j178/prek": "^0.5.9",
+    "@lingui/cli": "6.12.0",
+    "@lingui/format-po": "6.12.0",
     "@playwright/test": "^1.64.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^7.0.1",
