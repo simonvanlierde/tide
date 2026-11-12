@@ -17,7 +17,7 @@ The statement may say "partially conformant" only once every row has a result, a
 sentence must then link this page. Check the rows again when a change adds a page or a control,
 and at least at each yearly review of the statement.
 
-- **Date:** 7 November 2026
+- **Date:** 12 November 2026
 - **Who:** repository self-assessment. This is not an external audit.
 - **Browser:** Chromium 156.0.8078.4 through Playwright 1.64.1.
 
@@ -30,7 +30,8 @@ replace testing with assistive technology. Translated wording has not had a nati
 Today, Calendar, Settings, Privacy and Accessibility; empty and populated histories; fertility on,
 off and unanswered; flow picker, month picker, range logging and undo; insights and forecast dialogs;
 help popovers; import error, import confirmation, export status and delete confirmation; local backup
-reminder, populated cycle-history chart and table, and incomplete-cycle checkboxes.
+reminder, populated cycle-history chart and table, and incomplete-cycle checkboxes. Release checks
+also cover first-use guidance, the dated bleeding/diary editor and expiring Calendar confirmations.
 
 The reproducible checks are in `tests/e2e/accessibility-manual.spec.ts`, `a11y.spec.ts`,
 `viewport.spec.ts`, `reflow.spec.ts` and `legal-language.spec.ts`. The first file exercises keyboard
@@ -73,7 +74,7 @@ checks text enlargement; it does not emulate browser zoom or an operating-system
 | 2.1.1 Keyboard | A | Pass | Keyboard checks operate the skip link, dialog, calendar arrows, flow radios, delete cancellation, history checkbox and backup snooze. Native buttons, selects and links expose the remaining actions. |
 | 2.1.2 No Keyboard Trap | A | Pass | Escape leaves the native dialog and restores its trigger; closing the flow picker restores its day button. Tab cannot reach a background control while a modal is open. |
 | 2.1.4 Character Key Shortcuts | A | N/A | No character-only keyboard shortcuts. Calendar and dial use arrow keys and navigation keys. |
-| 2.2.1 Timing Adjustable | A | N/A | No session timeout, timed question or expiring control. |
+| 2.2.1 Timing Adjustable | A | Not assessed | Calendar's Undo confirmation expires after ten seconds. Hover or focus pauses it; logged days remain editable afterward. Timer behavior is browser-tested, but this criterion needs reassessment for the new control. |
 | 2.2.2 Pause, Stop, Hide | A | N/A | No automatically updating feed or moving information lasting over five seconds. |
 | 2.3.1 Three Flashes or Below Threshold | A | Pass | No flashing content in the sampled screens or transitions. Reduced-motion mode has no ongoing CSS animation. |
 | 2.4.1 Bypass Blocks | A | Pass | First Tab exposes Skip to content; Enter focuses main. |
@@ -120,9 +121,10 @@ WCAG 2.2 removed 4.1.1 Parsing, so it is not listed.
 
 ## Summary
 
-Of 55 level A and AA criteria, 41 pass in this browser sample and 14 do not apply. No failures
-or unassessed rows remain in the sample. The 28 focused browser checks pass; route scans, reflow
-and legal-language checks also pass. This is evidence for the tested states, not a conformance
+Of 55 level A and AA criteria, 41 pass in this browser sample, 13 do not apply and one needs
+reassessment for the timed Calendar confirmation. No failures were found in the assessed rows.
+Focused browser checks, route scans, reflow and legal-language checks pass.
+This is evidence for the tested states, not a conformance
 certification or evidence of screen-reader support.
 
 Repeat the sample when controls or pages change. The next checks need a person using a screen

@@ -18,7 +18,7 @@ async function openOverlays(page: Page, path: string) {
     // Independent <details> toggles — open them together.
     await Promise.all(Array.from({ length: count }, (_, i) => triggers.nth(i).click()));
   } else if (path === "/calendar") {
-    // A logged day opens the flow picker; an empty day one-tap logs instead.
+    // Open the shared dated editor with its bleeding controls.
     await page.locator(".calendar-grid__day.is-logged").first().click();
     await expect(page.getByRole("button", { name: /^close$/i })).toBeVisible();
   }
@@ -41,6 +41,30 @@ async function expectNoViolations(page: Page) {
 for (const colorScheme of ["light", "dark"] as const) {
   test.describe(`accessibility (${colorScheme})`, () => {
     test.use({ colorScheme });
+
+    test("Calendar exposes cycle counts beside diary-only days", async ({ page }) => {
+      await seedAppState(page, "en", {}, { "2026-04-14": "medium" });
+      await page.goto("/calendar");
+      await page.getByRole("button", { name: /^Edit April 15, 2026/ }).click();
+      await page.getByText("More details", { exact: true }).click();
+      await page.getByRole("textbox", { name: "Note (optional)", exact: true }).fill("A quiet day.");
+      await expect(page.getByRole("button", { name: /^Edit April 15, 2026, Cycle day 2, Details$/ })).toBeVisible();
+      await expectNoViolations(page);
+      const cycleCount = page.locator(".calendar-grid__day.is-today + .calendar-grid__period-day");
+      await cycleCount.scrollIntoViewIfNeeded();
+      const badge = await cycleCount.boundingBox();
+      expect(badge).not.toBeNull();
+      if (!badge) throw new Error("Missing visible cycle count");
+      await page.mouse.click(badge.x + badge.width / 2, badge.y + badge.height / 2);
+      const note = page.getByRole("textbox", { name: "Note (optional)", exact: true });
+      await expect(note).toBeVisible();
+      await expect(note).toHaveValue("A quiet day.");
+      expect(
+        await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+      ).toEqual({ "2026-04-14": "medium" });
+      await page.getByRole("button", { name: "Close", exact: true }).click();
+      await expect(note).toHaveCount(0);
+    });
 
     test("cycle insights with its sums has no WCAG A or AA or best-practice violations", async ({ page }) => {
       await seedAppState(page);

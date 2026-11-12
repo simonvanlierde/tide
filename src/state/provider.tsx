@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { defaultAppState } from "../data/schema";
-import { clearAppState, loadStoredState, STORAGE_KEY, saveAppState } from "../data/storage";
+import { clearAppState, loadStoredState, STORAGE_KEY, type StoredState, saveAppState } from "../data/storage";
 import type { DailyDetails } from "../domain/diary";
 import type {
   AppSettings,
@@ -33,18 +33,21 @@ interface AppStateProviderProps {
 }
 
 export function AppStateProvider({ children, initialState }: AppStateProviderProps) {
-  const [loaded] = useState(() => (initialState ? { state: initialState, readOnly: false } : loadStoredState()));
+  const [loaded] = useState<StoredState>(() =>
+    initialState ? { state: initialState, readOnly: false } : loadStoredState(),
+  );
   const [state, dispatch] = useReducer(appStateReducer, loaded.state);
   // A newer build wrote the stored data: saving our normalized copy would
   // strip whatever fields it added, so this tab shows it and never saves.
   const [readOnly, setReadOnly] = useState(loaded.readOnly);
+  const [recoveryRequired, setRecoveryRequired] = useState(loaded.recoveryRequired ?? false);
   const [storageError, setStorageError] = useState(false);
 
   useEffect(() => {
-    if (!readOnly) {
+    if (!readOnly && !recoveryRequired) {
       setStorageError(!saveAppState(state));
     }
-  }, [state, readOnly]);
+  }, [state, readOnly, recoveryRequired]);
 
   // Ask the browser to keep this origin's storage through disk pressure (and,
   // in Safari, past a week without a visit): the logged days live nowhere
@@ -64,6 +67,7 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
       if (event.key === STORAGE_KEY) {
         const stored = loadStoredState();
         setReadOnly(stored.readOnly);
+        setRecoveryRequired(stored.recoveryRequired ?? false);
         dispatch({ type: "importState", state: stored.state });
       }
     }
@@ -73,6 +77,9 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
 
   useThemePreference(state.settings.theme);
   useLanguagePreference(state.settings.language);
+
+  // Throw during render so recovery also catches a failed cross-tab migration.
+  if (recoveryRequired) throw new Error("Could not preserve stored data before normalization");
 
   return (
     <AppStateContext.Provider value={state}>

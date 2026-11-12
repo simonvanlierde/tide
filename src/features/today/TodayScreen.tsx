@@ -118,8 +118,29 @@ export function TodayScreen(props: TodayScreenProps) {
       ? "primary"
       : "quiet";
 
+  function closeEditor() {
+    const fromDetails = editorSection === "details";
+    setEditorSection(null);
+    if (fromDetails) requestAnimationFrame(() => detailsButton.current?.focus());
+    else setFocusPending(true);
+  }
+
   return (
-    <section className="today-screen">
+    // biome-ignore lint/a11y/noStaticElementInteractions: Escape also closes the nonmodal editor when focus has returned to the forecast.
+    <section
+      className="today-screen"
+      onKeyDown={(event) => {
+        if (
+          event.key === "Escape" &&
+          editorSection !== null &&
+          !event.defaultPrevented &&
+          !(event.target instanceof Element && event.target.closest("dialog[open]"))
+        ) {
+          event.preventDefault();
+          closeEditor();
+        }
+      }}
+    >
       <h1 className="visually-hidden">
         {t("today.srCycleDay", {
           day: forecast.cycleDay ?? t("common.unknown"),
@@ -192,18 +213,7 @@ export function TodayScreen(props: TodayScreenProps) {
         ) : null}
         <div id={detailsId}>
           {editorSection !== null ? (
-            <DayEditor
-              key={today}
-              day={today}
-              today={today}
-              initialSection={editorSection}
-              onClose={() => {
-                const fromDetails = editorSection === "details";
-                setEditorSection(null);
-                if (fromDetails) requestAnimationFrame(() => detailsButton.current?.focus());
-                else setFocusPending(true);
-              }}
-            />
+            <DayEditor key={today} day={today} today={today} initialSection={editorSection} onClose={closeEditor} />
           ) : null}
         </div>
       </div>

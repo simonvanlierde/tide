@@ -19,6 +19,20 @@ function renderToday(today: IsoDate, state = createLearnedCycleState()) {
 }
 
 describe("TodayScreen", () => {
+  it("closes the editor with Escape after focus returns to the forecast", async () => {
+    const user = userEvent.setup();
+    renderToday("2026-04-18");
+    await user.click(screen.getByRole("button", { name: /^add details$/i }));
+    expect(screen.getByRole("button", { name: /^close$/i })).toBeInTheDocument();
+    const insights = screen.getByRole("button", { name: /^cycle insights$/i });
+    insights.focus();
+    expect(insights).toHaveFocus();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("button", { name: /^close$/i })).not.toBeInTheDocument();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    expect(screen.getByRole("button", { name: /^add details$/i })).toHaveFocus();
+  });
+
   it("offers Calendar for a past period without logging today", () => {
     renderToday("2026-04-18", createAppState({ periodDays: [] }));
     expect(screen.getByRole("link", { name: "Log a past period" })).toHaveAttribute("href", "/calendar");
@@ -390,7 +404,7 @@ describe("TodayScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /not bleeding/i }));
     expect(screen.getByRole("button", { name: /^log bleeding$/i })).toHaveFocus();
-    await user.click(screen.getByRole("button", { name: "Done" }));
+    await user.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveFocus();
   });
 

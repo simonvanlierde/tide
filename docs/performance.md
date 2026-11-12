@@ -49,6 +49,37 @@ estimate of the app's memory use.
 
 ## Regression checks and remaining trade-offs
 
+### 0.5.0 compared with 0.4.0
+
+The release comparison used the actual `v0.4.0` tag and the 0.5.0 candidate on
+12 November 2026. Both ran sequentially on logical CPU 4 of the same Ryzen 7 H 255,
+with Node 26.13.0 and the same Vite loader. Each operation used 21 warmed batches.
+The shared host's load varied from about 16 to 6; these are model timings, not phone latency.
+
+| History | Operation | 0.4.0 median / p95 | 0.5.0 median / p95 |
+| --- | --- | --- | --- |
+| 1 year, 65 logs | Period duration | 0.056 / 0.097 ms | 0.050 / 0.091 ms |
+| 1 year, 65 logs | Forecast | 0.147 / 0.204 ms | 0.217 / 0.288 ms |
+| 1 year, 65 logs | Add 14 days | 0.021 / 0.026 ms | 0.241 / 0.277 ms |
+| 5 years, 325 logs | Period duration | 0.496 / 0.661 ms | 0.296 / 0.314 ms |
+| 5 years, 325 logs | Forecast | 1.05 / 1.38 ms | 1.29 / 1.60 ms |
+| 5 years, 325 logs | Add 14 days | 0.395 / 0.412 ms | 1.24 / 1.45 ms |
+| 20 years, 1,300 logs | Period duration | 4.47 / 5.87 ms | 1.33 / 2.00 ms |
+| 20 years, 1,300 logs | Forecast | 6.86 / 7.12 ms | 7.28 / 8.62 ms |
+| 20 years, 1,300 logs | Add 14 days | 3.19 / 3.87 ms | 6.75 / 8.53 ms |
+
+Version 0.4.0 lacks range logging, so its comparison adds the same fourteen empty dates
+through individual log actions. The candidate also reconciles incomplete-cycle boundaries
+and calendar identities, which the old version did not track. It does more work, not less.
+Assertions checked the period length, next-period date and all added dates in both versions.
+
+A second pass reversed the version order. The twenty-year duration improvement repeated
+(4.38 to 1.41 ms), as did the added range cost (3.13 to 6.13 ms). The small forecast difference
+changed direction (6.97 to 6.18 ms), so it does not establish a speed-up or regression.
+The repository has no timing threshold; correctness and the bundle budget remain release gates.
+
+### Remaining costs
+
 A range test checks that history reconciliation happens once,
 regardless of how many new days are added. Timing thresholds are deliberately absent
 from tests, so shared CI load does not decide correctness.

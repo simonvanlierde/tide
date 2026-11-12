@@ -2,9 +2,8 @@ import { Check, Cloud, CloudRain, NotebookPen, Sun } from "lucide-react";
 import { type Ref, useEffect, useId, useRef, useState } from "react";
 import { type DailyDetails as Details, MAX_NOTE_LENGTH, MOODS, SYMPTOMS } from "../../domain/diary";
 import type { IsoDate } from "../../domain/types";
-import { useAppState, useAppStateActions, useIsReadOnly, useLocale, useT } from "../../state/provider";
+import { useAppState, useAppStateActions, useIsReadOnly, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
-import { formatLongDate, formatShortDate } from "../../utils/date";
 import "./diary.css";
 
 const EMPTY: Details = { symptoms: null, mood: null, note: "" };
@@ -42,65 +41,6 @@ export function DetailsButton({
       <span className="details-button__label">{t("diary.details")}</span>
       {hasDetails ? <span className="details-button__dot" aria-hidden="true" /> : null}
     </button>
-  );
-}
-
-/** The Calendar owns the date and the single editor these controls open. */
-export function DailyDetails({
-  today,
-  day: target,
-  month,
-  onOpenDay,
-}: {
-  today: IsoDate;
-  day?: IsoDate;
-  month: IsoDate;
-  onOpenDay: (day: IsoDate) => void;
-}) {
-  const state = useAppState();
-  const t = useT();
-  const locale = useLocale();
-  const id = useId();
-  const entries = Object.keys(state.detailsByDay)
-    .filter((date) => date.startsWith(month.slice(0, 7)))
-    .sort()
-    .reverse();
-  return (
-    <div className="daily-details">
-      <button
-        type="button"
-        className={target ? "calendar__action daily-details__trigger" : "text-action daily-details__trigger"}
-        onClick={() => onOpenDay(target ?? today)}
-      >
-        {target ? <AppIcon icon={NotebookPen} className="button-icon" /> : null}
-        {target
-          ? t(state.detailsByDay[target] ? "diary.editDetailsFor" : "diary.addDetailsFor", {
-              date: formatShortDate(target, locale),
-            })
-          : t(state.detailsByDay[today] ? "diary.editDetails" : "diary.addDetails")}
-      </button>
-      {entries.length > 0 ? (
-        <section className="daily-details__history" aria-labelledby={`${id}-history`}>
-          <h2 id={`${id}-history`} className="section-title">
-            {t("diary.history")}
-          </h2>
-          <ul>
-            {entries.map((date) => (
-              <li key={date}>
-                <button
-                  type="button"
-                  className="text-action"
-                  aria-label={t("diary.openDay", { date: formatLongDate(date as IsoDate, locale) })}
-                  onClick={() => onOpenDay(date as IsoDate)}
-                >
-                  {formatShortDate(date as IsoDate, locale)}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
-    </div>
   );
 }
 
@@ -200,47 +140,49 @@ export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
           onChange={(event) => save({ ...value, note: event.target.value })}
         />
       </label>
-      <p id={`${id}-note-help`} className="supporting-note diary-form__count">
-        {t("diary.noteCount", { count: value.note.length, max: MAX_NOTE_LENGTH })}
-      </p>
-      <p className="diary-form__status" role="status">
-        {status === "saved" ? (
-          <>
-            <AppIcon icon={Check} className="text-action__icon" />
-            {t("diary.saved")}
-          </>
-        ) : undoable ? (
-          <>
-            {t("diary.removed")}{" "}
+      <div className="diary-form__footer">
+        <p className="diary-form__status" role="status">
+          {status === "saved" ? (
+            <>
+              <AppIcon icon={Check} className="text-action__icon" />
+              {t("diary.saved")}
+            </>
+          ) : undoable ? (
+            <>
+              {t("diary.removed")}{" "}
+              <button
+                ref={undoButton}
+                type="button"
+                className="text-action"
+                onClick={() => {
+                  save(status.cleared);
+                  setRefocus("clear");
+                }}
+              >
+                {t("diary.undo")}
+              </button>
+            </>
+          ) : null}
+        </p>
+        <p id={`${id}-note-help`} className="supporting-note diary-form__count">
+          {t("diary.noteCount", { count: value.note.length, max: MAX_NOTE_LENGTH })}
+        </p>
+        {editable && !sameDetails(value, EMPTY) ? (
+          <div className="diary-form__actions">
             <button
-              ref={undoButton}
+              ref={clearButton}
               type="button"
               className="text-action"
               onClick={() => {
-                save(status.cleared);
-                setRefocus("clear");
+                const cleared = value;
+                actions.setDayDetails(day, EMPTY, today);
+                setStatus({ cleared });
+                setRefocus("undo");
               }}
             >
-              {t("diary.undo")}
+              {t("diary.clear")}
             </button>
-          </>
-        ) : null}
-      </p>
-      <div className="diary-form__actions">
-        {editable && !sameDetails(value, EMPTY) ? (
-          <button
-            ref={clearButton}
-            type="button"
-            className="text-action"
-            onClick={() => {
-              const cleared = value;
-              actions.setDayDetails(day, EMPTY, today);
-              setStatus({ cleared });
-              setRefocus("undo");
-            }}
-          >
-            {t("diary.clear")}
-          </button>
+          </div>
         ) : null}
       </div>
     </div>

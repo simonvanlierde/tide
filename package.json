@@ -1,6 +1,6 @@
 {
   "name": "tide-period-tracker",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Privacy-first, local-first period tracker PWA — React + TypeScript + Vite, data stays in the browser",
   "license": "MIT",
   "author": "Simon van Lierde <code@duinlab.nl>",

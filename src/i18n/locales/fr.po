@@ -59,23 +59,11 @@ msgstr "Ajouter des détails"
 msgid "diary.editDetails"
 msgstr "Modifier les détails"
 
-msgid "diary.addDetailsFor"
-msgstr "Ajouter des détails pour le {date}"
-
 msgid "diary.details"
 msgstr "Détails"
 
-msgid "diary.done"
-msgstr "Terminé"
-
-msgid "diary.editDetailsFor"
-msgstr "Modifier les détails pour le {date}"
-
 msgid "diary.undo"
 msgstr "Annuler"
-
-msgid "diary.date"
-msgstr "Date"
 
 msgid "diary.symptoms"
 msgstr "Symptômes"
@@ -100,12 +88,6 @@ msgstr "Détails effacés."
 
 msgid "diary.clear"
 msgstr "Effacer les détails"
-
-msgid "diary.history"
-msgstr "Détails quotidiens"
-
-msgid "diary.openDay"
-msgstr "Voir les détails du {date}"
 
 msgid "diary.symptom.cramps"
 msgstr "Crampes"
@@ -383,9 +365,6 @@ msgstr "Moyen"
 msgid "flow.heavy"
 msgstr "Abondant"
 
-msgid "log.remove"
-msgstr "Supprimer le saignement"
-
 msgid "log.logged"
 msgstr "Enregistré aujourd’hui"
 
@@ -426,7 +405,7 @@ msgid "calendar.year"
 msgstr "Année"
 
 msgid "calendar.tapHelp"
-msgstr "Touche un jour pour enregistrer ou modifier un saignement."
+msgstr "Appuie sur un jour pour le consulter ou le modifier."
 
 msgid "calendar.today"
 msgstr "Aujourd’hui"
@@ -455,14 +434,8 @@ msgstr "À partir du {date} : choisis le dernier jour, {max} jours au plus."
 msgid "calendar.rangeTooLong"
 msgstr "Cela fait plus de {max} jours. Choisis un dernier jour plus tôt."
 
-msgid "calendar.emptyHelp"
-msgstr "Touche un jour passé pour enregistrer ton premier jour de saignement."
-
 msgid "calendar.futureHelp"
 msgstr "Les jours à venir ne peuvent pas encore être enregistrés."
-
-msgid "calendar.log"
-msgstr "Enregistrer"
 
 msgid "calendar.edit"
 msgstr "Modifier"
@@ -696,7 +669,7 @@ msgid "onboarding.dismiss"
 msgstr "Passer l’introduction"
 
 msgid "calendar.firstVisitHelp"
-msgstr "Appuie sur un jour pour l’enregistrer."
+msgstr "Appuie sur un jour pour le consulter ou le modifier."
 
 msgid "dayEditor.title"
 msgstr "{date}"
