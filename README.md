@@ -48,6 +48,8 @@ so you can restore it later. Installing Tide does not create a separate backup o
 
 The estimates are for information only. They are not a form of birth control.
 
+The [JSON backup contract](docs/backups.md) explains the saved fields, restore rules and a tested example.
+
 ### Daily details
 
 Choose **Details**, next to the log button on Today, to record cramps, a headache, bloating,

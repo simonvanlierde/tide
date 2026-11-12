@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 4,
+  "days": {
+    "2026-01-02": null,
+    "2026-01-03": "medium",
+    "2026-01-12": "spotting",
+    "2026-01-30": "light",
+    "2026-02-27": "heavy"
+  },
+  "detailsByDay": {
+    "2026-01-03": { "symptoms": ["cramps"], "mood": "low", "note": "Rested at home." },
+    "2026-01-15": { "symptoms": [], "mood": "good", "note": "Walked by the river." },
+    "2026-01-16": { "symptoms": null, "mood": null, "note": "Slept well." }
+  },
+  "incompleteCycleStarts": ["2026-01-02"],
+  "settings": {
+    "showFertility": false,
+    "showCycleDayNumbers": true,
+    "theme": "system",
+    "language": "system",
+    "calendarId": "7a4c02d1-b8e3-4f65-9a20-31d7e06bc284"
+  }
+}
