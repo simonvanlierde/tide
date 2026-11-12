@@ -50,6 +50,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   and measurement limits; the next-period prediction rule is unchanged.
 - Tide requests persistent browser storage after a bleeding log. The crash screen can download
   the stored data exactly as saved, and reports errors in your chosen language.
+- The dial reads in time order: today on top, then the next period. On a day with bleeding
+  logged, "Period day 5" is the headline, with how long your periods usually last under it.
+- Daily details no longer offer a separate **No symptoms** choice: leaving symptoms blank says
+  the same. Backups that hold it still import, as no symptoms logged.
 
 ### Fixed
 
@@ -71,10 +75,6 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Switches have sufficient contrast in both themes. Flow levels, theme choices, insights and
   translated labels fit narrow phones and enlarged text without hiding behind the tabs.
 - The background stays anchored to the viewport when switching between short and long screens.
-- The dial reads in time order: today on top, then the next period. On a day with bleeding
-  logged, "Period day 5" is the headline, with how long your periods usually last under it.
-- Daily details no longer offer a separate **No symptoms** choice: leaving symptoms blank says
-  the same. Backups that hold it still import, as no symptoms logged.
 
 ### Security
 
