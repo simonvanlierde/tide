@@ -10,6 +10,8 @@ export interface StoredState {
   state: AppState;
   /** Written by a newer build: show it, but never save over it. */
   readOnly: boolean;
+  /** The original could not be backed up: stop before any normalized save. */
+  recoveryRequired?: boolean;
 }
 
 export function loadStoredState(): StoredState {
@@ -30,7 +32,9 @@ export function loadStoredState(): StoredState {
     parsed = JSON.parse(raw);
   } catch {
     // Keep the unreadable blob so the next save can't permanently destroy it.
-    setItemSafely(BACKUP_KEY, raw);
+    if (!setItemSafely(BACKUP_KEY, raw)) {
+      return { state: defaultAppState, readOnly: false, recoveryRequired: true };
+    }
     return { state: defaultAppState, readOnly: false };
   }
 
@@ -44,7 +48,9 @@ export function loadStoredState(): StoredState {
   // Our own saves round-trip unchanged, so this only fires on blobs written
   // elsewhere or by an older build.
   if (serialize(state) !== raw) {
-    setItemSafely(BACKUP_KEY, raw);
+    if (!setItemSafely(BACKUP_KEY, raw)) {
+      return { state, readOnly: false, recoveryRequired: true };
+    }
   }
   return { state, readOnly: false };
 }

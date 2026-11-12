@@ -52,6 +52,8 @@ Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
 1. On start, `AppStateProvider` (`src/state/provider.tsx`) loads the saved state through
    `loadStoredState` in `src/data/storage.ts`. `normalizeAppState` in `src/data/schema.ts` checks
    every field and fills defaults. A blob it had to change is kept under a backup key first.
+   If that backup cannot be saved, the recovery screen offers the original data as a download
+   and prevents a normalized save from overwriting it.
 2. Screens dispatch actions to `appStateReducer` in `src/state/core.ts`. Each change is saved back
    to `localStorage`. A state written by a newer build is shown read-only and never saved over.
 3. `selectForecast` passes the logged days to `forecast` in `src/domain/cycle.ts`, which works out
