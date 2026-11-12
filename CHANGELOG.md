@@ -53,6 +53,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Today moves to the new date at midnight even if the device clock was corrected that evening.
 - Older tabs cannot overwrite state saved by a newer build. Delete and import recheck concurrent
   changes; loading incomplete or unreadable data preserves a recovery copy.
 - Blocked or full storage produces a warning with a way to export a backup.
