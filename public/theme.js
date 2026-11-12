@@ -7,7 +7,8 @@
   try {
     // STORAGE_KEY in src/data/schema.ts; tests/data/theme-script.test.ts
     // fails if the two drift apart.
-    const raw = localStorage.getItem("tide.period-tracker.state");
+    const raw =
+      localStorage.getItem("tide.period-tracker.state.v1") ?? localStorage.getItem("tide.period-tracker.state");
     const parsed = raw ? JSON.parse(raw) : null;
     // Unwrap the legacy { version, state } envelope the same way
     // normalizeAppState does, so migrated users don't flash the wrong theme.

@@ -30,6 +30,8 @@ tide saves your data in your browser's local storage. It stores:
 - a backup copy of your data, if tide had to convert it to a newer format or couldn't read it.
 
 tide saves an empty copy with the default settings as soon as you first open it.
+After an upgrade, the old storage copy may remain beside the current one so older tabs cannot overwrite newer data.
+**Delete all data** removes both copies and their recovery backups.
 
 ## How to delete it
 
@@ -77,7 +79,7 @@ to your data protection authority. In the Netherlands, that's the
 
 ## About this page
 
-Last updated: 11 November 2026
+Last updated: 12 November 2026
 
 tide is free software under the [MIT licence](https://github.com/simonvanlierde/tide/blob/main/LICENSE)
 and comes with no warranty.

@@ -120,7 +120,7 @@ test("Calendar sheet leaves dates interactive and Escape works from either surfa
   await expect(second).toBeFocused();
   expect(
     await page.evaluate(() =>
-      Object.keys(JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+      Object.keys(JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay),
     ),
   ).toHaveLength(5);
 });
@@ -240,7 +240,7 @@ test("a saved future date in the last calendar row remains visible and unchanged
     .toBeLessThanOrEqual(0);
   await expect(panel.getByRole("radio", { name: translate("en", "flow.light"), exact: true })).toBeDisabled();
   expect(
-    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state") ?? "{}").intensityByDay),
+    await page.evaluate(() => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay),
   ).toEqual({ "2026-04-14": "medium", "2026-04-30": "light" });
   await page.screenshot({ path: testInfo.outputPath("future-last-row.png"), fullPage: true });
   await panel.getByRole("button", { name: translate("en", "common.close"), exact: true }).click();

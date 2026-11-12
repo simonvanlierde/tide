@@ -125,7 +125,9 @@ One-time setup, for production and previews alike:
 Without the token, the deploy jobs skip with a notice. To roll back, revert the commit on `main`,
 or re-run an earlier run's production job while its build artifact exists (7 days).
 Use a build compatible with the stored schema. Version 0.4.0 predates newer-schema protection
-and can discard fields added since then; do not deploy it over newer data without a recovery plan.
+and cannot read the updated app's separate storage. A rollback to it shows only the old copy,
+without subsequent logs or diary entries. Export current data before any rollback and plan a compatible restore.
+The [upgrade guide](docs/backups.md#upgrading-an-existing-installation) explains migration and older tabs.
 
 ### Pull request previews
 

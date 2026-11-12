@@ -32,7 +32,7 @@ export async function seedAppState(
   await page.clock.setFixedTime(FIXED_NOW);
   await page.addInitScript(
     (state) => {
-      localStorage.setItem("tide.period-tracker.state", JSON.stringify(state));
+      localStorage.setItem("tide.period-tracker.state.v1", JSON.stringify(state));
     },
     {
       ...SEED_STATE,

@@ -54,6 +54,11 @@ Generated `.mjs` files are ignored by Git. Edit catalogs manually; the
    every field and fills defaults. A blob it had to change is kept under a backup key first.
    If that backup cannot be saved, the recovery screen offers the original data as a download
    and prevents a normalized save from overwriting it.
+   The current key is `tide.period-tracker.state.v1`. When absent, Tide first copies the raw
+   legacy value from `tide.period-tracker.state`; a failed copy opens recovery without changing the source.
+   Later writes to the legacy key are ignored. This keeps older tabs from stripping newer fields
+   or repeatedly rewriting state between versions. The legacy value and its backup remain until
+   **Delete all data**, which clears both generations and leaves current defaults to prevent reimport.
 2. Screens dispatch actions to `appStateReducer` in `src/state/core.ts`. Each change is saved back
    to `localStorage`. A state written by a newer build is shown read-only and never saved over.
 3. `selectForecast` passes the logged days to `forecast` in `src/domain/cycle.ts`, which works out

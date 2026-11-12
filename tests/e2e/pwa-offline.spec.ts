@@ -40,7 +40,7 @@ test("legal pages and Settings work offline after the first visit", async ({ pag
   await page.locator("#language-select").selectOption("system");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   expect(requests).toEqual([]);
-  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(["tide.period-tracker.state"]);
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(["tide.period-tracker.state.v1"]);
 });
 
 for (const language of SUPPORTED_LANGUAGES) {
