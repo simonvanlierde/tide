@@ -424,6 +424,20 @@
     min-height: calc(2 * 1.2 * var(--text-md) + 22px);
   }
 
+  .swap-slot {
+    display: grid;
+  }
+
+  .swap-slot > * {
+    grid-area: 1 / 1;
+    align-self: start;
+  }
+
+  /* The hidden button keeps its box, and so the slot its height. */
+  .swap-slot__ghost {
+    visibility: hidden;
+  }
+
   .status-chip {
     width: fit-content;
     max-width: 100%;
