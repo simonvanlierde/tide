@@ -417,6 +417,13 @@
     gap: 8px;
   }
 
+  /* The Data card keeps a two-line chip's height (two 1.2 lines of text-md, 20px
+     padding, 2px border) even when empty: at 320px the messages wrap, and a status
+     appearing must not push the controls under it. */
+  .status-slot {
+    min-height: calc(2 * 1.2 * var(--text-md) + 22px);
+  }
+
   .status-chip {
     width: fit-content;
     max-width: 100%;

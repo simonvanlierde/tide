@@ -569,8 +569,11 @@ msgstr "Exportieren"
 msgid "settings.exportSuccess"
 msgstr "Sicherung in deinen Downloads gespeichert."
 
+msgid "settings.exportEmpty"
+msgstr "Noch nichts zu exportieren"
+
 msgid "settings.exportCalendar"
-msgstr "Zum Kalender hinzufügen"
+msgstr "Zum Kalender"
 
 msgid "settings.calendarHelp"
 msgstr "Erwartete Tage für deine Kalender-App. Sie synchronisiert sie eventuell online."

@@ -569,8 +569,11 @@ msgstr "Exporteren"
 msgid "settings.exportSuccess"
 msgstr "Back-up opgeslagen in je downloads."
 
+msgid "settings.exportEmpty"
+msgstr "Nog niets om te exporteren"
+
 msgid "settings.exportCalendar"
-msgstr "Aan agenda toevoegen"
+msgstr "Naar agenda"
 
 msgid "settings.calendarHelp"
 msgstr "Verwachte dagen voor je agenda-app. Die kan ze online synchroniseren."

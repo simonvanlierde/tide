@@ -569,6 +569,9 @@ msgstr "Export"
 msgid "settings.exportSuccess"
 msgstr "Backup saved to your downloads."
 
+msgid "settings.exportEmpty"
+msgstr "Nothing to export yet"
+
 msgid "settings.exportCalendar"
 msgstr "Add to calendar"
 
