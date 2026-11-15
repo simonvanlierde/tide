@@ -76,8 +76,7 @@ it as is. A fork needs nothing else.
 [tide.duinlab.nl](https://tide.duinlab.nl) runs on a Cloudflare Worker that serves the build as
 static assets, configured in [`wrangler.jsonc`](../wrangler.jsonc). Every push to `main` deploys the
 build the checks ran on. [`public/_headers`](../public/_headers) sets the response headers, including
-the Content-Security-Policy the e2e tests run under. Until the custom domain moves to the Worker,
-the Cloudflare Pages project that builds `main` still serves tide.duinlab.nl.
+the Content-Security-Policy the e2e tests run under.
 
 One-time setup, for production and previews:
 
