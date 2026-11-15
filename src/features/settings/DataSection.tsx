@@ -183,20 +183,28 @@ export function DataSection({ today }: DataSectionProps) {
 
   // Offered inside the dialogs that cannot be undone, so the safe path is
   // one tap away rather than a cancel and a scroll.
+  const saved = status?.kind === "exported";
   const backupFirst = (
     <>
-      {status?.kind === "exported" ? (
-        <p className="status-row" role="status">
-          <span className="status-chip">{t("settings.exportSuccess")}</span>
-        </p>
-      ) : (
-        <button type="button" className="secondary-action" onClick={handleExport}>
+      {/* Button and chip share one grid cell, so the slot keeps the taller of the two and the
+          dialog's buttons stay put. The button stays mounted but hidden once the chip shows. */}
+      <div className="swap-slot">
+        <button
+          type="button"
+          className={saved ? "secondary-action swap-slot__ghost" : "secondary-action"}
+          onClick={handleExport}
+        >
           <span className="button-label">
             <AppIcon icon={Download} className="button-icon" />
             <span>{t("settings.backupFirst")}</span>
           </span>
         </button>
-      )}
+        {saved ? (
+          <p className="status-row" role="status">
+            <span className="status-chip">{t("settings.exportSuccess")}</span>
+          </p>
+        ) : null}
+      </div>
       {error?.group === "history" ? <ErrorNote text={error.text} /> : null}
     </>
   );

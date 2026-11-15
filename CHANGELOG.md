@@ -18,6 +18,8 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- In the "Replace your data?" and "Delete all data?" dialogs, saving a backup no longer moves the
+  Cancel and confirm buttons. The "backup saved" note takes the place of the backup button.
 - A new version of the app no longer replaces the one you have open. It takes over the next
   time you open Tide after closing it, so a page in use never fails to load a part of itself.
 - Correcting a period's start date by up to a week no longer starts a new calendar link, so the
