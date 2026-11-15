@@ -13,6 +13,7 @@ The [README](../README.md#development) installs the tools and starts the app.
 | `just ts-cov` | Tests with coverage and its thresholds |
 | `just ts-e2e` | Playwright tests against the production build: flows, accessibility, CSP and layout |
 | `just ts-shots` | Screenshots of every route at 390 and 1440 px, in both themes, into `shots/` |
+| `just ts-pwa-assets` | Rewrite the monochrome icon and install screenshots in `public/` |
 | `just repo-settings` | Apply the rulesets, environments and repo settings (maintainers) |
 | `pnpm build` | Production build to `dist/` |
 | `pnpm benchmark` | Time the cycle model on long histories ([results](performance.md)) |

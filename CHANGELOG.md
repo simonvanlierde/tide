@@ -10,9 +10,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 - The day editor offers Undo for "Remove bleeding log", with the flow level you had chosen.
   It stays on screen only while that editor is open and on that day; nothing is stored for it.
+- Installing Tide on Android shows screenshots in the install dialog, and the home-screen
+  icon follows the themed-icon colours of your phone.
 
 ### Fixed
 
+- A new version of the app no longer replaces the one you have open. It takes over the next
+  time you open Tide after closing it, so a page in use never fails to load a part of itself.
 - Correcting a period's start date by a few days no longer starts a new calendar link, so the
   next calendar export moves the old event instead of adding a second one.
 - Past ovulation estimates for a very short cycle no longer fall before that cycle began.

@@ -92,7 +92,7 @@ Both flags stay on the device: backups omit them, and Delete all data resets the
 ## Offline and hosting
 
 `vite-plugin-pwa` (in `vite.config.ts`) writes the web app manifest and a service worker that
-precaches the build, so the app works offline and updates itself on the next visit.
+precaches the build, so the app works offline. A new version waits (no `skipWaiting`) until every window has closed, so an open page never loses the lazy chunks of the build it loaded. The manifest also lists a monochrome icon and screenshots for the install dialog; `just ts-pwa-assets` rewrites them.
 The legal pages in `docs/` are Markdown, turned into HTML at build time by the `markdown` plugin
 in the same file.
 
