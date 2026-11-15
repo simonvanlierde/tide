@@ -7,6 +7,7 @@ import { formatShortDate } from "../utils/date";
 import { legalPage } from "./LegalPages";
 import { shouldHandleAppNavigation } from "./links";
 import { appScreens, getAppScreen } from "./navigation";
+import { UpdateNotice } from "./UpdateNotice";
 
 function usePathname() {
   const [pathname, setPathname] = useState(() => window.location.pathname);
@@ -138,6 +139,7 @@ export function App() {
               </button>
             </div>
           ) : null}
+          <UpdateNotice />
         </div>
         {storageError && !readOnly ? (
           <div className="utility-card utility-card--slim" role="alert">

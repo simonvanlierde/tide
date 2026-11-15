@@ -101,8 +101,8 @@ export default defineConfig({
       // The manifest icons are precached on their own (includeManifestIcons).
       includeAssets: ["favicon.ico", "icons/icon.svg"],
       // "prompt" adds no skipWaiting: a new worker waits until every Tide window has closed,
-      // so an open page never loses the previous build's lazy chunks. The app has no update
-      // prompt; the next launch after closing runs the new version.
+      // so an open page never loses the previous build's lazy chunks. The app shows an
+      // update notice with a Reload button (src/app/UpdateNotice.tsx).
       registerType: "prompt",
       // The service worker answers page loads with the app shell; security.txt
       // must still reach the network, or a browser shows the app instead.

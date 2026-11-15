@@ -128,6 +128,9 @@ msgstr "Hauptnavigation"
 msgid "app.newerData"
 msgstr "Eine neuere Version von Tide hat deine Daten gespeichert. Lade die Seite neu, um zu aktualisieren. Änderungen, die du hier machst, werden nicht gespeichert."
 
+msgid "app.updateReady"
+msgstr "Eine neue Version ist bereit"
+
 msgid "app.storageError"
 msgstr "Deine letzten Änderungen konnten nicht auf diesem Gerät gespeichert werden. Lass Tide geöffnet und exportiere eine Sicherung in den Einstellungen."
 

@@ -8,6 +8,9 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- When a new version of Tide has downloaded, a note at the top says so and offers Reload. Tide never
+  reloads on its own, so nothing you are typing is lost. Resuming the installed app now also checks
+  for a new version, at most once an hour.
 - The day editor offers Undo for "Remove bleeding log", with the flow level you had chosen.
   It stays on screen only while that editor is open and on that day; nothing is stored for it.
 - Installing Tide on Android shows screenshots in the install dialog, and the home-screen
