@@ -11,6 +11,7 @@ import type {
   ThemePreference,
 } from "../domain/types";
 import { SUPPORTED_LANGUAGES } from "../i18n";
+import { differenceInDays } from "../utils/date";
 
 export const LEGACY_STORAGE_KEY = "tide.period-tracker.state";
 // A separate generation keeps pre-versioning tabs from rewriting current data.
@@ -164,6 +165,9 @@ export function normalizeAppState(state: unknown): AppState {
   };
 }
 
+// Largest move of a cycle start, in days, that still counts as correcting the same cycle.
+const MAX_START_CORRECTION = 7;
+
 // A marker belongs to an interval, not just a date. Changed boundaries need a new choice.
 export function updateLoggedDays(state: AppState, intensityByDay: AppState["intensityByDay"]): AppState {
   const previousDays = getPredictionDays(state.intensityByDay);
@@ -172,12 +176,17 @@ export function updateLoggedDays(state: AppState, intensityByDay: AppState["inte
   const next = new Map(getCycleHistory(nextDays).map((cycle) => [cycle.start, cycle.end]));
   const previousStarts = getCycleStarts(previousDays);
   const nextStarts = getCycleStarts(nextDays);
-  // A cycle number names an exported event. Moving a start keeps the count, so the event
-  // moves with it. Adding a newer cycle keeps the old numbers. Anything else renumbers.
+  // A cycle number names an exported event. Correcting a start by a few days keeps the count, so
+  // the event moves with it. Adding a newer cycle keeps the old numbers. Anything else renumbers.
   // NOTE: one start removed and another added elsewhere in one edit keeps the id.
   const appended =
     nextStarts.length > previousStarts.length && previousStarts.every((start, index) => nextStarts[index] === start);
-  const renumbered = nextStarts.length !== previousStarts.length && !appended;
+  const corrected =
+    nextStarts.length === previousStarts.length &&
+    nextStarts.every(
+      (start, index) => Math.abs(differenceInDays(start, previousStarts[index] as IsoDate)) <= MAX_START_CORRECTION,
+    );
+  const renumbered = !appended && !corrected;
   return {
     ...state,
     intensityByDay,
