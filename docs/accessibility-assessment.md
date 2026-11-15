@@ -37,8 +37,9 @@ The reproducible checks are in `tests/e2e/accessibility-manual.spec.ts`, `a11y.s
 `viewport.spec.ts`, `reflow.spec.ts` and `legal-language.spec.ts`. The first file exercises keyboard
 input, dialog cancellation, landscape, reduced motion, doubled root font size and WCAG text spacing.
 The other files check the five routes, light and dark themes, all five languages, and widths from
-280 to 430 CSS pixels. A 320 CSS pixel viewport provides the reflow check. Doubling root font size
-checks text enlargement; it does not emulate browser zoom or an operating-system magnifier.
+280 to 430 CSS pixels. A 320 CSS pixel viewport provides the reflow check, and a 320 × 256 viewport stands in for 400% zoom
+on every route, with the day editor or a confirmation dialog open where a route has one. Doubling root font size
+checks text enlargement; it does not emulate an operating-system magnifier.
 
 ## Results
 
@@ -60,9 +61,9 @@ checks text enlargement; it does not emulate browser zoom or an operating-system
 | 1.4.1 Use of Color | A | Pass | Logged and expected periods have different fills and outlines. The flow picker names each level. History distinguishes included circles from excluded crosses and provides text and checkbox states in its table. |
 | 1.4.2 Audio Control | A | N/A | No audio plays. |
 | 1.4.3 Contrast (Minimum) | AA | Pass | Light and dark axe scans cover all five routes, help overlays, forecast dialog, backup reminder and populated history dialog. Text in the final history and backup screenshots remains readable. Scans wait for the dialog's entrance animation to finish. |
-| 1.4.4 Resize Text | AA | Pass | Doubling the root font size retains content on all five routes. The regression first exposed dial and flow-label overflow; the dial now respects its container and flow levels use two columns. Actual browser zoom and magnification remain untested. |
+| 1.4.4 Resize Text | AA | Pass | Doubling the root font size retains content on all five routes. The regression first exposed dial and flow-label overflow; the dial now respects its container and flow levels use two columns. Operating-system magnification remains untested. |
 | 1.4.5 Images of Text | AA | N/A | Labels, dates, headings and dial numerals render as text. Icons contain no essential words. |
-| 1.4.10 Reflow | AA | Pass | All five routes fit at 320 CSS pixels. The populated history dialog also retains content with increased text spacing at that width. |
+| 1.4.10 Reflow | AA | Pass | All five routes fit at 320 CSS pixels, and at 320 × 256 (400% zoom) with the day editor or a confirmation dialog open. The populated history dialog also retains content with increased text spacing at that width. |
 | 1.4.11 Non-text Contrast | AA | Pass | Rendered colors give light-theme minimum ratios of 3.28:1 for focus indicators, 3.49:1 for forecast outlines, 6.35:1 for history points and 5.49:1 for axes. Dark equivalents are 5.36:1, 5.36:1, 8.23:1 and 6.81:1. Off-switch thumb-to-track contrast passes 3:1 in both themes. Flow colors supplement named levels and a selected outline; history also has a table. |
 | 1.4.12 Text Spacing | AA | Pass | At 320 pixels, every route and the populated history dialog fit with 1.5 line height, .12em letter spacing, .16em word spacing and 2em paragraph spacing. |
 | 1.4.13 Content on Hover or Focus | AA | Pass | Help uses explicit details toggles. Keyboard users open with Enter and close with Escape; content stays open while reading. No tooltip appears only on hover or focus. |
