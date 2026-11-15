@@ -8,6 +8,16 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Settings: the warning before an import replaces your data names the days it will
+  replace, says that details and notes go too, and puts "This cannot be undone" on its own
+  line. The German text now names the import instead of opening with a formal pronoun
+  that does not match the rest of the app.
+- Settings: the delete dialog's button reads "Delete all data" instead of "Delete".
+- Settings: theme, language and period-count options and switches are 44 px to tap, and
+  "Delete all data" sits further from the calendar options above it.
+- Settings: an info popover closes when you tab out of it, instead of staying open over the
+  next control.
+- Settings: the fertility help reads as two paragraphs in every language.
 - Today: the dial no longer shows a faint square behind it after it draws in.
 - Today: the dial's outline rails and day ticks now draw in with the ring
   instead of appearing after it.

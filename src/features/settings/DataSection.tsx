@@ -1,13 +1,14 @@
-import { CalendarPlus, CircleAlert, Download, ShieldCheck, Trash2, Upload } from "lucide-react";
+import { Download, ShieldCheck, Trash2, Upload } from "lucide-react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import type { OtherAppImport } from "../../data/otherApps";
 import { downloadAppState, keepDeviceSettings, mergeImportedDays, parseImportedState } from "../../data/transfer";
-import { getExpectedCycles } from "../../domain/cycle";
 import type { AppState, IsoDate } from "../../domain/types";
-import { useAppState, useAppStateActions, useForecast, useIsReadOnly, useLocale, useT } from "../../state/provider";
+import { useAppState, useAppStateActions, useIsReadOnly, useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { formatMonthDay } from "../../utils/date";
+import { CalendarExport } from "./CalendarExport";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { ErrorNote } from "./ErrorNote";
 
 const MAX_IMPORT_BYTES = 5_000_000;
 
@@ -20,9 +21,6 @@ type DataStatus =
 
 /** The Data card's jobs; feedback shows under the one that caused it. */
 type DataGroup = "history" | "calendar";
-
-/** How many expected periods a calendar file can hold; the first is the default. */
-const CALENDAR_COUNTS = [3, 6, 12] as const;
 
 interface DataSectionProps {
   /** Another app's days after this one are dropped on import. */
@@ -50,11 +48,6 @@ export function DataSection({ today }: DataSectionProps) {
     ({ fileDays: number } & ({ next: AppState } | OtherAppImport)) | null
   >(null);
   const [confirmingReset, setConfirmingReset] = useState(false);
-  const [calendarFertile, setCalendarFertile] = useState(false);
-  // In memory only: Tide stores nothing beyond your data and settings.
-  const [calendarCount, setCalendarCount] = useState<number>(CALENDAR_COUNTS[0]);
-  const showFertility = state.settings.showFertility === true;
-  const expectedCycles = getExpectedCycles(useForecast(today), today, calendarCount);
   const loggedDayCount = Object.keys(state.intensityByDay).length;
   const hasHistory = loggedDayCount > 0 || Object.keys(state.detailsByDay).length > 0;
 
@@ -158,43 +151,11 @@ export function DataSection({ today }: DataSectionProps) {
     }
   }
 
-  async function handleCalendarExport() {
-    const calendarId = state.settings.calendarId ?? crypto.randomUUID();
-    if (state.settings.calendarId === null) {
-      actions.setSetting("calendarId", calendarId);
-    }
-    try {
-      // Loaded on first use, like the other apps' import formats.
-      const { downloadCalendar } = await import("../../data/calendarFile");
-      downloadCalendar(expectedCycles, {
-        today,
-        fertility: showFertility && calendarFertile,
-        words: {
-          period: t("legend.expected"),
-          fertile: t("legend.fertileWindow"),
-          disclaimer: t("settings.fertilityDisclaimer"),
-        },
-        now: new Date(),
-        calendarId,
-      });
-    } catch {
-      fail("calendar", t("settings.calendarError"));
-      return;
-    }
-    setError(null);
-    setStatus({ kind: "calendar", periods: expectedCycles.length, fertile: showFertility && calendarFertile });
-  }
-
   function feedback(group: DataGroup) {
     const statusGroup: DataGroup | null = status ? (status.kind === "calendar" ? "calendar" : "history") : null;
     return (
       <>
-        {error?.group === group ? (
-          <p className="supporting-note supporting-note--icon supporting-note--error" role="alert">
-            <AppIcon icon={CircleAlert} className="supporting-note__icon" />
-            <span>{error.text}</span>
-          </p>
-        ) : null}
+        {error?.group === group ? <ErrorNote text={error.text} /> : null}
         {status && statusGroup === group ? (
           <p className="status-row" role="status">
             <span className="status-chip">{statusText(status)}</span>
@@ -233,12 +194,7 @@ export function DataSection({ today }: DataSectionProps) {
           </span>
         </button>
       )}
-      {error?.group === "history" ? (
-        <p className="supporting-note supporting-note--icon supporting-note--error" role="alert">
-          <AppIcon icon={CircleAlert} className="supporting-note__icon" />
-          <span>{error.text}</span>
-        </p>
-      ) : null}
+      {error?.group === "history" ? <ErrorNote text={error.text} /> : null}
     </>
   );
 
@@ -323,67 +279,15 @@ export function DataSection({ today }: DataSectionProps) {
           />
           {feedback("history")}
         </div>
-        {/* Nothing to put in a calendar until there is a forecast. */}
-        {expectedCycles.length > 0 ? (
-          <div className="data-group">
-            <button
-              type="button"
-              className="secondary-action"
-              aria-describedby="calendar-help"
-              onClick={handleCalendarExport}
-            >
-              <span className="button-label">
-                <AppIcon icon={CalendarPlus} className="button-icon" />
-                <span>{t("settings.exportCalendar")}</span>
-              </span>
-            </button>
-            <p id="calendar-help" className="supporting-note">
-              {t("settings.calendarHelp")}
-            </p>
-            {/* The options sit right under the button and its note, so they read as part of it. */}
-            <div className="calendar-export__options">
-              {/* The swatches are the calendar legend's own, so each row shows
-                what it adds to the calendar app. */}
-              {/* biome-ignore lint/a11y/useSemanticElements: a labelled div group, as in ThemeSection; <fieldset> brings unwanted default styling. */}
-              <div className="settings-row calendar-export__row" role="group" aria-labelledby="calendar-periods">
-                <span className="settings-label calendar-export__label">
-                  <i className="calendar-legend__swatch calendar-legend__swatch--predicted" aria-hidden="true" />
-                  <span id="calendar-periods">{t("settings.calendarPeriods")}</span>
-                </span>
-                <div className="segmented segmented--count">
-                  {CALENDAR_COUNTS.map((count) => (
-                    <button
-                      key={count}
-                      type="button"
-                      className={calendarCount === count ? "segmented__option is-active" : "segmented__option"}
-                      aria-pressed={calendarCount === count}
-                      onClick={() => setCalendarCount(count)}
-                    >
-                      {count}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              {showFertility ? (
-                <div className="settings-row settings-row--switch calendar-export__row">
-                  <span className="settings-label calendar-export__label">
-                    <i className="calendar-legend__swatch calendar-legend__swatch--fertile" aria-hidden="true" />
-                    <span id="calendar-fertile">{t("settings.calendarFertility")}</span>
-                  </span>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={calendarFertile}
-                    aria-labelledby="calendar-fertile"
-                    className="switch"
-                    onClick={() => setCalendarFertile(!calendarFertile)}
-                  />
-                </div>
-              ) : null}
-            </div>
-            {feedback("calendar")}
-          </div>
-        ) : null}
+        <CalendarExport
+          today={today}
+          onDone={(done) => {
+            setError(null);
+            setStatus(done);
+          }}
+          onError={(text) => fail("calendar", text)}
+          feedback={feedback("calendar")}
+        />
         <div className="data-group data-group--danger">
           <button
             type="button"
@@ -412,7 +316,6 @@ export function DataSection({ today }: DataSectionProps) {
                   n: pendingImport.fileDays,
                 })}
               </p>
-              {"next" in pendingImport ? <p>{t("settings.importReplacesDetails")}</p> : null}
               <p>
                 {"source" in pendingImport
                   ? t("settings.importMerges")
@@ -420,6 +323,7 @@ export function DataSection({ today }: DataSectionProps) {
                       n: loggedDayCount,
                     })}
               </p>
+              {"next" in pendingImport ? <p>{t("settings.importIrreversible")}</p> : null}
               {"next" in pendingImport ? backupFirst : null}
             </>
           }
@@ -443,7 +347,7 @@ export function DataSection({ today }: DataSectionProps) {
               {hasHistory ? backupFirst : null}
             </>
           }
-          confirmLabel={t("settings.resetAction")}
+          confirmLabel={t("settings.reset")}
           destructive
           onConfirm={() => {
             const reset = actions.resetState();

@@ -1,10 +1,10 @@
-import { useId } from "react";
+import { type ReactNode, useId } from "react";
 import { InfoPopover } from "./InfoPopover";
 
 interface SwitchRowProps {
   label: string;
   infoLabel: string;
-  help: string;
+  help: ReactNode;
   checked: boolean;
   onChange: (checked: boolean) => void;
 }
