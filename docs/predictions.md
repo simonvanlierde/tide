@@ -19,11 +19,16 @@ what you log. The code is in `src/domain/cycle.ts`.
   no range. This describes past variation; it is not a guarantee or a validated probability range
   for your next period.
 - **Ovulation.** **14 days before** the next predicted period, because the luteal phase (the part
-  after ovulation) varies less than the part before it. Tide uses calendar dates only and does not
-  confirm ovulation with temperature or hormone tests.
+  after ovulation) varies less than the part before it. A cycle shorter than 15 days puts ovulation
+  on the day after it starts, never before. Tide uses calendar dates only and does not confirm
+  ovulation with temperature or hormone tests.
 - **Fertile window.** From 5 days before ovulation to 1 day after, because sperm survive about
   5 days and the egg about 1. It **widens with the standard deviation of your recent cycles**
-  (capped at ±5 days), so it stays tight for regular cycles and gets wider for irregular ones.
+  (capped at ±5 days), so it stays tight for regular cycles and gets wider for irregular ones. The
+  spread is rounded down, so a cycle-length spread of 1 to 1.99 days widens each side by 1 day: a
+  fairly regular cycle shows −6 to +2, not −5 to +1. The days after ovulation do not come from
+  biology, since the egg lives about a day. They cover not knowing the ovulation day. Tide has no
+  data with confirmed ovulation, so it does not narrow them.
 - **Phase.** Menstrual on a logged bleeding day. Otherwise follicular, ovulation (the estimate
   ±1 day) or luteal, read from the ovulation estimate. With fertility estimates off, Tide makes no
   ovulation estimate, so every other day is simply "between periods".
