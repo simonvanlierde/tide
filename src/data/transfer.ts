@@ -1,7 +1,7 @@
 import { normalizeDailyDetails } from "../domain/diary";
 import type { AppState, IsoDate, LoggedFlow } from "../domain/types";
 import { getTodayIsoDate } from "../utils/date";
-import { isIsoDate, normalizeAppState, SCHEMA_VERSION, updateLoggedDays } from "./schema";
+import { isIsoDate, isLoggedFlow, normalizeAppState, SCHEMA_VERSION, updateLoggedDays } from "./schema";
 
 // Dated so repeated backups don't overwrite each other in Downloads.
 // Local day, not UTC, so a backup made just after midnight carries today's date.
@@ -72,6 +72,19 @@ export function parseImportedState(text: string, today: IsoDate = getTodayIsoDat
   if (!candidate || typeof candidate !== "object" || !("days" in candidate || "intensityByDay" in candidate)) {
     throw new Error("Not a Tide backup");
   }
+  // A logged-days key that is not a map of known flow values would import as an
+  // empty history and replace the real one.
+  for (const key of ["days", "intensityByDay"] as const) {
+    if (!(key in candidate)) continue;
+    const days = (candidate as Record<string, unknown>)[key];
+    if (
+      !days ||
+      typeof days !== "object" ||
+      Array.isArray(days) ||
+      Object.values(days).some((flow) => !isLoggedFlow(flow))
+    )
+      throw new Error("Not a Tide backup");
+  }
   const version = (parsed as { schemaVersion?: unknown }).schemaVersion;
   if (typeof version === "number" && version > SCHEMA_VERSION) {
     throw new Error("Backup is from a newer Tide");
@@ -88,10 +101,36 @@ export function parseImportedState(text: string, today: IsoDate = getTodayIsoDat
       throw new Error("Invalid daily details in backup");
   }
   const state = normalizeAppState(parsed);
+  // Filter before updateLoggedDays: it compares the old and new cycle starts, and a
+  // dropped future day must not count as a renumbering that resets the calendar id.
+  const intensityByDay = Object.fromEntries(Object.entries(state.intensityByDay).filter(([day]) => day <= today));
   return updateLoggedDays(
-    { ...state, detailsByDay: Object.fromEntries(Object.entries(state.detailsByDay).filter(([day]) => day <= today)) },
-    Object.fromEntries(Object.entries(state.intensityByDay).filter(([day]) => day <= today)),
+    {
+      ...state,
+      intensityByDay,
+      detailsByDay: Object.fromEntries(Object.entries(state.detailsByDay).filter(([day]) => day <= today)),
+    },
+    intensityByDay,
   );
+}
+
+// An import replaces the history but not what describes this device: its backup
+// dates and Calendar guidance stay, and so does its calendar identity when the
+// file has none, so the next export still updates the events already in the
+// user's calendar. A successful import completes the first-run introduction.
+export function keepDeviceSettings(current: AppState, next: AppState): AppState {
+  const { lastBackupOn, backupReminderDismissedOn, calendarHelpDismissed, calendarId } = current.settings;
+  return {
+    ...next,
+    settings: {
+      ...next.settings,
+      calendarId: next.settings.calendarId ?? calendarId,
+      lastBackupOn,
+      backupReminderDismissedOn,
+      calendarHelpDismissed,
+      onboardingDismissed: true,
+    },
+  };
 }
 
 // Days from another app's export (see otherApps.ts). Kept here, not in the

@@ -62,17 +62,29 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
   // Another tab (or the installed PWA window) saved: adopt its state instead
   // of overwriting it with ours on our next change. The event only fires for
   // writes from other documents, so this can't loop on our own save above.
+  // A frozen or bfcached tab gets no storage events, so it also re-reads when it
+  // comes back; otherwise its next save would overwrite what the other tab logged.
   useEffect(() => {
+    function reload() {
+      const stored = loadStoredState();
+      setReadOnly(stored.readOnly);
+      setRecoveryRequired(stored.recoveryRequired ?? false);
+      dispatch({ type: "importState", state: stored.state });
+    }
     function handleStorage(event: StorageEvent) {
-      if (event.key === STORAGE_KEY) {
-        const stored = loadStoredState();
-        setReadOnly(stored.readOnly);
-        setRecoveryRequired(stored.recoveryRequired ?? false);
-        dispatch({ type: "importState", state: stored.state });
-      }
+      if (event.key === STORAGE_KEY) reload();
+    }
+    function handleVisibility() {
+      if (document.visibilityState === "visible") reload();
     }
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    window.addEventListener("pageshow", reload);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("pageshow", reload);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
   }, []);
 
   useThemePreference(state.settings.theme);

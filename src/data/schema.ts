@@ -64,7 +64,7 @@ export function isIsoDate(value: unknown): value is IsoDate {
 const isFlow = (value: unknown): value is FlowIntensity => FLOW_INTENSITIES.includes(value as FlowIntensity);
 
 // null is a logged day with no chosen level; any other non-flow value is junk.
-const isLoggedFlow = (value: unknown): value is LoggedFlow => value === null || isFlow(value);
+export const isLoggedFlow = (value: unknown): value is LoggedFlow => value === null || isFlow(value);
 
 // Normalize the logged days into the single date -> flow map. Its keys are the
 // logged days and its values their flow levels; any invalid entry is dropped.

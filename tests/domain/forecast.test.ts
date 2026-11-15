@@ -400,3 +400,16 @@ describe("forecast properties", () => {
     );
   });
 });
+
+describe("forecast with a very short learned cycle", () => {
+  it("never places ovulation before the current cycle starts", () => {
+    const result = forecast({
+      fertility: true,
+      today: "2026-02-05",
+      periodDays: ["2026-01-01", "2026-01-12", "2026-01-23", "2026-02-03"],
+    });
+    expect(result.cycleLength).toBeLessThan(14);
+    expect(result.ovulationDate).not.toBeNull();
+    expect((result.ovulationDate as string) > "2026-02-03").toBe(true);
+  });
+});
