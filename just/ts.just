@@ -30,6 +30,10 @@ ts-test *args:
 ts-e2e *args:
     pnpm run test:e2e {{ args }}
 
+# Rewrite the install assets in public/ (monochrome icon, manifest screenshots) from a fresh build.
+ts-pwa-assets:
+    PWA_ASSETS=1 SHOTS=1 pnpm exec playwright test --project=shots pwa-assets
+
 # Screenshot every route at 390 and 1440 px, light and dark, into the gitignored
 # shots/ (`<route>-<width>-<scheme>.png`). Builds and serves the app like ts-e2e.
 ts-shots:

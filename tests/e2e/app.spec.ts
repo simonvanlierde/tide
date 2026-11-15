@@ -93,6 +93,7 @@ test("manifest and install assets are served", async ({ page }) => {
     "any",
     "maskable",
     "maskable",
+    "monochrome",
   ]);
 
   const faviconResponse = await page.request.get("/favicon.ico");

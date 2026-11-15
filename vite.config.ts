@@ -27,14 +27,44 @@ const manifest: Partial<ManifestOptions> = {
   // already inside the 80% circle that Android's mask shapes keep, so a padded
   // copy would only shrink it. Listed per purpose, since a combined
   // "any maskable" entry is discouraged.
-  icons: (["any", "maskable"] as const).flatMap((purpose) =>
-    [192, 512].map((size) => ({
-      src: `/icons/icon-${size}.png`,
-      sizes: `${size}x${size}`,
+  icons: [
+    ...(["any", "maskable"] as const).flatMap((purpose) =>
+      [192, 512].map((size) => ({
+        src: `/icons/icon-${size}.png`,
+        sizes: `${size}x${size}`,
+        type: "image/png",
+        purpose,
+      })),
+    ),
+    // Silhouette on a transparent ground; the phone recolours it for themed icons.
+    { src: "/icons/icon-monochrome-512.png", sizes: "512x512", type: "image/png", purpose: "monochrome" },
+  ],
+  // Not precached: the browser fetches these only for its install dialog. Rewrite them
+  // with `just ts-pwa-assets`.
+  screenshots: [
+    {
+      src: "/screenshots/today-narrow.png",
+      sizes: "780x1688",
       type: "image/png",
-      purpose,
-    })),
-  ),
+      form_factor: "narrow",
+      label: "Today: the cycle ring on day 5 of a period",
+    },
+    {
+      src: "/screenshots/calendar-narrow.png",
+      sizes: "780x1688",
+      type: "image/png",
+      form_factor: "narrow",
+      label: "Calendar with logged and expected days",
+    },
+    {
+      src: "/screenshots/today-wide.png",
+      sizes: "1280x800",
+      type: "image/png",
+      form_factor: "wide",
+      label: "Today: the cycle ring on day 5 of a period",
+    },
+  ],
+  categories: ["health", "medical"],
 };
 
 /**
@@ -70,10 +100,15 @@ export default defineConfig({
     VitePWA({
       // The manifest icons are precached on their own (includeManifestIcons).
       includeAssets: ["favicon.ico", "icons/icon.svg"],
-      registerType: "autoUpdate",
+      // "prompt" adds no skipWaiting: a new worker waits until every Tide window has closed,
+      // so an open page never loses the previous build's lazy chunks. The app has no update
+      // prompt; the next launch after closing runs the new version.
+      registerType: "prompt",
       // The service worker answers page loads with the app shell; security.txt
       // must still reach the network, or a browser shows the app instead.
-      workbox: { navigateFallbackDenylist: [/^\/\.well-known\//] },
+      // clientsClaim only makes the first install control the page that registered it, so
+      // the first visit already works offline; an update still waits (see registerType).
+      workbox: { clientsClaim: true, navigateFallbackDenylist: [/^\/\.well-known\//] },
       manifest,
     }),
   ],
