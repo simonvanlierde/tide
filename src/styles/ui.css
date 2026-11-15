@@ -1214,6 +1214,11 @@
     margin-bottom: 16px;
   }
 
+  .update-notice__reload {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
   /* Calendar */
   .calendar-grid {
     --calendar-gap: 8px;

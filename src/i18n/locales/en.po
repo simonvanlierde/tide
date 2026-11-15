@@ -128,6 +128,9 @@ msgstr "Primary navigation"
 msgid "app.newerData"
 msgstr "A newer version of Tide saved your data. Reload to update. Changes made here aren''t saved."
 
+msgid "app.updateReady"
+msgstr "A new version is ready"
+
 msgid "app.storageError"
 msgstr "Your latest changes couldn''t be saved on this device. Keep Tide open and export a backup from Settings."
 

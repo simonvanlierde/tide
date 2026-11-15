@@ -1,7 +1,9 @@
+import { registerSW } from "virtual:pwa-register";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app/App";
 import { ErrorBoundary, storedLanguage } from "./app/ErrorBoundary";
+import { checkForUpdatesOnResume, setUpdateAction } from "./app/updateNotice";
 import { loadRawAppState } from "./data/storage";
 import { loadCatalog } from "./i18n";
 import { AppStateProvider } from "./state/provider";
@@ -29,3 +31,9 @@ loadCatalog(storedLanguage(loadRawAppState()))
       </StrictMode>,
     ),
   );
+
+// A new worker waits (registerType "prompt"); the notice offers the reload, never automatic.
+const updateServiceWorker = registerSW({
+  onNeedRefresh: () => setUpdateAction(() => void updateServiceWorker(true)),
+  onRegisteredSW: (_url, registration) => registration && checkForUpdatesOnResume(registration),
+});

@@ -128,6 +128,9 @@ msgstr "Hoofdnavigatie"
 msgid "app.newerData"
 msgstr "Een nieuwere versie van Tide heeft je gegevens opgeslagen. Herlaad de pagina om bij te werken. Wijzigingen die je hier maakt, worden niet opgeslagen."
 
+msgid "app.updateReady"
+msgstr "Er is een nieuwe versie klaar"
+
 msgid "app.storageError"
 msgstr "Je laatste wijzigingen konden niet op dit apparaat worden opgeslagen. Houd Tide open en exporteer een reservekopie via Instellingen."
 

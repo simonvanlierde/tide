@@ -128,6 +128,9 @@ msgstr "Navigation principale"
 msgid "app.newerData"
 msgstr "Une version plus récente de Tide a enregistré tes données. Recharge la page pour mettre à jour. Les modifications faites ici ne sont pas enregistrées."
 
+msgid "app.updateReady"
+msgstr "Une nouvelle version est prête"
+
 msgid "app.storageError"
 msgstr "Tes dernières modifications n’ont pas pu être enregistrées sur cet appareil. Garde Tide ouvert et exporte une sauvegarde dans les réglages."
 
