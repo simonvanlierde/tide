@@ -17,6 +17,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   a symptom or mood, switch day or close the page, so nothing you typed is lost.
 - The day editor's button to undo a bleeding log reads "Remove bleeding log" in every
   language, and no longer states the opposite of the flow you just chose.
+- The first-use card no longer ends in an empty band under "Fertility estimates".
 - The first-use card now shows the import link after the backup sentence it belongs to.
 - Settings: the warning before an import replaces your data names the days it will
   replace, says that details and notes go too, and puts "This cannot be undone" on its own
