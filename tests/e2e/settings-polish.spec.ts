@@ -2,19 +2,29 @@ import { expect, test } from "@playwright/test";
 import { SUPPORTED_LANGUAGES, translate } from "./i18n";
 import { seedAppState } from "./seed";
 
-for (const [lang, width] of [
-  ["en", 1280],
-  ["de", 320],
+for (const [lang, width, theme, showFertility] of [
+  ["en", 1280, "light", true],
+  ["en", 390, "dark", false],
+  ["de", 320, "dark", false],
 ] as const) {
-  test(`exporting a backup does not move the controls below it (${lang}, ${width}px)`, async ({ page }) => {
+  test(`data actions leave no blank feedback space (${lang}, ${width}px)`, async ({ page }) => {
     await page.setViewportSize({ width, height: 900 });
-    await seedAppState(page, lang);
+    await seedAppState(page, lang, { showFertility, theme });
     await page.goto("/settings");
-    const danger = page.locator(".data-group--danger button");
-    const before = (await danger.boundingBox())?.y;
+    for (const selector of [".data-actions", ".calendar-export__options"]) {
+      const trailingSpace = await page.locator(selector).evaluate((el) => {
+        const group = el.closest(".data-group");
+        if (!group) throw new Error("data group missing");
+        return group.getBoundingClientRect().bottom - el.getBoundingClientRect().bottom;
+      });
+      expect(trailingSpace, selector).toBeLessThanOrEqual(12);
+    }
     await page.getByRole("button", { name: new RegExp(`^${translate(lang, "settings.export")}`) }).click();
     await expect(page.getByRole("status").filter({ hasText: translate(lang, "settings.exportSuccess") })).toBeVisible();
-    expect((await danger.boundingBox())?.y).toBeCloseTo(before ?? 0, 0);
+    await expect(page.locator(".data-group").first().getByRole("status")).toBeVisible();
+    await page.getByRole("button", { name: translate(lang, "settings.exportCalendar") }).click();
+    await expect(page.locator(".data-group").nth(1).getByRole("status")).toBeVisible();
+    await expect(page.locator(".data-group").first().getByRole("status")).toHaveCount(0);
   });
 }
 

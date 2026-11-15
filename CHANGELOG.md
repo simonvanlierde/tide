@@ -6,6 +6,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Settings no longer leaves empty space below backup and calendar controls when there is no message to show.
+
 ## [0.6.0] - 2026-11-15
 
 ### Added
