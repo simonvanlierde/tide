@@ -1,7 +1,7 @@
 import { CalendarPlus, CircleAlert, Download, ShieldCheck, Trash2, Upload } from "lucide-react";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import type { OtherAppImport } from "../../data/otherApps";
-import { downloadAppState, mergeImportedDays, parseImportedState } from "../../data/transfer";
+import { downloadAppState, keepDeviceSettings, mergeImportedDays, parseImportedState } from "../../data/transfer";
 import { getExpectedCycles } from "../../domain/cycle";
 import type { AppState, IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useForecast, useIsReadOnly, useLocale, useT } from "../../state/provider";
@@ -77,17 +77,7 @@ export function DataSection({ today }: DataSectionProps) {
   function applyImport(next: AppState, merged = false) {
     if (latest.current.readOnly) return;
     const current = latest.current.state;
-    const { lastBackupOn, backupReminderDismissedOn, calendarHelpDismissed } = current.settings;
-    actions.importState({
-      ...next,
-      settings: {
-        ...next.settings,
-        lastBackupOn,
-        backupReminderDismissedOn,
-        calendarHelpDismissed,
-        onboardingDismissed: true,
-      },
-    });
+    actions.importState(keepDeviceSettings(current, next));
     setError(null);
     setStatus({
       kind: "imported",
