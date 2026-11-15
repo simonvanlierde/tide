@@ -294,7 +294,7 @@ describe("SettingsScreen", () => {
       new File([JSON.stringify({ days: {}, schemaVersion: 3 })], "old.json", { type: "application/json" }),
     );
     const dialog = screen.getByRole("dialog");
-    expect(dialog).toHaveTextContent("Your current period history and daily details will be replaced.");
+    expect(dialog).toHaveTextContent("Importing replaces the daily details and notes on this device.");
     expect(loadStoredState().state.detailsByDay["2026-04-12"]?.note).toBe("Keep this until confirmed.");
     await user.click(within(dialog).getByRole("button", { name: /cancel/i }));
     expect(loadStoredState().state.detailsByDay["2026-04-12"]?.note).toBe("Keep this until confirmed.");
@@ -349,6 +349,8 @@ describe("SettingsScreen", () => {
     const dialog = screen.getByRole("dialog");
     expect(within(dialog).getByText(/this file holds 2 logged days/i)).toBeInTheDocument();
     expect(within(dialog).getByText(/replaces the 1 day logged on this device/i)).toBeInTheDocument();
+    // The loss that cannot be undone is its own line, not a clause of another.
+    expect(within(dialog).getByText(/^this cannot be undone\.$/i)).toBeInTheDocument();
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-03-01"]);
 
     // Backing out keeps what's here.
@@ -473,7 +475,7 @@ describe("SettingsScreen", () => {
     await user.click(screen.getByRole("button", { name: /delete all data/i }));
     await user.click(
       within(screen.getByRole("dialog")).getByRole("button", {
-        name: /^delete$/i,
+        name: /^delete all data$/i,
       }),
     );
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual([]);
@@ -490,7 +492,7 @@ describe("SettingsScreen", () => {
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new DOMException("Storage is full", "QuotaExceededError");
     });
-    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^delete$/i }));
+    await user.click(within(screen.getByRole("dialog")).getByRole("button", { name: /^delete all data$/i }));
     expect(screen.getByRole("alert")).toHaveTextContent("Your latest changes couldn't be saved on this device.");
     expect(screen.queryByText("All data deleted.")).not.toBeInTheDocument();
     expect(getPeriodDays(loadStoredState().state.intensityByDay)).toEqual(["2026-03-01"]);
@@ -505,7 +507,7 @@ describe("SettingsScreen", () => {
 
     await user.click(screen.getByRole("button", { name: /delete all data/i }));
     const dialog = within(screen.getByRole("dialog"));
-    expect(dialog.getByRole("button", { name: /^delete$/i })).toHaveClass("commit-action--danger");
+    expect(dialog.getByRole("button", { name: /^delete all data$/i })).toHaveClass("commit-action--danger");
     await user.click(dialog.getByRole("button", { name: "Download a backup first" }));
 
     // The backup leaves the dialog open, so the delete is still one tap away.
@@ -672,7 +674,7 @@ describe("SettingsScreen", () => {
       expect(screen.queryByRole("status")).not.toBeInTheDocument();
       expect(screen.queryByRole("dialog")?.textContent ?? null).toEqual(
         schemaVersion === SCHEMA_VERSION
-          ? expect.stringMatching(diaryOnly ? /daily details will be replaced/i : /replaces the 1 day/i)
+          ? expect.stringMatching(diaryOnly ? /replaces the daily details and notes/i : /replaces the 1 day/i)
           : null,
       );
     },

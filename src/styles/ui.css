@@ -67,6 +67,7 @@
   /* Version + source as a subtle pill — reads as a deliberate tag, not a
      stray inline link, so it drops the underline for the chip shape. */
   .colophon__link {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -75,6 +76,13 @@
     background: var(--surface-soft);
     border: 1px solid var(--surface-border);
     text-decoration: none;
+  }
+
+  /* The pill stays small; the hit area is 44px. */
+  .colophon__link::before {
+    content: "";
+    position: absolute;
+    inset: -10px 0;
   }
 
   .colophon__link:hover,
@@ -1018,9 +1026,9 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* The delete row sits flush under its hairline; the 44px target pads it. */
+  /* Extra air above the delete row, so a slip off the switch above it misses. */
   .data-group + .data-group--danger {
-    padding-top: 4px;
+    padding-top: 16px;
   }
 
   /* Segmented control: one track, the active option raised out of it. Auto
@@ -1053,7 +1061,7 @@
     justify-content: center;
     gap: 6px;
     min-width: 0;
-    min-height: 38px;
+    min-height: 44px;
     padding: 6px 8px;
     border: 0;
     border-radius: var(--radius-control);
@@ -1145,7 +1153,7 @@
   .switch::before {
     content: "";
     position: absolute;
-    inset: -8px 0;
+    inset: -9px 0;
   }
 
   .switch::after {

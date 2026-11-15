@@ -110,9 +110,6 @@ msgstr "Gaat wel"
 msgid "diary.mood.good"
 msgstr "Goed"
 
-msgid "settings.importReplacesDetails"
-msgstr "Je huidige menstruatiegeschiedenis en dagelijkse details worden vervangen."
-
 msgid "nav.today"
 msgstr "Vandaag"
 
@@ -618,7 +615,10 @@ msgid "settings.importFileDays"
 msgstr "{n, plural, one {Dit bestand bevat {n} gelogde dag.} other {Dit bestand bevat {n} gelogde dagen.}}"
 
 msgid "settings.importReplaces"
-msgstr "{n, plural, one {Het vervangt de {n} dag die op dit apparaat is gelogd en kan niet ongedaan worden gemaakt.} other {Het vervangt de {n} dagen die op dit apparaat zijn gelogd en kan niet ongedaan worden gemaakt.}}"
+msgstr "{n, plural, =0 {De import vervangt de dagelijkse details en notities op dit apparaat.} one {De import vervangt de {n} dag die op dit apparaat is gelogd, met details en notities.} other {De import vervangt de {n} dagen die op dit apparaat zijn gelogd, met details en notities.}}"
+
+msgid "settings.importIrreversible"
+msgstr "Dit kan niet ongedaan worden gemaakt."
 
 msgid "settings.importMergeTitle"
 msgstr "Dagen uit {source} toevoegen?"
@@ -634,9 +634,6 @@ msgstr "Alle gegevens wissen"
 
 msgid "settings.resetTitle"
 msgstr "Alle gegevens verwijderen?"
-
-msgid "settings.resetAction"
-msgstr "Verwijderen"
 
 msgid "settings.resetConfirm"
 msgstr "Alle gegevens en instellingen op dit apparaat worden gewist. Dit kan niet ongedaan worden gemaakt."
