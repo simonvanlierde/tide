@@ -450,7 +450,7 @@ msgid "marker.predictedPeriod"
 msgstr "verwachte menstruatie"
 
 msgid "calendar.notBleeding"
-msgstr "Geen bloedverlies die dag"
+msgstr "Bloedverlies verwijderen"
 
 msgid "common.unknown"
 msgstr "onbekend"

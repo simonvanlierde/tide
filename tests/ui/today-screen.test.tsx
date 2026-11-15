@@ -266,7 +266,7 @@ describe("TodayScreen", () => {
     renderToday("2026-04-18");
 
     await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
-    expect(screen.getByRole("button", { name: /not bleeding/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
 
     // A fresh one-tap log picks no level; the gauge appears to ask for one.
     for (const level of ["spotting", "light", "medium", "heavy"]) {
@@ -396,7 +396,7 @@ describe("TodayScreen", () => {
 
     expect(screen.queryByText(/has your period started/i)).not.toBeInTheDocument();
     // Removal stays a quiet action inside the dated editor.
-    expect(screen.getByRole("button", { name: /not bleeding/i })).toHaveClass("text-action");
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toHaveClass("text-action");
     // No flow level is invented by a one-tap log.
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}").intensityByDay["2026-04-28"]).toBeNull();
     expect(screen.getByRole("heading", { name: "April 28, 2026" })).toBeInTheDocument();
@@ -411,11 +411,11 @@ describe("TodayScreen", () => {
     // It opens once and goes away, so it is a plain button, not a toggle.
     expect(summary).not.toHaveAttribute("aria-expanded");
     expect(screen.queryByRole("radio")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /not bleeding/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /remove bleeding log/i })).not.toBeInTheDocument();
 
     await user.click(summary);
     expect(screen.getByRole("radio", { name: /medium/i })).toHaveFocus();
-    expect(screen.getByRole("button", { name: /not bleeding/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toBeInTheDocument();
   });
 
   it("nudges a plain log from an earlier visit to add its flow", () => {
@@ -430,7 +430,7 @@ describe("TodayScreen", () => {
     await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
     expect(screen.getByRole("radio", { name: /spotting/i })).toHaveFocus();
 
-    await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+    await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
     expect(screen.getByRole("button", { name: /^log bleeding$/i })).toHaveFocus();
     await user.click(screen.getByRole("button", { name: "Close" }));
     expect(screen.getByRole("button", { name: /log bleeding today/i })).toHaveFocus();
@@ -581,7 +581,7 @@ it("finishes the introduction on a first log without restoring it on removal", a
   renderToday("2026-04-18", createAppState({ settings: { onboardingDismissed: false } }));
   await user.click(screen.getByRole("button", { name: /log bleeding today/i }));
   expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+  await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
   expect(screen.queryByRole("region", { name: "Your history stays here" })).not.toBeInTheDocument();
   expect(JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "{}").settings.showFertility).toBeNull();
 });

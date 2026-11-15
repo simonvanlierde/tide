@@ -201,7 +201,7 @@ describe("CalendarScreen", () => {
     expect(day).toHaveClass("is-logged");
     expect(day.className).not.toMatch(/is-flow-/);
     expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-02": "medium", "2026-04-05": null });
-    await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+    await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
     expect(day).not.toHaveClass("is-logged");
   });
 
@@ -229,7 +229,7 @@ describe("CalendarScreen", () => {
     });
 
     await user.click(screen.getByRole("button", { name: /april 2, 2026/i }));
-    await user.click(screen.getByRole("button", { name: /not bleeding/i }));
+    await user.click(screen.getByRole("button", { name: /remove bleeding log/i }));
 
     // Removing bleeding keeps the dated editor open.
     expect(screen.getByRole("button", { name: /april 2, 2026/i })).not.toHaveClass("is-logged");
@@ -246,7 +246,7 @@ describe("CalendarScreen", () => {
     day.focus();
     await user.keyboard("{Enter}");
     await user.tab();
-    expect(screen.getByRole("button", { name: /not bleeding/i })).toHaveFocus();
+    expect(screen.getByRole("button", { name: /remove bleeding log/i })).toHaveFocus();
     await user.keyboard("{Enter}");
 
     expect(day).toHaveAccessibleName(/april 2, 2026/i);
@@ -795,7 +795,7 @@ it("remembers Calendar help after a successful day log, even after removal", asy
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(false);
   await user.click(screen.getByRole("button", { name: "Log bleeding" }));
   expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
-  await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
+  await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
   expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
   view.unmount();
   renderWithAppState(<CalendarScreen today="2026-04-18" />);
@@ -814,7 +814,7 @@ it("dismisses Calendar help after logging bleeding in the shared editor", async 
   await user.click(screen.getByRole("button", { name: "Log bleeding" }));
   expect(loadStoredState().state.intensityByDay).toEqual({ "2026-04-18": null });
   expect(loadStoredState().state.settings.calendarHelpDismissed).toBe(true);
-  await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
+  await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
   await user.click(screen.getByRole("button", { name: "Close" }));
   expect(screen.queryByText(/tap a day to view or edit it/i)).not.toBeInTheDocument();
   view.unmount();

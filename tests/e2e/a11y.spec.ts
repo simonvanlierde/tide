@@ -48,6 +48,7 @@ for (const colorScheme of ["light", "dark"] as const) {
       await page.getByRole("button", { name: /^April 15, 2026/ }).click();
       await page.getByText("More details", { exact: true }).click();
       await page.getByRole("textbox", { name: "Note (optional)", exact: true }).fill("A quiet day.");
+      await page.keyboard.press("Tab");
       await expect(page.getByRole("button", { name: /^April 15, 2026, Cycle day 2, Details$/ })).toBeVisible();
       await expectNoViolations(page);
       const cycleCount = page.locator(".calendar-grid__day.is-today + .calendar-grid__period-day");

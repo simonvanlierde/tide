@@ -450,7 +450,7 @@ msgid "marker.predictedPeriod"
 msgstr "expected period"
 
 msgid "calendar.notBleeding"
-msgstr "Not bleeding that day"
+msgstr "Remove bleeding log"
 
 msgid "common.unknown"
 msgstr "unknown"

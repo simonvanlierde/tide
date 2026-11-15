@@ -8,7 +8,7 @@ test("removing a day returns keyboard focus to its calendar cell", async ({ page
   await day.focus();
   await page.keyboard.press("Enter");
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: /Not bleeding/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /Remove bleeding log/ })).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Log bleeding", exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
