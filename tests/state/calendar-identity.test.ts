@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { updateLoggedDays } from "../../src/data/schema";
 import { mergeImportedDays } from "../../src/data/transfer";
 import { appStateReducer } from "../../src/state/core";
 import { createAppState } from "../support/app";
@@ -23,6 +24,13 @@ describe("calendar event identity", () => {
 
   it("keeps event identities when a new latest cycle is logged", () => {
     const next = appStateReducer(initial(), { type: "togglePeriodDay", day: "2026-04-26", today: "2026-04-26" });
+    expect(next.settings.calendarId).toBe(calendarId);
+  });
+
+  it("keeps event identities when a cycle start moves by a day", () => {
+    const state = initial();
+    const { "2026-03-29": flow = "medium", ...rest } = state.intensityByDay;
+    const next = updateLoggedDays(state, { ...rest, "2026-03-30": flow });
     expect(next.settings.calendarId).toBe(calendarId);
   });
 
