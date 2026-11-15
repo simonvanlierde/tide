@@ -1,7 +1,6 @@
 # Run with prek, a drop-in pre-commit replacement: prek install && prek run -a
 #
-# Python projects get prek from `uv tool install prek`. TypeScript-only projects
-# get it from the @j178/prek devDependency. Revs are commit SHAs, since tags are
+# prek comes from the @j178/prek devDependency. Revs are commit SHAs, since tags are
 # mutable; the dependency bot moves each SHA and its `# frozen:` tag together.
 
 # `prek install` sets up each of these: the commit message is checked as you commit,
@@ -31,7 +30,7 @@ repos:
         entry: sh -c 'test -f "$(git rev-parse --git-path MERGE_HEAD)" || exec committed "$@"' --
 
   # Refuse an unsigned commit before the dco workflow sees it: that checks fork pull requests,
-  # and every pull request with openssf_badge=silver. Merge commits are skipped, as there.
+  # and every pull request with level=community. Merge commits are skipped, as there.
   - repo: local
     hooks:
       - id: dco-signoff
@@ -65,6 +64,12 @@ repos:
     rev: cba56bcde1fdd01c1deb3f945e69764c291a6530 # frozen: v1.38.0
     hooks:
       - id: yamllint
+
+  # Workflow scripts need their own check; jactionlint checks only inline run blocks.
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: a6564f5d57444e123433a5c9af733e3975c77229 # frozen: v0.11.0.1-1
+    hooks:
+      - id: shellcheck
 
   # gitleaks' successor from the same authors. gitleaks takes security fixes only.
   - repo: https://github.com/betterleaks/betterleaks

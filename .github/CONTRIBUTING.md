@@ -8,7 +8,7 @@ report vulnerabilities as [SECURITY.md](SECURITY.md) describes, not in a public 
 
 Open an [issue](https://github.com/simonvanlierde/tide/issues) with the bug or
 feature form. For a bug, say what you did, what you expected and what happened, with the
-version you used. A question the README and docs don't answer is a gap in the docs: open
+release or commit you used. A question the README and docs don't answer is a gap in the docs: open
 a feature request for it.
 
 ## Scope and response
@@ -59,7 +59,7 @@ Run `just release X.Y.Z` to prepare the changelog commit. Merge both commits to 
 On up-to-date `main`, run `just release X.Y.Z` again to sign and push the tag.
 The tag script refuses a manifest version that differs from the requested release.
 
-[Publishing](https://github.com/simonvanlierde/project-templates/blob/main/docs/usage.md#publishing) has the steps and the one-time setup.
+[Publishing](https://github.com/simonvanlierde/project-templates/blob/main/docs/setup.md#publishing) has the steps and the one-time setup.
 
 ## Sign off your commits
 

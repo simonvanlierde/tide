@@ -24,6 +24,7 @@
     "coverage": "pnpm i18n:compile && vitest run --coverage --coverage.reporter=text",
     "dev": "pnpm i18n:compile && vite",
     "fix": "biome check --write",
+    "licenses": "pnpm licenses list --prod --json | node scripts/checkLicenses.mjs",
     "preview": "vite preview",
     "test": "pnpm i18n:compile && vitest run",
     "test:e2e": "pnpm i18n:compile && playwright test",
