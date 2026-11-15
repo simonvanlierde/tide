@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
 import { formatLongDate } from "../../src/utils/date";
+import { SUPPORTED_LANGUAGES, translate } from "./i18n";
 import { findOverflow } from "./overflow";
 import { FIXED_NOW, seedAppState } from "./seed";
 

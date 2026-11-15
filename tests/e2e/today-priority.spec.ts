@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
+import { SUPPORTED_LANGUAGES, translate } from "./i18n";
 import { seedAppState } from "./seed";
 
 test("the insights card draws no divider above its first row", async ({ page }) => {

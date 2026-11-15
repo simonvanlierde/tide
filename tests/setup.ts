@@ -1,6 +1,10 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup } from "@testing-library/react";
 import { afterEach, beforeEach, vi } from "vitest";
+import { loadCatalog, SUPPORTED_LANGUAGES } from "../src/i18n";
+
+// The app loads one catalog at a time; the tests render and compare every language.
+await Promise.all(SUPPORTED_LANGUAGES.map(loadCatalog));
 
 // jsdom defines <dialog> modal methods but makes them throw, so replace them
 // with the open/close behavior the real elements provide for components under

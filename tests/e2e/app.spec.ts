@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { translate } from "../../src/i18n";
+import { translate } from "./i18n";
 import { FIXED_NOW, seedAppState } from "./seed";
 
 // Pin "today" so every test sees the same date regardless of when CI runs.

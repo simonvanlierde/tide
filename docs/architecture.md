@@ -28,17 +28,18 @@ flowchart TD
 - `src/state`: the reducer and selectors in `core.ts`, and the React provider that holds the state.
 - `src/app`: the app shell and routing by pathname (`/`, `/calendar`, `/settings` and the legal pages).
 - `src/features`: one folder per screen or flow.
-- `src/i18n`: Lingui PO catalogs, one per locale, compiled into the bundle.
+- `src/i18n`: Lingui PO catalogs, one per locale, each compiled into its own lazy chunk.
 - `src/ui`, `src/styles` and `src/utils`: shared icons, styles and date helpers.
 
 ## Translations
 
 `src/state/provider.tsx` binds `useT()` to the language saved in the app state. Each locale has
 its own Lingui instance, so rendering text in another language can't switch the active screen.
-Dates use `Intl` with the resolved language. The forecast explainer's catalogs compile into its
-lazy chunk, which the service worker precaches with the app, so every language works offline.
+The provider loads a catalog when its language is first used and shows the previous language until it
+arrives. Dates use `Intl` with the resolved language. The service worker precaches every catalog chunk
+and the forecast explainer's lazy chunk, so every language works offline.
 [Development](development.md#translations) has the editing rules and commands, and
-[ADR 0002](adr/0002-lingui-catalogs.md) records the choice.
+[ADR 0002](adr/0002-lingui-catalogs.md) and [ADR 0003](adr/0003-lazy-locale-catalogs.md) record the choice.
 
 ## Data flow
 
