@@ -222,7 +222,14 @@ export function forecast(input: ForecastInput): Forecast {
   const fertileWindow = getFertileWindow(completedCycleLengths);
   const cycleDay = Math.max(1, differenceInDays(input.today, lastCycleStart) + 1);
   const nextPeriodDate = addDays(lastCycleStart, cycleLength);
-  const ovulationDate = input.fertility ? addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH) : null;
+  // A learned cycle shorter than the luteal phase would put ovulation before this cycle began.
+  const earliestOvulation = addDays(lastCycleStart, 1);
+  const lutealOvulation = addDays(nextPeriodDate, -DEFAULT_LUTEAL_LENGTH);
+  const ovulationDate = input.fertility
+    ? lutealOvulation > earliestOvulation
+      ? lutealOvulation
+      : earliestOvulation
+    : null;
   const periodLength = getAveragePeriodLength(periodDays, input.today);
 
   // Long past the due date with nothing logged, the forecast is stale. The

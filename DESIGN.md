@@ -3,19 +3,19 @@ name: Tide
 description: A privacy-first period tracker; calm teal chrome, one warm coral signal.
 colors:
   tide: "#2f8f8a"
-  tide-deep: "#1f6a65"
+  tide-strong: "#1f6a65"
   tide-soft: "#d9ecea"
   tide-tint: "rgba(47, 143, 138, 0.1)"
-  coral: "#e26d5a"
-  coral-deep: "#cf5741"
+  bleed: "#e26d5a"
+  bleed-strong: "#cf5741"
   flow-heavy: "#d45d47"
   flow-spotting: "#f0c1b6"
   flow-light: "#e89a88"
-  amber: "#e8a24b"
-  periwinkle: "#e0e3f7"
-  amber-line: "#b07d00"
-  periwinkle-line: "#5d68c4"
-  sea-idle: "rgba(84, 123, 121, 0.4)"
+  cycle-ovulation: "#e8a24b"
+  cycle-fertile: "#e0e3f7"
+  estimate-ovulation: "#b07d00"
+  estimate-fertile: "#5d68c4"
+  cycle-idle: "rgba(84, 123, 121, 0.4)"
   danger: "#a32347"
   ink: "#14303a"
   ink-soft: "#486069"
@@ -25,8 +25,8 @@ colors:
   surface: "#ffffff"
   surface-soft: "#f1f7f7"
   surface-border: "rgba(20, 48, 58, 0.09)"
-  ground-top: "#f5f9f9"
-  ground-bottom: "#e4eef0"
+  bg-top: "#f5f9f9"
+  bg-bottom: "#e4eef0"
 typography:
   display:
     fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif"
@@ -79,14 +79,14 @@ spacing:
   gutter: "20px"
 components:
   button-primary:
-    backgroundColor: "{colors.coral}"
+    backgroundColor: "{colors.bleed}"
     textColor: "{colors.ink-on-fill}"
     rounded: "{rounded.button}"
     padding: "16px 18px"
   button-primary-hover:
-    backgroundColor: "{colors.coral-deep}"
+    backgroundColor: "{colors.bleed-strong}"
   button-commit:
-    backgroundColor: "{colors.tide-deep}"
+    backgroundColor: "{colors.tide-strong}"
     textColor: "{colors.ink-on-solid}"
     rounded: "{rounded.button}"
     padding: "12px 20px"
@@ -99,14 +99,14 @@ components:
     padding: "16px 18px"
   button-secondary-hover:
     backgroundColor: "{colors.tide-tint}"
-    textColor: "{colors.tide-deep}"
+    textColor: "{colors.tide-strong}"
   chip:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink-soft}"
     rounded: "{rounded.pill}"
     padding: "9px 15px"
   chip-selected:
-    backgroundColor: "{colors.tide-deep}"
+    backgroundColor: "{colors.tide-strong}"
     textColor: "{colors.surface}"
   card:
     backgroundColor: "{colors.surface}"
@@ -114,7 +114,7 @@ components:
     padding: "20px"
   segmented-option-active:
     backgroundColor: "{colors.surface}"
-    textColor: "{colors.tide-deep}"
+    textColor: "{colors.tide-strong}"
     rounded: "{rounded.control}"
     height: "38px"
   input:
@@ -125,7 +125,7 @@ components:
     height: "46px"
   tab-active:
     backgroundColor: "{colors.tide-tint}"
-    textColor: "{colors.tide-deep}"
+    textColor: "{colors.tide-strong}"
     rounded: "{rounded.segment}"
     padding: "8px 0 6px"
 ---
@@ -156,31 +156,33 @@ centre; the log block sits under it, in thumb reach. Dark mode is the same pool 
 
 ## Colors
 
+Token names are the CSS custom properties in `src/styles/tokens.css`, without the `--`. Where the two differ, the CSS wins. The bold names below are the colours' plain names.
+
 ### Primary
 
 - **Tide Teal** (`tide`): navigation, links, focus rings, the active tab, and hover washes
   at the 10% tint.
-- **Deep Tide** (`tide-deep`): the wordmark, the dial's phase line, link text, selected
+- **Deep Tide** (`tide-strong`): the wordmark, the dial's phase line, link text, selected
   chips. White text on it passes AA in both themes.
 - **Tide Soft** / **Tide Tint**: the backup reminder, and hover and active washes.
 
 ### Secondary
 
-- **Coral** (`coral`): bleeding, and nothing else. Logged days, the log button, the dial's
-  period arc. The expected-period outline uses `coral-deep` in light and `coral` in dark.
+- **Coral** (`bleed`): bleeding, and nothing else. Logged days, the log button, the dial's
+  period arc. The expected-period outline uses `bleed-strong` in light and `bleed` in dark.
 - **Flow ramp** (`flow-spotting` → `flow-light` → coral → `flow-heavy`): rising intensity.
   Heavy gets its own step so the near-black number on it still passes AA.
 
 ### Tertiary
 
-- **Amber** (`amber`): the ovulation estimate.
-- **Periwinkle** (`periwinkle`): the fertile window.
-- **Amber Line** / **Periwinkle Line** (`amber-line`, `periwinkle-line`): the same two estimates as
+- **Amber** (`cycle-ovulation`): the ovulation estimate.
+- **Periwinkle** (`cycle-fertile`): the fertile window.
+- **Amber Line** / **Periwinkle Line** (`estimate-ovulation`, `estimate-fertile`): the same two estimates as
   outlines in the light theme, where amber and periwinkle are too pale for a line. A yellow dark
   enough for a 3:1 line turns brown, which is why the fertile window is a cool periwinkle, well apart from coral and the teal ring. Amber Line
   is a gold rather than an orange, so ovulation stays apart from the coral period. Dark uses
   amber and a brighter periwinkle themselves.
-- **Sea Idle** (`sea-idle`): the ordinary days on the dial ring.
+- **Sea Idle** (`cycle-idle`): the ordinary days on the dial ring.
 
 ### Neutral
 
@@ -193,7 +195,7 @@ centre; the log block sits under it, in thumb reach. Dark mode is the same pool 
 - **Ink on Fill**: near-black text on coral, periwinkle and amber. One value for both themes,
   because those fills stay light in both.
 - **Surface** / **Soft Surface** / **Surface Border**: card white, inset panel, hairline.
-- **Ground**: the page gradient under a radial teal halo.
+- **Ground** (`bg-top`, `bg-bottom`): the page gradient under a radial teal halo.
 
 ### Danger
 
@@ -263,7 +265,7 @@ so every destination remains visible and usable on a narrow screen.
 
 One centred column, 460 px at most, with 20 px gutters, over the full dynamic viewport
 height. The header lines up the wordmark's baseline with the screen title. Blocks stack on
-a 16 px grid, and the main area adds bottom padding of 94 px plus the safe-area inset, so
+a 16 px grid, and the main area adds bottom padding of 46 px plus 3 rem plus the safe-area inset (94 px at the default text size), so
 nothing hides behind the fixed tab bar.
 Scroll padding also leaves room above the tab bar when a control receives keyboard focus.
 
@@ -422,7 +424,7 @@ tracked eyebrow; on Today it adds the date ("Today · Thu, Nov 12"). A teal skip
 ### Cycle Dial (signature)
 
 An open circular gauge. A conic ring fills logged days in coral at their logged intensity,
-and the ordinary days in sea-idle. Estimated days (fertile window, ovulation, the expected
+and the ordinary days in `cycle-idle`. Estimated days (fertile window, ovulation, the expected
 next period) fill the same band with a pale wash of their colour, mixed with the card
 colour so it stays a clean pastel, and a second layer draws thin rails along the band's
 inner and outer edge. That is the dial's version of the calendar's outline. The band

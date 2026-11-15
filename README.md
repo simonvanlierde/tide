@@ -48,10 +48,12 @@ somewhere private. Tide reminds you after 60 days.
 ## Docs
 
 - [How predictions work](docs/predictions.md), and how they score on
-  [real cycles](docs/backtest.md) and [sparse histories](docs/sparse-history.md)
+  [real cycles](docs/backtest.md) and [sparse histories](docs/sparse-history.md), and
+  their [speed](docs/performance.md)
 - [Architecture](docs/architecture.md) and the [decision records](docs/adr/)
 - [Development](docs/development.md): checks, translations, deploys and releases
-- [Privacy](docs/privacy.md) and [accessibility](docs/accessibility.md) statements
+- [Privacy](docs/privacy.md) and [accessibility](docs/accessibility.md) statements, and the
+  [accessibility self-assessment](docs/accessibility-assessment.md)
 
 ## Development
 
@@ -64,7 +66,7 @@ pnpm exec prek install                  # git hooks
 pnpm dev
 ```
 
-`just check` runs what CI runs. [Development](docs/development.md) has the rest.
+`just check` runs the unit-level checks CI runs; `just ts-e2e` runs the browser tests. [Development](docs/development.md) has the rest.
 Bugs and ideas: [open an issue](https://github.com/simonvanlierde/tide/issues/new/choose)
 or read [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 

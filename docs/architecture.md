@@ -16,13 +16,13 @@ flowchart TD
   features -- "backup, import, calendar file" --> data
   state["src/state<br/>reducer, provider, selectors"] --> domain & data
   data["src/data<br/>storage, schema, transfer"] --> domain
-  domain["src/domain<br/>cycle, flow, reminders, types"] --> utils["src/utils<br/>dates"]
+  domain["src/domain<br/>cycle, flow, diary, reminders, backup, types"] --> utils["src/utils<br/>dates"]
   i18n["src/i18n<br/>compiled PO catalogs"]
   ui["src/ui<br/>icons"]
   state & features & domain & data --> i18n
 ```
 
-- `src/domain`: pure cycle and reminder logic, with no React, storage or browser APIs.
+- `src/domain`: pure cycle, flow, diary, reminder and backup-reminder logic, with no React, storage or browser APIs.
 - `src/data`: the only code that reads and writes `localStorage`, plus the backup, import and
   calendar files.
 - `src/state`: the reducer and selectors in `core.ts`, and the React provider that holds the state.
@@ -102,7 +102,7 @@ to send network error reports, as the [privacy statement](privacy.md#what-our-ho
 
 ## Tests
 
-Vitest tests in `tests/` follow the same layers, one folder each, with component tests for the
+Vitest tests in `tests/` follow the same layers, one folder each (plus `support` for helpers), with component tests for the
 screens in `tests/ui`. On top sits a thin layer of Playwright tests in `tests/e2e`
 against the production build: routing, data that survives a reload, accessibility, the CSP and a
 smoke test of the PWA.

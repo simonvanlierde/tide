@@ -86,6 +86,21 @@ describe("app state", () => {
     expect(window.localStorage.getItem(STORAGE_KEY)).toBe(otherTabValue);
   });
 
+  it.each(["visibilitychange", "pageshow"])(
+    "re-reads storage on %s, for a tab that missed the storage event",
+    (type) => {
+      renderWithAppState(<Probe />, {
+        state: createAppState({ periodDays: ["2026-04-02"] }),
+      });
+      saveAppState(createAppState({ periodDays: ["2026-04-09"] }));
+      act(() => {
+        (type === "pageshow" ? window : document).dispatchEvent(new Event(type));
+      });
+
+      expect(screen.getByLabelText("period-days-probe")).toHaveTextContent(/^2026-04-09$/);
+    },
+  );
+
   it("ignores storage events for other keys", () => {
     renderWithAppState(<Probe />, {
       state: createAppState({ periodDays: ["2026-04-02"] }),

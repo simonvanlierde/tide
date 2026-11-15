@@ -33,7 +33,7 @@ These results do not establish WCAG conformance. No outside expert has tested ti
 
 ## Known problems
 
-No failures remain in the tested browser sample. Screen-reader use, browser zoom and installed
+No failures remain in the tested browser sample. Screen-reader use and installed
 apps on physical devices still need testing. These gaps limit what we can say about accessibility.
 
 ## Tell us about a problem

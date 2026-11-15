@@ -19,6 +19,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   "Ovulation".
 - Screen readers read a Calendar day as its date, with the cycle day in each language's own
   word order, instead of "Edit" plus the date.
+- Today: text in the dial no longer shrinks below the app's smallest text size on
+  short phones.
+- Today: screen readers no longer announce the dial as read-only, though the arrow
+  keys preview other days.
+- Restoring a backup whose logged days are malformed, such as `null`, a list or an unknown flow level, is refused. Before, it could replace your history with an empty one.
+- A tab that was frozen in the background, or restored from the back-forward cache, now reloads your latest data when you return to it. Before, your next tap could overwrite days you logged in another tab.
+- Restoring a backup keeps your calendar link when the backup has a future-dated day or no calendar link of its own, so the next calendar export no longer adds duplicate events.
+- With a very short learned cycle, the fertility estimate no longer places ovulation before the current cycle started.
 
 ## [0.5.0] - 2026-11-12
 

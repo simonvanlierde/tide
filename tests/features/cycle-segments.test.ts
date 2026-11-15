@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { forecast } from "../../src/domain/cycle";
 import type { IsoDate, LoggedFlow } from "../../src/domain/types";
-import { buildCycleSegments, getSegmentStatus } from "../../src/features/today/CycleView";
+import { buildCycleSegments, getSegmentStatus } from "../../src/features/today/cycleSegments";
 import { startsEndingOn } from "../support/cycles";
 
 // Days logged with a one-tap (no level chosen).
