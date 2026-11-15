@@ -34,6 +34,13 @@ describe("calendar event identity", () => {
     expect(next.settings.calendarId).toBe(calendarId);
   });
 
+  it("starts a new calendar when a cycle start moves by more than a week", () => {
+    const state = initial();
+    const { "2026-03-29": flow = "medium", ...rest } = state.intensityByDay;
+    const next = updateLoggedDays(state, { ...rest, "2026-04-10": flow });
+    expect(next.settings.calendarId).toBeNull();
+  });
+
   it("keeps event identities for flow edits and incomplete markers", () => {
     const flow = appStateReducer(initial(), { type: "setDayIntensity", day: "2026-03-01", intensity: "heavy", today });
     const marked = appStateReducer(flow, { type: "toggleIncompleteCycle", start: "2026-03-01", today });

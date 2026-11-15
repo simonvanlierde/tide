@@ -63,7 +63,15 @@ describe("range logging reconciles history once", () => {
               day in next.intensityByDay ? next : appStateReducer(next, { type: "togglePeriodDay", day, today }),
             state,
           );
-          expect(appStateReducer(state, { type: "logPeriodRange", from, to, today })).toEqual(expected);
+          const actual = appStateReducer(state, { type: "logPeriodRange", from, to, today });
+          // Day by day, a bridged gap passes through a state with an extra cycle and drops the
+          // calendar id. The range sees only the end state, so it may keep an id the walk dropped.
+          const withoutId = (next: typeof state) => ({ ...next, settings: { ...next.settings, calendarId: null } });
+          expect(withoutId(actual)).toEqual(withoutId(expected));
+          expect([state.settings.calendarId, null]).toContain(actual.settings.calendarId);
+          if (expected.settings.calendarId !== null) {
+            expect(actual.settings.calendarId).toBe(expected.settings.calendarId);
+          }
         },
       ),
       { numRuns: 300 },
