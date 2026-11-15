@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Locator, type Page, test } from "@playwright/test";
-import { translate } from "../../src/i18n";
 import { formatLongDate } from "../../src/utils/date";
+import { translate } from "./i18n";
 import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 

@@ -1,7 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 import type { IsoDate } from "../../src/domain/types";
-import { translate } from "../../src/i18n";
 import { addDays } from "../../src/utils/date";
+import { translate } from "./i18n";
 import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 

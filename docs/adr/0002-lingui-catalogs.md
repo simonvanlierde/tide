@@ -1,6 +1,6 @@
 # 2. Lingui catalogs
 
-- Status: accepted
+- Status: accepted. [ADR 0003](0003-lazy-locale-catalogs.md) replaces its bundling of all five catalogs and its rejection of loading one at a time.
 - Date: 2026-11-12
 
 ## Context

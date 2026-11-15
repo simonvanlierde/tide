@@ -26,7 +26,7 @@ Copier template (`.copier-answers.yml`). `copier update` brings in its CI and to
 ## Things that trip people up
 
 - The test workers start with `--no-experimental-webstorage` (`vitest.config.ts`), so Node's own web storage stays out of the test DOM.
-- The largest JS file in `dist/assets` must stay under 128 KiB gzip (`scripts/checkBundleBudget.mjs`). The budget keeps at least 25% headroom. When a change goes over it, find what grew before you raise it.
+- The largest JS file in `dist/assets` must stay under 118 KiB gzip, and the files the service worker precaches under 251 KiB gzip in total (`scripts/checkBundleBudget.mjs`). Each budget keeps at least 25% headroom. When a change goes over it, find what grew before you raise it.
 - The Content-Security-Policy in `public/_headers` allows no inline script. Code that must run before first paint goes in a file under `public/`, like `public/theme.js`.
 - Dependency overrides live in `pnpm-workspace.yaml`, not `package.json`. Read the comment next to an override before you remove it.
 - pnpm installs only releases at least a week old (`minimumReleaseAge`), and Dependabot waits a week too. If a fresh version won't install, pick an older one.
@@ -45,9 +45,11 @@ The [self-assessment](accessibility-assessment.md) covers what these checks can'
 
 ## Translations
 
-Tide ships five languages as Lingui 6 PO catalogs in `src/i18n/locales/`. The forecast
+Tide ships five languages as Lingui 6 PO catalogs in `src/i18n/locales/`. Each compiles to its
+own lazy chunk, and the app loads only the catalogs it needs. The forecast
 explainer has its own catalogs in `src/features/today/locales/`.
-[ADR 0002](adr/0002-lingui-catalogs.md) records the choice.
+[ADR 0002](adr/0002-lingui-catalogs.md) records the choice and
+[ADR 0003](adr/0003-lazy-locale-catalogs.md) the loading.
 
 - Edit each locale by hand, English included, and keep the explicit message IDs.
 - Write plurals in ICU form: `{n, plural, one {...} other {...}}`.

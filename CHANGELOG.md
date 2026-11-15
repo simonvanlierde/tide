@@ -28,6 +28,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Restoring a backup keeps your calendar link when the backup has a future-dated day or no calendar link of its own, so the next calendar export no longer adds duplicate events.
 - With a very short learned cycle, the fertility estimate no longer places ovulation before the current cycle started.
 
+### Changed
+
+- The app downloads only the language you use, about 12 kB (11%) less on the first visit.
+  Other languages are stored for offline use after that, and switching works without a connection.
+
 ## [0.5.0] - 2026-11-12
 
 Existing installations copy their data into separate browser storage automatically.

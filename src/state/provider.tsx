@@ -19,13 +19,15 @@ import type {
   LanguagePreference,
   ThemePreference,
 } from "../domain/types";
-import { resolveLanguage, translators } from "../i18n";
+import { isCatalogLoaded, loadCatalog, resolveLanguage, type SupportedLanguage, translators } from "../i18n";
 import { type AppStateAction, appStateReducer, selectForecast } from "./core";
 
 const AppStateContext = createContext<AppState | null>(null);
 const AppStateDispatchContext = createContext<Dispatch<AppStateAction> | null>(null);
 const ReadOnlyContext = createContext(false);
 const StorageErrorContext = createContext(false);
+// The language whose catalog is loaded: the old one until a newly chosen catalog arrives.
+const ShownLanguageContext = createContext<SupportedLanguage | null>(null);
 
 interface AppStateProviderProps {
   children: ReactNode;
@@ -88,16 +90,22 @@ export function AppStateProvider({ children, initialState }: AppStateProviderPro
   }, []);
 
   useThemePreference(state.settings.theme);
-  useLanguagePreference(state.settings.language);
+  const shownLanguage = useShownLanguage(resolveLanguage(state.settings.language));
+  useLanguagePreference(shownLanguage);
 
   // Throw during render so recovery also catches a failed cross-tab migration.
   if (recoveryRequired) throw new Error("Could not preserve stored data before normalization");
+
+  // Render nothing until a catalog is there, so no screen shows raw message keys.
+  if (!shownLanguage) return null;
 
   return (
     <AppStateContext.Provider value={state}>
       <AppStateDispatchContext.Provider value={dispatch}>
         <ReadOnlyContext.Provider value={readOnly}>
-          <StorageErrorContext.Provider value={storageError}>{children}</StorageErrorContext.Provider>
+          <StorageErrorContext.Provider value={storageError}>
+            <ShownLanguageContext.Provider value={shownLanguage}>{children}</ShownLanguageContext.Provider>
+          </StorageErrorContext.Provider>
         </ReadOnlyContext.Provider>
       </AppStateDispatchContext.Provider>
     </AppStateContext.Provider>
@@ -139,10 +147,26 @@ function useThemePreference(theme: ThemePreference) {
 
 // Reflect the resolved language onto <html lang> so the browser, screen
 // readers, and CSS :lang() selectors know what they're reading.
-function useLanguagePreference(language: LanguagePreference) {
+function useLanguagePreference(language: SupportedLanguage | null) {
   useEffect(() => {
-    document.documentElement.lang = resolveLanguage(language);
+    if (language) document.documentElement.lang = language;
   }, [language]);
+}
+
+// Loads the catalog for `wanted` and keeps showing the previous language until it is there.
+// main.tsx loads the saved language before the first render, so the usual start has no wait.
+function useShownLanguage(wanted: SupportedLanguage) {
+  const [shown, setShown] = useState<SupportedLanguage | null>(isCatalogLoaded(wanted) ? wanted : null);
+  useEffect(() => {
+    let stale = false;
+    loadCatalog(wanted).then(() => {
+      if (!stale) setShown(wanted);
+    });
+    return () => {
+      stale = true;
+    };
+  }, [wanted]);
+  return shown;
 }
 
 // The bound translator returned by useT — pass it to module-level helpers that
@@ -152,21 +176,23 @@ export type Translate = (key: string, vars?: Record<string, string | number>) =>
 // The stored language preference, or "system" when rendered outside a provider
 // (isolated component tests, Storybook) so leaf components stay self-sufficient.
 function useLanguage() {
-  return useContext(AppStateContext)?.settings.language ?? "system";
+  const shown = useContext(ShownLanguageContext);
+  const preference = useContext(AppStateContext)?.settings.language ?? "system";
+  return shown ?? resolveLanguage(preference);
 }
 
 // Bound translator for the current language. Components call `const t = useT()`
 // then `t("settings.theme")`.
 export function useT(): Translate {
   const language = useLanguage();
-  const i18n = translators[resolveLanguage(language)];
+  const i18n = translators[language];
   return useMemo(() => (key: string, vars?: Record<string, string | number>) => i18n._(key, vars), [i18n]);
 }
 
 // The resolved BCP-47 locale for date/number formatting (Intl). Read from state
 // during render so dates re-format the instant the language changes.
 export function useLocale() {
-  return resolveLanguage(useLanguage());
+  return useLanguage();
 }
 
 // True when a newer version of Tide saved the stored data, so this one must

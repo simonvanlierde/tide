@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { explainTranslators } from "../../src/features/today/explainMessages";
-import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
+import { SUPPORTED_LANGUAGES, translate } from "./i18n";
 import { seedAppState } from "./seed";
 
 // Start online once; the service worker must cache lazy legal pages before they are opened.
@@ -30,8 +30,13 @@ test("legal pages and Settings work offline after the first visit", async ({ pag
     await page.locator(".back-link").click();
     await expect(page).toHaveURL(/\/settings$/);
   }
+  // The catalogs load on demand, answered by the service worker; anything else would be a network request.
   const requests: string[] = [];
-  context.on("request", (request) => requests.push(request.url()));
+  context.on("request", (request) => {
+    if (!/\/assets\/(en|nl|de|fr|es)-[\w-]+\.js$/.test(request.url())) requests.push(request.url());
+  });
+  const failed: string[] = [];
+  context.on("requestfailed", (request) => failed.push(request.url()));
   for (const language of SUPPORTED_LANGUAGES) {
     await page.locator("#language-select").selectOption(language);
     await expect(page.locator("html")).toHaveAttribute("lang", language);
@@ -40,6 +45,7 @@ test("legal pages and Settings work offline after the first visit", async ({ pag
   await page.locator("#language-select").selectOption("system");
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   expect(requests).toEqual([]);
+  expect(failed).toEqual([]);
   expect(await page.evaluate(() => Object.keys(localStorage))).toEqual(["tide.period-tracker.state.v1"]);
 });
 
@@ -69,5 +75,29 @@ for (const language of SUPPORTED_LANGUAGES) {
     );
     await expect(explanation).not.toContainText("explain.");
     expect(forecastRequests).toHaveLength(1);
+  });
+}
+
+for (const language of SUPPORTED_LANGUAGES) {
+  test(`switching to ${language} works offline and survives a reload`, async ({ page, context }) => {
+    // No seeded state: an init script would reset the saved language on reload.
+    await page.goto("/settings");
+    await page.locator("#language-select").selectOption(language === "nl" ? "de" : "nl");
+    await page.evaluate(async () => {
+      await navigator.serviceWorker.ready;
+      if (!navigator.serviceWorker.controller) {
+        await new Promise<void>((resolve) => {
+          navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), { once: true });
+        });
+      }
+    });
+    await context.setOffline(true);
+    await page.locator("#language-select").selectOption(language);
+    await expect(page.locator("html")).toHaveAttribute("lang", language);
+    await expect(page.locator('.tab-bar a[href="/"]')).toHaveText(translate(language, "nav.today"));
+    await page.reload();
+    await expect(page.locator("html")).toHaveAttribute("lang", language);
+    await expect(page.locator('.tab-bar a[href="/"]')).toHaveText(translate(language, "nav.today"));
+    await expect(page.locator("body")).not.toContainText("nav.today");
   });
 }

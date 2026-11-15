@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { SUPPORTED_LANGUAGES, translate } from "../../src/i18n";
+import { SUPPORTED_LANGUAGES, translate } from "./i18n";
 import { seedAppState } from "./seed";
 
 // The legal pages are English only; their Settings labels and return link follow the app language.

@@ -1,6 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
-import { translate } from "../../src/i18n";
+import { translate } from "./i18n";
 import { findOverflow } from "./overflow";
 import { ROUTES } from "./routes";
 import { seedAppState } from "./seed";

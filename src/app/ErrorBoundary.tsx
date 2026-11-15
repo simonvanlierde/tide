@@ -9,8 +9,9 @@ interface ErrorBoundaryState {
 }
 
 // The stored language preference when the blob still parses, else the
-// browser's. The provider may be what crashed, so this reads storage directly.
-function crashLanguage(raw: string | null): SupportedLanguage {
+// browser's. Reads storage directly: main.tsx needs it before the provider exists,
+// and the provider may be what crashed.
+export function storedLanguage(raw: string | null): SupportedLanguage {
   try {
     const parsed: { settings?: unknown } = JSON.parse(raw ?? "");
     return resolveLanguage(normalizeSettings(parsed?.settings).language);
@@ -35,7 +36,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
       return this.props.children;
     }
     const raw = loadRawAppState();
-    const lang = crashLanguage(raw);
+    const lang = storedLanguage(raw);
     return (
       <main className="app-main" role="alert" lang={lang}>
         <article className="utility-card">
