@@ -156,14 +156,11 @@ export function DataSection({ today }: DataSectionProps) {
     return (
       <>
         {error?.group === group ? <ErrorNote text={error.text} /> : null}
-        {/* Always mounted: the slot holds the chip's height, so nothing below it jumps. */}
-        <div className="status-slot">
-          {status && statusGroup === group ? (
-            <p className="status-row" role="status">
-              <span className="status-chip">{statusText(status)}</span>
-            </p>
-          ) : null}
-        </div>
+        {status && statusGroup === group ? (
+          <p className="status-row" role="status">
+            <span className="status-chip">{statusText(status)}</span>
+          </p>
+        ) : null}
       </>
     );
   }

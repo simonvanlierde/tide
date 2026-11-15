@@ -395,8 +395,8 @@ drilling in at the end.
 
 The Settings **Data card** splits its jobs with hairlines, not extra cards: backup and
 import, then calendar export, then Delete all data. Each message appears under the action
-that caused it. Once days are logged, the privacy sentence becomes one shield line: how
-many days there are, and that they stay on this device. Export and Import carry a muted
+that caused it, taking space only when there is a message. Once days are logged, the privacy
+sentence becomes one shield line: how many days there are, and that they stay on this device. Export and Import carry a muted
 second line: the last backup date, and the apps Import reads. The calendar group is the
 Add to calendar button, its note, then its options, with no title and no hairlines between
 them. Each option leads with the calendar legend's own swatch,
