@@ -180,7 +180,7 @@ describe("shared dated day editor", () => {
     await user.click(screen.getByRole("radio", { name: "Heavy" }));
     expect(stored().intensityByDay[day]).toBe("heavy");
     expect(screen.getByRole("radio", { name: "Heavy" })).toHaveFocus();
-    await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
+    await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
     expect(stored().intensityByDay).toEqual({});
     expect(stored().detailsByDay[day].note).toBe("Keep me");
     expect(screen.getByRole("button", { name: "Log bleeding" })).toHaveFocus();
@@ -193,7 +193,7 @@ describe("shared dated day editor", () => {
     });
     expect(screen.getByRole("radio", { name: "Heavy" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Cramps" })).toBeDisabled();
-    await user.click(screen.getByRole("button", { name: "Not bleeding that day" }));
+    await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
     expect(screen.getByRole("button", { name: "Log bleeding" })).toBeDisabled();
     expect(stored().intensityByDay).toEqual({});
   });
@@ -208,7 +208,7 @@ describe("shared dated day editor", () => {
       </AppStateProvider>,
     );
     expect(screen.getByRole("radio", { name: "Heavy" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Not bleeding that day" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Remove bleeding log" })).toBeDisabled();
     fireEvent.keyDown(screen.getByRole("button", { name: "Close" }), { key: "Escape" });
     expect(close).toHaveBeenCalledOnce();
     expect(localStorage.getItem(STORAGE_KEY)).toBe(raw);

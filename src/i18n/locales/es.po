@@ -453,7 +453,7 @@ msgid "marker.predictedPeriod"
 msgstr "período previsto"
 
 msgid "calendar.notBleeding"
-msgstr "Sin sangrado ese día"
+msgstr "Quitar el sangrado"
 
 msgid "common.unknown"
 msgstr "desconocido"

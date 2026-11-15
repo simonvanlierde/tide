@@ -8,6 +8,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Typing a note no longer saves on every keystroke. It saves when you leave the field, tap
+  a symptom or mood, switch day or close the page, so nothing you typed is lost.
+- The day editor's button to undo a bleeding log reads "Remove bleeding log" in every
+  language, and no longer states the opposite of the flow you just chose.
+- The first-use card now shows the import link after the backup sentence it belongs to.
 - Today: the dial no longer shows a faint square behind it after it draws in.
 - Today: the dial's outline rails and day ticks now draw in with the ring
   instead of appearing after it.

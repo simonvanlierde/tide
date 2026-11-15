@@ -453,7 +453,7 @@ msgid "marker.predictedPeriod"
 msgstr "erwartete Periode"
 
 msgid "calendar.notBleeding"
-msgstr "Keine Blutung an diesem Tag"
+msgstr "Blutung entfernen"
 
 msgid "common.unknown"
 msgstr "unbekannt"

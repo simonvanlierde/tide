@@ -18,11 +18,11 @@ export function OnboardingCard({ onDismiss }: { onDismiss: () => void }) {
         </button>
       </div>
       <p>{t("onboarding.privacy")}</p>
+      <p>{t("onboarding.backup")}</p>
       {/* biome-ignore lint/a11y/useValidAnchor: same-app navigation retains a real import URL. */}
       <a className="onboarding__import" href="/settings#import" onClick={followAppLink}>
         {t("onboarding.import")}
       </a>
-      <p>{t("onboarding.backup")}</p>
       <details className="onboarding__fertility">
         <summary>{t("onboarding.fertilitySummary")}</summary>
         <FertilityQuestion
