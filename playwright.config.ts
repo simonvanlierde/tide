@@ -5,7 +5,8 @@ const ci = Boolean(process.env.CI);
 // Not vite preview's default 4173, so another app's preview server is never mistaken
 // for this one. --strictPort fails the run if it is taken, instead of serving on
 // another port the tests never reach.
-const url = "http://127.0.0.1:4179";
+const port = process.env.E2E_PORT ?? "4179";
+const url = `http://127.0.0.1:${port}`;
 
 export default defineConfig({
   testDir: "tests/e2e",
@@ -19,7 +20,7 @@ export default defineConfig({
   ],
   // The tests run against the production build, which is what the Cloudflare Worker serves.
   webServer: {
-    command: "pnpm build && pnpm preview --host 127.0.0.1 --port 4179 --strictPort",
+    command: `pnpm build && pnpm preview --host 127.0.0.1 --port ${port} --strictPort`,
     url,
     // Always a fresh build: a server left running may serve an older one.
     reuseExistingServer: false,
