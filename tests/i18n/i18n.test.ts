@@ -27,6 +27,15 @@ describe("i18n", () => {
     expect(translate("es", "settings.language")).toBe("Idioma");
   });
 
+  it("words the replace-import warning with an explicit subject, in the informal register", () => {
+    for (const locale of ["en", "nl", "de", "fr", "es"] as const) {
+      expect(translate(locale, "settings.importReplaces", { n: 5 })).toContain("5");
+    }
+    expect(translate("de", "settings.importReplaces", { n: 5 })).toMatch(/^Der Import ersetzt die 5 /);
+    expect(translate("de", "settings.importReplaces", { n: 1 })).toMatch(/^Der Import ersetzt den 1 /);
+    expect(translate("de", "settings.importIrreversible")).toBe("Das lässt sich nicht rückgängig machen.");
+  });
+
   it("renders ICU plurals with each locale's rules", () => {
     expect(translate("fr", "today.periodInDays", { n: 1.5 })).toBe("Règles dans 1.5 jour");
     expect(translate("en", "today.periodInDays", { n: 1.5 })).toBe("Period in 1.5 days");

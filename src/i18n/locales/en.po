@@ -110,9 +110,6 @@ msgstr "Okay"
 msgid "diary.mood.good"
 msgstr "Good"
 
-msgid "settings.importReplacesDetails"
-msgstr "Your current period history and daily details will be replaced."
-
 msgid "nav.today"
 msgstr "Today"
 
@@ -618,7 +615,10 @@ msgid "settings.importFileDays"
 msgstr "{n, plural, one {This file holds {n} logged day.} other {This file holds {n} logged days.}}"
 
 msgid "settings.importReplaces"
-msgstr "{n, plural, one {It replaces the {n} day logged on this device, and cannot be undone.} other {It replaces the {n} days logged on this device, and cannot be undone.}}"
+msgstr "{n, plural, =0 {Importing replaces the daily details and notes on this device.} one {Importing replaces the {n} day logged on this device, with its details and notes.} other {Importing replaces the {n} days logged on this device, with their details and notes.}}"
+
+msgid "settings.importIrreversible"
+msgstr "This cannot be undone."
 
 msgid "settings.importMergeTitle"
 msgstr "Add days from {source}?"
@@ -634,9 +634,6 @@ msgstr "Delete all data"
 
 msgid "settings.resetTitle"
 msgstr "Delete all data?"
-
-msgid "settings.resetAction"
-msgstr "Delete"
 
 msgid "settings.resetConfirm"
 msgstr "All data and settings on this device are erased. This cannot be undone."

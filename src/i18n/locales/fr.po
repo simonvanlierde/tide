@@ -110,9 +110,6 @@ msgstr "Ça va"
 msgid "diary.mood.good"
 msgstr "Bonne"
 
-msgid "settings.importReplacesDetails"
-msgstr "Ton historique de règles et tes détails quotidiens actuels seront remplacés."
-
 msgid "nav.today"
 msgstr "Aujourd’hui"
 
@@ -618,7 +615,10 @@ msgid "settings.importFileDays"
 msgstr "{n, plural, one {Ce fichier contient {n} jour enregistré.} other {Ce fichier contient {n} jours enregistrés.}}"
 
 msgid "settings.importReplaces"
-msgstr "{n, plural, one {Il remplace le {n} jour enregistré sur cet appareil, sans retour possible.} other {Il remplace les {n} jours enregistrés sur cet appareil, sans retour possible.}}"
+msgstr "{n, plural, =0 {L''importation remplace les détails quotidiens et les notes de cet appareil.} one {L''importation remplace le {n} jour enregistré sur cet appareil, avec ses détails et ses notes.} other {L''importation remplace les {n} jours enregistrés sur cet appareil, avec leurs détails et leurs notes.}}"
+
+msgid "settings.importIrreversible"
+msgstr "Cette action est irréversible."
 
 msgid "settings.importMergeTitle"
 msgstr "Ajouter les jours de {source} ?"
@@ -634,9 +634,6 @@ msgstr "Supprimer toutes les données"
 
 msgid "settings.resetTitle"
 msgstr "Supprimer toutes les données ?"
-
-msgid "settings.resetAction"
-msgstr "Supprimer"
 
 msgid "settings.resetConfirm"
 msgstr "Toutes les données et tous les réglages sur cet appareil sont effacés. Cette action est irréversible."

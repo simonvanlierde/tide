@@ -14,7 +14,7 @@ const VIEWPORT_MARGIN = 8;
 
 // A small "i" affordance that reveals helper text on tap or keyboard focus.
 // Native <details> gives the toggle and keyboard support; the rest is added
-// here: tap-outside-to-dismiss, and nudging the panel back into view (shift
+// here: tap-outside-to-dismiss, close on focus leaving, and nudging the panel back into view (shift
 // horizontally, flip above the trigger) when it would spill off-screen.
 export function InfoPopover({ label, align = "end", children }: InfoPopoverProps) {
   const detailsRef = useRef<HTMLDetailsElement>(null);
@@ -73,6 +73,10 @@ export function InfoPopover({ label, align = "end", children }: InfoPopoverProps
       ref={detailsRef}
       className={align === "start" ? "info-popover info-popover--start" : "info-popover"}
       onToggle={reposition}
+      onBlur={(event) => {
+        // Tabbing past the panel would leave it open over the next control.
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) event.currentTarget.open = false;
+      }}
       onKeyDown={(event) => {
         const details = detailsRef.current;
         if (event.key === "Escape" && details?.open) {

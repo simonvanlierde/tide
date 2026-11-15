@@ -110,9 +110,6 @@ msgstr "Normal"
 msgid "diary.mood.good"
 msgstr "Bueno"
 
-msgid "settings.importReplacesDetails"
-msgstr "Se reemplazarán tu historial de menstruación y tus detalles diarios actuales."
-
 msgid "nav.today"
 msgstr "Hoy"
 
@@ -618,7 +615,10 @@ msgid "settings.importFileDays"
 msgstr "{n, plural, one {Este archivo contiene {n} día registrado.} other {Este archivo contiene {n} días registrados.}}"
 
 msgid "settings.importReplaces"
-msgstr "{n, plural, one {Reemplaza el {n} día registrado en este dispositivo y no se puede deshacer.} other {Reemplaza los {n} días registrados en este dispositivo y no se puede deshacer.}}"
+msgstr "{n, plural, =0 {La importación reemplaza los detalles diarios y las notas de este dispositivo.} one {La importación reemplaza el {n} día registrado en este dispositivo, con sus detalles y notas.} other {La importación reemplaza los {n} días registrados en este dispositivo, con sus detalles y notas.}}"
+
+msgid "settings.importIrreversible"
+msgstr "Esto no se puede deshacer."
 
 msgid "settings.importMergeTitle"
 msgstr "¿Añadir los días de {source}?"
@@ -634,9 +634,6 @@ msgstr "Borrar todos los datos"
 
 msgid "settings.resetTitle"
 msgstr "¿Eliminar todos los datos?"
-
-msgid "settings.resetAction"
-msgstr "Eliminar"
 
 msgid "settings.resetConfirm"
 msgstr "Se borran todos los datos y ajustes de este dispositivo. Esta acción no se puede deshacer."

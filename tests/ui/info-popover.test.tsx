@@ -26,6 +26,29 @@ describe("InfoPopover", () => {
     expect(details.open).toBe(false);
   });
 
+  it("closes when focus moves out of the popover, and stays open while it moves inside", async () => {
+    const user = userEvent.setup();
+    render(
+      <>
+        <InfoPopover label="More info">
+          <p>Details here</p>
+          <a href="#inside">Inside</a>
+        </InfoPopover>
+        <button type="button">Next control</button>
+      </>,
+    );
+    const details = screen.getByText("Details here").closest("details") as HTMLDetailsElement;
+
+    await user.click(screen.getByLabelText("More info"));
+    await user.tab();
+    expect(screen.getByRole("link", { name: "Inside" })).toHaveFocus();
+    expect(details.open).toBe(true);
+
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Next control" })).toHaveFocus();
+    expect(details.open).toBe(false);
+  });
+
   it("flips above the trigger when it would overflow the bottom edge", async () => {
     const user = userEvent.setup();
     Object.defineProperty(window, "innerHeight", {
