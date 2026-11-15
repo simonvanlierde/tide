@@ -744,7 +744,13 @@
   }
 
   .link-rows .fact-list__more {
+    align-items: flex-start;
     text-decoration: none;
+  }
+
+  /* Level with the title line, not the middle of title plus "In English". */
+  .link-rows .fact-list__more-icon {
+    margin-block-start: calc((1lh - 18px) / 2);
   }
 
   .link-rows__text {

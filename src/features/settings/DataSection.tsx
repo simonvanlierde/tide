@@ -156,11 +156,14 @@ export function DataSection({ today }: DataSectionProps) {
     return (
       <>
         {error?.group === group ? <ErrorNote text={error.text} /> : null}
-        {status && statusGroup === group ? (
-          <p className="status-row" role="status">
-            <span className="status-chip">{statusText(status)}</span>
-          </p>
-        ) : null}
+        {/* Always mounted: the slot holds the chip's height, so nothing below it jumps. */}
+        <div className="status-slot">
+          {status && statusGroup === group ? (
+            <p className="status-row" role="status">
+              <span className="status-chip">{statusText(status)}</span>
+            </p>
+          ) : null}
+        </div>
       </>
     );
   }
@@ -202,7 +205,7 @@ export function DataSection({ today }: DataSectionProps) {
   // When the last backup was, on the button that makes one. Nothing to back up
   // yet means nothing to remind about.
   const backupHint = !hasHistory
-    ? null
+    ? t("settings.exportEmpty")
     : lastBackupOn
       ? t("settings.lastBackup", { date: formatMonthDay(lastBackupOn, locale) })
       : t("settings.noBackup");
@@ -230,7 +233,8 @@ export function DataSection({ today }: DataSectionProps) {
             <button
               type="button"
               className="secondary-action secondary-action--hinted"
-              aria-describedby={backupHint ? "export-hint" : undefined}
+              disabled={!hasHistory}
+              aria-describedby="export-hint"
               onClick={handleExport}
             >
               <span className="button-label">
@@ -238,11 +242,9 @@ export function DataSection({ today }: DataSectionProps) {
                 <span>{t("settings.export")}</span>
               </span>
               {/* Hidden from the name, so it matches the visible label; read as the description. */}
-              {backupHint ? (
-                <span id="export-hint" className="button-hint" aria-hidden="true">
-                  {backupHint}
-                </span>
-              ) : null}
+              <span id="export-hint" className="button-hint" aria-hidden="true">
+                {backupHint}
+              </span>
             </button>
             <button
               id="import"

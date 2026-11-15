@@ -11,6 +11,13 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Correcting a period's start date by a few days no longer starts a new calendar link, so the
   next calendar export moves the old event instead of adding a second one.
 - Past ovulation estimates for a very short cycle no longer fall before that cycle began.
+- Settings: saving a backup or a calendar file no longer moves the buttons below the
+  confirmation message.
+- Settings: Export is greyed out, with "Nothing to export yet" under it, until you have
+  logged something.
+- Settings: the calendar button fits on one line at 320 px in German and Dutch ("Zum
+  Kalender", "Naar agenda").
+- Settings: the arrow on the About rows sits level with the page name.
 - Typing a note no longer saves on every keystroke. It saves when you leave the field, tap
   a symptom or mood, switch day or close the page, so nothing you typed is lost.
 - The day editor's button to undo a bleeding log reads "Remove bleeding log" in every
