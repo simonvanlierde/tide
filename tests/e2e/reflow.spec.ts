@@ -1,4 +1,5 @@
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+import { findOverflow } from "./overflow";
 import { ROUTES } from "./routes";
 import { seedAppState } from "./seed";
 
@@ -45,3 +46,43 @@ for (const path of ROUTES) {
     expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
   });
 }
+
+// WCAG 1.4.10 Reflow also names 400% zoom, which a 1280 x 1024 window reaches as
+// 320 x 256 CSS px. The overlays are the tallest, widest content a route can hold.
+test.describe("400% zoom (320 x 256 px)", () => {
+  test.use({ viewport: { width: 320, height: 256 } });
+
+  async function expectNoSidewaysScroll(page: Page) {
+    const { scrollWidth, innerWidth } = await page.evaluate(() => ({
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth: window.innerWidth,
+    }));
+    expect(scrollWidth).toBeLessThanOrEqual(innerWidth);
+    expect(await findOverflow(page)).toEqual([]);
+  }
+
+  for (const path of ROUTES) {
+    test(`${path} reflows without sideways scrolling`, async ({ page }) => {
+      await seedAppState(page, "en");
+      await page.goto(path);
+      await expect(page.getByRole("main")).toBeVisible();
+      await expectNoSidewaysScroll(page);
+
+      // Each overlay a route offers: the day editor on Today and Calendar, the
+      // confirmation dialog on Settings.
+      if (path === "/") {
+        await page.getByRole("button", { name: /Logged today/ }).click();
+        await expect(page.locator(".day-editor")).toBeVisible();
+      } else if (path === "/calendar") {
+        await page.locator(".calendar-grid__day.is-logged").first().click();
+        await expect(page.locator(".day-editor")).toBeVisible();
+      } else if (path === "/settings") {
+        await page.getByRole("button", { name: "Delete all data" }).click();
+        await expect(page.getByRole("dialog")).toBeVisible();
+      } else {
+        return;
+      }
+      await expectNoSidewaysScroll(page);
+    });
+  }
+});

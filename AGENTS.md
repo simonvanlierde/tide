@@ -5,8 +5,9 @@ Notes for coding agents working on tide. The `justfile` holds every command;
 
 ## Check
 
-Run `just check` before you call a change done. It runs what CI runs for each stack.
-`just fmt` fixes what it can first.
+Run `just check` and `just ts-e2e` before you call a change done. `just check` covers lint, types,
+unit tests, build, bundle budget and audit. CI also runs the e2e tests (accessibility, CSP, reflow,
+PWA) and the git hooks (`just hooks`). `just fmt` fixes what it can first.
 
 ## Test
 

@@ -63,8 +63,8 @@ Range logging reconciles the history once, however many days it adds; a test che
 Tests have no timing thresholds, so a busy CI runner can't fail them.
 
 Looking up past fertile windows still scans later windows, so old months cost more. On a
-twenty-year history the oldest month took about 7 ms, against 0.064 ms for the current month.
-A binary search is the next step if browser profiling shows this matters.
+twenty-year history the oldest month costs more than the current one; `pnpm benchmark`
+doesn't measure it. A binary search is the next step if browser profiling shows this matters.
 
 The predictor stays internal. The app, the tests and the backtest already share one
 implementation, and no other project needs it as a package.
