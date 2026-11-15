@@ -5,6 +5,9 @@ import { translate } from "./i18n";
 import { findOverflow } from "./overflow";
 import { seedAppState } from "./seed";
 
+test.describe.configure({ mode: "parallel" });
+test.use({ reducedMotion: "reduce" });
+
 // Widths we commit to supporting, plus one short-height case for the fixed tab
 // bar. 320x568 is the hard floor (iPhone SE 1st gen); 280 is the foldable
 // cover-screen edge; 360/390 are the common Android/iPhone widths; 430 is the
@@ -223,7 +226,11 @@ function splitWordParts(page: Page, selector: string) {
 for (const size of SIZES) {
   for (const language of LANGUAGES) {
     test.describe(`${size.name} ${language} overflow`, () => {
-      test.use({ viewport: { width: size.width, height: size.height } });
+      test.use({
+        viewport: { width: size.width, height: size.height },
+        // Keep every screen covered with motion at a narrow width and a long-label language.
+        reducedMotion: size.width === 320 && language === "de" ? "no-preference" : "reduce",
+      });
 
       // The document can fit while a word spills out of its own box: a flow
       // label running into its neighbour, or a clipped button.
