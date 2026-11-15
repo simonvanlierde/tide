@@ -1,6 +1,6 @@
 import { act, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
 import { STORAGE_KEY } from "../../src/data/storage";
 import { MAX_NOTE_LENGTH } from "../../src/domain/diary";
@@ -35,6 +35,7 @@ describe("optional daily details", () => {
     await user.click(screen.getByRole("button", { name: "Add details" }));
     expect(screen.getByRole("heading", { name: "April 19, 2026" })).toBeInTheDocument();
     await user.type(screen.getByRole("textbox", { name: /note/i }), "A new day.");
+    await user.tab();
     expect(Object.keys(stored().detailsByDay)).toEqual(["2026-04-19"]);
   });
 
@@ -51,6 +52,7 @@ describe("optional daily details", () => {
     await user.click(screen.getByRole("button", { name: "Cramps" }));
     await user.click(screen.getByRole("button", { name: "Low" }));
     await user.type(screen.getByRole("textbox", { name: /note/i }), "Rest helped.");
+    await user.tab();
 
     expect(screen.getByRole("button", { name: "Cramps" })).toHaveAttribute("aria-pressed", "true");
     expect(stored().detailsByDay["2026-04-18"]).toEqual({
@@ -132,6 +134,48 @@ describe("optional daily details", () => {
     expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("Other tab");
   });
 
+  it("writes a typed note once on blur, not on every keystroke", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    const writes = vi.spyOn(Storage.prototype, "setItem");
+    const note = screen.getByRole("textbox", { name: /note/i });
+    await user.type(note, "Rest helped.");
+    expect(note).toHaveValue("Rest helped.");
+    expect(note).toHaveAccessibleDescription("12 / 1,000");
+    expect(writes).not.toHaveBeenCalled();
+    await user.tab();
+    expect(writes).toHaveBeenCalledTimes(1);
+    expect(stored().detailsByDay["2026-04-18"].note).toBe("Rest helped.");
+    writes.mockRestore();
+  });
+
+  it("keeps a typed note when the page hides or the day changes before a blur", async () => {
+    const user = userEvent.setup();
+    const state = createAppState();
+    const editor = (day: "2026-04-17" | "2026-04-18") => (
+      <AppStateProvider initialState={state}>
+        <DayEditor day={day} today="2026-04-18" initialSection="details" onClose={() => {}} />
+      </AppStateProvider>
+    );
+    const view = render(editor("2026-04-18"));
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "Hidden");
+    act(() => window.dispatchEvent(new Event("pagehide")));
+    expect(stored().detailsByDay["2026-04-18"].note).toBe("Hidden");
+    await user.type(screen.getByRole("textbox", { name: /note/i }), " tab");
+    view.rerender(editor("2026-04-17"));
+    expect(stored().detailsByDay["2026-04-18"].note).toBe("Hidden tab");
+  });
+
+  it("keeps a typed note when a chip is tapped", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<TodayScreen today="2026-04-18" />, { state: createAppState() });
+    await user.click(screen.getByRole("button", { name: "Add details" }));
+    await user.type(screen.getByRole("textbox", { name: /note/i }), "Sore");
+    await user.click(screen.getByRole("button", { name: "Cramps" }));
+    expect(stored().detailsByDay["2026-04-18"]).toEqual({ symptoms: ["cramps"], mood: null, note: "Sore" });
+  });
+
   it("drops a pending Undo when the day changes under an open panel", async () => {
     const user = userEvent.setup();
     const state = {
@@ -188,6 +232,7 @@ describe("optional daily details", () => {
     expect(screen.getByRole("heading", { name: "April 12, 2026" })).toBeInTheDocument();
     expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
     await user.type(screen.getByRole("textbox", { name: /note/i }), "A walk helped.");
+    await user.tab();
     expect(stored().intensityByDay).toEqual({});
     expect(stored().detailsByDay).toEqual({
       "2026-04-12": { symptoms: null, mood: null, note: "A walk helped." },
@@ -214,6 +259,7 @@ describe("optional daily details", () => {
     expect(within(second).getByRole("status")).toBeEmptyDOMElement();
     expect(within(second).getByRole("button", { name: "Cramps" })).toHaveAttribute("aria-pressed", "false");
     await user.type(within(second).getByRole("textbox", { name: /note/i }), "Different day");
+    await user.tab();
     expect(stored().detailsByDay["2026-04-12"].symptoms).toEqual(["cramps"]);
     expect(stored().detailsByDay["2026-04-13"].note).toBe("Different day");
   });

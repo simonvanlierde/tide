@@ -1,5 +1,6 @@
 import { Check, Cloud, CloudRain, NotebookPen, Sun } from "lucide-react";
 import { type Ref, useEffect, useId, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { type DailyDetails as Details, MAX_NOTE_LENGTH, MOODS, SYMPTOMS } from "../../domain/diary";
 import type { IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useIsReadOnly, useT } from "../../state/provider";
@@ -44,14 +45,22 @@ export function DetailsButton({
   );
 }
 
-/** Every tap saves; Undo never overwrites newer details from another tab. */
+/**
+ * Every tap saves; Undo never overwrites newer details from another tab. A note being typed
+ * stays a local draft and is saved on blur, on a chip tap, when the page hides and on unmount,
+ * so a keystroke does not rewrite the whole stored state.
+ */
 export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
   const state = useAppState();
   const actions = useAppStateActions();
   const readOnly = useIsReadOnly();
   const t = useT();
   const id = useId();
-  const value = state.detailsByDay[day] ?? EMPTY;
+  const stored = state.detailsByDay[day] ?? EMPTY;
+  const [draft, setDraft] = useState<{ base: string; text: string } | null>(null);
+  // A draft whose base moved on was overtaken by another tab: show that tab's note.
+  const pending = draft && draft.base === stored.note ? draft.text : null;
+  const value = pending === null ? stored : { ...stored, note: pending };
   const [status, setStatus] = useState<"saved" | { cleared: Details } | null>(null);
   const editable = !readOnly && day <= today;
   // Undo restores the cleared snapshot, so it only stands while the day is still
@@ -72,8 +81,26 @@ export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
   function save(next: Details) {
     if (!editable) return;
     actions.setDayDetails(day, next, today);
+    setDraft(null);
     setStatus("saved");
   }
+
+  // Flush paths run outside render, so they read the latest values through a ref.
+  const flush = useRef(() => {});
+  flush.current = () => {
+    if (pending !== null && editable) actions.setDayDetails(day, value, today);
+  };
+  useEffect(() => {
+    // flushSync makes the provider's persist effect run before the page goes away.
+    const onHide = () => flushSync(() => flush.current());
+    window.addEventListener("pagehide", onHide);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("pagehide", onHide);
+      document.removeEventListener("visibilitychange", onHide);
+      flush.current();
+    };
+  }, []);
 
   const symptoms = value.symptoms ?? [];
 
@@ -128,7 +155,8 @@ export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
           value={value.note}
           disabled={!editable}
           aria-describedby={`${id}-note-help`}
-          onChange={(event) => save({ ...value, note: event.target.value })}
+          onChange={(event) => setDraft({ base: stored.note, text: event.target.value })}
+          onBlur={() => pending !== null && save(value)}
         />
       </label>
       <div className="diary-form__footer">
@@ -167,6 +195,7 @@ export function DiaryFields({ day, today }: { day: IsoDate; today: IsoDate }) {
               onClick={() => {
                 const cleared = value;
                 actions.setDayDetails(day, EMPTY, today);
+                setDraft(null);
                 setStatus({ cleared });
                 setRefocus("undo");
               }}

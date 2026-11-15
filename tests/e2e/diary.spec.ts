@@ -14,6 +14,7 @@ test("Calendar selection keeps bleeding and details on the same day", async ({ p
   await page.getByText(translate("en", "dayEditor.moreDetails"), { exact: true }).click();
   const note = page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true });
   await note.fill("A quiet day.");
+  await note.blur();
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
 
   await page.getByRole("button", { name: /^April 12, 2026/ }).click();
@@ -45,6 +46,7 @@ test("Calendar opens saved note icons and logs bleeding only through the dated e
   await page.getByText(translate("en", "dayEditor.moreDetails"), { exact: true }).click();
   const note = page.getByRole("textbox", { name: translate("en", "diary.note"), exact: true });
   await note.fill("A quiet afternoon.");
+  await note.blur();
   await expect(page.getByText(translate("en", "diary.saved"), { exact: true })).toBeVisible();
   expect(
     await page.evaluate(() => {

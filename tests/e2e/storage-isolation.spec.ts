@@ -44,6 +44,7 @@ test("an older tab cannot strip diary entries or start a storage feedback loop",
   await page.getByRole("button", { name: /^April 12, 2026/ }).click();
   await page.getByText("More details", { exact: true }).click();
   await page.getByRole("textbox", { name: "Note (optional)", exact: true }).fill("Keep this diary entry.");
+  await page.keyboard.press("Tab");
   await expect(page.getByText("Details saved.", { exact: true })).toBeVisible();
   const current = await page.evaluate((key) => localStorage.getItem(key), STORAGE_KEY);
   expect(JSON.parse(current ?? "{}").detailsByDay["2026-04-12"].note).toBe("Keep this diary entry.");
