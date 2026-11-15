@@ -200,14 +200,14 @@ describe("optional daily details", () => {
     renderWithAppState(<CalendarScreen today="2026-04-18" />, {
       state: createAppState({ periodDays: ["2026-04-12", "2026-04-13"] }),
     });
-    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026/ }));
+    await user.click(screen.getByRole("button", { name: /^April 12, 2026/ }));
     await user.click(screen.getByText("More details", { selector: "summary" }));
     await user.click(screen.getByRole("button", { name: "Cramps" }));
     const first = screen.getByRole("region", { name: "April 12, 2026" });
     expect(within(first).getByRole("status")).toHaveTextContent("Details saved.");
     expect(screen.queryByLabelText("Date")).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: /^Edit April 13, 2026/ }));
+    await user.click(screen.getByRole("button", { name: /^April 13, 2026/ }));
     expect(screen.getByText("More details", { selector: "summary" }).closest("details")).toHaveAttribute("open");
     expect(screen.queryByRole("region", { name: "April 12, 2026" })).not.toBeInTheDocument();
     const second = screen.getByRole("region", { name: "April 13, 2026" });
@@ -276,7 +276,7 @@ describe("optional daily details", () => {
       },
     };
     renderWithAppState(<CalendarScreen today="2026-04-18" />, { state });
-    await user.click(screen.getByRole("button", { name: /^Edit April 12, 2026/i }));
+    await user.click(screen.getByRole("button", { name: /^April 12, 2026/i }));
     expect(screen.getByRole("textbox", { name: /note/i })).toHaveValue("A walk helped.");
     expect(screen.getByRole("button", { name: "Good" })).toHaveAttribute("aria-pressed", "true");
     expect(stored().intensityByDay).toEqual({});

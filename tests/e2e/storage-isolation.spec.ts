@@ -41,7 +41,7 @@ test("an older tab cannot strip diary entries or start a storage feedback loop",
   }, LEGACY_STORAGE_KEY);
 
   await page.goto("/calendar");
-  await page.getByRole("button", { name: /^Edit April 12, 2026/ }).click();
+  await page.getByRole("button", { name: /^April 12, 2026/ }).click();
   await page.getByText("More details", { exact: true }).click();
   await page.getByRole("textbox", { name: "Note (optional)", exact: true }).fill("Keep this diary entry.");
   await expect(page.getByText("Details saved.", { exact: true })).toBeVisible();

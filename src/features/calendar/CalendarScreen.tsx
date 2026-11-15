@@ -194,7 +194,7 @@ export function CalendarScreen(props: CalendarScreenProps) {
   }
 
   return (
-    <section className="utility-screen">
+    <section className="utility-screen calendar-screen">
       <h1 className="visually-hidden">{t("calendar.title")}</h1>
       {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: PageUp/PageDown month paging is a keyboard convenience layered over the buttons below; the calendar stays fully operable via those focusable controls. */}
       <article ref={articleRef} className="utility-card calendar" onKeyDown={handleKeyDown}>

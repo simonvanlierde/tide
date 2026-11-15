@@ -11,6 +11,14 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Today: the dial no longer shows a faint square behind it after it draws in.
 - Today: the dial's outline rails and day ticks now draw in with the ring
   instead of appearing after it.
+- Calendar days are 44 px wide to tap on phones down to 320 px, up from 32 and 40.
+- Calendar days ahead are no longer faded: they use a readable colour of their own, apart
+  from the days of neighbouring months.
+- "Log a past period" stays on one line on narrow phones in every language.
+- The cycle-day key in the Calendar legend is outlined, so it no longer reads as part of
+  "Ovulation".
+- Screen readers read a Calendar day as its date, with the cycle day in each language's own
+  word order, instead of "Edit" plus the date.
 
 ## [0.5.0] - 2026-11-12
 

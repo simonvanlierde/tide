@@ -563,7 +563,7 @@
     justify-content: center;
     gap: 8px;
     min-height: 44px;
-    padding: 0 16px;
+    padding: 0 12px;
     border: 1px solid var(--surface-border);
     border-radius: var(--radius-button);
     background: var(--surface);
@@ -620,7 +620,7 @@
   .calendar-legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px 8px;
+    gap: 4px 12px;
     padding-inline: 2px;
   }
 
@@ -639,12 +639,17 @@
     border-radius: var(--radius-swatch);
   }
 
-  /* The cycle-day key is a digit, drawn like the count in a day's corner. */
+  /* The cycle-day key is a digit, drawn like the count in a day's corner. The
+     outline keeps it from reading as the end of the label before it. */
   .calendar-legend__count {
-    width: 12px;
+    display: grid;
+    place-items: center;
+    width: 16px;
+    height: 16px;
     flex: 0 0 auto;
+    border: 1px solid currentColor;
+    border-radius: var(--radius-swatch);
     line-height: 1;
-    text-align: center;
     font-variant-numeric: tabular-nums;
   }
 
@@ -673,11 +678,26 @@
     display: none;
   }
 
-  /* Narrow shells: tighter gaps and card padding buy the day cells width.
-     Seven 44px targets never fit in 320px; this gets them to ~34px with the
-     full 46px height, and the weekday label stays above the 11px floor. */
+  /* Narrow shells: the card runs nearly edge to edge and its grid fills it, so
+     seven columns are 44px or more wide down to 320px. The drawn cell is
+     narrower by the column gap; its hit area covers the gap. */
   @container (max-width: 400px) {
+    /* The screen takes the negative margin, not the card: a child pulled out of
+       its parent would count as overflow. */
+    .calendar-screen {
+      margin-inline: -17px;
+    }
+
+    .calendar.utility-card {
+      padding-inline: 0;
+    }
+
+    .calendar > :not(.calendar-swipe, .day-editor) {
+      margin-inline: 16px;
+    }
+
     .calendar-grid {
+      --calendar-gap: 5px;
       gap: 6px;
     }
 
@@ -695,12 +715,6 @@
 
     .calendar-grid__weekday-narrow {
       display: inline;
-    }
-  }
-
-  @container (max-width: 350px) {
-    .calendar.utility-card {
-      padding-inline: 12px;
     }
   }
 
