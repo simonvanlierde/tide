@@ -25,9 +25,14 @@ case "$1" in
 esac
 GIT
 chmod +x "$scratch/bin/git"
+# tag-release.sh runs verify-tag.sh from its own folder; a stub there stands in for the signature check.
+mkdir "$scratch/scripts"
+cp "$script_dir/tag-release.sh" "$scratch/scripts/tag-release.sh"
+printf '#!/usr/bin/env bash\nexit 0\n' >"$scratch/scripts/verify-tag.sh"
+chmod +x "$scratch/scripts/verify-tag.sh"
 
 if env -i PATH="$scratch/bin:$PATH" TEST_MANIFEST_VERSION=0.4.0 TEST_ACTIONS="$scratch/actions" \
-  bash "$script_dir/tag-release.sh" 0.5.0 >"$scratch/output" 2>&1; then
+  bash "$scratch/scripts/tag-release.sh" 0.5.0 >"$scratch/output" 2>&1; then
   echo 'FAIL: a mismatched manifest was accepted' >&2
   exit 1
 fi
@@ -38,7 +43,7 @@ grep -F 'package.json on origin/main has version 0.4.0, expected 0.5.0' "$scratc
 }
 
 env -i PATH="$scratch/bin:$PATH" TEST_MANIFEST_VERSION=0.5.0 TEST_ACTIONS="$scratch/actions" \
-  bash "$script_dir/tag-release.sh" 0.5.0
+  bash "$scratch/scripts/tag-release.sh" 0.5.0
 printf 'tag\npush\n' >"$scratch/expected"
 cmp "$scratch/expected" "$scratch/actions"
 echo 'PASS: manifest mismatch stops before tagging; a matching version reaches tag and push'
