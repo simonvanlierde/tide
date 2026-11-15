@@ -54,6 +54,7 @@ stratum. These cases are correlated; they are not 1,440 independent people.
 ## Results
 
 Run on 2026-11-12 against main at `f8483df`. Two complete JSON outputs were byte-identical.
+The metrics hash above still reproduces on main as of 2026-11-15.
 The command took about 0.32 seconds on the development machine, including module loading;
 this is not a phone-runtime benchmark.
 

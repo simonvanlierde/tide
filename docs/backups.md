@@ -55,10 +55,10 @@ Exporting records a backup date on the exporting device, outside the downloaded 
 [`src/data/transfer.ts`](../src/data/transfer.ts) defines the backup writer and restore boundary.
 [`src/data/schema.ts`](../src/data/schema.ts) defines normalization and migrations.
 The UI rejects files larger than 5,000,000 bytes before reading them.
-Invalid JSON, a missing logged-days field, a newer numeric schema version or malformed diary data fails before replacement.
+Invalid JSON, a missing or malformed logged-days field (not a map, or a flow value that is not `null` or a known level), a newer numeric schema version or malformed diary data fails before replacement.
 The current data stays unchanged when parsing fails or you cancel confirmation.
 
-Not every malformed value rejects the whole file: normalization drops invalid flow/date entries and defaults invalid settings.
+Not every malformed value rejects the whole file: normalization drops entries with an invalid date and defaults invalid settings.
 Restore also removes future bleeding and diary dates. Review the restored result before deleting your original backup.
 Unknown fields do not round-trip through this build.
 

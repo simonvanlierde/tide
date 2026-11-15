@@ -7,12 +7,12 @@ The [README](../README.md#development) installs the tools and starts the app.
 
 | Command | What it does |
 | --- | --- |
-| `just check` | The CI gate: Biome and knip, types, tests, build, bundle budget and dependency audit |
+| `just check` | Biome and knip, types, tests, build, bundle budget and dependency audit. CI also runs `just ts-e2e` and the hooks |
 | `just fmt` | Apply Biome's fixes and formatting |
-| `just hooks` | Every git hook over the whole repo, as CI runs them |
+| `just hooks` | Every git hook over the whole repo. It runs hooks the checks workflow skips, so it can fail where that workflow passes |
 | `just ts-cov` | Tests with coverage and its thresholds |
 | `just ts-e2e` | Playwright tests against the production build: flows, accessibility, CSP and layout |
-| `just ts-shots` | Screenshots of every route at several widths and in both themes, into `shots/` |
+| `just ts-shots` | Screenshots of every route at 390 and 1440 px, in both themes, into `shots/` |
 | `just repo-settings` | Apply the rulesets, environments and repo settings (maintainers) |
 | `pnpm build` | Production build to `dist/` |
 | `pnpm benchmark` | Time the cycle model on long histories ([results](performance.md)) |
@@ -36,10 +36,10 @@ Copier template (`.copier-answers.yml`). `copier update` brings in its CI and to
 ## Accessibility checks
 
 - Biome's `a11y` rules (`biome.json`) run in `just check`.
-- `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) on `/`, `/calendar`
-  and `/settings`, in both themes and with overlays open. It checks WCAG 2.0, 2.1 and 2.2 A and AA
+- `tests/e2e/a11y.spec.ts` runs [axe-core](https://github.com/dequelabs/axe-core) on every route in `tests/e2e/routes.ts`
+  (Today, Calendar, Settings, Accessibility and Privacy), in both themes and with overlays open. It checks WCAG 2.0, 2.1 and 2.2 A and AA
   plus axe's best-practice rules, and fails on any violation.
-- `tests/e2e/reflow.spec.ts` checks that no route scrolls sideways at 320 px.
+- `tests/e2e/reflow.spec.ts` checks that no route scrolls sideways at 320 px, and at 320 × 256 px (400% zoom), with the day editor or a confirmation dialog open where a route has one.
 
 The [self-assessment](accessibility-assessment.md) covers what these checks can't.
 

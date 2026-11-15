@@ -1,7 +1,7 @@
 import fc from "fast-check";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SCHEMA_VERSION } from "../../src/data/schema";
-import { downloadAppState, parseImportedState } from "../../src/data/transfer";
+import { downloadAppState, keepDeviceSettings, parseImportedState } from "../../src/data/transfer";
 import { MOODS, SYMPTOMS } from "../../src/domain/diary";
 import { FLOW_INTENSITIES } from "../../src/domain/flow";
 import type { AppState, LanguagePreference, LoggedFlow, ThemePreference } from "../../src/domain/types";
@@ -111,7 +111,7 @@ describe("parseImportedState", () => {
   it("drops malformed fields instead of corrupting state", () => {
     const parsed = parseImportedState(
       JSON.stringify({
-        days: { nope: "heavy", "2026-04-02": 5 },
+        days: { nope: "heavy" },
         settings: "bad",
       }),
     );
@@ -217,5 +217,45 @@ describe("backup round-trip property", () => {
         });
       }),
     );
+  });
+});
+
+describe("parseImportedState validation and calendar identity", () => {
+  it.each([
+    ["null", "null"],
+    ["an array", '["2026-01-01"]'],
+    ["a string", '"2026-01-01"'],
+    ["a bad flow value", '{"2026-01-01":"HEAVY"}'],
+    ["a number", "3"],
+  ])("rejects days that are %s", (_name, days) => {
+    expect(() => parseImportedState(`{"days":${days}}`, "2026-06-01")).toThrow();
+  });
+
+  it("rejects a bad intensityByDay map", () => {
+    expect(() => parseImportedState('{"intensityByDay":null}', "2026-06-01")).toThrow();
+  });
+
+  it("keeps the calendar identity when the file has a future-dated day", () => {
+    const text = JSON.stringify({
+      days: { "2026-01-01": "medium", "2026-01-29": "medium", "2027-03-01": "medium" },
+      settings: { calendarId: "7f0c6b0e-3f0e-4a2e-9a55-0d3a5f5d1a11" },
+    });
+    expect(parseImportedState(text, "2026-06-01").settings.calendarId).toBe("7f0c6b0e-3f0e-4a2e-9a55-0d3a5f5d1a11");
+  });
+});
+
+describe("keepDeviceSettings", () => {
+  it("keeps this device's calendar identity when the backup has none", () => {
+    const current = createAppState({ settings: { calendarId: "device-id", lastBackupOn: "2026-05-01" } });
+    const next = createAppState({ settings: { calendarId: null, lastBackupOn: null } });
+    const result = keepDeviceSettings(current, next);
+    expect(result.settings.calendarId).toBe("device-id");
+    expect(result.settings.lastBackupOn).toBe("2026-05-01");
+  });
+
+  it("takes the backup's calendar identity when it has one", () => {
+    const current = createAppState({ settings: { calendarId: "device-id" } });
+    const next = createAppState({ settings: { calendarId: "file-id" } });
+    expect(keepDeviceSettings(current, next).settings.calendarId).toBe("file-id");
   });
 });
