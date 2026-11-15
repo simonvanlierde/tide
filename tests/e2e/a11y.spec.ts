@@ -98,3 +98,18 @@ for (const colorScheme of ["light", "dark"] as const) {
     }
   });
 }
+
+// The arrow keys move the slider's value (a preview, nothing is saved), so it
+// must not announce itself as read-only.
+test("the dial slider is not read-only, and the arrow keys change its value", async ({ page }) => {
+  await seedAppState(page, "en");
+  await page.goto("/");
+  const dial = page.getByRole("slider");
+  await expect(dial).not.toHaveAttribute("aria-readonly", /.*/);
+  const before = await dial.getAttribute("aria-valuenow");
+  await dial.focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(dial).not.toHaveAttribute("aria-valuenow", before ?? "");
+  await page.keyboard.press("Escape");
+  await expect(dial).toHaveAttribute("aria-valuenow", before ?? "");
+});

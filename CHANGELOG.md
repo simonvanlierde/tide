@@ -11,6 +11,10 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Today: the dial no longer shows a faint square behind it after it draws in.
 - Today: the dial's outline rails and day ticks now draw in with the ring
   instead of appearing after it.
+- Today: text in the dial no longer shrinks below the app's smallest text size on
+  short phones.
+- Today: screen readers no longer announce the dial as read-only, though the arrow
+  keys preview other days.
 
 ## [0.5.0] - 2026-11-12
 

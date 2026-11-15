@@ -343,14 +343,14 @@ export function CycleDial({
 
   return (
     <section aria-label={t("dial.overview")} className="cycle-dial">
-      {/* Arrow keys scrub a preview of each day; nothing is set, so the
-          slider is read-only and the preview reverts on blur/Escape. */}
+      {/* Arrow keys scrub a preview of each day. The value really moves, so
+          this is no read-only slider; nothing is saved, and the preview reverts
+          on blur/Escape. */}
       <div
         ref={frameRef}
         className={sweeping ? "cycle-dial__frame is-sweeping" : "cycle-dial__frame"}
         role="slider"
         aria-label={t("dial.days")}
-        aria-readonly="true"
         aria-valuemin={1}
         aria-valuemax={maxIndex + 1}
         aria-valuenow={isPredictedPreview ? (previewIndex ?? 0) + 1 : (preview?.dayNumber ?? forecast.cycleDay ?? 1)}

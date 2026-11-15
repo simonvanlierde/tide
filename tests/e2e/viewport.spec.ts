@@ -396,6 +396,35 @@ for (const size of SIZES) {
   }
 }
 
+// DESIGN.md's smallest text is --text-xs (0.7rem = 11.2 px). The dial scales
+// its lines with its own width, which a short phone shrinks, so they are floored.
+for (const language of ["en", "de"] as const) {
+  test.describe(`dial text floor 320x568 ${language}`, () => {
+    test.use({ viewport: { width: 320, height: 568 } });
+
+    for (const [state, days] of Object.entries({
+      "bleeding, learned length": LEARNED_BLEEDING,
+      "between periods": PAST_PERIOD,
+      late: LATE_PERIOD,
+      "nothing logged": {},
+    })) {
+      test(`keeps every line in the dial at 11.2 px or more: ${state}`, async ({ page }) => {
+        await seedAppState(page, language, {}, days);
+        await page.goto("/");
+        const sizes = await page
+          .locator(".cycle-dial__inner")
+          .evaluate((inner) =>
+            [inner, ...inner.querySelectorAll("*")]
+              .filter((el) => [...el.childNodes].some((node) => node.nodeType === 3 && node.textContent?.trim()))
+              .map((el) => ({ className: el.className, px: Number.parseFloat(getComputedStyle(el).fontSize) })),
+          );
+        expect(sizes.length).toBeGreaterThan(0);
+        expect(sizes.filter(({ px }) => px < 11.2)).toEqual([]);
+      });
+    }
+  });
+}
+
 test.describe("theme segmented control", () => {
   async function labelWidth(page: import("@playwright/test").Page) {
     await page.goto("/settings");

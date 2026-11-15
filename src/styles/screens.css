@@ -260,7 +260,7 @@
   }
 
   .cycle-dial__day-label {
-    font-size: min(var(--text-md), 5cqw);
+    font-size: max(var(--text-xs), min(var(--text-md), 5cqw));
     font-weight: 500;
     color: var(--ink-muted);
   }
@@ -306,7 +306,7 @@
   .cycle-dial__phase--small,
   .cycle-dial__date--small {
     max-width: 60cqw;
-    font-size: min(var(--text-md), 5cqw);
+    font-size: max(var(--text-xs), min(var(--text-md), 5cqw));
   }
 
   /* Splits today from the next period, so the date never reads as today's. */
@@ -320,9 +320,26 @@
   /* The usual period length, under today's bleeding headline. */
   .cycle-dial__next {
     max-width: 64cqw;
-    font-size: min(var(--text-md), 5cqw);
+    font-size: max(var(--text-xs), min(var(--text-md), 5cqw));
     line-height: 1.35;
     color: var(--ink-muted);
+  }
+
+  /* A short phone caps the dial near 170 px, and the floored lines then need
+     the vertical room the gaps would take. */
+  @container (max-width: 200px) {
+    .cycle-dial__inner {
+      gap: 1px;
+    }
+
+    .cycle-dial__rule {
+      margin-block: 0;
+    }
+
+    .cycle-dial__phase--small,
+    .cycle-dial__date--small {
+      max-width: 68cqw;
+    }
   }
 
   /* A zero-width spoke through the centre, rotated to the day. A full-size
