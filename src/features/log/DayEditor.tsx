@@ -1,6 +1,6 @@
 import { DropletOff, X } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
-import type { IsoDate } from "../../domain/types";
+import type { FlowIntensity, IsoDate } from "../../domain/types";
 import { useAppState, useAppStateActions, useIsReadOnly, useLocale, useT } from "../../state/provider";
 import { AppIcon } from "../../ui/icons";
 import { formatLongDate } from "../../utils/date";
@@ -32,6 +32,9 @@ export function DayEditor({
   const logged = day in state.intensityByDay;
   const editable = !readOnly && day <= today;
   const [focusPending, setFocusPending] = useState(false);
+  // Held in memory only: Undo for the last removal, gone with the editor or on another day.
+  const [removed, setRemoved] = useState<{ day: IsoDate; intensity: FlowIntensity | null } | null>(null);
+  const undoable = removed?.day === day && !logged && editable;
   const [floating, setFloating] = useState(() => window.matchMedia?.(FLOATING_QUERY).matches ?? false);
 
   useEffect(() => {
@@ -113,7 +116,8 @@ export function DayEditor({
   useEffect(() => {
     if (!focusPending) return;
     const target = logged
-      ? panel.current?.querySelector<HTMLElement>("input:checked:not(:disabled), input:not(:disabled)")
+      ? (panel.current?.querySelector<HTMLElement>("input:checked:not(:disabled)") ??
+        panel.current?.querySelector<HTMLElement>("input:not(:disabled)"))
       : panel.current?.querySelector<HTMLElement>(".day-editor__log:not(:disabled)");
     focusControl(target ?? panel.current?.querySelector<HTMLElement>(".icon-close"));
     setFocusPending(false);
@@ -158,6 +162,7 @@ export function DayEditor({
               disabled={readOnly}
               onClick={() => {
                 if (!readOnly) {
+                  setRemoved({ day, intensity: state.intensityByDay[day] ?? null });
                   actions.togglePeriodDay(day, today);
                   setFocusPending(true);
                 }
@@ -182,6 +187,23 @@ export function DayEditor({
             {t("dayEditor.logBleeding")}
           </button>
         )}
+        {undoable ? (
+          <p className="day-editor__undo" role="status">
+            {t("dayEditor.removed")}
+            <button
+              type="button"
+              className="text-action"
+              onClick={() => {
+                actions.togglePeriodDay(day, today);
+                if (removed?.intensity) actions.setDayIntensity(day, removed.intensity, today);
+                setRemoved(null);
+                setFocusPending(true);
+              }}
+            >
+              {t("calendar.undo")}
+            </button>
+          </p>
+        ) : null}
         <details className="day-editor__details" open={initialSection === "details"}>
           <summary>{t("dayEditor.moreDetails")}</summary>
           <DiaryFields key={day} day={day} today={today} />

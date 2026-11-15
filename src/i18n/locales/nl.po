@@ -677,6 +677,9 @@ msgstr "{date}"
 msgid "dayEditor.logBleeding"
 msgstr "Bloeding loggen"
 
+msgid "dayEditor.removed"
+msgstr "Bloeding verwijderd."
+
 msgid "dayEditor.moreDetails"
 msgstr "Meer details"
 

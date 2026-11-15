@@ -316,3 +316,57 @@ test("Escape dismisses an insights modal without closing the Today sheet underne
   await expect(panel).toBeVisible();
   await expect(insights).toBeFocused();
 });
+
+for (const viewport of [
+  { width: 320, height: 568 },
+  { width: 320, height: 480 },
+  { width: 390, height: 844 },
+]) {
+  test(`the open sheet never covers more than half of ${viewport.width}x${viewport.height} and scrolls inside`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(viewport);
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await seedAppState(page, "en");
+    await page.goto("/");
+    await page.getByRole("button", { name: /Logged today/ }).click();
+    const panel = page.locator(".day-editor");
+    await panel.locator("summary").click();
+    await panel
+      .getByRole("textbox", { name: translate("en", "diary.note"), exact: true })
+      .fill("A quiet day.\n".repeat(50));
+    const sheet = await panel.boundingBox();
+    expect(sheet?.height).toBeLessThanOrEqual(viewport.height / 2 + 1);
+    const body = panel.locator(".day-editor__body");
+    expect(await body.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(true);
+    await expectAboveNavigation(page, panel);
+  });
+}
+
+test("Undo after removing a bleeding log restores it, can be reached by keyboard and stores nothing new", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await seedAppState(page, "en");
+  await page.goto("/calendar");
+  await page.getByRole("button", { name: /^April 14, 2026/ }).click();
+  const panel = page.locator(".day-editor");
+  await panel.getByRole("button", { name: translate("en", "calendar.notBleeding") }).click();
+  const status = panel.getByRole("status").filter({ hasText: translate("en", "dayEditor.removed") });
+  await expect(status).toBeVisible();
+  const undo = status.getByRole("button", { name: translate("en", "calendar.undo"), exact: true });
+  expect((await undo.boundingBox())?.height).toBeGreaterThanOrEqual(44);
+  await expectAboveNavigation(page, undo);
+  await page.keyboard.press("Tab");
+  await expect(undo).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(status).toHaveCount(0);
+  await expect(panel.getByRole("radio", { name: translate("en", "flow.medium"), exact: true })).toBeChecked();
+  const stored = await page.evaluate(() => ({
+    keys: Object.keys(localStorage),
+    days: JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay,
+  }));
+  expect(stored.keys).toEqual(["tide.period-tracker.state.v1"]);
+  expect(stored.days["2026-04-14"]).toBe("medium");
+});

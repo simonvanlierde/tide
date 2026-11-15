@@ -677,6 +677,9 @@ msgstr "{date}"
 msgid "dayEditor.logBleeding"
 msgstr "Log bleeding"
 
+msgid "dayEditor.removed"
+msgstr "Bleeding log removed."
+
 msgid "dayEditor.moreDetails"
 msgstr "More details"
 

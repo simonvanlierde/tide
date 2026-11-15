@@ -6,6 +6,11 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- The day editor offers Undo for "Remove bleeding log", with the flow level you had chosen.
+  It stays on screen only while that editor is open and on that day; nothing is stored for it.
+
 ### Fixed
 
 - Typing a note no longer saves on every keystroke. It saves when you leave the field, tap

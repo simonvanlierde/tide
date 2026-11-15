@@ -186,6 +186,39 @@ describe("shared dated day editor", () => {
     expect(screen.getByRole("button", { name: "Log bleeding" })).toHaveFocus();
   });
 
+  it("offers Undo after removing a bleeding log and restores the flow level", async () => {
+    const user = userEvent.setup();
+    renderWithAppState(<DayEditor day={day} today={day} onClose={() => {}} />, {
+      state: createAppState({ intensityByDay: { [day]: "heavy" } }),
+    });
+    expect(screen.queryByRole("button", { name: "Undo" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
+    const undo = screen.getByRole("button", { name: "Undo" });
+    expect(undo.closest('[role="status"]')).toHaveTextContent("Bleeding log removed");
+    await user.click(undo);
+    expect(stored().intensityByDay[day]).toBe("heavy");
+    expect(screen.queryByRole("button", { name: "Undo" })).toBeNull();
+    expect(screen.getByRole("radio", { name: "Heavy" })).toHaveFocus();
+  });
+
+  it("drops the Undo offer when the day is logged again by hand or the editor moves to another day", async () => {
+    const user = userEvent.setup();
+    const { rerender } = renderWithAppState(<DayEditor day={day} today={day} onClose={() => {}} />, {
+      state: createAppState({ periodDays: [day] }),
+    });
+    await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
+    await user.click(screen.getByRole("button", { name: "Log bleeding" }));
+    expect(screen.queryByRole("button", { name: "Undo" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Remove bleeding log" }));
+    expect(screen.getByRole("button", { name: "Undo" })).toBeVisible();
+    rerender(
+      <AppStateProvider>
+        <DayEditor day="2026-04-17" today={day} onClose={() => {}} />
+      </AppStateProvider>,
+    );
+    expect(screen.queryByRole("button", { name: "Undo" })).toBeNull();
+  });
+
   it("allows removing an existing future log but never adds future bleeding or details", async () => {
     const user = userEvent.setup();
     renderWithAppState(<DayEditor day="2026-04-20" today={day} initialSection="details" onClose={() => {}} />, {
