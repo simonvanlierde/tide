@@ -361,9 +361,9 @@ narrower than 23em it keeps only its icon. A tide dot marks a day that has detai
 It opens the same editor with **More details** expanded, without logging bleeding.
 
 On larger screens the editor replaces Today's log line and opens below Calendar's legend. One heading
-names the date; flow comes first, with "Not bleeding that day" to remove a log.
+names the date; flow comes first, with "Remove bleeding log" to remove a log, which offers Undo.
 Symptoms, mood and notes sit under a native **More details** disclosure. Chips save on
-tap and notes save as you type. Clearing details offers Undo. The top-right × and Escape
+tap and notes save when you leave the field. Clearing details offers Undo. The top-right × and Escape
 close the panel; it stays open while editing or removing bleeding. Calendar's grid owns
 the date, with no competing date field. While the editor is open, a grid tap changes its
 date and preserves the disclosure without logging bleeding. Selecting a diary-only date
