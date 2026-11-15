@@ -103,7 +103,12 @@ export function getAveragePeriodLength(periodDays: IsoDate[], today: IsoDate): n
 export function getPastOvulationDates(periodDays: IsoDate[], incompleteCycleStarts: IsoDate[] = []): IsoDate[] {
   return getCycleHistory(periodDays, incompleteCycleStarts)
     .filter((cycle) => !cycle.incomplete)
-    .map((cycle) => addDays(cycle.end, -DEFAULT_LUTEAL_LENGTH));
+    .map((cycle) => {
+      // A cycle shorter than the luteal phase would put ovulation before it began.
+      const luteal = addDays(cycle.end, -DEFAULT_LUTEAL_LENGTH);
+      const earliest = addDays(cycle.start, 1);
+      return luteal > earliest ? luteal : earliest;
+    });
 }
 
 /** Completed intervals, oldest first; end is the following period start (exclusive). */

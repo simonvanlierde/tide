@@ -217,17 +217,18 @@ describe("forecast timeline", () => {
   });
 
   it("lets the later of two overlapping fertile windows win", () => {
-    // Cycles of 10 and 30 days widen the window to its cap (-10..+6), so the
-    // 01-27 ovulation sits inside the next window, centred on 02-06.
+    // Cycles of 30, 10, 10 and 30 days widen the window to its cap (-10..+6). A 10-day cycle puts
+    // ovulation the day after it starts, so the 02-01 ovulation sits inside the next window,
+    // centred on 02-11.
     const irregular = forecast({
       fertility: true,
       today: "2026-03-24",
-      periodDays: ["2026-01-01", "2026-01-11", "2026-02-10", "2026-02-20", "2026-03-22"],
+      periodDays: ["2026-01-01", "2026-01-31", "2026-02-10", "2026-02-20", "2026-03-22"],
     });
 
     expect(irregular.fertileWindow).toEqual({ start: -10, end: 6 });
-    expect(irregular.dayInfo("2026-01-27").estimate).toBe("fertile");
-    expect(irregular.dayInfo("2026-02-06").estimate).toBe("ovulation");
+    expect(irregular.dayInfo("2026-02-01").estimate).toBe("fertile");
+    expect(irregular.dayInfo("2026-02-11").estimate).toBe("ovulation");
   });
 
   it("drops a stale forecast but keeps past fertile windows", () => {

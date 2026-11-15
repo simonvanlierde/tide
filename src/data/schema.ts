@@ -172,8 +172,12 @@ export function updateLoggedDays(state: AppState, intensityByDay: AppState["inte
   const next = new Map(getCycleHistory(nextDays).map((cycle) => [cycle.start, cycle.end]));
   const previousStarts = getCycleStarts(previousDays);
   const nextStarts = getCycleStarts(nextDays);
-  // Historical edits can reuse a cycle number for a different exported event.
-  const renumbered = previousStarts.some((start, index) => nextStarts[index] !== start);
+  // A cycle number names an exported event. Moving a start keeps the count, so the event
+  // moves with it. Adding a newer cycle keeps the old numbers. Anything else renumbers.
+  // NOTE: one start removed and another added elsewhere in one edit keeps the id.
+  const appended =
+    nextStarts.length > previousStarts.length && previousStarts.every((start, index) => nextStarts[index] === start);
+  const renumbered = nextStarts.length !== previousStarts.length && !appended;
   return {
     ...state,
     intensityByDay,

@@ -26,6 +26,10 @@ describe("getPastOvulationDates", () => {
     ]);
   });
 
+  it("keeps ovulation after the cycle start when the cycle is shorter than the luteal phase", () => {
+    expect(getPastOvulationDates(["2026-06-01", "2026-06-11", "2026-07-09"])).toEqual(["2026-06-02", "2026-06-25"]);
+  });
+
   it("returns nothing until at least one cycle has completed", () => {
     expect(getPastOvulationDates([])).toEqual([]);
     expect(getPastOvulationDates(["2026-06-01", "2026-06-02"])).toEqual([]);
