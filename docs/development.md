@@ -56,8 +56,7 @@ explainer has its own catalogs in `src/features/today/locales/`.
 - Don't run `lingui extract`. Some IDs are picked at runtime, so the catalogs are the source.
 - Run `pnpm i18n:compile` after an edit, then restart the dev server. Dev, tests and builds also compile first.
 
-The compiled `.mjs` files stay out of Git. `pnpm i18n:compare` checks every message and plural
-form against the commit before the Lingui migration; `pnpm i18n:compare <git-ref>` uses another baseline.
+The compiled `.mjs` files stay out of Git.
 
 ## Social card
 
