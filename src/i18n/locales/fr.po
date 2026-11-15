@@ -434,8 +434,8 @@ msgstr "Cela fait plus de {max} jours. Choisis un dernier jour plus tôt."
 msgid "calendar.futureHelp"
 msgstr "Les jours à venir ne peuvent pas encore être enregistrés."
 
-msgid "calendar.edit"
-msgstr "Modifier"
+msgid "calendar.cycleDayNumber"
+msgstr "Jour {day} du cycle"
 
 msgid "calendar.dayUnavailable"
 msgstr "{label} indisponible"

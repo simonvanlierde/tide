@@ -54,7 +54,7 @@ for (const theme of ["light", "dark"] as const) {
     await page.emulateMedia({ colorScheme: theme, reducedMotion: "reduce" });
     await seedAppState(page, "en");
     await page.goto("/calendar");
-    const selected = page.getByRole("button", { name: /^Edit April 14, 2026/ });
+    const selected = page.getByRole("button", { name: /^April 14, 2026/ });
     await selected.click();
     const panel = page.getByRole("region", { name: formatLongDate("2026-04-14", "en"), exact: true });
     await expect(panel).toBeVisible();
@@ -100,8 +100,8 @@ test("Calendar sheet leaves dates interactive and Escape works from either surfa
   await page.emulateMedia({ reducedMotion: "reduce" });
   await seedAppState(page, "en");
   await page.goto("/calendar");
-  const first = page.getByRole("button", { name: /^Edit April 14, 2026/ });
-  const second = page.getByRole("button", { name: /^Edit April 13, 2026/ });
+  const first = page.getByRole("button", { name: /^April 14, 2026/ });
+  const second = page.getByRole("button", { name: /^April 13, 2026/ });
   await first.click();
   await second.click();
   const panel = page.locator(".day-editor");
@@ -133,7 +133,7 @@ for (const path of ["/calendar", "/"] as const) {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await seedAppState(page, "en");
     await page.goto(path);
-    if (path === "/calendar") await page.getByRole("button", { name: /^Edit April 14, 2026/ }).click();
+    if (path === "/calendar") await page.getByRole("button", { name: /^April 14, 2026/ }).click();
     else await page.getByRole("button", { name: /Logged today/ }).click();
     const panel = page.locator(".day-editor");
     const close = panel.getByRole("button", { name: translate("en", "common.close"), exact: true });
@@ -147,7 +147,7 @@ for (const path of ["/calendar", "/"] as const) {
       await expect
         .poll(async () => {
           const week = await page
-            .getByRole("button", { name: /^Edit April 14, 2026/ })
+            .getByRole("button", { name: /^April 14, 2026/ })
             .locator("xpath=ancestor::tr")
             .boundingBox();
           const sheet = await panel.boundingBox();
@@ -187,7 +187,7 @@ for (const viewport of [
     await page.emulateMedia({ reducedMotion: "reduce" });
     await seedAppState(page, "en");
     await page.goto("/calendar");
-    const day = page.getByRole("button", { name: /^Edit April 14, 2026/ });
+    const day = page.getByRole("button", { name: /^April 14, 2026/ });
     await day.click();
     const panel = page.locator(".day-editor");
     await expect(panel).toBeVisible();
@@ -226,7 +226,7 @@ test("a saved future date in the last calendar row remains visible and unchanged
   await page.emulateMedia({ reducedMotion: "reduce" });
   await seedAppState(page, "en", {}, { "2026-04-14": "medium", "2026-04-30": "light" });
   await page.goto("/calendar");
-  const day = page.getByRole("button", { name: /^Edit April 30, 2026/ });
+  const day = page.getByRole("button", { name: /^April 30, 2026/ });
   await day.click();
   const panel = page.locator(".day-editor");
   await expect(panel).toBeVisible();
@@ -254,7 +254,7 @@ test("Calendar keeps the selected week visible when the onscreen keyboard change
   await page.emulateMedia({ reducedMotion: "reduce" });
   await seedAppState(page, "en");
   await page.goto("/calendar");
-  const day = page.getByRole("button", { name: /^Edit April 14, 2026/ });
+  const day = page.getByRole("button", { name: /^April 14, 2026/ });
   await day.click();
   const panel = page.locator(".day-editor");
   await panel.locator("summary").click();
@@ -281,13 +281,13 @@ test("calendar keyboard navigation reveals a focused day above the open sheet", 
   await page.emulateMedia({ reducedMotion: "reduce" });
   await seedAppState(page, "en");
   await page.goto("/calendar");
-  const first = page.getByRole("button", { name: /^Edit April 2, 2026/ });
+  const first = page.getByRole("button", { name: /^April 2, 2026/ });
   await first.click();
   const panel = page.locator(".day-editor");
   await panel.locator("summary").click();
   await first.focus();
   await page.keyboard.press("ArrowDown");
-  const next = page.getByRole("button", { name: /^Edit April 9, 2026/ });
+  const next = page.getByRole("button", { name: /^April 9, 2026/ });
   await expect(next).toBeFocused();
   await expect
     .poll(async () => {

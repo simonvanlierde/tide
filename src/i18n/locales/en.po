@@ -434,8 +434,8 @@ msgstr "That''s more than {max} days. Pick an earlier last day."
 msgid "calendar.futureHelp"
 msgstr "Future days can''t be logged yet."
 
-msgid "calendar.edit"
-msgstr "Edit"
+msgid "calendar.cycleDayNumber"
+msgstr "Cycle day {day}"
 
 msgid "calendar.dayUnavailable"
 msgstr "{label} unavailable"

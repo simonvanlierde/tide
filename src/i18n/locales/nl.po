@@ -434,8 +434,8 @@ msgstr "Dat is meer dan {max} dagen. Kies een eerdere laatste dag."
 msgid "calendar.futureHelp"
 msgstr "Toekomstige dagen kun je nog niet loggen."
 
-msgid "calendar.edit"
-msgstr "Wijzigen"
+msgid "calendar.cycleDayNumber"
+msgstr "Cyclusdag {day}"
 
 msgid "calendar.dayUnavailable"
 msgstr "{label} niet beschikbaar"

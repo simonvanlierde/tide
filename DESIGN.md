@@ -272,7 +272,10 @@ Scroll padding also leaves room above the tab bar when a control receives keyboa
 The shell is a size container, so layout changes follow the shell, not the viewport. Below
 28em the theme control moves under its label, and below 24em its options stack too. The
 calendar tightens its gaps below 400 px, where the weekday headers also drop to one
-letter (screen readers get the full name), and trims the card's side padding below 350 px.
+letter (screen readers get the full name), and the card runs nearly edge to edge so each
+day column is 44 px wide; the drawn cell is narrower by the gap, and its hit area covers
+the gap. Days ahead use `ink-soft` at full strength, and days of the neighbouring months
+use `ink-muted`.
 Its legend is a caption under the grid: a left-aligned row that wraps, so the wrap at 320 px
 reads as the list going on. Legend labels are the short names ("Fertile", not "Fertile
 window"), so the row fits one line at 390 px in every language. The dial's larger legend

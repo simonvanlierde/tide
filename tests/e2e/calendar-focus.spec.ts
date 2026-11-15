@@ -4,7 +4,7 @@ import { seedAppState } from "./seed";
 test("removing a day returns keyboard focus to its calendar cell", async ({ page }) => {
   await seedAppState(page, "en");
   await page.goto("/calendar");
-  const day = page.getByRole("button", { name: /Edit April 14, 2026/ });
+  const day = page.getByRole("button", { name: /April 14, 2026/ });
   await day.focus();
   await page.keyboard.press("Enter");
   await page.keyboard.press("Tab");
@@ -12,15 +12,15 @@ test("removing a day returns keyboard focus to its calendar cell", async ({ page
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Log bleeding", exact: true })).toBeFocused();
   await page.keyboard.press("Escape");
-  await expect(page.getByRole("button", { name: /Edit April 14, 2026/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /April 14, 2026/ })).toBeFocused();
   await page.keyboard.press("ArrowLeft");
-  await expect(page.getByRole("button", { name: /Edit April 13, 2026/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /April 13, 2026/ })).toBeFocused();
 });
 
 test("opening an empty day does not log bleeding and closing returns focus", async ({ page }) => {
   await seedAppState(page, "en", {}, {});
   await page.goto("/calendar");
-  const day = page.getByRole("button", { name: /Edit April 15, 2026/ });
+  const day = page.getByRole("button", { name: /April 15, 2026/ });
   await day.focus();
   await page.keyboard.press("Enter");
   const log = page.getByRole("button", { name: "Log bleeding", exact: true });
@@ -44,7 +44,7 @@ test("undoing a range returns keyboard focus to its first day", async ({ page })
   }
   await expect(page.getByRole("button", { name: "Undo", exact: true })).toBeFocused();
   await page.keyboard.press("Enter");
-  await expect(page.getByRole("button", { name: /Edit April 13, 2026/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /April 13, 2026/ })).toBeFocused();
   await page.keyboard.press("ArrowRight");
-  await expect(page.getByRole("button", { name: /Edit April 14, 2026/ })).toBeFocused();
+  await expect(page.getByRole("button", { name: /April 14, 2026/ })).toBeFocused();
 });

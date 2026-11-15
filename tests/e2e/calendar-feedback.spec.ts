@@ -27,8 +27,8 @@ test("Calendar range receipt updates atomically and expires without removing the
     });
   });
   await page.getByRole("button", { name: "Log a past period", exact: true }).click();
-  await page.getByRole("button", { name: /April 14, 2026/ }).click();
-  await page.getByRole("button", { name: /April 15, 2026/ }).click();
+  await page.getByRole("button", { name: /^April 14, 2026/ }).click();
+  await page.getByRole("button", { name: /^April 15, 2026/ }).click();
   const receipt = page.locator(".calendar__help[role=status]");
   await expect(receipt).toHaveText("Logged Tue, Apr 14 – Wed, Apr 15. Forecast updated. Undo");
   const statuses = await page.evaluate(() => (window as unknown as { calendarStatuses: string[] }).calendarStatuses);
@@ -40,7 +40,7 @@ test("Calendar range receipt updates atomically and expires without removing the
   ).toEqual([]);
   await page.clock.fastForward(10000);
   await expect(receipt).not.toBeVisible();
-  await expect(page.getByRole("button", { name: /^Edit April 15, 2026/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /^April 15, 2026/ })).toBeVisible();
   expect(
     await page.evaluate(
       () => JSON.parse(localStorage.getItem("tide.period-tracker.state.v1") ?? "{}").intensityByDay["2026-04-15"],
@@ -54,8 +54,8 @@ test("Calendar Undo stays while hovered or focused and expires after leaving bot
   await seedAppState(page, "en", {}, history);
   await page.goto("/calendar");
   await page.getByRole("button", { name: "Log a past period", exact: true }).click();
-  await page.getByRole("button", { name: /April 14, 2026/ }).click();
-  await page.getByRole("button", { name: /April 15, 2026/ }).click();
+  await page.getByRole("button", { name: /^April 14, 2026/ }).click();
+  await page.getByRole("button", { name: /^April 15, 2026/ }).click();
   const receipt = page.locator(".calendar__help[role=status]");
   const undo = receipt.getByRole("button", { name: "Undo", exact: true });
   await receipt.hover();
@@ -65,7 +65,7 @@ test("Calendar Undo stays while hovered or focused and expires after leaving bot
   await page.mouse.move(0, 0);
   await page.clock.fastForward(11000);
   await expect(undo).toBeFocused();
-  await page.getByRole("button", { name: /^Edit April 15, 2026/ }).focus();
+  await page.getByRole("button", { name: /^April 15, 2026/ }).focus();
   await page.clock.fastForward(9000);
   await expect(undo).toBeVisible();
   await page.clock.fastForward(1100);

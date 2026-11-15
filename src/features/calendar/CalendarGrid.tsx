@@ -117,7 +117,8 @@ export function CalendarGrid({ days, selectedDay, onSelectDay }: CalendarGridPro
               ]
                 .filter(Boolean)
                 .join(" ");
-              const dayLabel = `${t("calendar.edit")} ${formatLongDate(value, locale)}`;
+              // The date is the name; aria-pressed says whether it is selected.
+              const dayLabel = formatLongDate(value, locale);
               // A logged future day (clock moved back, or imported) stays
               // removable; only logging a new future day is blocked.
               const isUnavailable = day.isFuture && !isLogged && !day.hasDetails;
@@ -125,7 +126,7 @@ export function CalendarGrid({ days, selectedDay, onSelectDay }: CalendarGridPro
               // Flow is otherwise colour-only, so name it for screen readers.
               const detail = [
                 flow ? t(`flow.${flow}`) : marker ? t(MARKER_LABEL_KEY[marker]) : null,
-                day.cycleDay ? `${t("legend.cycleDay")} ${day.cycleDay}` : null,
+                day.cycleDay ? t("calendar.cycleDayNumber", { day: day.cycleDay }) : null,
                 day.hasDetails ? t("diary.details") : null,
               ]
                 .filter(Boolean)

@@ -45,10 +45,10 @@ for (const colorScheme of ["light", "dark"] as const) {
     test("Calendar exposes cycle counts beside diary-only days", async ({ page }) => {
       await seedAppState(page, "en", {}, { "2026-04-14": "medium" });
       await page.goto("/calendar");
-      await page.getByRole("button", { name: /^Edit April 15, 2026/ }).click();
+      await page.getByRole("button", { name: /^April 15, 2026/ }).click();
       await page.getByText("More details", { exact: true }).click();
       await page.getByRole("textbox", { name: "Note (optional)", exact: true }).fill("A quiet day.");
-      await expect(page.getByRole("button", { name: /^Edit April 15, 2026, Cycle day 2, Details$/ })).toBeVisible();
+      await expect(page.getByRole("button", { name: /^April 15, 2026, Cycle day 2, Details$/ })).toBeVisible();
       await expectNoViolations(page);
       const cycleCount = page.locator(".calendar-grid__day.is-today + .calendar-grid__period-day");
       await cycleCount.scrollIntoViewIfNeeded();
