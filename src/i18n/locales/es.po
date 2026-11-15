@@ -680,6 +680,9 @@ msgstr "{date}"
 msgid "dayEditor.logBleeding"
 msgstr "Registrar sangrado"
 
+msgid "dayEditor.removed"
+msgstr "Sangrado eliminado."
+
 msgid "dayEditor.moreDetails"
 msgstr "Más detalles"
 

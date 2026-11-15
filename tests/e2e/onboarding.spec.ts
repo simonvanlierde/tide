@@ -132,3 +132,19 @@ test("opening the day editor respects reduced motion", async ({ page }) => {
     "auto",
   );
 });
+
+test("the first-use card ends at its last control without an empty band", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await seedAppState(page, "en", { onboardingDismissed: false, showFertility: null }, {});
+  await page.goto("/");
+  const card = page.getByRole("region", { name: "Your history stays here" });
+  const cardBox = await card.boundingBox();
+  const summary = await card.locator("summary").boundingBox();
+  const text = await card.locator("summary").evaluate((element) => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return range.getBoundingClientRect().bottom;
+  });
+  expect((cardBox?.y ?? 0) + (cardBox?.height ?? 0) - text).toBeLessThanOrEqual(18);
+  expect(summary?.height).toBeGreaterThanOrEqual(44);
+});

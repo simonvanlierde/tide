@@ -9,8 +9,14 @@
   }
 
   .onboarding.utility-card {
-    padding: 16px;
+    padding: 16px 16px 0;
     gap: 8px;
+  }
+
+  /* The closed summary's 44 px target is the card's last row; its own height is
+     the bottom padding. Open, the answers need a bottom edge of their own. */
+  .onboarding__fertility[open] {
+    padding-bottom: 16px;
   }
 
   .onboarding__heading {
