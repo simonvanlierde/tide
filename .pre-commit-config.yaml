@@ -23,7 +23,7 @@ repos:
 
   # Commit messages follow committed.toml: Conventional Commits, imperative, no period.
   - repo: https://github.com/crate-ci/committed
-    rev: faeed42f2e10c244533a01525f13c4d8b6ce383f # frozen: v1.1.11
+    rev: 02af07ed1d11ad69a96ab75f08c9831a4e2c00da # frozen: v1.1.12
     hooks:
       - id: committed
         # git writes a merge commit's message itself, so skip the check during a merge.
@@ -49,7 +49,7 @@ repos:
   # .json files are read as JSON5, so comments and trailing commas in tsconfig
   # and VS Code settings pass; syntax errors and duplicate keys fail.
   - repo: https://github.com/simonvanlierde/jsonvet
-    rev: 83df66110a108e0fa4b7d2b2adcef6831f618e05 # frozen: v3.3.1
+    rev: 8719ccbefe770984c8d0c9f79ec8d527f99e90b7 # frozen: v3.5.0
     hooks:
       - id: jsonvet
 
@@ -73,7 +73,7 @@ repos:
 
   # gitleaks' successor from the same authors. gitleaks takes security fixes only.
   - repo: https://github.com/betterleaks/betterleaks
-    rev: 81aff7a638638aae3a659845d089043e1d8fe9ac # frozen: v1.9.0
+    rev: 39d5bdcf34db54e944facac5cf6e8b03db5e2b99 # frozen: v1.10.1
     hooks:
       - id: betterleaks
 
@@ -89,11 +89,11 @@ repos:
   # and shellcheck over every `run:` when shellcheck is on PATH. jactionlint is a
   # maintained fork of actionlint that adds release, cache and concurrency checks.
   - repo: https://github.com/jdx/jactionlint
-    rev: baa8d685e2b27ff5821558c9eeabb2051c1da61b # frozen: v2.4.0
+    rev: 72c00452809bcca05b8bc12acdcf15dd7a9c1c5e # frozen: v2.6.0
     hooks:
       - id: jactionlint
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: b0cff962ee693b9e612c097d22e71e0cba127447 # frozen: v0.3.2
+    rev: df5a947a3af0dba56640e644c6b9316184749168 # frozen: v0.3.4
     hooks:
       - id: rumdl
         args: [--fix]
